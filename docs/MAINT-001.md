@@ -1,6 +1,6 @@
 # MAINT-001 — GitHub Actions Node24+ Refresh
 
-> **Status:** FROZEN MAINTENANCE PLAN
+> **Status:** COMPLETE
 > **Scientific authority:** NONE
 
 ## Problem
@@ -100,3 +100,21 @@ If a canary or migrated workflow fails because of an action-major change, revert
 ## Principle
 
 > Infrastructure migrations must not become unrecorded changes to the experimental apparatus.
+
+
+## Completion record
+
+MAINT-001 completed successfully.
+
+Validated canaries:
+
+- core CI: run 36248941088;
+- artifact upload: run 36249019795;
+- artifact upload/download roundtrip: run 36249163157;
+- post-migration repository CI: run 36249625397.
+
+All pre-existing workflow files were migrated to the validated action generations and directly audited in B074-B079.
+
+The Node.js 20 forced-upgrade warning is no longer caused by the repository's checkout/setup-python declarations.
+
+A separate `Buffer()` deprecation warning was observed inside `download-artifact@v8` during the maintenance canary. Artifact transfer and digest verification passed; this is tracked as upstream action-runtime noise rather than a repository version-selection defect.
