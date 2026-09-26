@@ -1,19 +1,20 @@
 # CURRENT
 
-> **Latest bounce:** B098
-> **Stage:** EXP-003 / ANALYSIS IMPLEMENTED
+> **Latest bounce:** B099
+> **Stage:** EXP-003 / IMPLEMENTATION TESTS ADDED
 
-## Canonical output
+## Canonical implementation
 
+- `src/finite_ram_lab/exp003_workload.py`
 - `src/finite_ram_lab/exp003_study.py`
-- `handoffs/B098-EXP003-ANALYSIS.md`
+- `tests/test_exp003.py`
 
 ## Next action
 
-Add EXP-003 known-answer and schedule tests only.
+Read the ordinary CI triggered by B099 once.
 
-Do not launch the experiment yet.
+If PASS, the following fresh bounce may create the EXP-003 workflow.
 
 ## Authority boundary
 
-Implementation only.
+EXP-003 is not launched.
