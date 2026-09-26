@@ -295,9 +295,19 @@ one large final commit
 
 If a chat/tool session ends before a GitHub checkpoint:
 
-> **That uncommitted work is non-canonical and must be treated as not completed.**
+> **Uncheckpointed work is non-canonical, but it is not automatically erased or worthless.**
 
-This rule intentionally favors duplicated reasoning over lost provenance.
+Classify surviving work as:
+
+- **PROVISIONAL** — reasoning/drafts that may be rechecked and promoted;
+- **RECOVERABLE CANDIDATE** — code/data still available in a workspace or artifact;
+- **UNRECORDED SIDE EFFECT** — an external action that already happened and must be reconciled.
+
+A later worker may recover provisional work only after re-verifying it against canonical repository state.
+
+External side effects such as commits, workflow runs, artifacts, or remote mutations must never be pretended away. They must be observed and classified as canonical, recovered, or non-canonical/audit-only.
+
+This rule favors recoverable provenance over either silent adoption or unnecessary destruction.
 
 ### Default size
 
@@ -398,9 +408,21 @@ If `CURRENT.md` disagrees with remembered chat state, GitHub wins.
 
 If the session ends before the next atomic commit:
 
-> everything after the last atomic commit is discarded as non-canonical.
+> everything after the last atomic commit loses **canonical authority**, not necessarily its physical existence.
 
-A future worker resumes from `handoffs/CURRENT.md`, not from inferred unfinished chat work.
+A future worker resumes authority from `handoffs/CURRENT.md`.
+
+Then, if unfinished work or external side effects are still observable, the worker may run a bounded recovery bounce:
+
+```text
+PROVISIONAL / RECOVERABLE / UNRECORDED SIDE EFFECT
+                    ↓ verify
+             RECONCILED
+              ├─ CANONICAL
+              └─ NON-CANONICAL / AUDIT ONLY
+```
+
+Never silently promote unfinished work, and never silently erase an external side effect.
 
 ### Human-interaction policy
 
