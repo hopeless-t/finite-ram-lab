@@ -1,0 +1,19 @@
+{
+  "experiment_id": "ENV-004",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 4,
+  "region_mib": 16,
+  "reclaim_mib": 16,
+  "reclaim_swappiness": "max",
+  "memory_high_mib": 256,
+  "memory_max_mib": 320,
+  "target_identities": ["A", "B"],
+  "post_pageout_wait_ms": 100,
+  "post_reclaim_wait_ms": 100,
+  "required_execution_checks": [
+    "four_blocks_present",
+    "eight_trials_present",
+    "all_content_match",
+    "no_oom"
+  ]
+}
