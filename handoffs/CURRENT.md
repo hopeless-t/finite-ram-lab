@@ -1,21 +1,19 @@
 # CURRENT
 
-> **Latest bounce:** B133
-> **Stage:** SIG-001 / LOW-Q TAIL COUNCIL COMPLETE
+> **Latest bounce:** B134
+> **Stage:** SIG-001 / LOW-Q TAIL SPEC FROZEN
 
-## Decision
+## Frozen spec
 
-Run one focused low-q calibration tail Monte Carlo with the frozen admission rule unchanged.
-
-See:
-
-- `handoffs/B133-SIG001-LOWQ-TAIL-COUNCIL.md`
+- `specs/SIG-001-LOWQ-TAIL-MC.json`
+- handoff: `handoffs/B134-SIG001-LOWQ-TAIL-SPEC.md`
 
 ## Next action
 
-Freeze the focused tail-MC spec.
+Launch only the low-q tail Monte Carlo with the existing validated SIG-001 calculator.
+
+Include the frozen spec in the artifact.
 
 ## Authority boundary
 
-Offline calibration design only.
 No predictor, deployed gate, or memory intervention is authorized.

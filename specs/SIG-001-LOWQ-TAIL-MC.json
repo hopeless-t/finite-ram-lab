@@ -1,0 +1,21 @@
+{
+  "analysis_id": "SIG-001-DESIGN-MC",
+  "study_variant": "SIG-001-LOWQ-TAIL-MC",
+  "action_cost_input_json": "analysis/inputs/GATE-001-EXP003-policy-primitives.json",
+  "primary_metric": "log_total_work",
+  "secondary_metric": "arithmetic_total_work",
+  "action_cost_bootstrap_resamples": 100000,
+  "action_cost_bootstrap_seed": 2026092702,
+  "familywise_alpha": 0.05,
+  "bonferroni_components": 4,
+  "simulation_repetitions": 20000,
+  "simulation_seed": 2026092704,
+  "sample_sizes": [2048, 4096, 8192, 16384, 32768, 65536, 131072],
+  "safe_certification_target": 0.80,
+  "unsafe_false_certification_limit": 0.05,
+  "scenarios": [
+    {"id": "LQ_BORDERLINE", "q": 0.10, "sensitivity": 0.90, "specificity": 0.85, "expected": "safe_candidate"},
+    {"id": "LQ_INTERMEDIATE", "q": 0.10, "sensitivity": 0.90, "specificity": 0.90, "expected": "safe_candidate"},
+    {"id": "LQ_UNSAFE", "q": 0.10, "sensitivity": 0.90, "specificity": 0.75, "expected": "unsafe_control"}
+  ]
+}
