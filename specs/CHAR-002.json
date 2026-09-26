@@ -1,0 +1,30 @@
+{
+  "experiment_id": "CHAR-002",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 16,
+  "base_schedule_seed": 2026092626,
+  "memory_high_mib": [160, 162],
+  "memory_max_mib": 320,
+  "region_mib": 32,
+  "burst_mib": 96,
+  "families": {
+    "separate": {
+      "creation_orders": ["AB", "BA"],
+      "fault_orders": ["AB", "BA"]
+    },
+    "shared": {
+      "fault_orders": ["lower_upper", "upper_lower"]
+    }
+  },
+  "cluster_bootstrap_resamples": 20000,
+  "cluster_bootstrap_seed": 2026092627,
+  "required_execution_checks": [
+    "sixteen_blocks_present",
+    "one_hundred_ninety_two_trials_present",
+    "all_trials_pass",
+    "no_oom",
+    "content_integrity",
+    "factorial_cells_complete",
+    "addresses_page_aligned"
+  ]
+}
