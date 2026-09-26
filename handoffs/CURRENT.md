@@ -1,25 +1,22 @@
 # CURRENT
 
-> **Latest bounce:** B087
-> **Stage:** EXP-003 / DESIGN-MC INPUT SNAPSHOT RECOVERED
+> **Latest bounce:** B088
+> **Stage:** EXP-003 / DESIGN-MC IMPLEMENTED
 
 ## Canonical output
 
-- `analysis/inputs/EXP-003-DESIGN-empirical-inputs.json`
-- `handoffs/B087-EXP003-INPUT-RECOVERY.md`
-
-## Audit note
-
-B086 created invalid CSV payloads due to a file-visibility read error. B087 reconciles and replaces them.
-
-## Scientific mainline
-
-EXP-003 experiment remains **not authorized**.
+- `src/finite_ram_lab/exp003_design_mc.py`
+- `specs/EXP-003-DESIGN-MC.json`
+- `tests/test_exp003_design_mc.py`
+- `docs/EXP-003-DESIGN-MC.md`
+- `handoffs/B088-EXP003-DESIGN-MC-IMPLEMENT.md`
 
 ## Next action
 
-Implement the EXP-003 design Monte Carlo only.
+Verify B088 ordinary CI only.
+
+If CI passes, launch the design Monte Carlo in a new atomic bounce.
 
 ## Authority boundary
 
-Input recovery only; no runner/repeat allocation has been selected.
+No design allocation or EXP-003 experiment is authorized yet.

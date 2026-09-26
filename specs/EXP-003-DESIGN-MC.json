@@ -1,0 +1,20 @@
+{
+  "study_id": "EXP-003-DESIGN-MC",
+  "input_json": "analysis/inputs/EXP-003-DESIGN-empirical-inputs.json",
+  "simulations_per_cell": 5000,
+  "seed": 2026092633,
+  "capture_scenarios": [0.0, 0.25, 0.5, 0.75],
+  "designs": {
+    "D1_16x1": {"blocks": 16, "complete_repeats": 1, "total_trials": 384},
+    "D2_24x1": {"blocks": 24, "complete_repeats": 1, "total_trials": 576},
+    "D3_32x1": {"blocks": 32, "complete_repeats": 1, "total_trials": 768},
+    "D4_16x2": {"blocks": 16, "complete_repeats": 2, "total_trials": 768},
+    "D5_24x2": {"blocks": 24, "complete_repeats": 2, "total_trials": 1152}
+  },
+  "selection_rule": {
+    "null_fp_max": 0.065,
+    "weak_25pct_power_min": 0.70,
+    "moderate_50pct_power_min": 0.90,
+    "tie_break": "minimum total trials, then more independent runner blocks"
+  }
+}
