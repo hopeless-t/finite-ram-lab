@@ -1,0 +1,37 @@
+name: SIG-001 Low-Q Tail Monte Carlo
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/sig-001-lowq-tail-mc.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  lowq-tail:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run low-q calibration tail Monte Carlo
+        run: |
+          mkdir -p evidence/SIG-001-LOWQ-TAIL
+          cp specs/SIG-001-LOWQ-TAIL-MC.json evidence/SIG-001-LOWQ-TAIL/spec.json
+          python -m finite_ram_lab.sig001_design_mc \
+            --spec specs/SIG-001-LOWQ-TAIL-MC.json \
+            --out evidence/SIG-001-LOWQ-TAIL/design.json \
+            --markdown evidence/SIG-001-LOWQ-TAIL/summary.md
+          cat evidence/SIG-001-LOWQ-TAIL/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: SIG-001-LOWQ-TAIL-${{ github.run_id }}
+          path: evidence/SIG-001-LOWQ-TAIL/
+          if-no-files-found: error
+          retention-days: 90
