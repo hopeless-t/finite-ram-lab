@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install
@@ -28,7 +28,7 @@ jobs:
             --out evidence/VOI-001/result.json \
             --markdown evidence/VOI-001/summary.md
           cat evidence/VOI-001/summary.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: VOI-001-${{ github.run_id }}
           path: evidence/VOI-001/
