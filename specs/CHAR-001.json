@@ -1,0 +1,19 @@
+{
+  "experiment_id": "CHAR-001",
+  "runner": "ubuntu-24.04",
+  "schedule_seed": 2026092602,
+  "repeats_per_level": 12,
+  "memory_high_mib": [96, 112, 128, 144, 160, 192, 224, 256],
+  "memory_max_mib": 320,
+  "hotset_mib": 64,
+  "burst_mib": 96,
+  "primary_phase": "HOTSET_RETOUCH",
+  "primary_outcome": "phase_latency_ms",
+  "bootstrap_resamples": 1000,
+  "required_checks": [
+    "complete_schedule",
+    "all_trials_pass",
+    "no_oom",
+    "all_levels_present"
+  ]
+}
