@@ -1,0 +1,105 @@
+name: VAL-002 Observer Effect
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/val-002.yml"
+      - "src/finite_ram_lab/val002_study.py"
+      - "src/finite_ram_lab/region_workload.py"
+      - "specs/VAL-002.json"
+      - "docs/VAL-002.md"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3, 4, 5, 6, 7]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Build schedule
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          mkdir -p "evidence/VAL-002/block-${BLOCK}/raw"
+          python -m finite_ram_lab.val002_study schedule             --spec specs/VAL-002.json             --block "$BLOCK"             --out "evidence/VAL-002/block-${BLOCK}/schedule.csv"
+      - name: Run paired observation modes
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          MAX_BYTES=$((320 * 1024 * 1024))
+          SCHEDULE="evidence/VAL-002/block-${BLOCK}/schedule.csv"
+          tail -n +2 "$SCHEDULE" | while IFS=, read -r ORDER REPEAT HIGH_MIB MODE; do
+            HIGH_BYTES=$((HIGH_MIB * 1024 * 1024))
+            UNIT="finite-ram-val002-${GITHUB_RUN_ID}-${BLOCK}-${ORDER}"
+            OUT="$GITHUB_WORKSPACE/evidence/VAL-002/block-${BLOCK}/raw/timeline-${ORDER}-high${HIGH_MIB}-mode${MODE}-rep${REPEAT}.json"
+            sudo systemd-run               --pipe --wait --collect --quiet               --unit="$UNIT"               -p MemoryAccounting=yes               -p MemoryHigh="$HIGH_BYTES"               -p MemoryMax="$MAX_BYTES"               "$PY" -m finite_ram_lab.region_workload                 --hotset-mib 64                 --burst-mib 96                 --expected-high-bytes "$HIGH_BYTES"                 --expected-max-bytes "$MAX_BYTES"                 --mincore-mode "$MODE"                 --out "$OUT" >/dev/null
+            sleep 0.05
+          done
+          sudo chown -R "$(id -u):$(id -g)" "evidence/VAL-002/block-${BLOCK}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: val002-block-${{ matrix.block }}
+          path: evidence/VAL-002/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: val002-block-*
+          path: evidence/VAL-002
+      - name: Aggregate
+        run: |
+          python -m finite_ram_lab.val002_study aggregate             --spec specs/VAL-002.json             --input-root evidence/VAL-002             --out-dir evidence/VAL-002/aggregate
+      - name: Summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          s=json.load(open('evidence/VAL-002/aggregate/summary.json'))
+          print('# VAL-002')
+          print()
+          print(f"Execution status: **{s['execution_status']}**")
+          p=s['primary']
+          print(f"FULL/NONE geometric ratio: **{p['permutation']['ratio_full_over_none']:.3f}**")
+          print(f"Blocked permutation p: **{p['permutation']['two_sided_p']:.6g}**")
+          ci=p['cluster_bootstrap']['ratio_ci95']
+          print(f"Cluster-bootstrap ratio 95% interval: **[{ci[0]:.3f}, {ci[1]:.3f}]**")
+          print()
+          print('| MiB | Mode | Trials | Median retouch ms | P90 ms | >50 ms | Swap after burst MiB |')
+          print('| ---: | --- | ---: | ---: | ---: | ---: | ---: |')
+          for level in ('160','164','168'):
+              for mode in ('full','none'):
+                  x=s['levels'][level][mode]
+                  print(f"| {level} | {mode} | {x['trials']} | {x['median_retouch_ms']:.3f} | {x['p90_retouch_ms']:.3f} | {x['gt50ms_count']} | {x['median_swap_mib_after_burst']:.3f} |")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VAL-002-aggregate-${{ github.run_id }}
+          path: evidence/VAL-002/aggregate/
+          if-no-files-found: error
+          retention-days: 90
