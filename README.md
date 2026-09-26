@@ -96,6 +96,32 @@ A future mechanism may be an application hint library, a userspace coordination 
 
 The implementation is an experimental result, not a premise.
 
+## AI Worker calculation toolbox
+
+The repository includes a spec-driven calculation interface so an AI worker does not need to re-derive standard analysis code for every experiment.
+
+```bash
+pip install -e ".[analysis]"
+frl doctor
+frl catalog
+frl template changepoint
+frl run-spec path/to/spec.json --out evidence/result.json
+```
+
+Ready-made tools currently cover:
+
+- changepoint / knee detection;
+- exact offline residency optimization with SciPy/HiGHS MILP;
+- conditional information gain;
+- small ARX system identification;
+- generalized Pareto tail fitting;
+- Sobol / Latin-hypercube experiment design;
+- PRCC parameter screening.
+
+The same interface can run on GitHub-hosted Actions through `.github/workflows/research-calc.yml`.
+
+See [AI Worker Calculation Toolbox](docs/AI_WORKER_TOOLBOX.md).
+
 ## Evidence rules
 
 - observation is not explanation;
@@ -143,11 +169,14 @@ finite-ram-lab/
 │   ├── ENV-001.json
 │   ├── ENV-002.json
 │   ├── OBS-001.json
-│   └── MC-001.json
+│   ├── MC-001.json
+│   └── MC-QUALITY-001.json
 ├── src/finite_ram_lab/
 │   ├── env_probe.py
 │   ├── limit_probe.py
 │   ├── obs_workload.py
+│   ├── calculators.py
+│   ├── cli.py
 │   ├── sim.py
 │   ├── mc.py
 │   └── aggregate_mc.py
@@ -159,6 +188,7 @@ finite-ram-lab/
 │   ├── ENV-001.md
 │   ├── ENV-002.md
 │   ├── OBS-001.md
+│   ├── AI_WORKER_TOOLBOX.md
 │   ├── MONTE_CARLO.md
 │   ├── EXECUTION_MODEL.md
 │   └── NORTH_STAR.md
@@ -167,6 +197,8 @@ finite-ram-lab/
     ├── env-001.yml
     ├── env-002.yml
     ├── obs-001.yml
+    ├── research-calc.yml
+    ├── deep-monte-carlo.yml
     └── monte-carlo.yml
 ```
 
