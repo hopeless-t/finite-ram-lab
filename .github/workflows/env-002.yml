@@ -1,0 +1,64 @@
+name: ENV-002
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/env-002.yml"
+      - "src/finite_ram_lab/limit_probe.py"
+      - "specs/ENV-002.json"
+      - "docs/ENV-002.md"
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-control-probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Probe isolated cgroup control
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/evidence/ENV-002"
+          PY="$(command -v python)"
+          UNIT="finite-ram-env002-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          sudo systemd-run \
+            --pipe --wait --collect --quiet \
+            --unit="$UNIT" \
+            -p MemoryAccounting=yes \
+            -p MemoryHigh=201326592 \
+            -p MemoryMax=268435456 \
+            "$PY" -m finite_ram_lab.limit_probe \
+              --allocation-mib 64 \
+              --expected-high-bytes 201326592 \
+              --expected-max-bytes 268435456 \
+              --out "$GITHUB_WORKSPACE/evidence/ENV-002/control-probe.json"
+          sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE/evidence/ENV-002"
+
+      - name: Validate evidence
+        run: |
+          python -m json.tool evidence/ENV-002/control-probe.json >/dev/null
+          python - <<'PY'
+          import json
+          d=json.load(open('evidence/ENV-002/control-probe.json'))
+          assert d['status'] == 'PASS', d
+          print(json.dumps(d['checks'], indent=2, sort_keys=True))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ENV-002-${{ github.run_id }}
+          path: evidence/ENV-002/
+          if-no-files-found: error
+          retention-days: 30

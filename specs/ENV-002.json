@@ -1,0 +1,15 @@
+{
+  "experiment_id": "ENV-002",
+  "runner": "ubuntu-24.04",
+  "memory_high_bytes": 201326592,
+  "memory_max_bytes": 268435456,
+  "allocation_mib": 64,
+  "required_checks": [
+    "cgroup_v2",
+    "memory_current_readable",
+    "memory_high_matches",
+    "memory_max_matches",
+    "usage_increases",
+    "no_oom_event"
+  ]
+}
