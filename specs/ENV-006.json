@@ -1,0 +1,21 @@
+{
+  "experiment_id": "ENV-006",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 8,
+  "trials_per_block": 2,
+  "base_schedule_seed": 2026092613,
+  "region_mib": 32,
+  "pageout_mib": 16,
+  "burst_mib": 96,
+  "memory_high_mib": 164,
+  "memory_max_mib": 320,
+  "target_identities": ["A", "B"],
+  "required_execution_checks": [
+    "eight_blocks_present",
+    "sixteen_trials_present",
+    "all_calls_succeeded",
+    "all_content_match",
+    "no_oom",
+    "target_identity_balanced"
+  ]
+}
