@@ -1,29 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B138
-> **Stage:** SIG-001 / LOW-Q TAIL RESULT RECORDED
+> **Latest bounce:** B139
+> **Stage:** SIG-001 / OBSERVATIONAL PROTOCOL COUNCIL COMPLETE
 
-## Canonical evidence
+## Decision
 
-- run: `36259509674`
-- artifact: `10910819749`
-- artifact SHA-256: `614367b9ea36e6ba89d0237cac913c0b0be761bba3a5f1806ef86043a2cf261a`
-- embedded frozen spec: exact match
-- handoff: `handoffs/B138-SIG001-LOWQ-TAIL-RESULT.md`
+Freeze SIG-001-CAL-PROTOCOL-v1 before collecting any real provider evidence.
 
-## Main result
+Key requirements:
 
-At q=0.10 and sensitivity=0.90:
+- independent calibration units;
+- fixed provider/version/rule per epoch;
+- prediction artifact sealed before outcomes;
+- ACT / NO_ACT / ABSTAIN semantics;
+- fail-closed CERTIFIED / NOT_CERTIFIED output;
+- no action execution.
 
-- specificity=0.90 first clears the 80% certification target at N=2,048;
-- specificity=0.85 first clears it at N=65,536;
-- specificity=0.75 never falsely certifies through N=131,072.
+See:
+
+- `handoffs/B139-SIG001-CAL-PROTOCOL-COUNCIL.md`
 
 ## Next action
 
-Freeze a practical observational calibration protocol before selecting or measuring a real semantic provider.
+Freeze the protocol schemas and calibration contract.
 
 ## Authority boundary
 
-No real provider is calibrated.
-No predictor, deployed gate, or memory intervention is authorized.
+No provider is calibrated.
+No memory intervention is authorized.
