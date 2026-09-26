@@ -1,0 +1,24 @@
+{
+  "experiment_id": "EXP-002",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 20,
+  "base_schedule_seed": 2026092615,
+  "repeats_per_arm_per_block": 6,
+  "arms": ["correct_pageout", "wrong_pageout", "no_hint"],
+  "region_mib": 32,
+  "pageout_mib": 16,
+  "burst_mib": 96,
+  "memory_high_mib": 164,
+  "memory_max_mib": 320,
+  "cluster_bootstrap_resamples": 10000,
+  "primary_contrast": ["correct_pageout", "no_hint"],
+  "red_team_contrast": ["wrong_pageout", "correct_pageout"],
+  "required_execution_checks": [
+    "twenty_blocks_present",
+    "three_hundred_sixty_trials_present",
+    "all_trials_pass",
+    "no_oom",
+    "arms_balanced",
+    "hot_identity_balanced"
+  ]
+}
