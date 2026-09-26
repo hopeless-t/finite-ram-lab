@@ -1,16 +1,20 @@
 # CURRENT
 
-> **Latest bounce:** B093
-> **Stage:** EXP-003 / DESIGN-MC COMPUTE SUCCESS
+> **Latest bounce:** B094
+> **Stage:** EXP-003 / DESIGN-MC RESULT RECORDED
 
-## Completed external run
+## Canonical result
 
-- EXP-003 Design Monte Carlo: `36253106666` — SUCCESS
+- `findings/EXP-003-design-mc-initial.md`
+- run `36253106666`
+- frozen rule selected `D1_16x1` = 384 total trials
 
 ## Next action
 
-Read the design-MC artifact/result once in a fresh bounce and record the numerical result.
+Read the structured design artifact once for Red-Team/action-cost calibration.
+
+Then, in a later atomic bounce, freeze or reject the EXP-003 executable design.
 
 ## Authority boundary
 
-No EXP-003 allocation or experiment is authorized yet.
+Design selection support only; EXP-003 experiment is not launched.
