@@ -1,0 +1,23 @@
+{
+  "experiment_id": "OBS-003",
+  "runner": "ubuntu-24.04",
+  "design_source": "D4_32x2",
+  "runner_blocks": 32,
+  "base_schedule_seed": 2026092621,
+  "repeats_per_level_per_block": 2,
+  "memory_high_mib": [160, 162, 164, 166, 168],
+  "memory_max_mib": 320,
+  "region_mib": 32,
+  "burst_mib": 96,
+  "misalignment_rule": "hot_resident_fraction < 1.0",
+  "cluster_bootstrap_resamples": 20000,
+  "cluster_bootstrap_seed": 2026092622,
+  "required_execution_checks": [
+    "thirty_two_blocks_present",
+    "three_hundred_twenty_trials_present",
+    "all_trials_pass",
+    "no_oom",
+    "levels_balanced",
+    "hot_identity_balanced"
+  ]
+}
