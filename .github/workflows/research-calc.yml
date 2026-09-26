@@ -1,0 +1,55 @@
+name: Research Calculation
+
+on:
+  workflow_dispatch:
+    inputs:
+      spec_path:
+        description: Repository-relative calculation spec path
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  calculate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install analysis toolbox
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Doctor
+        run: frl doctor
+
+      - name: Run calculation spec
+        env:
+          SPEC_PATH: ${{ inputs.spec_path }}
+        run: |
+          set -euo pipefail
+          test -f "$SPEC_PATH"
+          mkdir -p evidence/calculations
+          frl run-spec "$SPEC_PATH" \
+            --out evidence/calculations/result.json
+
+      - name: Summary
+        run: |
+          echo '# Research calculation' >> "$GITHUB_STEP_SUMMARY"
+          echo >> "$GITHUB_STEP_SUMMARY"
+          echo '```json' >> "$GITHUB_STEP_SUMMARY"
+          cat evidence/calculations/result.json >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: research-calculation-${{ github.run_id }}
+          path: evidence/calculations/result.json
+          if-no-files-found: error
+          retention-days: 90
