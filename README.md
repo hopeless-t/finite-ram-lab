@@ -37,10 +37,11 @@ Current evidence:
 - **OBS-003 — PASS / 320 NO_HINT trials:** natural HOT-residency misalignment was pressure-dependent: about 59% at 160 MiB, 58% at 162 MiB, 11% at 164 MiB, 6% at 166 MiB, and 2% at 168 MiB;
 - **HYP-002 — recency hypothesis not supported / 128 valid factorial trials:** randomized final recency did not predict residency selection, while a strong stable mapping-identity asymmetry remained. The exploratory A/B asymmetry from OBS-003 therefore cannot be interpreted as a clean recency-policy information gap.
 - **CHAR-002 — PASS / 192 trials:** randomized initial fault/touch order produced a strong, reproducible residency effect in both separate-VMA and shared-VMA layouts; the second-faulted region retained about 0.08–0.10 more resident fraction on average. Separate mapping creation order was not supported as an effect, while virtual-address position remains unresolved.
+- **HYP-003 — information mismatch supported / 128 trials:** with future HOT demand randomized independently of initial fault order, aligned HOT regions were about 0.083 more resident on average than misaligned HOT regions; semantic conflict increased HOT-retouch latency by about 77.8× on the runner-block geometric mean. This directly exposes a bounded past-state-versus-future-demand information gap.
 
 The current evidence supports a real residency-sensitive performance regime and measurable natural selection headroom under stronger pressure. CHAR-002 shows that initial fault/touch order materially affects later residency and explains much of the former fixed A/B asymmetry, while the tested semantic PAGEOUT operation remains unsupported as a beneficial coordination mechanism.
 
-**Next research stage:** HYP-003 — independently randomize initial fault/touch order and future semantic demand in the same experiment before resuming a formal Value-of-Information calculation.
+**Next research stage:** VOI-001 — quantify bounded decision headroom from the HYP-003 information gap while explicitly accounting for opportunity frequency and wrong/stale-hint harm.
 
 No generalized memory-coordination plane or kernel change is authorized by the current evidence.
 
