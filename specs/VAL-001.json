@@ -1,0 +1,21 @@
+{
+  "experiment_id": "VAL-001",
+  "runner": "ubuntu-24.04",
+  "design_source": "D2_FINE_BALANCED",
+  "base_schedule_seed": 2026092604,
+  "runner_blocks": 6,
+  "repeats_per_level": 2,
+  "memory_high_mib": [160, 164, 168, 172, 176, 180, 184, 188, 192],
+  "memory_max_mib": 320,
+  "hotset_mib": 64,
+  "burst_mib": 96,
+  "primary_phase": "HOTSET_RETOUCH",
+  "cluster_bootstrap_resamples": 5000,
+  "required_execution_checks": [
+    "six_blocks_present",
+    "108_trials_present",
+    "all_trials_pass",
+    "no_oom",
+    "all_levels_present_in_each_block"
+  ]
+}
