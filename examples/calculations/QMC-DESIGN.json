@@ -1,0 +1,14 @@
+{
+  "task_id": "QMC-DESIGN-DEMO",
+  "tool": "qmc_design",
+  "params": {
+    "method": "sobol",
+    "n": 32,
+    "seed": 20260926,
+    "parameters": [
+      {"name": "memory_high_mib", "min": 96, "max": 512},
+      {"name": "hotset_mib", "min": 32, "max": 256},
+      {"name": "scan_mib", "min": 0, "max": 512}
+    ]
+  }
+}
