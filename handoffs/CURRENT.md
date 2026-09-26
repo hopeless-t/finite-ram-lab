@@ -1,22 +1,20 @@
 # CURRENT
 
-> **Latest bounce:** B140
-> **Stage:** SIG-001 / CALIBRATION PROTOCOL FROZEN
+> **Latest bounce:** B141
+> **Stage:** SIG-001 / OFFLINE CALIBRATOR IMPLEMENTED, CI PENDING
 
-## Frozen protocol
+## Implementation
 
-- `specs/SIG-001-CAL-PROTOCOL-v1.json`
-- `schemas/SIG-001-CAL-MANIFEST.schema.json`
-- `schemas/SIG-001-CAL-PREDICTION.schema.json`
-- `schemas/SIG-001-CAL-OUTCOME.schema.json`
-- `docs/SIG-001-CAL-PROTOCOL-v1.md`
-- handoff: `handoffs/B140-SIG001-CAL-PROTOCOL.md`
+- `src/finite_ram_lab/sig001_calibration.py`
+- `tests/test_sig001_calibration.py`
+- handoff: `handoffs/B141-SIG001-CALIBRATOR-IMPLEMENT.md`
 
 ## Next action
 
-Implement the offline SIG-001 validator/calibrator and unit tests only.
+Read ordinary CI triggered by B141 exactly once.
+
+If SUCCESS, the offline calibration harness may be considered implementation-validated, but no real provider is yet measured.
 
 ## Authority boundary
 
-No provider is calibrated.
 No deployed gate or memory intervention is authorized.
