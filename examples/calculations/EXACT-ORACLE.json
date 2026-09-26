@@ -1,0 +1,8 @@
+{
+  "task_id": "EXACT-ORACLE-DEMO",
+  "tool": "exact_oracle",
+  "input": "oracle-trace.json",
+  "params": {
+    "capacity": 3
+  }
+}
