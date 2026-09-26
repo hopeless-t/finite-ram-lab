@@ -1,25 +1,19 @@
 # CURRENT
 
-> **Latest bounce:** B115
-> **Stage:** GATE-002 / CLASS-CONDITIONAL FRONTIER COUNCIL COMPLETE
+> **Latest bounce:** B116
+> **Stage:** GATE-002 / ANALYSIS CONTRACT FROZEN
 
-## Decision
+## Frozen contract
 
-Replace the symmetric single-accuracy abstraction with separate sensitivity and specificity.
-
-Canonical condition against NO_HINT:
-
-`q*t*b > (1-q)*(1-s)*h`
-
-See:
-
-- `handoffs/B115-GATE002-COUNCIL.md`
+- `specs/GATE-002-DESIGN.json`
+- `docs/GATE-002-ANALYSIS.md`
+- handoff: `handoffs/B116-GATE002-DESIGN.md`
 
 ## Next action
 
-Freeze the GATE-002 analysis contract using existing EXP-003/GATE-001 empirical primitives.
+Implement the frozen GATE-002 class-conditional frontier calculator and unit tests only.
 
 ## Authority boundary
 
 Analysis only.
-No deployed gate and no new intervention experiment is authorized.
+No new intervention experiment or deployed gate is authorized.
