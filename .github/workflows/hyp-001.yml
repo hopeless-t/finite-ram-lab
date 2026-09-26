@@ -1,0 +1,121 @@
+name: HYP-001 Future-Reuse Alignment
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/hyp-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Build frozen schedule
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          mkdir -p "evidence/HYP-001/block-${BLOCK}/raw"
+          python -m finite_ram_lab.hyp001_study schedule \
+            --spec specs/HYP-001.json \
+            --block "$BLOCK" \
+            --out "evidence/HYP-001/block-${BLOCK}/schedule.csv"
+      - name: Run paired semantic-reuse block
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          MAX_BYTES=$((320 * 1024 * 1024))
+          SCHEDULE="evidence/HYP-001/block-${BLOCK}/schedule.csv"
+          tail -n +2 "$SCHEDULE" | while IFS=, read -r ORDER HIGH_MIB ARM RECENT REPEAT; do
+            HIGH_BYTES=$((HIGH_MIB * 1024 * 1024))
+            UNIT="finite-ram-hyp001-${GITHUB_RUN_ID}-${BLOCK}-${ORDER}"
+            OUT="$GITHUB_WORKSPACE/evidence/HYP-001/block-${BLOCK}/raw/timeline-${ORDER}-high${HIGH_MIB}-${ARM}-${RECENT}-rep${REPEAT}.json"
+            sudo systemd-run \
+              --pipe --wait --collect --quiet \
+              --unit="$UNIT" \
+              -p MemoryAccounting=yes \
+              -p MemoryHigh="$HIGH_BYTES" \
+              -p MemoryMax="$MAX_BYTES" \
+              "$PY" -m finite_ram_lab.reuse_alignment \
+                --region-a-mib 32 \
+                --region-b-mib 32 \
+                --burst-mib 96 \
+                --expected-high-bytes "$HIGH_BYTES" \
+                --expected-max-bytes "$MAX_BYTES" \
+                --arm "$ARM" \
+                --recent-identity "$RECENT" \
+                --out "$OUT" >/dev/null
+            sleep 0.03
+          done
+          sudo chown -R "$(id -u):$(id -g)" "evidence/HYP-001/block-${BLOCK}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hyp001-block-${{ matrix.block }}
+          path: evidence/HYP-001/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: hyp001-block-*
+          path: evidence/HYP-001
+      - name: Aggregate frozen analysis
+        run: |
+          python -m finite_ram_lab.hyp001_study aggregate \
+            --spec specs/HYP-001.json \
+            --input-root evidence/HYP-001 \
+            --out-dir evidence/HYP-001/aggregate
+      - name: Summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          s=json.load(open('evidence/HYP-001/aggregate/summary.json'))
+          p=s['primary_inference']['exact_signflip']
+          b=s['primary_inference']['cluster_bootstrap_ratio']
+          print('# HYP-001')
+          print()
+          print(f"Execution: **{s['execution_status']}**")
+          print(f"Primary trials: **{s['primary_trials']}** across **{s['runner_blocks']}** runner blocks")
+          print()
+          print('| Arm | Trials | Median latency ms | P90 ms | Median swap-in pages |')
+          print('| --- | ---: | ---: | ---: | ---: |')
+          for arm in ('aligned','misaligned'):
+              a=s['arm_summary'][arm]
+              print(f"| {arm} | {a['trials']} | {a['median_latency_ms']:.3f} | {a['p90_latency_ms']:.3f} | {a['median_pswpin_pages']:.1f} |")
+          print()
+          print(f"Geometric mean ratio misaligned/aligned: **{p['geometric_mean_ratio_misaligned_over_aligned']:.3f}x**")
+          print(f"Exact block sign-flip p: **{p['two_sided_p']:.6g}**")
+          print(f"Cluster bootstrap ratio 95% interval: **[{b['ci95'][0]:.3f}, {b['ci95'][1]:.3f}]**")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HYP-001-aggregate-${{ github.run_id }}
+          path: evidence/HYP-001/aggregate/
+          if-no-files-found: error
+          retention-days: 90
