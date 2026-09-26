@@ -1,20 +1,20 @@
 # CURRENT
 
-> **Latest bounce:** B120
-> **Stage:** GATE-002 / ANALYSIS LAUNCHED
+> **Latest bounce:** B121
+> **Stage:** GATE-002 / RUN IDENTIFIED / QUEUED
 
-## Launch
+## Pending external run
 
-- workflow: `.github/workflows/gate-002-frontier.yml`
-- handoff: `handoffs/B120-GATE002-LAUNCH.md`
+- launch commit: `4747002f04850c5d5a67a26a8eec466bd27fb6cd`
+- target run: `36258745313`
+- last observed status: `queued`
+- handoff: `handoffs/B121-GATE002-RUN.md`
 
 ## Next action
 
-Discover the workflow run created by the B120 launch commit exactly once and checkpoint its run ID/status.
-
-Do not poll repeatedly.
+Read target run `36258745313` exactly once in a fresh bounce.
 
 ## Authority boundary
 
-GATE-002 analysis only.
+No GATE-002 numerical result exists yet.
 No deployed gate or new intervention experiment is authorized.
