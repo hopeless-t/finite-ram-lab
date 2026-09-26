@@ -11,16 +11,6 @@ on:
         description: Bootstrap resamples
         required: false
         default: "500"
-  schedule:
-    - cron: "17 18 * * 0"
-  push:
-    paths:
-      - ".github/workflows/deep-monte-carlo.yml"
-      - "src/finite_ram_lab/mc_quality.py"
-      - "src/finite_ram_lab/mc.py"
-      - "src/finite_ram_lab/sim.py"
-      - "specs/MC-QUALITY-001.json"
-      - "docs/MC-QUALITY.md"
 
 permissions:
   contents: read
