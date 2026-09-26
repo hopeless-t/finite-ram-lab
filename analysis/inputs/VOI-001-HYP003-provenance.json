@@ -1,0 +1,13 @@
+{
+  "input_id": "VOI-001-HYP003-BLOCKS",
+  "source_experiment": "HYP-003",
+  "source_run": 36247200797,
+  "source_artifact_id": 10907254611,
+  "source_artifact_name": "HYP-003-aggregate-36247200797",
+  "downloaded_artifact_sha256": "1883ff0d3b2585bd8cc13bc15d13c0c1b0d6f019031854e9f0f0040dea4136db",
+  "source_block_contrasts_sha256": "c5d85465a5c9f6993e1246f2cdf60318d3c6aebbcebfb45b5f7e629d2e33f9bc",
+  "source_trials_sha256": "ab3601a09be6323e6b9c3540dcae630f0e083a6c0ddf62c0d743cfdad297ed7e",
+  "source_summary_sha256": "03ee127cb3abb871cc75eae06c7bf70144e696e60272166943d49e2805831baf",
+  "rows": 16,
+  "note": "This CSV is a deterministic block-level decision-analysis projection from the HYP-003 aggregate/trial artifact. It is analysis input, not new experimental evidence."
+}
