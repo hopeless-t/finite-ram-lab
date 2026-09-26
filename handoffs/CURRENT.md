@@ -1,22 +1,16 @@
 # CURRENT
 
-> **Latest bounce:** B092
-> **Stage:** EXP-003 / DESIGN-MC RUNNING
+> **Latest bounce:** B093
+> **Stage:** EXP-003 / DESIGN-MC COMPUTE SUCCESS
 
-## Pending design computation
+## Completed external run
 
-- EXP-003 Design Monte Carlo run: `36253106666`
-- last observed status: `in_progress`
-
-## Ordinary CI
-
-- run `36253106585`
-- last observed status: `queued`
+- EXP-003 Design Monte Carlo: `36253106666` — SUCCESS
 
 ## Next action
 
-Read design-MC run `36253106666` once in a fresh bounce.
+Read the design-MC artifact/result once in a fresh bounce and record the numerical result.
 
 ## Authority boundary
 
-No EXP-003 runner/repeat allocation or experiment is authorized yet.
+No EXP-003 allocation or experiment is authorized yet.
