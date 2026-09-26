@@ -33,11 +33,12 @@ Current evidence:
 - **OBS-002 — PASS / 48 trials:** semantic-region residency loss strongly tracked subsequent retouch cost in the transition zone;
 - **HYP-001 — negative:** simple recency ordering did not reliably control later semantic-region cost;
 - **EXP-002 — primary benefit not supported / Red-Team harm confirmed:** CORRECT_PAGEOUT did not establish central-tendency benefit over NO_HINT, while WRONG_PAGEOUT was strongly harmful;
-- **VAL-003 — confirmatory tail benefit not supported / 800 independent new trials:** >=500 ms stalls occurred in 6/400 CORRECT_PAGEOUT trials versus 7/400 NO_HINT trials; the pre-registered one-sided runner-block randomization test did not support a tail-risk reduction.
+- **VAL-003 — confirmatory tail benefit not supported / 800 independent new trials:** >=500 ms stalls occurred in 6/400 CORRECT_PAGEOUT trials versus 7/400 NO_HINT trials; the pre-registered one-sided runner-block randomization test did not support a tail-risk reduction;
+- **OBS-003 — PASS / 320 NO_HINT trials:** natural HOT-residency misalignment was pressure-dependent: about 59% at 160 MiB, 58% at 162 MiB, 11% at 164 MiB, 6% at 166 MiB, and 2% at 168 MiB. Misaligned trials were much slower, and an exploratory mapping/order asymmetry at 160–162 MiB motivates direct confirmation.
 
-The current evidence supports a real residency-sensitive performance regime, but does **not** support the tested semantic PAGEOUT operation as a beneficial coordination mechanism.
+The current evidence supports a real residency-sensitive performance regime and measurable natural residency-selection headroom under stronger pressure, but does **not** support the tested semantic PAGEOUT operation as a beneficial coordination mechanism.
 
-**Next research stage:** step back from mechanism selection and quantify **decision headroom / value of information** before testing another control mechanism.
+**Next research stage:** HYP-002 — test whether randomized past recency/order determines natural residency selection independently of future semantic HOT identity at 160–162 MiB.
 
 No generalized memory-coordination plane or kernel change is authorized by the current evidence.
 
