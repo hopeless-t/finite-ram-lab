@@ -1,0 +1,23 @@
+{
+  "boundary": "Compact empirical inputs for EXP-003 design Monte Carlo only; not new experimental evidence.",
+  "derivation": "HYP-003 summarized by runner block x MemoryHigh x alignment moments; EXP-002 summarized by runner block x arm cost/stress moments.",
+  "exp002": {
+    "artifact_id": 10902410851,
+    "artifact_sha256": "c52887345a9b36610a19a7bc817c21808c82f78584d4671e2638c7fee743c253",
+    "derived_path": "analysis/inputs/EXP-003-DESIGN-EXP002-block-arms.csv",
+    "derived_rows": 60,
+    "derived_sha256": "4d445665e30a8d1d040cddfb682d9726361050993f687c3dae7a777e72eb8b72",
+    "source_run": 36228994342,
+    "source_trials_sha256": "68474ae34f07a0ec60a36ac58ce6d53e810bf5ece2516223efa8358ae9877dc3"
+  },
+  "hyp003": {
+    "artifact_id": 10907254611,
+    "artifact_sha256": "1883ff0d3b2585bd8cc13bc15d13c0c1b0d6f019031854e9f0f0040dea4136db",
+    "derived_path": "analysis/inputs/EXP-003-DESIGN-HYP003-block-strata.csv",
+    "derived_rows": 32,
+    "derived_sha256": "2fd3af07cfbf8ff4ecab7fb2a67306a4466a46a6ddaaa8855bb3a45e8dc098a6",
+    "source_run": 36247200797,
+    "source_trials_sha256": "ab3601a09be6323e6b9c3540dcae630f0e083a6c0ddf62c0d743cfdad297ed7e"
+  },
+  "input_id": "EXP-003-DESIGN-MC-EMPIRICAL-INPUTS"
+}

@@ -1,25 +1,23 @@
 # CURRENT
 
-> **Latest bounce:** B085
-> **Stage:** OPERATIONS / INTERRUPTION RECOVERY SEMANTICS FROZEN
+> **Latest bounce:** B086
+> **Stage:** EXP-003 / DESIGN-MC INPUTS SNAPSHOTTED
 
 ## Canonical output
 
-- `docs/OPS-002-RECOVERY-SEMANTICS.md`
-- `docs/MULTI_BOUNCE_PROTOCOL.md`
+- `analysis/inputs/EXP-003-DESIGN-HYP003-block-strata.csv`
+- `analysis/inputs/EXP-003-DESIGN-EXP002-block-arms.csv`
+- `analysis/inputs/EXP-003-DESIGN-input-provenance.json`
+- `handoffs/B086-EXP003-DESIGN-INPUTS.md`
 
 ## Scientific mainline
 
-Latest scientific checkpoint remains:
-
-- `handoffs/B083-EXP003-COUNCIL.md`
-
-EXP-003 experiment is **not authorized yet**.
+EXP-003 experiment remains **not authorized**.
 
 ## Next action
 
-Snapshot the minimum HYP-003 and EXP-002 empirical inputs needed for the EXP-003 design Monte Carlo, with provenance, and checkpoint immediately.
+Implement the frozen EXP-003 design Monte Carlo only.
 
 ## Authority boundary
 
-Recovery semantics changed. Scientific state did not.
+Input preparation only; no design allocation has been selected yet.
