@@ -1,0 +1,25 @@
+{
+  "experiment_id": "EXP-001",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 8,
+  "base_schedule_seed": 2026092611,
+  "repeats_per_arm_per_block": 2,
+  "arms": ["hot_evict", "cold_evict"],
+  "region_mib": 16,
+  "reclaim_mib": 16,
+  "memory_high_mib": 256,
+  "memory_max_mib": 320,
+  "post_pageout_wait_ms": 100,
+  "post_reclaim_wait_ms": 100,
+  "target_resident_fraction_max": 0.50,
+  "nontarget_resident_fraction_min": 0.90,
+  "cluster_bootstrap_resamples": 10000,
+  "required_execution_checks": [
+    "eight_blocks_present",
+    "thirty_two_trials_present",
+    "all_trials_valid",
+    "no_oom",
+    "arms_balanced",
+    "hot_mapping_identity_balanced"
+  ]
+}
