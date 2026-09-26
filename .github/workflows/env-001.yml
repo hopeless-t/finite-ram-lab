@@ -1,0 +1,55 @@
+name: ENV-001
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/env-001.yml"
+      - "src/finite_ram_lab/env_probe.py"
+      - "specs/ENV-001.json"
+      - "docs/ENV-001.md"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Run ENV-001
+        run: |
+          mkdir -p evidence/ENV-001
+          python -m finite_ram_lab.env_probe \
+            --out evidence/ENV-001/runner-capabilities.json \
+            > evidence/ENV-001/runner-capabilities.txt
+
+      - name: Validate structured evidence
+        run: python -m json.tool evidence/ENV-001/runner-capabilities.json >/dev/null
+
+      - name: Job summary
+        run: |
+          {
+            echo "# ENV-001"
+            echo
+            echo '```json'
+            cat evidence/ENV-001/runner-capabilities.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ENV-001-${{ github.run_id }}
+          path: evidence/ENV-001/
+          if-no-files-found: error
+          retention-days: 30

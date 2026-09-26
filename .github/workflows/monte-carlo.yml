@@ -1,0 +1,100 @@
+name: MC-001 Monte Carlo
+
+on:
+  workflow_dispatch:
+    inputs:
+      trials_per_shard:
+        description: Trials per family/shard
+        required: false
+        default: "1000"
+  push:
+    paths:
+      - ".github/workflows/monte-carlo.yml"
+      - "src/finite_ram_lab/sim.py"
+      - "src/finite_ram_lab/mc.py"
+      - "src/finite_ram_lab/aggregate_mc.py"
+      - "specs/MC-001.json"
+      - "docs/MONTE_CARLO.md"
+
+permissions:
+  contents: read
+
+jobs:
+  simulate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        family: [stable_hotset, sequential_scan, shifting_hotset, bursty]
+        shard: [0, 1, 2, 3]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - name: Run shard
+        env:
+          FAMILY: ${{ matrix.family }}
+          SHARD: ${{ matrix.shard }}
+          DISPATCH_TRIALS: ${{ inputs.trials_per_shard }}
+        run: |
+          TRIALS="${DISPATCH_TRIALS:-1000}"
+          SEED=$((20260926 + SHARD * 100003))
+          mkdir -p evidence/MC-001/shards
+          python -m finite_ram_lab.mc \
+            --family "$FAMILY" \
+            --seed "$SEED" \
+            --trials "$TRIALS" \
+            --out "evidence/MC-001/shards/mc-${FAMILY}-${SHARD}.json"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mc-${{ matrix.family }}-${{ matrix.shard }}
+          path: evidence/MC-001/shards/*.json
+          if-no-files-found: error
+          retention-days: 30
+
+  aggregate:
+    needs: simulate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e .
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mc-*
+          path: evidence/MC-001/shards
+          merge-multiple: true
+
+      - name: Aggregate
+        run: |
+          python -m finite_ram_lab.aggregate_mc \
+            --input evidence/MC-001/shards \
+            --out evidence/MC-001/aggregate.json \
+            --markdown evidence/MC-001/summary.md
+          cat evidence/MC-001/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MC-001-aggregate-${{ github.run_id }}
+          path: |
+            evidence/MC-001/aggregate.json
+            evidence/MC-001/summary.md
+          if-no-files-found: error
+          retention-days: 30
