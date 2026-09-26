@@ -54,6 +54,7 @@ def write_schedule(
                 "repeat",
                 "memory_high_mib",
             ],
+            lineterminator="\\n",
         )
         writer.writeheader()
         writer.writerows(rows)
