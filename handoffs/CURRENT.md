@@ -1,16 +1,17 @@
 # CURRENT
 
-> **Latest bounce:** B101
-> **Stage:** EXP-003 / IMPLEMENTATION VALIDATED
+> **Latest bounce:** B102
+> **Stage:** EXP-003 / LAUNCHED BY WORKFLOW COMMIT
 
-## Canonical validation
+## Launch
 
-- CI run `36253567173`: SUCCESS
+- workflow: `.github/workflows/exp-003.yml`
+- frozen budget: 16 blocks / 384 trials
 
 ## Next action
 
-Create and launch the frozen EXP-003 16-block / 384-trial workflow.
+Discover the EXP-003 run created by the B102 commit once and checkpoint its run ID/status.
 
 ## Authority boundary
 
-The experiment has not yet launched.
+No EXP-003 result is authorized yet.
