@@ -1,18 +1,18 @@
 # CURRENT
 
-> **Latest bounce:** B109
-> **Stage:** GATE-001 / POLICY ANALYSIS IMPLEMENTED
+> **Latest bounce:** B110
+> **Stage:** GATE-001 / POLICY ANALYSIS CI PENDING
 
-## Canonical output
+## Pending external run
 
-- `src/finite_ram_lab/gate001_policy.py`
-- `specs/GATE-001-DESIGN.json`
-- `tests/test_gate001_policy.py`
-- `docs/GATE-001-ANALYSIS.md`
+- CI run: `36255575966`
+- last observed status: `in_progress`
 
 ## Next action
 
-Verify B109 ordinary CI once.
+Read run `36255575966` once in a fresh bounce.
+
+If SUCCESS, launch the empirical policy analysis only.
 
 ## Authority boundary
 
