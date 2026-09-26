@@ -20,9 +20,9 @@ jobs:
     timeout-minutes: 25
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -121,7 +121,7 @@ jobs:
           print(f"Delta BIC (baseline - segmented): **{cp['delta_bic_baseline_minus_segmented']:.3f}**")
           PY
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: CHAR-001-${{ github.run_id }}
