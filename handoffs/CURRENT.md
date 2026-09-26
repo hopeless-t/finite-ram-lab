@@ -1,20 +1,21 @@
 # CURRENT
 
-> **Latest bounce:** B128
-> **Stage:** SIG-001 / DESIGN-MC CI PASS
+> **Latest bounce:** B129
+> **Stage:** SIG-001 / DESIGN-MC LAUNCHED
 
-## Validation
+## Launch
 
-- implementation commit: `044971a6cee9f31a0b7b0cc342c8cadcf95b32ee`
-- CI run: `36259198377`
-- conclusion: `success`
-- handoff: `handoffs/B128-SIG001-DESIGN-MC-CI-PASS.md`
+- commit: `88853f3af6b785713f03048360522d06289aface`
+- workflow: `.github/workflows/sig-001-design-mc.yml`
+- handoff: `handoffs/B129-SIG001-DESIGN-MC-LAUNCH.md`
 
 ## Next action
 
-Launch only the frozen SIG-001 design Monte Carlo in a fresh bounce.
+Discover the workflow run created by B129 exactly once and checkpoint its run ID/status.
+
+Do not poll repeatedly.
 
 ## Authority boundary
 
-Calibration-design analysis only.
+SIG-001 calibration design only.
 No predictor, deployed gate, or memory intervention is authorized.
