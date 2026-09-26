@@ -1,0 +1,126 @@
+name: OBS-002 Region Residency
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/obs-002.yml"
+      - "src/finite_ram_lab/region_workload.py"
+      - "src/finite_ram_lab/obs002_study.py"
+      - "specs/OBS-002.json"
+      - "docs/OBS-002.md"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3, 4, 5, 6, 7]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Build observation schedule
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          mkdir -p "evidence/OBS-002/block-${BLOCK}/raw"
+          python -m finite_ram_lab.obs002_study schedule \
+            --spec specs/OBS-002.json \
+            --block "$BLOCK" \
+            --out "evidence/OBS-002/block-${BLOCK}/schedule.csv"
+      - name: Run region-resolved workload
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          MAX_BYTES=$((320 * 1024 * 1024))
+          SCHEDULE="evidence/OBS-002/block-${BLOCK}/schedule.csv"
+          tail -n +2 "$SCHEDULE" | while IFS=, read -r ORDER REPEAT HIGH_MIB; do
+            HIGH_BYTES=$((HIGH_MIB * 1024 * 1024))
+            UNIT="finite-ram-obs002-${GITHUB_RUN_ID}-${BLOCK}-${ORDER}"
+            OUT="$GITHUB_WORKSPACE/evidence/OBS-002/block-${BLOCK}/raw/timeline-${ORDER}-high${HIGH_MIB}-rep${REPEAT}.json"
+            sudo systemd-run \
+              --pipe --wait --collect --quiet \
+              --unit="$UNIT" \
+              -p MemoryAccounting=yes \
+              -p MemoryHigh="$HIGH_BYTES" \
+              -p MemoryMax="$MAX_BYTES" \
+              "$PY" -m finite_ram_lab.region_workload \
+                --hotset-mib 64 \
+                --burst-mib 96 \
+                --expected-high-bytes "$HIGH_BYTES" \
+                --expected-max-bytes "$MAX_BYTES" \
+                --out "$OUT" >/dev/null
+            sleep 0.05
+          done
+          sudo chown -R "$(id -u):$(id -g)" "evidence/OBS-002/block-${BLOCK}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: obs002-block-${{ matrix.block }}
+          path: evidence/OBS-002/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: obs002-block-*
+          path: evidence/OBS-002
+      - name: Aggregate region evidence
+        run: |
+          python -m finite_ram_lab.obs002_study aggregate \
+            --spec specs/OBS-002.json \
+            --input-root evidence/OBS-002 \
+            --out-dir evidence/OBS-002/aggregate
+      - name: Job summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          s=json.load(open('evidence/OBS-002/aggregate/summary.json'))
+          print('# OBS-002')
+          print()
+          print(f"Execution status: **{s['execution_status']}**")
+          print()
+          print('| MemoryHigh MiB | Trials | Median hot residency after burst | Median retouch ms | Median swap after burst MiB | Median retouch swap-ins |')
+          print('| ---: | ---: | ---: | ---: | ---: | ---: |')
+          for level in ('160','164','168'):
+              c=s['controls'][level]
+              print(f"| {level} | {c['trials']} | {c['median_hotset_resident_fraction_after_burst']:.4f} | {c['median_retouch_latency_ms']:.3f} | {c['median_swap_mib_after_burst']:.3f} | {c['median_retouch_pswpin_pages']:.1f} |")
+          print()
+          p=s['primary_relationship']
+          print('## Primary relationship at 164 MiB')
+          print()
+          print(f"Spearman rho: **{p['within_block_permutation']['spearman_rho']:.4f}**")
+          print(f"Blocked permutation p: **{p['within_block_permutation']['two_sided_p']:.6g}**")
+          print(f"Cluster-bootstrap rho 95% interval: **[{p['cluster_bootstrap']['ci95'][0]:.4f}, {p['cluster_bootstrap']['ci95'][1]:.4f}]**")
+          print()
+          q=s['supporting_relationship']['within_block_permutation']
+          print(f"Missing hot pages vs retouch swap-ins rho: **{q['spearman_rho']:.4f}**; blocked permutation p: **{q['two_sided_p']:.6g}**")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OBS-002-aggregate-${{ github.run_id }}
+          path: evidence/OBS-002/aggregate/
+          if-no-files-found: error
+          retention-days: 90
