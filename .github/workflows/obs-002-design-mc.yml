@@ -1,0 +1,39 @@
+name: OBS-002 Design Monte Carlo
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/obs-002-design-mc.yml"
+      - "src/finite_ram_lab/obs002_design_mc.py"
+      - "docs/OBS-002-DESIGN.md"
+
+permissions:
+  contents: read
+
+jobs:
+  design:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run sample-size Monte Carlo
+        run: |
+          mkdir -p evidence/OBS-002-DESIGN
+          python -m finite_ram_lab.obs002_design_mc \
+            --draws 500000 \
+            --seed 2026092605 \
+            --out evidence/OBS-002-DESIGN/design.json \
+            --markdown evidence/OBS-002-DESIGN/summary.md
+          cat evidence/OBS-002-DESIGN/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OBS-002-DESIGN-${{ github.run_id }}
+          path: evidence/OBS-002-DESIGN/
+          if-no-files-found: error
+          retention-days: 90
