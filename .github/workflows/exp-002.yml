@@ -1,0 +1,118 @@
+name: EXP-002 Semantic PAGEOUT Value
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/exp-002.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Build frozen schedule
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          mkdir -p "evidence/EXP-002/block-${BLOCK}/raw"
+          python -m finite_ram_lab.exp002_study schedule \
+            --spec specs/EXP-002.json \
+            --block "$BLOCK" \
+            --out "evidence/EXP-002/block-${BLOCK}/schedule.csv"
+      - name: Run semantic PAGEOUT block
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          SCHEDULE="evidence/EXP-002/block-${BLOCK}/schedule.csv"
+          tail -n +2 "$SCHEDULE" | while IFS=, read -r ORDER ARM HOT REPEAT; do
+            UNIT="finite-ram-exp002-${GITHUB_RUN_ID}-${BLOCK}-${ORDER}"
+            OUT="$GITHUB_WORKSPACE/evidence/EXP-002/block-${BLOCK}/raw/trial-${ORDER}-${ARM}-hot${HOT}-rep${REPEAT}.json"
+            sudo systemd-run \
+              --pipe --wait --collect --quiet \
+              --unit="$UNIT" \
+              -p MemoryAccounting=yes \
+              -p MemoryHigh=$((164 * 1024 * 1024)) \
+              -p MemoryMax=$((320 * 1024 * 1024)) \
+              "$PY" -m finite_ram_lab.exp002_workload \
+                --arm "$ARM" \
+                --hot-identity "$HOT" \
+                --region-mib 32 \
+                --pageout-mib 16 \
+                --burst-mib 96 \
+                --out "$OUT" >/dev/null
+          done
+          sudo chown -R "$(id -u):$(id -g)" "evidence/EXP-002/block-${BLOCK}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exp002-block-${{ matrix.block }}
+          path: evidence/EXP-002/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: exp002-block-*
+          path: evidence/EXP-002
+      - name: Aggregate frozen analysis
+        run: |
+          python -m finite_ram_lab.exp002_study aggregate \
+            --spec specs/EXP-002.json \
+            --input-root evidence/EXP-002 \
+            --out-dir evidence/EXP-002/aggregate
+      - name: Summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          s=json.load(open('evidence/EXP-002/aggregate/summary.json'))
+          print('# EXP-002')
+          print()
+          print(f"Execution: **{s['execution_status']}**")
+          print()
+          print('| Arm | Trials | Median HOT retouch ms | P90 HOT ms | Median work interval ms | Median HOT residency | Median advice ms |')
+          print('| --- | ---: | ---: | ---: | ---: | ---: | ---: |')
+          for arm in ('correct_pageout','wrong_pageout','no_hint'):
+              a=s['arm_summary'][arm]
+              print(f"| {arm} | {a['trials']} | {a['median_hot_retouch_ms']:.3f} | {a['p90_hot_retouch_ms']:.3f} | {a['median_work_interval_ms']:.3f} | {a['median_hot_fraction']:.4f} | {a['median_advice_ms']:.3f} |")
+          for title,key in [('Primary correct/nohint','primary_correct_vs_nohint'),('Red-Team wrong/correct','redteam_wrong_vs_correct'),('Net interval correct/nohint','net_interval_correct_vs_nohint')]:
+              c=s[key]
+              e=c['exact_signflip']
+              b=c['cluster_bootstrap_ratio']
+              print()
+              print(f"## {title}")
+              print(f"Ratio: **{e['geometric_mean_ratio']:.4f}x**")
+              print(f"Exact p: **{e['two_sided_p']:.6g}**")
+              print(f"Bootstrap 95%: **[{b['ci95'][0]:.4f}, {b['ci95'][1]:.4f}]**")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EXP-002-aggregate-${{ github.run_id }}
+          path: evidence/EXP-002/aggregate/
+          if-no-files-found: error
+          retention-days: 90
