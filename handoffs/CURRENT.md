@@ -1,27 +1,23 @@
 # CURRENT
 
-> **Latest bounce:** B123
-> **Stage:** GATE-002 / NUMERICAL RESULT RECORDED
+> **Latest bounce:** B124
+> **Stage:** SIG-001 / CALIBRATION COUNCIL COMPLETE
 
-## Canonical evidence
+## Decision
 
-- run: `36258745313`
-- artifact: `10911731381`
-- artifact SHA-256: `2e5e11ab504ebef0790667f229e9cdab9d3ad5adfbaf55b026bf8c297b5b86bd`
-- source trials SHA-256: `29aa46c700b817785bdc67ae4a6eb3c3330887ff5a06efd1f7516aa6ed53ba66`
-- handoff: `handoffs/B123-GATE002-RESULT.md`
+The next uncertainty is semantic-signal calibration, not another PAGEOUT experiment.
 
-## Result boundary
+Create SIG-001 as an observational fail-closed calibration study with a design Monte Carlo first.
 
-The required reliability contract is class-conditional.
+See:
 
-Low-q operation is especially sensitive to specificity because false ACT in aligned states carries the observed WRONG_PAGEOUT harm.
+- `handoffs/B124-SIG001-COUNCIL.md`
 
 ## Next action
 
-Run a fresh pseudo-Council before authorizing any new execution experiment.
+Freeze the SIG-001 design-Monte-Carlo contract.
 
 ## Authority boundary
 
-No production q or predictor-quality estimate exists.
+No predictor is selected.
 No deployed gate or new memory intervention is authorized.
