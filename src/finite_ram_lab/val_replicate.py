@@ -70,7 +70,8 @@ def _estimate_breakpoint(levels: np.ndarray, values: np.ndarray) -> float:
 
 def _collect(root: Path) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
-    for block_dir in sorted(root.glob("block-*")):
+    block_dirs = sorted(root.glob("block-*")) + sorted(root.glob("val001-block-*"))
+    for block_dir in block_dirs:
         match = BLOCK_RE.search(block_dir.name)
         if not match:
             continue
