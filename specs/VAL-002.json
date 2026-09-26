@@ -1,0 +1,29 @@
+{
+  "experiment_id": "VAL-002",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 8,
+  "base_schedule_seed": 2026092607,
+  "memory_max_mib": 320,
+  "hotset_mib": 64,
+  "burst_mib": 96,
+  "conditions": [
+    {"memory_high_mib": 160, "mincore_mode": "full", "repeats_per_block": 1},
+    {"memory_high_mib": 160, "mincore_mode": "none", "repeats_per_block": 1},
+    {"memory_high_mib": 164, "mincore_mode": "full", "repeats_per_block": 4},
+    {"memory_high_mib": 164, "mincore_mode": "none", "repeats_per_block": 4},
+    {"memory_high_mib": 168, "mincore_mode": "full", "repeats_per_block": 1},
+    {"memory_high_mib": 168, "mincore_mode": "none", "repeats_per_block": 1}
+  ],
+  "primary_level_mib": 164,
+  "primary_outcome": "hotset_retouch_latency_ms",
+  "permutation_draws": 100000,
+  "cluster_bootstrap_resamples": 5000,
+  "required_execution_checks": [
+    "eight_blocks_present",
+    "96_trials_present",
+    "all_trials_pass",
+    "no_oom",
+    "balanced_primary_modes",
+    "controls_present_in_each_block"
+  ]
+}
