@@ -1,19 +1,17 @@
 # CURRENT
 
-> **Latest bounce:** B117
-> **Stage:** GATE-002 / IMPLEMENTED, CI PENDING
+> **Latest bounce:** B118
+> **Stage:** GATE-002 / IMPLEMENTATION CI PENDING
 
-## Canonical implementation
+## Pending external run
 
-- `src/finite_ram_lab/gate002_frontier.py`
-- `tests/test_gate002_frontier.py`
-- `specs/GATE-002-DESIGN.json`
-- `docs/GATE-002-ANALYSIS.md`
-- handoff: `handoffs/B117-GATE002-IMPLEMENT.md`
+- CI run: `36258647902`
+- last observed status: `in_progress`
+- handoff: `handoffs/B118-GATE002-CI-PENDING.md`
 
 ## Next action
 
-Read the ordinary CI triggered by B117 exactly once in a fresh bounce.
+Read run `36258647902` exactly once in a fresh bounce.
 
 If SUCCESS, launch only the frozen GATE-002 analysis.
 
