@@ -1,16 +1,21 @@
 # CURRENT
 
-> **Latest bounce:** B102
-> **Stage:** EXP-003 / LAUNCHED BY WORKFLOW COMMIT
+> **Latest bounce:** B103
+> **Stage:** EXP-003 / COMPUTE PENDING
 
-## Launch
+## Canonical experiment run
 
-- workflow: `.github/workflows/exp-003.yml`
-- frozen budget: 16 blocks / 384 trials
+- EXP-003 run: `36253713012`
+- last observed status: `queued`
+
+## Ordinary CI
+
+- run `36253712985`
+- last observed status: `in_progress`
 
 ## Next action
 
-Discover the EXP-003 run created by the B102 commit once and checkpoint its run ID/status.
+Read EXP-003 run `36253713012` once in a fresh bounce.
 
 ## Authority boundary
 
