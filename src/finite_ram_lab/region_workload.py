@@ -69,6 +69,7 @@ def run(
     burst_mib: int,
     expected_high: int,
     expected_max: int,
+    mincore_mode: str = "full",
 ) -> dict[str, Any]:
     rel = _self_cgroup_path()
     base = Path("/sys/fs/cgroup") / rel.lstrip("/")
@@ -80,7 +81,12 @@ def run(
     hot_size = hotset_mib * 1024 * 1024
     burst_size = burst_mib * 1024 * 1024
 
+    if mincore_mode not in {"full", "none"}:
+        raise ValueError("mincore_mode must be full or none")
+
     def region_state() -> dict[str, Any]:
+        if mincore_mode == "none":
+            return {}
         out: dict[str, Any] = {}
         if hot is not None:
             out["hotset"] = residency(hot, hot_size)
@@ -161,6 +167,12 @@ def run(
     stamps = [e["monotonic_ns"] for e in timeline]
     final_events = timeline[-1]["os"]["memory_events"]
     burst_event = next(e for e in timeline if e["phase"] == "BURST_ALLOC")
+    mincore_ok = True
+    if mincore_mode == "full":
+        mincore_ok = (
+            burst_event["regions"]["hotset"]["supported"]
+            and burst_event["regions"]["burst"]["supported"]
+        )
 
     checks = {
         "phase_sequence": phases == expected_phases,
@@ -173,16 +185,15 @@ def run(
             final_events.get("oom", 0) == 0
             and final_events.get("oom_kill", 0) == 0
         ),
-        "mincore_supported": (
-            burst_event["regions"]["hotset"]["supported"]
-            and burst_event["regions"]["burst"]["supported"]
-        ),
+        "mincore_supported": mincore_ok,
         "hotset_page_count": (
-            burst_event["regions"]["hotset"]["total_pages"]
+            mincore_mode == "none"
+            or burst_event["regions"]["hotset"]["total_pages"]
             == hot_size // PAGE_SIZE
         ),
         "burst_page_count": (
-            burst_event["regions"]["burst"]["total_pages"]
+            mincore_mode == "none"
+            or burst_event["regions"]["burst"]["total_pages"]
             == burst_size // PAGE_SIZE
         ),
     }
@@ -198,6 +209,7 @@ def run(
             "expected_max_bytes": expected_max,
             "page_size": PAGE_SIZE,
             "mapping": "MAP_PRIVATE|MAP_ANONYMOUS",
+            "mincore_mode": mincore_mode,
         },
         "checks": checks,
         "timeline": timeline,
@@ -213,6 +225,7 @@ def main() -> None:
     parser.add_argument("--burst-mib", type=int, required=True)
     parser.add_argument("--expected-high-bytes", type=int, required=True)
     parser.add_argument("--expected-max-bytes", type=int, required=True)
+    parser.add_argument("--mincore-mode", choices=("full", "none"), default="full")
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
 
@@ -221,6 +234,7 @@ def main() -> None:
         args.burst_mib,
         args.expected_high_bytes,
         args.expected_max_bytes,
+        args.mincore_mode,
     )
     path = Path(args.out)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -228,18 +242,15 @@ def main() -> None:
 
     burst = next(e for e in result["timeline"] if e["phase"] == "BURST_ALLOC")
     retouch = next(e for e in result["timeline"] if e["phase"] == "HOTSET_RETOUCH")
-    print(
-        json.dumps(
-            {
-                "status": result["status"],
-                "hotset_resident_after_burst": burst["regions"]["hotset"],
-                "burst_resident_after_burst": burst["regions"]["burst"],
-                "retouch_latency_ms": retouch.get("phase_latency_ns", 0) / 1e6,
-            },
-            indent=2,
-            sort_keys=True,
-        )
-    )
+    summary = {
+        "status": result["status"],
+        "mincore_mode": args.mincore_mode,
+        "retouch_latency_ms": retouch.get("phase_latency_ns", 0) / 1e6,
+    }
+    if args.mincore_mode == "full":
+        summary["hotset_resident_after_burst"] = burst["regions"]["hotset"]
+        summary["burst_resident_after_burst"] = burst["regions"]["burst"]
+    print(json.dumps(summary, indent=2, sort_keys=True))
 
     if result["status"] != "PASS":
         raise SystemExit(1)
