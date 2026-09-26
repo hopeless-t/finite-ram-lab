@@ -1,20 +1,19 @@
 # CURRENT
 
-> **Latest bounce:** B135
-> **Stage:** SIG-001 / LOW-Q TAIL LAUNCHED
+> **Latest bounce:** B136
+> **Stage:** SIG-001 / LOW-Q TAIL RUN IN PROGRESS
 
-## Launch
+## Pending external run
 
-- commit: `9482edec2a38937ab6013b28c8866406a50a814e`
-- workflow: `.github/workflows/sig-001-lowq-tail-mc.yml`
-- spec: `specs/SIG-001-LOWQ-TAIL-MC.json`
-- handoff: `handoffs/B135-SIG001-LOWQ-TAIL-LAUNCH.md`
+- launch commit: `9482edec2a38937ab6013b28c8866406a50a814e`
+- tail run: `36259509674`
+- last observed status: `in_progress`
+- handoff: `handoffs/B136-SIG001-LOWQ-TAIL-RUN.md`
 
 ## Next action
 
-Discover the B135 workflow run exactly once.
+Read tail run `36259509674` exactly once.
 
 ## Authority boundary
 
-Offline calibration design only.
 No predictor, deployed gate, or memory intervention is authorized.
