@@ -22,12 +22,11 @@ def run(target,hot_mib,burst_mib,target_mib):
     size=target_mib*1024*1024
     cg=Path("/sys/fs/cgroup")/_self_cgroup_path().lstrip("/")
     before=residency(mm,size); os0=_snapshot(cg); d0=digest(mm,size)
-    advice=getattr(mmap,"MADV_PAGEOUT",None); error=None; call_ns=None
+    advice=getattr(mmap,"MADV_PAGEOUT",21); error=None; call_ns=None
     ok=False
-    if advice is not None:
-        try:
-            t=time.perf_counter_ns(); mm.madvise(advice,0,size); call_ns=time.perf_counter_ns()-t; ok=True
-        except Exception as e: error=f"{type(e).__name__}: {e}"
+    try:
+        t=time.perf_counter_ns(); mm.madvise(advice,0,size); call_ns=time.perf_counter_ns()-t; ok=True
+    except Exception as e: error=f"{type(e).__name__}: {e}"
     time.sleep(0.10)
     after=residency(mm,size); os1=_snapshot(cg)
     touch_ns=retouch(mm,size)
