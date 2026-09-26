@@ -1,17 +1,16 @@
 # CURRENT
 
-> **Latest bounce:** B090
-> **Stage:** EXP-003 / DESIGN-MC IMPLEMENTATION VALIDATED
+> **Latest bounce:** B091
+> **Stage:** EXP-003 / DESIGN-MC LAUNCHED BY COMMIT
 
-## Canonical evidence
+## Launch commit
 
-- CI run `36252845638`: SUCCESS
-- `handoffs/B090-EXP003-DESIGN-MC-CI-PASS.md`
+This bounce added `.github/workflows/exp-003-design-mc.yml` and triggered the design study via its push-path filter.
 
 ## Next action
 
-Create and launch only the EXP-003 design-Monte-Carlo workflow.
+Discover the EXP-003 Design Monte Carlo run for the B091 commit exactly once and checkpoint its run ID/status.
 
 ## Authority boundary
 
-No runner/repeat allocation or EXP-003 experiment is authorized yet.
+No EXP-003 experiment is authorized or running.
