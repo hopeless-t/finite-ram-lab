@@ -38,10 +38,11 @@ Current evidence:
 - **HYP-002 — recency hypothesis not supported / 128 valid factorial trials:** randomized final recency did not predict residency selection, while a strong stable mapping-identity asymmetry remained. The exploratory A/B asymmetry from OBS-003 therefore cannot be interpreted as a clean recency-policy information gap.
 - **CHAR-002 — PASS / 192 trials:** randomized initial fault/touch order produced a strong, reproducible residency effect in both separate-VMA and shared-VMA layouts; the second-faulted region retained about 0.08–0.10 more resident fraction on average. Separate mapping creation order was not supported as an effect, while virtual-address position remains unresolved.
 - **HYP-003 — information mismatch supported / 128 trials:** with future HOT demand randomized independently of initial fault order, aligned HOT regions were about 0.083 more resident on average than misaligned HOT regions; semantic conflict increased HOT-retouch latency by about 77.8× on the runner-block geometric mean. This directly exposes a bounded past-state-versus-future-demand information gap.
+- **VOI-001 — bounded decision-headroom analysis / 100,000 bootstrap resamples:** the HYP-003 information gap leaves material idealized headroom across conflict-frequency scenarios, but asymmetric wrong-action cost rapidly raises the semantic-signal accuracy required to beat the history-only baseline. At q=0.50 the idealized geometric latency headroom is about 8.82×, while a wrong-action penalty of k=8 requires signal accuracy above 93.75% in the simplified model.
 
 The current evidence supports a real residency-sensitive performance regime and measurable natural selection headroom under stronger pressure. CHAR-002 shows that initial fault/touch order materially affects later residency and explains much of the former fixed A/B asymmetry, while the tested semantic PAGEOUT operation remains unsupported as a beneficial coordination mechanism.
 
-**Next research stage:** VOI-001 — quantify bounded decision headroom from the HYP-003 information gap while explicitly accounting for opportunity frequency and wrong/stale-hint harm.
+**Next research stage:** EXP-003 design — test a low-authority semantic intervention at the high-headroom 160–162 MiB conditions, with NO_HINT and WRONG/stale Red-Team arms and Monte Carlo sizing before launch.
 
 No generalized memory-coordination plane or kernel change is authorized by the current evidence.
 
