@@ -1,16 +1,16 @@
 # CURRENT
 
-> **Latest bounce:** B097
-> **Stage:** EXP-003 / WORKLOAD IMPLEMENTED
+> **Latest bounce:** B098
+> **Stage:** EXP-003 / ANALYSIS IMPLEMENTED
 
 ## Canonical output
 
-- `src/finite_ram_lab/exp003_workload.py`
-- `handoffs/B097-EXP003-WORKLOAD.md`
+- `src/finite_ram_lab/exp003_study.py`
+- `handoffs/B098-EXP003-ANALYSIS.md`
 
 ## Next action
 
-Implement only the EXP-003 deterministic schedule and frozen aggregate analysis.
+Add EXP-003 known-answer and schedule tests only.
 
 Do not launch the experiment yet.
 
