@@ -1,22 +1,25 @@
 # CURRENT
 
-> **Latest bounce:** B105
-> **Stage:** EXP-003 / EXECUTION VALIDATED
-
-## Canonical run
-
-- EXP-003 run: `36253713012`
-- aggregate artifact: `10910048127`
+> **Latest bounce:** B106
+> **Stage:** EXP-003 / FINDING RECORDED
 
 ## Canonical output
 
-- `findings/EXP-003-execution-validation.md`
-- `handoffs/B105-EXP003-EXECUTION-VALID.md`
+- `findings/EXP-003-initial.md`
+- `handoffs/B106-EXP003-FINDING.md`
+
+## Scientific result
+
+Correct semantic PAGEOUT produced supported net benefit in the prospectively defined misaligned stratum, while wrong action strongly harmed aligned states.
 
 ## Next action
 
-Read the frozen EXP-003 aggregate result once and record the scientific finding.
+Run a pseudo-Council for the next experiment:
+
+> Can a pre-intervention gate safely choose ACT vs NO-ACT and preserve NO_HINT fallback?
+
+Do not tune the 16 MiB PAGEOUT range.
 
 ## Authority boundary
 
-Execution is valid. Scientific interpretation has not yet been promoted.
+EXP-003 is a bounded mechanism result, not deployment authorization.
