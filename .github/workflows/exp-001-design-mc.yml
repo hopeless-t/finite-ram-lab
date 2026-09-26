@@ -1,0 +1,37 @@
+name: EXP-001 Design Monte Carlo
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/exp-001-design-mc.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  design-study:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run design Monte Carlo
+        run: |
+          mkdir -p evidence/EXP-001-DESIGN
+          python -m finite_ram_lab.exp001_design_mc \
+            --simulations 3000 \
+            --seed 2026092610 \
+            --out evidence/EXP-001-DESIGN/design.json \
+            --markdown evidence/EXP-001-DESIGN/summary.md
+          cat evidence/EXP-001-DESIGN/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EXP-001-DESIGN-${{ github.run_id }}
+          path: evidence/EXP-001-DESIGN/
+          if-no-files-found: error
+          retention-days: 90
