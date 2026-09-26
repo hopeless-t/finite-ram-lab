@@ -1,0 +1,14 @@
+{
+  "analysis_id": "VOI-001",
+  "input_csv": "analysis/inputs/VOI-001-HYP003-blocks.csv",
+  "bootstrap_resamples": 100000,
+  "bootstrap_seed": 2026092632,
+  "opportunity_q": [0.10, 0.25, 0.50, 0.75, 0.90],
+  "wrong_action_penalty_k": [1, 2, 4, 8, 16, 32],
+  "outputs": [
+    "resident_fraction_headroom",
+    "not_full_risk_reduction",
+    "geometric_latency_headroom",
+    "signal_accuracy_threshold"
+  ]
+}
