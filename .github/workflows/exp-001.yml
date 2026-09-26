@@ -1,0 +1,121 @@
+name: EXP-001 Residency Identity Swap
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/exp-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Build frozen schedule
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          mkdir -p "evidence/EXP-001/block-${BLOCK}/raw"
+          python -m finite_ram_lab.exp001_study schedule \
+            --spec specs/EXP-001.json \
+            --block "$BLOCK" \
+            --out "evidence/EXP-001/block-${BLOCK}/schedule.csv"
+      - name: Run paired intervention block
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          SCHEDULE="evidence/EXP-001/block-${BLOCK}/schedule.csv"
+          tail -n +2 "$SCHEDULE" | while IFS=, read -r ORDER ARM HOT REPEAT; do
+            UNIT="finite-ram-exp001-${GITHUB_RUN_ID}-${BLOCK}-${ORDER}"
+            OUT="$GITHUB_WORKSPACE/evidence/EXP-001/block-${BLOCK}/raw/trial-${ORDER}-${ARM}-hot${HOT}-rep${REPEAT}.json"
+            sudo systemd-run \
+              --pipe --wait --collect --quiet \
+              --unit="$UNIT" \
+              -p MemoryAccounting=yes \
+              -p MemoryHigh=$((256 * 1024 * 1024)) \
+              -p MemoryMax=$((320 * 1024 * 1024)) \
+              "$PY" -m finite_ram_lab.exp001_workload \
+                --arm "$ARM" \
+                --hot-identity "$HOT" \
+                --region-mib 16 \
+                --reclaim-mib 16 \
+                --post-pageout-wait-ms 100 \
+                --post-reclaim-wait-ms 100 \
+                --target-fraction-max 0.50 \
+                --nontarget-fraction-min 0.90 \
+                --out "$OUT"
+          done
+          sudo chown -R "$(id -u):$(id -g)" "evidence/EXP-001/block-${BLOCK}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exp001-block-${{ matrix.block }}
+          path: evidence/EXP-001/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: exp001-block-*
+          path: evidence/EXP-001
+      - name: Aggregate frozen analysis
+        run: |
+          python -m finite_ram_lab.exp001_study aggregate \
+            --spec specs/EXP-001.json \
+            --input-root evidence/EXP-001 \
+            --out-dir evidence/EXP-001/aggregate
+      - name: Summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          s=json.load(open('evidence/EXP-001/aggregate/summary.json'))
+          p=s['primary_inference']['exact_signflip']
+          b=s['primary_inference']['cluster_bootstrap_ratio']
+          print('# EXP-001')
+          print()
+          print(f"Execution: **{s['execution_status']}**")
+          print()
+          print('| Arm | Trials | Median HOT retouch ms | P90 ms | Median HOT residency | Median swap-in pages |')
+          print('| --- | ---: | ---: | ---: | ---: | ---: |')
+          for arm in ('hot_evict','cold_evict'):
+              a=s['arm_summary'][arm]
+              print(f"| {arm} | {a['trials']} | {a['median_hot_retouch_ms']:.3f} | {a['p90_hot_retouch_ms']:.3f} | {a['median_hot_fraction_pre_retouch']:.4f} | {a['median_pswpin']:.1f} |")
+          print()
+          print(f"HOT_EVICT/COLD_EVICT geometric mean ratio: **{p['geometric_mean_ratio_hot_evict_over_cold_evict']:.3f}x**")
+          print(f"Exact sign-flip p: **{p['two_sided_p']:.6g}**")
+          print(f"Cluster bootstrap 95% ratio interval: **[{b['ci95'][0]:.3f}, {b['ci95'][1]:.3f}]**")
+          print()
+          print(f"Max target residency: **{s['fidelity']['max_target_fraction']:.4f}**")
+          print(f"Min non-target residency: **{s['fidelity']['min_nontarget_fraction']:.4f}**")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EXP-001-aggregate-${{ github.run_id }}
+          path: evidence/EXP-001/aggregate/
+          if-no-files-found: error
+          retention-days: 90
