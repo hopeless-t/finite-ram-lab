@@ -1,19 +1,18 @@
 # CURRENT
 
-> **Latest bounce:** B099
-> **Stage:** EXP-003 / IMPLEMENTATION TESTS ADDED
+> **Latest bounce:** B100
+> **Stage:** EXP-003 / IMPLEMENTATION CI PENDING
 
-## Canonical implementation
+## Pending external run
 
-- `src/finite_ram_lab/exp003_workload.py`
-- `src/finite_ram_lab/exp003_study.py`
-- `tests/test_exp003.py`
+- CI run `36253567173`
+- last observed status: `in_progress`
 
 ## Next action
 
-Read the ordinary CI triggered by B099 once.
+Read CI run `36253567173` once in a fresh bounce.
 
-If PASS, the following fresh bounce may create the EXP-003 workflow.
+If SUCCESS, create the EXP-003 workflow in the following atomic bounce.
 
 ## Authority boundary
 
