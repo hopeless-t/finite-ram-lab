@@ -1,0 +1,39 @@
+name: VAL-001 Design Monte Carlo
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/val-001-design-mc.yml"
+      - "src/finite_ram_lab/val_design_mc.py"
+      - "docs/VAL-001-DESIGN.md"
+
+permissions:
+  contents: read
+
+jobs:
+  design-study:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run design Monte Carlo
+        run: |
+          mkdir -p evidence/VAL-001-DESIGN
+          python -m finite_ram_lab.val_design_mc \
+            --simulations 5000 \
+            --seed 2026092603 \
+            --out evidence/VAL-001-DESIGN/design-study.json \
+            --markdown evidence/VAL-001-DESIGN/summary.md
+          cat evidence/VAL-001-DESIGN/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VAL-001-DESIGN-${{ github.run_id }}
+          path: evidence/VAL-001-DESIGN/
+          if-no-files-found: error
+          retention-days: 90
