@@ -19,8 +19,8 @@ jobs:
       matrix:
         block: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install
@@ -59,7 +59,7 @@ jobs:
                 --out "$OUT" >/dev/null
           done
           sudo chown -R "$(id -u):$(id -g)" "evidence/OBS-003/block-${BLOCK}"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: obs003-block-${{ matrix.block }}
           path: evidence/OBS-003/block-${{ matrix.block }}/
@@ -71,13 +71,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install
         run: python -m pip install -e ".[analysis]"
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: obs003-block-*
           path: evidence/OBS-003
@@ -107,7 +107,7 @@ jobs:
               rls='NA' if rl is None else f'{rl:.3f}'
               print(f"| {level} | {a['trials']} | {a['misaligned_trials']} | {a['raw_misalignment_rate']:.3f} | [{ci[0]:.3f}, {ci[1]:.3f}] | {a['median_hot_fraction']:.4f} | {a['median_latency_ms']:.3f} | {mls} | {rls} | {a['catastrophic_ge_500ms']} |")
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: OBS-003-aggregate-${{ github.run_id }}
           path: evidence/OBS-003/aggregate/

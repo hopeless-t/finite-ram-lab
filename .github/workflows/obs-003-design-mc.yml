@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install
@@ -31,7 +31,7 @@ jobs:
             --out evidence/OBS-003-DESIGN/design.json \
             --markdown evidence/OBS-003-DESIGN/summary.md
           cat evidence/OBS-003-DESIGN/summary.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: OBS-003-DESIGN-${{ github.run_id }}
           path: evidence/OBS-003-DESIGN/
