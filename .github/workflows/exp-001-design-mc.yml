@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install
@@ -29,7 +29,7 @@ jobs:
             --out evidence/EXP-001-DESIGN/design.json \
             --markdown evidence/EXP-001-DESIGN/summary.md
           cat evidence/EXP-001-DESIGN/summary.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: EXP-001-DESIGN-${{ github.run_id }}
           path: evidence/EXP-001-DESIGN/

@@ -18,8 +18,8 @@ jobs:
       matrix:
         block: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install
@@ -61,7 +61,7 @@ jobs:
                 --out "$OUT"
           done
           sudo chown -R "$(id -u):$(id -g)" "evidence/EXP-001/block-${BLOCK}"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: exp001-block-${{ matrix.block }}
           path: evidence/EXP-001/block-${{ matrix.block }}/
@@ -73,13 +73,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install
         run: python -m pip install -e ".[analysis]"
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: exp001-block-*
           path: evidence/EXP-001
@@ -113,7 +113,7 @@ jobs:
           print(f"Max target residency: **{s['fidelity']['max_target_fraction']:.4f}**")
           print(f"Min non-target residency: **{s['fidelity']['min_nontarget_fraction']:.4f}**")
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: EXP-001-aggregate-${{ github.run_id }}
           path: evidence/EXP-001/aggregate/
