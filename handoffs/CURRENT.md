@@ -1,20 +1,20 @@
 # CURRENT
 
-> **Latest bounce:** B121
-> **Stage:** GATE-002 / RUN IDENTIFIED / QUEUED
+> **Latest bounce:** B122
+> **Stage:** GATE-002 / RUN SUCCESS
 
-## Pending external run
+## External evidence
 
 - launch commit: `4747002f04850c5d5a67a26a8eec466bd27fb6cd`
-- target run: `36258745313`
-- last observed status: `queued`
-- handoff: `handoffs/B121-GATE002-RUN.md`
+- analysis run: `36258745313`
+- conclusion: `success`
+- handoff: `handoffs/B122-GATE002-RUN-SUCCESS.md`
 
 ## Next action
 
-Read target run `36258745313` exactly once in a fresh bounce.
+Fetch the artifact from run `36258745313` exactly once and verify its digest/provenance before promoting any numerical result.
 
 ## Authority boundary
 
-No GATE-002 numerical result exists yet.
+No GATE-002 finding exists yet.
 No deployed gate or new intervention experiment is authorized.
