@@ -36,10 +36,11 @@ Current evidence:
 - **VAL-003 — confirmatory tail benefit not supported / 800 independent new trials:** >=500 ms stalls occurred in 6/400 CORRECT_PAGEOUT trials versus 7/400 NO_HINT trials; the pre-registered one-sided runner-block randomization test did not support a tail-risk reduction;
 - **OBS-003 — PASS / 320 NO_HINT trials:** natural HOT-residency misalignment was pressure-dependent: about 59% at 160 MiB, 58% at 162 MiB, 11% at 164 MiB, 6% at 166 MiB, and 2% at 168 MiB;
 - **HYP-002 — recency hypothesis not supported / 128 valid factorial trials:** randomized final recency did not predict residency selection, while a strong stable mapping-identity asymmetry remained. The exploratory A/B asymmetry from OBS-003 therefore cannot be interpreted as a clean recency-policy information gap.
+- **CHAR-002 — PASS / 192 trials:** randomized initial fault/touch order produced a strong, reproducible residency effect in both separate-VMA and shared-VMA layouts; the second-faulted region retained about 0.08–0.10 more resident fraction on average. Separate mapping creation order was not supported as an effect, while virtual-address position remains unresolved.
 
-The current evidence supports a real residency-sensitive performance regime and measurable natural selection headroom under stronger pressure, but the lower-level source of the stable A/B residency asymmetry is unresolved. The tested semantic PAGEOUT operation remains unsupported as a beneficial coordination mechanism.
+The current evidence supports a real residency-sensitive performance regime and measurable natural selection headroom under stronger pressure. CHAR-002 shows that initial fault/touch order materially affects later residency and explains much of the former fixed A/B asymmetry, while the tested semantic PAGEOUT operation remains unsupported as a beneficial coordination mechanism.
 
-**Next research stage:** CHAR-002 — decompose mapping creation order, initial fault/touch order, and virtual-address/VMA ordering before resuming a formal semantic Value-of-Information calculation.
+**Next research stage:** HYP-003 — independently randomize initial fault/touch order and future semantic demand in the same experiment before resuming a formal Value-of-Information calculation.
 
 No generalized memory-coordination plane or kernel change is authorized by the current evidence.
 
