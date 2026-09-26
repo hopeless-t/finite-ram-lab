@@ -18,9 +18,9 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -59,7 +59,7 @@ jobs:
               print(e['phase'], e['os']['memory_current'], e['os']['memory_swap_current'], e['os']['memory_events'].get('high',0), sep=',')
           PY
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: OBS-001-${{ github.run_id }}
           path: evidence/OBS-001/

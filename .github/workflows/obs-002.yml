@@ -23,8 +23,8 @@ jobs:
         block: [0, 1, 2, 3, 4, 5, 6, 7]
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install
@@ -65,7 +65,7 @@ jobs:
             sleep 0.05
           done
           sudo chown -R "$(id -u):$(id -g)" "evidence/OBS-002/block-${BLOCK}"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: obs002-block-${{ matrix.block }}
           path: evidence/OBS-002/block-${{ matrix.block }}/
@@ -77,13 +77,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install
         run: python -m pip install -e ".[analysis]"
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: obs002-block-*
           path: evidence/OBS-002
@@ -118,7 +118,7 @@ jobs:
           q=s['supporting_relationship']['within_block_permutation']
           print(f"Missing hot pages vs retouch swap-ins rho: **{q['spearman_rho']:.4f}**; blocked permutation p: **{q['two_sided_p']:.6g}**")
           PY
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: OBS-002-aggregate-${{ github.run_id }}
           path: evidence/OBS-002/aggregate/

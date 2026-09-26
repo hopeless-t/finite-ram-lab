@@ -30,9 +30,9 @@ jobs:
         shard: [0, 1, 2, 3]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -54,7 +54,7 @@ jobs:
             --trials "$TRIALS" \
             --out "evidence/MC-001/shards/mc-${FAMILY}-${SHARD}.json"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: mc-${{ matrix.family }}-${{ matrix.shard }}
           path: evidence/MC-001/shards/*.json
@@ -67,16 +67,16 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
       - name: Install
         run: python -m pip install -e .
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: mc-*
           path: evidence/MC-001/shards
@@ -90,7 +90,7 @@ jobs:
             --markdown evidence/MC-001/summary.md
           cat evidence/MC-001/summary.md >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: MC-001-aggregate-${{ github.run_id }}
           path: |
