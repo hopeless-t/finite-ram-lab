@@ -10,7 +10,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from scipy.stats import spearmanr
+from scipy.stats import rankdata, spearmanr
 
 
 FILE_RE = re.compile(
@@ -129,20 +129,28 @@ def _within_block_permutation_p(
     permutations: int,
     seed: int,
 ) -> dict[str, float]:
-    obs = float(spearmanr(transition[predictor], transition[outcome]).statistic)
     rng = np.random.default_rng(seed)
     x = transition[predictor].to_numpy(dtype=float)
     y = transition[outcome].to_numpy(dtype=float)
     blocks = transition["block"].to_numpy(dtype=int)
     unique_blocks = np.unique(blocks)
 
+    xr = rankdata(x)
+    yr = rankdata(y)
+    xc = xr - xr.mean()
+    yc = yr - yr.mean()
+    denom = float(np.sqrt(np.sum(xc * xc) * np.sum(yc * yc)))
+    if denom == 0:
+        raise ValueError("permutation correlation is undefined for a constant variable")
+    obs = float(np.sum(xc * yc) / denom)
+
+    block_indices = [np.flatnonzero(blocks == block) for block in unique_blocks]
     exceed = 0
     for _ in range(permutations):
-        yp = y.copy()
-        for block in unique_blocks:
-            idx = np.flatnonzero(blocks == block)
-            yp[idx] = yp[rng.permutation(idx)]
-        rho = float(spearmanr(x, yp).statistic)
+        yp = yc.copy()
+        for idx in block_indices:
+            yp[idx] = yc[rng.permutation(idx)]
+        rho = float(np.sum(xc * yp) / denom)
         if abs(rho) >= abs(obs):
             exceed += 1
 
