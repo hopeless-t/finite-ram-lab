@@ -1,22 +1,20 @@
 # CURRENT
 
-> **Latest bounce:** B127
-> **Stage:** SIG-001 / DESIGN-MC CI PENDING
+> **Latest bounce:** B128
+> **Stage:** SIG-001 / DESIGN-MC CI PASS
 
-## Pending external run
+## Validation
 
 - implementation commit: `044971a6cee9f31a0b7b0cc342c8cadcf95b32ee`
 - CI run: `36259198377`
-- last observed status: `in_progress`
-- handoff: `handoffs/B127-SIG001-DESIGN-MC-CI-PENDING.md`
+- conclusion: `success`
+- handoff: `handoffs/B128-SIG001-DESIGN-MC-CI-PASS.md`
 
 ## Next action
 
-Read run `36259198377` exactly once in a fresh bounce.
-
-If SUCCESS, launch only the frozen SIG-001 design Monte Carlo.
+Launch only the frozen SIG-001 design Monte Carlo in a fresh bounce.
 
 ## Authority boundary
 
-No SIG-001 numerical result exists yet.
+Calibration-design analysis only.
 No predictor, deployed gate, or memory intervention is authorized.
