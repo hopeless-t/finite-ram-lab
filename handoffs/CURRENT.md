@@ -1,19 +1,16 @@
 # CURRENT
 
-> **Latest bounce:** B100
-> **Stage:** EXP-003 / IMPLEMENTATION CI PENDING
+> **Latest bounce:** B101
+> **Stage:** EXP-003 / IMPLEMENTATION VALIDATED
 
-## Pending external run
+## Canonical validation
 
-- CI run `36253567173`
-- last observed status: `in_progress`
+- CI run `36253567173`: SUCCESS
 
 ## Next action
 
-Read CI run `36253567173` once in a fresh bounce.
-
-If SUCCESS, create the EXP-003 workflow in the following atomic bounce.
+Create and launch the frozen EXP-003 16-block / 384-trial workflow.
 
 ## Authority boundary
 
-EXP-003 is not launched.
+The experiment has not yet launched.
