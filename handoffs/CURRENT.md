@@ -1,23 +1,17 @@
 # CURRENT
 
-> **Latest bounce:** B089
-> **Stage:** EXP-003 / DESIGN-MC IMPLEMENTATION CI PENDING
+> **Latest bounce:** B090
+> **Stage:** EXP-003 / DESIGN-MC IMPLEMENTATION VALIDATED
 
-## Pending external run
+## Canonical evidence
 
-- CI run: `36252845638`
-- last observed status: `in_progress`
-
-## Canonical implementation
-
-- `handoffs/B088-EXP003-DESIGN-MC-IMPLEMENT.md`
+- CI run `36252845638`: SUCCESS
+- `handoffs/B090-EXP003-DESIGN-MC-CI-PASS.md`
 
 ## Next action
 
-Read CI run `36252845638` once in a fresh bounce.
-
-Do not launch EXP-003 design Monte Carlo unless it concludes SUCCESS.
+Create and launch only the EXP-003 design-Monte-Carlo workflow.
 
 ## Authority boundary
 
-No design allocation or EXP-003 experiment is authorized.
+No runner/repeat allocation or EXP-003 experiment is authorized yet.
