@@ -1,0 +1,24 @@
+{
+  "experiment_id": "OBS-002",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 8,
+  "base_schedule_seed": 2026092606,
+  "memory_max_mib": 320,
+  "hotset_mib": 64,
+  "burst_mib": 96,
+  "conditions": [
+    {"memory_high_mib": 160, "repeats_per_block": 1, "role": "pressured_control"},
+    {"memory_high_mib": 164, "repeats_per_block": 4, "role": "transition_zone"},
+    {"memory_high_mib": 168, "repeats_per_block": 1, "role": "unpressured_control"}
+  ],
+  "primary_predictor": "hotset_resident_fraction_after_burst_alloc",
+  "primary_outcome": "hotset_retouch_latency_ms",
+  "required_execution_checks": [
+    "eight_blocks_present",
+    "48_trials_present",
+    "all_trials_pass",
+    "no_oom",
+    "mincore_supported",
+    "controls_present_in_each_block"
+  ]
+}
