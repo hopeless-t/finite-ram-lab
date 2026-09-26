@@ -9,6 +9,7 @@ A small, reproducible systems research lab for understanding how finite physical
 [![ENV-001](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-001.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-001.yml)
 [![ENV-002](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-002.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-002.yml)
 [![OBS-001](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/obs-001.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/obs-001.yml)
+[![CHAR-001](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/char-001.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/char-001.yml)
 [![MC-001](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/monte-carlo.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/monte-carlo.yml)
 
 ## Status
@@ -26,9 +27,12 @@ Current evidence:
 - **ENV-001 — PASS:** hosted-runner memory telemetry is observable;
 - **ENV-002 — PASS:** isolated cgroup memory budgets are enforceable;
 - **OBS-001 — PASS:** application phases and OS memory state can be captured on one monotonic timeline;
-- **MC-001 — 16,000 trials:** seeded synthetic replacement study completed successfully.
+- **MC-001 — 16,000 trials:** seeded synthetic replacement study completed successfully;
+- **CHAR-001 — PASS / 96 trials:** a sharp hosted-runner pressure regime transition was reproduced between the sampled 160 MiB and 192 MiB `MemoryHigh` conditions. Median `HOTSET_RETOUCH` latency changed from roughly 0.96 s at 160 MiB to 3.39 ms at 192 MiB, while swap/reclaim signals disappeared at 192 MiB+.
 
-**Next research stage:** CHAR-001 — characterize which pressure transitions are causal, repeatable bottlenecks rather than coincident symptoms.
+The current evidence identifies a reproducible regime transition but does **not** yet attribute it to a specific mechanism.
+
+**Next research stage:** VAL-001 — refine the 160–192 MiB boundary and reproduce it across independent GitHub-hosted runners.
 
 No new memory-management policy or coordination mechanism is authorized by the current evidence.
 
@@ -169,12 +173,14 @@ finite-ram-lab/
 │   ├── ENV-001.json
 │   ├── ENV-002.json
 │   ├── OBS-001.json
+│   ├── CHAR-001.json
 │   ├── MC-001.json
 │   └── MC-QUALITY-001.json
 ├── src/finite_ram_lab/
 │   ├── env_probe.py
 │   ├── limit_probe.py
 │   ├── obs_workload.py
+│   ├── char_sweep.py
 │   ├── calculators.py
 │   ├── cli.py
 │   ├── sim.py
@@ -188,6 +194,7 @@ finite-ram-lab/
 │   ├── ENV-001.md
 │   ├── ENV-002.md
 │   ├── OBS-001.md
+│   ├── CHAR-001.md
 │   ├── AI_WORKER_TOOLBOX.md
 │   ├── MONTE_CARLO.md
 │   ├── EXECUTION_MODEL.md
@@ -197,6 +204,7 @@ finite-ram-lab/
     ├── env-001.yml
     ├── env-002.yml
     ├── obs-001.yml
+    ├── char-001.yml
     ├── research-calc.yml
     ├── deep-monte-carlo.yml
     └── monte-carlo.yml
