@@ -1,20 +1,27 @@
 # CURRENT
 
-> **Latest bounce:** B094
-> **Stage:** EXP-003 / DESIGN-MC RESULT RECORDED
+> **Latest bounce:** B095
+> **Stage:** EXP-003 / DESIGN-MC STRUCTURED CALIBRATION VERIFIED
 
-## Canonical result
+## Canonical outputs
 
 - `findings/EXP-003-design-mc-initial.md`
-- run `36253106666`
-- frozen rule selected `D1_16x1` = 384 total trials
+- `findings/EXP-003-design-mc-calibration.md`
+- design run `36253106666`
+- artifact `10909658213`
+
+## Selected candidate
+
+`D1_16x1`:
+
+- 16 runner blocks
+- one 24-cell repeat per block
+- 384 total trials
 
 ## Next action
 
-Read the structured design artifact once for Red-Team/action-cost calibration.
-
-Then, in a later atomic bounce, freeze or reject the EXP-003 executable design.
+Run the final EXP-003 executable-design Council.
 
 ## Authority boundary
 
-Design selection support only; EXP-003 experiment is not launched.
+EXP-003 is not yet frozen or launched.
