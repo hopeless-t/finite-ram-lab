@@ -1,0 +1,31 @@
+{
+  "experiment_id": "EXP-003",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 16,
+  "complete_repeats_per_block": 1,
+  "base_schedule_seed": 2026092634,
+  "memory_high_mib": [160, 162],
+  "memory_max_mib": 320,
+  "region_mib": 32,
+  "pageout_mib": 16,
+  "burst_mib": 96,
+  "fault_orders": ["lower_upper", "upper_lower"],
+  "hot_positions": ["lower", "upper"],
+  "arms": ["correct_pageout", "no_hint", "wrong_pageout"],
+  "primary_stratum": "misaligned",
+  "cluster_bootstrap_resamples": 20000,
+  "cluster_bootstrap_seed": 2026092635,
+  "required_execution_checks": [
+    "sixteen_blocks_present",
+    "three_hundred_eighty_four_trials_present",
+    "all_trials_pass",
+    "no_oom",
+    "content_integrity",
+    "factorial_cells_complete",
+    "memory_high_matches",
+    "memory_max_matches",
+    "shared_halves_contiguous",
+    "addresses_page_aligned",
+    "pageout_target_exactly_sixteen_mib"
+  ]
+}

@@ -1,27 +1,26 @@
 # CURRENT
 
-> **Latest bounce:** B095
-> **Stage:** EXP-003 / DESIGN-MC STRUCTURED CALIBRATION VERIFIED
+> **Latest bounce:** B096
+> **Stage:** EXP-003 / EXECUTABLE DESIGN FROZEN
 
-## Canonical outputs
+## Canonical design
 
-- `findings/EXP-003-design-mc-initial.md`
-- `findings/EXP-003-design-mc-calibration.md`
-- design run `36253106666`
-- artifact `10909658213`
+- `docs/EXP-003.md`
+- `specs/EXP-003.json`
+- `handoffs/B096-EXP003-DESIGN.md`
 
-## Selected candidate
-
-`D1_16x1`:
+## Frozen allocation
 
 - 16 runner blocks
-- one 24-cell repeat per block
+- 24 factorial cells per block
 - 384 total trials
 
 ## Next action
 
-Run the final EXP-003 executable-design Council.
+Implement only the EXP-003 shared-VMA workload and fail-closed per-trial checks.
+
+Do not implement aggregate analysis or workflow yet.
 
 ## Authority boundary
 
-EXP-003 is not yet frozen or launched.
+EXP-003 is designed but not launched.
