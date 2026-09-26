@@ -24,6 +24,23 @@ VMSTAT_KEYS = {
     "compact_stall",
 }
 
+CGROUP_MEMORY_FILES = (
+    "memory.current",
+    "memory.peak",
+    "memory.min",
+    "memory.low",
+    "memory.high",
+    "memory.max",
+    "memory.events",
+    "memory.events.local",
+    "memory.stat",
+    "memory.pressure",
+    "memory.swap.current",
+    "memory.swap.max",
+    "memory.oom.group",
+    "memory.reclaim",
+)
+
 
 def _read(path: str) -> dict[str, Any]:
     try:
@@ -44,23 +61,39 @@ def _parse_kv_lines(text: str) -> dict[str, str]:
     return out
 
 
+def _current_cgroup_relpath() -> tuple[str | None, dict[str, Any]]:
+    raw = _read("/proc/self/cgroup")
+    if raw["state"] != "SUPPORTED":
+        return None, raw
+    for line in raw["value"].splitlines():
+        parts = line.split(":", 2)
+        if len(parts) == 3 and parts[0] == "0":
+            return parts[2] or "/", raw
+    return None, raw
+
+
+def _memory_files(base: Path) -> dict[str, Any]:
+    return {name: _read(str(base / name)) for name in CGROUP_MEMORY_FILES}
+
+
 def _cgroup_snapshot() -> dict[str, Any]:
-    controllers = _read("/sys/fs/cgroup/cgroup.controllers")
-    result: dict[str, Any] = {
+    mount = Path("/sys/fs/cgroup")
+    controllers = _read(str(mount / "cgroup.controllers"))
+    relpath, self_raw = _current_cgroup_relpath()
+
+    current_dir = mount
+    if relpath:
+        current_dir = mount / relpath.lstrip("/")
+
+    return {
         "v2": controllers["state"] == "SUPPORTED",
         "controllers": controllers,
-        "files": {},
+        "self": self_raw,
+        "current_path": relpath,
+        "current_directory": str(current_dir),
+        "root_files": _memory_files(mount),
+        "current_files": _memory_files(current_dir),
     }
-    for name in (
-        "memory.current",
-        "memory.max",
-        "memory.high",
-        "memory.events",
-        "memory.stat",
-        "memory.pressure",
-    ):
-        result["files"][name] = _read(f"/sys/fs/cgroup/{name}")
-    return result
 
 
 def snapshot() -> dict[str, Any]:
@@ -96,7 +129,15 @@ def snapshot() -> dict[str, Any]:
             "state": meminfo_raw["state"],
             "selected": {
                 k: meminfo.get(k)
-                for k in ("MemTotal", "MemAvailable", "SwapTotal", "SwapFree", "AnonPages", "Cached", "Slab")
+                for k in (
+                    "MemTotal",
+                    "MemAvailable",
+                    "SwapTotal",
+                    "SwapFree",
+                    "AnonPages",
+                    "Cached",
+                    "Slab",
+                )
             },
         },
         "vmstat": {"state": vmstat_raw["state"], "selected": vmstat},
