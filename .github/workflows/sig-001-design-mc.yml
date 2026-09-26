@@ -1,0 +1,36 @@
+name: SIG-001 Calibration Design Monte Carlo
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/sig-001-design-mc.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  calibration-design:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run calibration design Monte Carlo
+        run: |
+          mkdir -p evidence/SIG-001-DESIGN
+          python -m finite_ram_lab.sig001_design_mc \
+            --spec specs/SIG-001-DESIGN-MC.json \
+            --out evidence/SIG-001-DESIGN/design.json \
+            --markdown evidence/SIG-001-DESIGN/summary.md
+          cat evidence/SIG-001-DESIGN/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: SIG-001-DESIGN-${{ github.run_id }}
+          path: evidence/SIG-001-DESIGN/
+          if-no-files-found: error
+          retention-days: 90
