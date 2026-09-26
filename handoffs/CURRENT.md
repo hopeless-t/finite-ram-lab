@@ -1,17 +1,17 @@
 # CURRENT
 
-> **Latest bounce:** B107
-> **Stage:** GATE-001 / EMPIRICAL POLICY STUDY FROZEN
+> **Latest bounce:** B108
+> **Stage:** GATE-001 / POLICY INPUTS SNAPSHOTTED
 
 ## Canonical output
 
-- `docs/GATE-001-DESIGN-COUNCIL.md`
-- `handoffs/B107-GATE001-COUNCIL.md`
+- `analysis/inputs/GATE-001-EXP003-policy-primitives.json`
+- `handoffs/B108-GATE001-INPUTS.md`
 
 ## Next action
 
-Snapshot the minimum EXP-003 policy primitives needed for the gate analysis, with provenance.
+Implement the frozen GATE-001 empirical policy analysis only.
 
 ## Authority boundary
 
-Analysis design only. No GATE-001 experiment is authorized.
+No GATE-001 experiment is authorized yet.
