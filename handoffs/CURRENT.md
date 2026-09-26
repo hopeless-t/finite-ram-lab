@@ -1,17 +1,19 @@
 # CURRENT
 
-> **Latest bounce:** B108
-> **Stage:** GATE-001 / POLICY INPUTS SNAPSHOTTED
+> **Latest bounce:** B109
+> **Stage:** GATE-001 / POLICY ANALYSIS IMPLEMENTED
 
 ## Canonical output
 
-- `analysis/inputs/GATE-001-EXP003-policy-primitives.json`
-- `handoffs/B108-GATE001-INPUTS.md`
+- `src/finite_ram_lab/gate001_policy.py`
+- `specs/GATE-001-DESIGN.json`
+- `tests/test_gate001_policy.py`
+- `docs/GATE-001-ANALYSIS.md`
 
 ## Next action
 
-Implement the frozen GATE-001 empirical policy analysis only.
+Verify B109 ordinary CI once.
 
 ## Authority boundary
 
-No GATE-001 experiment is authorized yet.
+No GATE-001 execution experiment is authorized.
