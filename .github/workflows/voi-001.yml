@@ -1,0 +1,36 @@
+name: VOI-001 Decision Headroom
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/voi-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run bounded decision-headroom analysis
+        run: |
+          mkdir -p evidence/VOI-001
+          python -m finite_ram_lab.voi001 \
+            --spec specs/VOI-001.json \
+            --out evidence/VOI-001/result.json \
+            --markdown evidence/VOI-001/summary.md
+          cat evidence/VOI-001/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VOI-001-${{ github.run_id }}
+          path: evidence/VOI-001/
+          if-no-files-found: error
+          retention-days: 90
