@@ -1,0 +1,19 @@
+{
+  "experiment_id": "ENV-003",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 4,
+  "memory_high_mib": 256,
+  "memory_max_mib": 320,
+  "hotset_mib": 64,
+  "burst_mib": 96,
+  "pageout_mib": 16,
+  "targets": ["hotset", "burst"],
+  "poll_interval_ms": 20,
+  "poll_timeout_ms": 1000,
+  "required_execution_checks": [
+    "four_blocks_present",
+    "eight_trials_present",
+    "no_oom",
+    "content_integrity"
+  ]
+}
