@@ -1,19 +1,18 @@
 # CURRENT
 
-> **Latest bounce:** B126
-> **Stage:** SIG-001 / DESIGN-MC IMPLEMENTED, CI PENDING
+> **Latest bounce:** B127
+> **Stage:** SIG-001 / DESIGN-MC CI PENDING
 
-## Canonical implementation
+## Pending external run
 
-- `src/finite_ram_lab/sig001_design_mc.py`
-- `tests/test_sig001_design_mc.py`
-- `specs/SIG-001-DESIGN-MC.json`
-- `docs/SIG-001-DESIGN-MC.md`
-- handoff: `handoffs/B126-SIG001-DESIGN-MC-IMPLEMENT.md`
+- implementation commit: `044971a6cee9f31a0b7b0cc342c8cadcf95b32ee`
+- CI run: `36259198377`
+- last observed status: `in_progress`
+- handoff: `handoffs/B127-SIG001-DESIGN-MC-CI-PENDING.md`
 
 ## Next action
 
-Read the ordinary CI triggered by B126 exactly once.
+Read run `36259198377` exactly once in a fresh bounce.
 
 If SUCCESS, launch only the frozen SIG-001 design Monte Carlo.
 
