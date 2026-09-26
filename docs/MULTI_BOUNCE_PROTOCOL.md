@@ -236,3 +236,78 @@ A handoff capsule must state which category was produced.
 ## Principle
 
 > **The project carries memory in Git; the worker carries only the current question.**
+
+
+## Micro-bounce timeout discipline
+
+Operational experience showed that even a scientifically reasonable bounce can be lost if the chat/tool session ends before its final commit.
+
+Therefore the default unit is now a **micro-bounce**.
+
+A micro-bounce should normally produce at most one durable transition:
+
+- freeze one design;
+- implement one bounded unit;
+- launch one workflow;
+- read one workflow result;
+- record one finding;
+- perform one maintenance migration step.
+
+### Commit-before-wait rule
+
+Before any operation that may wait on remote compute, large logs, or many repository mutations:
+
+1. commit the durable state already completed;
+2. write a handoff capsule;
+3. only then launch or wait.
+
+A worker must never hold the only copy of substantive reasoning in chat while waiting for GitHub Actions.
+
+### Early-checkpoint rule
+
+If a bounce has already produced a useful design decision, implementation, or interpretation, checkpoint it immediately even if more work appears possible.
+
+The next step belongs to the next bounce.
+
+### Heartbeat rule
+
+For long multi-step work, prefer:
+
+```text
+small artifact
+  ↓
+commit
+  ↓
+handoff
+  ↓
+fresh rehydrate
+```
+
+over:
+
+```text
+many local steps
+  ↓
+one large final commit
+```
+
+### Failure semantics
+
+If a chat/tool session ends before a GitHub checkpoint:
+
+> **That uncommitted work is non-canonical and must be treated as not completed.**
+
+This rule intentionally favors duplicated reasoning over lost provenance.
+
+### Default size
+
+Unless a task is trivially mechanical, one bounce should target roughly one of:
+
+- one document/spec decision;
+- one implementation slice;
+- one workflow launch;
+- one result readback;
+- one finding;
+- one maintenance batch.
+
+Do not combine design + implementation + launch + finding in one bounce merely because context remains.
