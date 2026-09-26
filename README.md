@@ -1,43 +1,77 @@
 # Finite RAM Lab
 
-A small, reproducible systems research lab for understanding how ordinary computers behave when physical RAM becomes constrained.
+A small, reproducible systems research lab for understanding how finite physical RAM aligns with actual application memory demand.
 
 > **Core question:**  
 > When physical RAM is limited, what should remain in memory, what should be reclaimed, and when?
+
+[![CI](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/ci.yml)
+[![ENV-001](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-001.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-001.yml)
+[![MC-001](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/monte-carlo.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/monte-carlo.yml)
 
 ## Status
 
 **Systems research / experimental software — early development**
 
-Current phase:
+Current principle:
 
-**Observation before coordination**
+> **Observation before coordination.**
 
-Finite RAM Lab is currently focused on observing application-side memory demand and operating-system-side memory supply, pressure, reclaim, and performance on a shared timeline.
+The project currently uses GitHub-hosted Linux runners as its primary experimental substrate. It begins by characterizing what can actually be observed there before making memory-management claims.
 
-No new memory-management policy or coordination mechanism is treated as justified until a reproducible bottleneck has been identified.
+Current lanes:
+
+- **ENV-001** — characterize memory observability on the hosted runner;
+- **OBS-001** — define the synchronized application/OS observation contract;
+- **MC-001** — use seeded Monte Carlo to map synthetic page-replacement opportunity and failure regimes.
+
+No new memory-management policy or coordination mechanism is authorized by the current evidence.
 
 ## Why this project exists
 
 Applications and operating systems observe different parts of the memory problem.
 
-Applications understand the meaning, lifecycle, and phase of their own data.
+Applications can know the meaning, lifecycle, rebuild cost, phase, and near-future importance of their own data.
 
-The operating system understands global physical-memory pressure, contention, residency, reclaim activity, faults, refaults, swap behavior, and system-wide competition.
+The operating system can observe global physical-memory pressure, competition between processes, residency, reclaim activity, faults, refaults, swap behavior, and system-wide resource constraints.
 
-Finite RAM Lab begins by making both sides observable.
+Finite RAM Lab asks whether a measurable gap exists between:
 
-The project asks whether performance degradation under finite RAM is primarily caused by:
+```text
+actual application demand
+          ↕
+OS-estimated demand
+          ↕
+physical-memory residency
+```
 
-- fundamental capacity shortage;
-- residency mismatch;
-- reclaim timing;
-- refault or I/O costs;
-- another mechanism revealed by measurement.
+and whether closing any observed gap can move the practical memory limit without unacceptable performance loss.
 
-The project does **not** assume in advance that existing Linux memory management is inefficient.
+The project does **not** assume that existing Linux memory management is inefficient.
 
-## Research principle
+## Research architecture
+
+```mermaid
+flowchart LR
+    A["Application side<br/>demand / phase / intent"] --> AT["Application telemetry"]
+    K["OS / Kernel side<br/>supply / pressure / reclaim"] --> KT["OS telemetry"]
+
+    AT --> O["Memory Observation Plane"]
+    KT --> O
+
+    O --> T["Synchronized timeline"]
+    T --> C["Bottleneck characterization"]
+    C --> D{"Reproducible gap?"}
+
+    D -->|"No"| N["Record negative result"]
+    D -->|"Yes"| H["Mechanism-specific hypothesis"]
+    H --> E["Controlled intervention"]
+    E --> V["Comparison / validation"]
+```
+
+Observation is intentionally separated from intervention.
+
+## Research order
 
 ```text
 Observe
@@ -53,43 +87,93 @@ Intervene
 Compare
 ```
 
-**Observe before optimizing.**
+A future mechanism may be an application hint library, a userspace coordination agent, a hybrid design, a minimal kernel extension, or no new mechanism at all.
 
-A new memory-management mechanism should be proposed only after a reproducible bottleneck has been identified.
+The implementation is an experimental result, not a premise.
 
-## Initial experimental platform
+## Evidence rules
 
-The initial platform is a commodity Linux PC.
+- observation is not explanation;
+- correlation is not causation;
+- a refault is not automatically a bad eviction;
+- high memory utilization is not automatically inefficient;
+- free memory is not itself an optimization objective;
+- a successful program execution is not automatically a successful experiment;
+- a benchmark improvement is not sufficient evidence of a general memory-management improvement;
+- GitHub-hosted measurements describe the declared hosted environment, not arbitrary bare-metal PCs.
 
-Linux memory pages are the first observation unit, but page-level control is not assumed to be the optimal abstraction.
+Canonical evidence must be structured and carry provenance.
 
-The research problem is broader:
+Plots and rendered diagrams are explanatory artifacts unless an experiment contract explicitly says otherwise.
 
-> How well does finite physical RAM align with actual application memory demand?
+## Research roadmap
 
-## Evidence principle
+```mermaid
+flowchart LR
+    ENV["ENV-001<br/>Hosted-runner observability"]
+    OBS["OBS-001<br/>Dual-sided observation contract"]
+    CHAR["CHAR-001<br/>Bottleneck classification"]
+    VAL["VAL-001<br/>Failure-mode reproduction"]
+    HYP["HYP-001<br/>Targeted hypothesis"]
+    EXP["EXP-001<br/>Intervention"]
+    BENCH["BENCH-001<br/>Baseline comparison"]
+    FIND["Finding<br/>positive or negative"]
 
-Observation is not explanation.
+    ENV --> OBS --> CHAR --> VAL --> HYP --> EXP --> BENCH --> FIND
 
-Correlation is not causation.
-
-A refault is not automatically a bad eviction.
-
-High memory utilization is not automatically inefficient.
-
-Free memory is not itself an optimization objective.
-
-A benchmark improvement is not sufficient evidence of a general memory-management improvement.
-
-## Repository status
-
-The repository is being bootstrapped one research contract at a time.
-
-Planned first lane:
-
-```text
-OBS-001
-Application + OS memory observability baseline
+    MC["MC-001<br/>Monte Carlo decision support"]
+    MC -. informs .-> CHAR
+    MC -. informs .-> HYP
 ```
 
-Later research stages are intentionally not pre-decided. Their contents will be determined by observed evidence.
+Later nodes describe research stages, not predetermined mechanisms.
+
+## Repository structure
+
+```text
+finite-ram-lab/
+├── README.md
+├── pyproject.toml
+├── specs/
+│   ├── ENV-001.json
+│   └── MC-001.json
+├── src/finite_ram_lab/
+│   ├── env_probe.py
+│   ├── sim.py
+│   ├── mc.py
+│   └── aggregate_mc.py
+├── tests/
+├── docs/
+│   ├── RESEARCH_CHARTER.md
+│   ├── REPOSITORY_SPEC.md
+│   ├── EVIDENCE_MODEL.md
+│   ├── ENV-001.md
+│   ├── OBS-001.md
+│   ├── MONTE_CARLO.md
+│   ├── EXECUTION_MODEL.md
+│   └── NORTH_STAR.md
+└── .github/workflows/
+    ├── ci.yml
+    ├── env-001.yml
+    └── monte-carlo.yml
+```
+
+The repository grows only when a real experiment or validation need earns a new component.
+
+## Frozen principles
+
+See:
+
+- [Research Charter](docs/RESEARCH_CHARTER.md)
+- [Repository Specification](docs/REPOSITORY_SPEC.md)
+- [Evidence Model](docs/EVIDENCE_MODEL.md)
+- [Execution Model](docs/EXECUTION_MODEL.md)
+- [North Star](docs/NORTH_STAR.md)
+
+## Project principle
+
+> **Observe before optimizing.**
+
+And, for future architecture:
+
+> **Do not choose the control plane before measuring the coordination gap.**

@@ -1,0 +1,15 @@
+{
+  "experiment_id": "ENV-001",
+  "runner": "ubuntu-24.04",
+  "required_outputs": [
+    "platform",
+    "kernel",
+    "cpu_count",
+    "meminfo",
+    "vmstat",
+    "psi_memory",
+    "swaps",
+    "cgroup"
+  ],
+  "capability_states": ["SUPPORTED", "UNAVAILABLE", "ERROR"]
+}
