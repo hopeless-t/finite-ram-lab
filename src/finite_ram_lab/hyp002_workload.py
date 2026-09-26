@@ -59,14 +59,17 @@ def run(
     _touch(a)
     _touch(b)
 
+    # Equal touch counts, controlled final order.
+    _touch(regions[older_identity], rounds=touch_rounds)
+    _touch(regions[recent_identity], rounds=touch_rounds)
+
+    # Content-integrity baseline belongs after the intentional recency writes.
+    # Capturing it before those writes would classify the designed workload
+    # mutation itself as corruption.
     digest_before = {
         "A": _digest(a, region_size),
         "B": _digest(b, region_size),
     }
-
-    # Equal touch counts, controlled final order.
-    _touch(regions[older_identity], rounds=touch_rounds)
-    _touch(regions[recent_identity], rounds=touch_rounds)
 
     cg = Path("/sys/fs/cgroup") / _self_cgroup_path().lstrip("/")
     os_before_burst = _snapshot(cg)
