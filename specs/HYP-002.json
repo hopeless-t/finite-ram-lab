@@ -1,0 +1,24 @@
+{
+  "experiment_id": "HYP-002",
+  "runner": "ubuntu-24.04",
+  "design_source": "D3_16",
+  "runner_blocks": 16,
+  "base_schedule_seed": 2026092624,
+  "memory_high_mib": [160, 162],
+  "memory_max_mib": 320,
+  "recent_identities": ["A", "B"],
+  "hot_identities": ["A", "B"],
+  "region_mib": 32,
+  "burst_mib": 96,
+  "recency_touch_rounds": 2,
+  "cluster_bootstrap_resamples": 20000,
+  "cluster_bootstrap_seed": 2026092625,
+  "required_execution_checks": [
+    "sixteen_blocks_present",
+    "one_hundred_twenty_eight_trials_present",
+    "all_trials_pass",
+    "no_oom",
+    "factorial_cells_complete",
+    "content_integrity"
+  ]
+}
