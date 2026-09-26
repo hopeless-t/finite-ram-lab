@@ -1,0 +1,26 @@
+{
+  "experiment_id": "VAL-003",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 40,
+  "base_schedule_seed": 2026092617,
+  "repeats_per_arm_per_block": 10,
+  "arms": ["correct_pageout", "no_hint"],
+  "region_mib": 32,
+  "pageout_mib": 16,
+  "burst_mib": 96,
+  "memory_high_mib": 164,
+  "memory_max_mib": 320,
+  "catastrophic_threshold_ms": 500.0,
+  "randomization_draws": 1000000,
+  "randomization_seed": 2026092618,
+  "cluster_bootstrap_resamples": 20000,
+  "cluster_bootstrap_seed": 2026092619,
+  "required_execution_checks": [
+    "forty_blocks_present",
+    "eight_hundred_trials_present",
+    "all_trials_pass",
+    "no_oom",
+    "arms_balanced",
+    "hot_identity_balanced"
+  ]
+}
