@@ -1,0 +1,17 @@
+{
+  "experiment_id": "OBS-001",
+  "runner": "ubuntu-24.04",
+  "memory_high_bytes": 167772160,
+  "memory_max_bytes": 268435456,
+  "hotset_mib": 64,
+  "burst_mib": 96,
+  "expected_phases": [
+    "BASELINE",
+    "HOTSET_ALLOC",
+    "HOTSET_TOUCH",
+    "BURST_ALLOC",
+    "HOTSET_RETOUCH",
+    "BURST_RELEASE",
+    "COMPLETE"
+  ]
+}
