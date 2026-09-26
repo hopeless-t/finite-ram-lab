@@ -57,7 +57,7 @@ jobs:
                 --region-mib 32 \
                 --burst-mib 96 \
                 --touch-rounds 2 \
-                --out "$OUT" >/dev/null
+                --out "$OUT"
           done
           sudo chown -R "$(id -u):$(id -g)" "evidence/HYP-002/block-${BLOCK}"
       - uses: actions/upload-artifact@v4
