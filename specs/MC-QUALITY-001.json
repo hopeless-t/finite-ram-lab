@@ -1,0 +1,24 @@
+{
+  "analysis_id": "MC-QUALITY-001",
+  "schedule": "weekly",
+  "families": [
+    "stable_hotset",
+    "sequential_scan",
+    "shifting_hotset",
+    "bursty"
+  ],
+  "shards_per_family": 8,
+  "trials_per_shard": 2000,
+  "nominal_total_trials": 64000,
+  "bootstrap_resamples": 500,
+  "analysis_seed": 2026092601,
+  "rare_gap_threshold": 0.20,
+  "outputs": [
+    "mean_ci95",
+    "p90_ci95",
+    "p99_ci95",
+    "rare_gap_rate_ci95",
+    "convergence",
+    "capacity_ratio_bins"
+  ]
+}
