@@ -1,26 +1,19 @@
 # CURRENT
 
-> **Latest bounce:** B096
-> **Stage:** EXP-003 / EXECUTABLE DESIGN FROZEN
+> **Latest bounce:** B097
+> **Stage:** EXP-003 / WORKLOAD IMPLEMENTED
 
-## Canonical design
+## Canonical output
 
-- `docs/EXP-003.md`
-- `specs/EXP-003.json`
-- `handoffs/B096-EXP003-DESIGN.md`
-
-## Frozen allocation
-
-- 16 runner blocks
-- 24 factorial cells per block
-- 384 total trials
+- `src/finite_ram_lab/exp003_workload.py`
+- `handoffs/B097-EXP003-WORKLOAD.md`
 
 ## Next action
 
-Implement only the EXP-003 shared-VMA workload and fail-closed per-trial checks.
+Implement only the EXP-003 deterministic schedule and frozen aggregate analysis.
 
-Do not implement aggregate analysis or workflow yet.
+Do not launch the experiment yet.
 
 ## Authority boundary
 
-EXP-003 is designed but not launched.
+Implementation only.
