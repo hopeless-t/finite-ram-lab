@@ -2,18 +2,18 @@
   "experiment_id": "ENV-004",
   "runner": "ubuntu-24.04",
   "runner_blocks": 4,
-  "region_mib": 16,
+  "repeats_per_arm_per_block": 2,
+  "arms": ["pageout_only", "pageout_plus_reclaim"],
+  "region_mib": 32,
+  "pageout_mib": 16,
   "reclaim_mib": 16,
-  "reclaim_swappiness": "max",
-  "memory_high_mib": 256,
-  "memory_max_mib": 320,
-  "target_identities": ["A", "B"],
-  "post_pageout_wait_ms": 100,
-  "post_reclaim_wait_ms": 100,
-  "required_execution_checks": [
-    "four_blocks_present",
-    "eight_trials_present",
-    "all_content_match",
+  "memory_high_mib": 512,
+  "memory_max_mib": 768,
+  "base_seed": 2026092610,
+  "capability_checks": [
+    "all_trials_complete",
+    "all_pageout_calls_succeed",
+    "all_reclaim_calls_succeed_in_reclaim_arm",
     "no_oom"
   ]
 }
