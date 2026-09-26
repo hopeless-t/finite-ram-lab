@@ -28,13 +28,18 @@ Current evidence:
 - **ENV-002 — PASS:** isolated cgroup memory budgets are enforceable;
 - **OBS-001 — PASS:** application phases and OS memory state can be captured on one monotonic timeline;
 - **MC-001 — 16,000 trials:** seeded synthetic replacement study completed successfully;
-- **CHAR-001 — PASS / 96 trials:** a sharp hosted-runner pressure regime transition was reproduced between the sampled 160 MiB and 192 MiB `MemoryHigh` conditions. Median `HOTSET_RETOUCH` latency changed from roughly 0.96 s at 160 MiB to 3.39 ms at 192 MiB, while swap/reclaim signals disappeared at 192 MiB+.
+- **CHAR-001 — PASS / 96 trials:** a sharp hosted-runner memcg-pressure regime transition was observed;
+- **VAL-001 — PASS / 108 trials:** the transition reproduced across six independent runner blocks and localized to the sampled 162–166 MiB region;
+- **OBS-002 — PASS / 48 trials:** semantic-region residency loss strongly tracked subsequent retouch cost in the transition zone;
+- **HYP-001 — negative:** simple recency ordering did not reliably control later semantic-region cost;
+- **EXP-002 — primary benefit not supported / Red-Team harm confirmed:** CORRECT_PAGEOUT did not establish central-tendency benefit over NO_HINT, while WRONG_PAGEOUT was strongly harmful;
+- **VAL-003 — confirmatory tail benefit not supported / 800 independent new trials:** >=500 ms stalls occurred in 6/400 CORRECT_PAGEOUT trials versus 7/400 NO_HINT trials; the pre-registered one-sided runner-block randomization test did not support a tail-risk reduction.
 
-The current evidence identifies a reproducible regime transition but does **not** yet attribute it to a specific mechanism.
+The current evidence supports a real residency-sensitive performance regime, but does **not** support the tested semantic PAGEOUT operation as a beneficial coordination mechanism.
 
-**Next research stage:** VAL-001 — refine the 160–192 MiB boundary and reproduce it across independent GitHub-hosted runners.
+**Next research stage:** step back from mechanism selection and quantify **decision headroom / value of information** before testing another control mechanism.
 
-No new memory-management policy or coordination mechanism is authorized by the current evidence.
+No generalized memory-coordination plane or kernel change is authorized by the current evidence.
 
 ## Why this project exists
 
