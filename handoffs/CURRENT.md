@@ -1,25 +1,25 @@
 # CURRENT
 
-> **Latest bounce:** B114
-> **Stage:** GATE-001 / POLICY RESULT RECORDED
+> **Latest bounce:** B115
+> **Stage:** GATE-002 / CLASS-CONDITIONAL FRONTIER COUNCIL COMPLETE
 
-## Canonical evidence
+## Decision
 
-- run: `36258282271`
-- artifact: `10911541394`
-- SHA-256: `15f97f57146b8d86330b23d8a875e2cf2137a66904330a3a111b1c7e5cf6ba2f`
-- handoff: `handoffs/B114-GATE001-RESULT.md`
+Replace the symmetric single-accuracy abstraction with separate sensitivity and specificity.
 
-## Result boundary
+Canonical condition against NO_HINT:
 
-The break-even semantic-signal accuracy depends strongly on misalignment prevalence q.
+`q*t*b > (1-q)*(1-s)*h`
 
-The analysis does not estimate production q or production signal accuracy.
+See:
+
+- `handoffs/B115-GATE002-COUNCIL.md`
 
 ## Next action
 
-Run a fresh pseudo-Council before authorizing any new GATE-001 intervention experiment.
+Freeze the GATE-002 analysis contract using existing EXP-003/GATE-001 empirical primitives.
 
 ## Authority boundary
 
-No deployment or GATE-001 intervention experiment is authorized.
+Analysis only.
+No deployed gate and no new intervention experiment is authorized.
