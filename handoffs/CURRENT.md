@@ -1,30 +1,22 @@
 # CURRENT
 
-> **Latest bounce:** B139
-> **Stage:** SIG-001 / OBSERVATIONAL PROTOCOL COUNCIL COMPLETE
+> **Latest bounce:** B140
+> **Stage:** SIG-001 / CALIBRATION PROTOCOL FROZEN
 
-## Decision
+## Frozen protocol
 
-Freeze SIG-001-CAL-PROTOCOL-v1 before collecting any real provider evidence.
-
-Key requirements:
-
-- independent calibration units;
-- fixed provider/version/rule per epoch;
-- prediction artifact sealed before outcomes;
-- ACT / NO_ACT / ABSTAIN semantics;
-- fail-closed CERTIFIED / NOT_CERTIFIED output;
-- no action execution.
-
-See:
-
-- `handoffs/B139-SIG001-CAL-PROTOCOL-COUNCIL.md`
+- `specs/SIG-001-CAL-PROTOCOL-v1.json`
+- `schemas/SIG-001-CAL-MANIFEST.schema.json`
+- `schemas/SIG-001-CAL-PREDICTION.schema.json`
+- `schemas/SIG-001-CAL-OUTCOME.schema.json`
+- `docs/SIG-001-CAL-PROTOCOL-v1.md`
+- handoff: `handoffs/B140-SIG001-CAL-PROTOCOL.md`
 
 ## Next action
 
-Freeze the protocol schemas and calibration contract.
+Implement the offline SIG-001 validator/calibrator and unit tests only.
 
 ## Authority boundary
 
 No provider is calibrated.
-No memory intervention is authorized.
+No deployed gate or memory intervention is authorized.

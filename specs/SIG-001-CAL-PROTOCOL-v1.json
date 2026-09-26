@@ -1,0 +1,14 @@
+{
+  "protocol_id": "SIG-001-CAL-PROTOCOL-v1",
+  "action_cost_input_json": "analysis/inputs/GATE-001-EXP003-policy-primitives.json",
+  "source_trials_sha256": "29aa46c700b817785bdc67ae4a6eb3c3330887ff5a06efd1f7516aa6ed53ba66",
+  "primary_metric": "log_total_work",
+  "secondary_metric": "arithmetic_total_work",
+  "action_cost_bootstrap_resamples": 100000,
+  "action_cost_bootstrap_seed": 2026092702,
+  "familywise_alpha": 0.05,
+  "bonferroni_components": 4,
+  "abstain_semantics": "NO_ACT",
+  "independence_policy": "one_event_per_independence_unit",
+  "decision_outputs": ["CERTIFIED", "NOT_CERTIFIED"]
+}

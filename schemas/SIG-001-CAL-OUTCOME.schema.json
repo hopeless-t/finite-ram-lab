@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SIG-001-CAL-OUTCOME.schema.json",
+  "title": "SIG-001 calibration outcome row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "true_state",
+    "outcome_time_ns"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "event_id": {"type": "string", "minLength": 1},
+    "true_state": {
+      "type": "string",
+      "enum": ["misaligned", "aligned"]
+    },
+    "outcome_time_ns": {"type": "integer", "minimum": 0}
+  }
+}

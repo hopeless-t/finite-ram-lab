@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "SIG-001-CAL-PREDICTION.schema.json",
+  "title": "SIG-001 calibration prediction row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "independence_unit_id",
+    "decision",
+    "prediction_time_ns"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "event_id": {"type": "string", "minLength": 1},
+    "independence_unit_id": {"type": "string", "minLength": 1},
+    "decision": {
+      "type": "string",
+      "enum": ["ACT", "NO_ACT", "ABSTAIN"]
+    },
+    "prediction_time_ns": {"type": "integer", "minimum": 0},
+    "score": {
+      "type": ["number", "null"],
+      "minimum": 0.0,
+      "maximum": 1.0
+    }
+  }
+}
