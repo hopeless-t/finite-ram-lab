@@ -1,21 +1,20 @@
 # CURRENT
 
-> **Latest bounce:** B112
-> **Stage:** GATE-001 / POLICY ANALYSIS LAUNCHED
+> **Latest bounce:** B113
+> **Stage:** GATE-001 / POLICY ANALYSIS RUN SUCCESS
 
-## Launch
+## External evidence
 
-- commit: `162284f81725e0a884a7f53d9aebbcc428b22d10`
-- workflow: `.github/workflows/gate-001-policy-analysis.yml`
-- handoff: `handoffs/B112-GATE001-LAUNCH.md`
+- launch commit: `162284f81725e0a884a7f53d9aebbcc428b22d10`
+- policy-analysis run: `36258282271`
+- conclusion: `success`
+- handoff: `handoffs/B113-GATE001-RUN-SUCCESS.md`
 
 ## Next action
 
-Discover the workflow run created by the B112 launch commit exactly once and checkpoint its run ID/status.
-
-Do not poll repeatedly.
+Fetch the artifact from run `36258282271` exactly once and record its numerical result.
 
 ## Authority boundary
 
-Empirical policy analysis only.
+Run success is not yet a promoted finding.
 No GATE-001 intervention experiment is authorized.
