@@ -7,6 +7,8 @@ A small, reproducible systems research lab for understanding how finite physical
 
 [![CI](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/ci.yml)
 [![ENV-001](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-001.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-001.yml)
+[![ENV-002](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-002.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/env-002.yml)
+[![OBS-001](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/obs-001.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/obs-001.yml)
 [![MC-001](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/monte-carlo.yml/badge.svg)](https://github.com/hopeless-t/finite-ram-lab/actions/workflows/monte-carlo.yml)
 
 ## Status
@@ -19,11 +21,14 @@ Current principle:
 
 The project currently uses GitHub-hosted Linux runners as its primary experimental substrate. It begins by characterizing what can actually be observed there before making memory-management claims.
 
-Current lanes:
+Current evidence:
 
-- **ENV-001** — characterize memory observability on the hosted runner;
-- **OBS-001** — define the synchronized application/OS observation contract;
-- **MC-001** — use seeded Monte Carlo to map synthetic page-replacement opportunity and failure regimes.
+- **ENV-001 — PASS:** hosted-runner memory telemetry is observable;
+- **ENV-002 — PASS:** isolated cgroup memory budgets are enforceable;
+- **OBS-001 — PASS:** application phases and OS memory state can be captured on one monotonic timeline;
+- **MC-001 — 16,000 trials:** seeded synthetic replacement study completed successfully.
+
+**Next research stage:** CHAR-001 — characterize which pressure transitions are causal, repeatable bottlenecks rather than coincident symptoms.
 
 No new memory-management policy or coordination mechanism is authorized by the current evidence.
 
@@ -136,9 +141,13 @@ finite-ram-lab/
 ├── pyproject.toml
 ├── specs/
 │   ├── ENV-001.json
+│   ├── ENV-002.json
+│   ├── OBS-001.json
 │   └── MC-001.json
 ├── src/finite_ram_lab/
 │   ├── env_probe.py
+│   ├── limit_probe.py
+│   ├── obs_workload.py
 │   ├── sim.py
 │   ├── mc.py
 │   └── aggregate_mc.py
@@ -148,6 +157,7 @@ finite-ram-lab/
 │   ├── REPOSITORY_SPEC.md
 │   ├── EVIDENCE_MODEL.md
 │   ├── ENV-001.md
+│   ├── ENV-002.md
 │   ├── OBS-001.md
 │   ├── MONTE_CARLO.md
 │   ├── EXECUTION_MODEL.md
@@ -155,6 +165,8 @@ finite-ram-lab/
 └── .github/workflows/
     ├── ci.yml
     ├── env-001.yml
+    ├── env-002.yml
+    ├── obs-001.yml
     └── monte-carlo.yml
 ```
 
