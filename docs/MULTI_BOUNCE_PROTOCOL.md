@@ -311,3 +311,101 @@ Unless a task is trivially mechanical, one bounce should target roughly one of:
 - one maintenance batch.
 
 Do not combine design + implementation + launch + finding in one bounce merely because context remains.
+
+
+## Atomic micro-bounce discipline
+
+Operational review after B083 found that the previous "micro-bounce" rule was still too permissive for a chat/tool session that may stall or terminate before the next GitHub write.
+
+The default unit is therefore tightened to an **atomic micro-bounce**.
+
+### Hard rule: one durable transition, one atomic commit
+
+A normal bounce should produce exactly one durable transition and checkpoint it immediately.
+
+Examples:
+
+- Council decision + handoff;
+- one spec freeze + handoff;
+- one implementation slice + handoff;
+- one workflow launch record + handoff;
+- one result classification + handoff;
+- one finding + handoff.
+
+Whenever GitHub Git-data primitives are available, the artifact and its handoff should be written in the **same commit**.
+
+This removes the failure window where an artifact exists but the handoff does not, or vice versa.
+
+### External-call budget
+
+Default maximum before the next durable checkpoint:
+
+```text
+6 external tool calls
+```
+
+If the bounce reaches that budget and useful state exists, checkpoint immediately and start a fresh bounce.
+
+This is an operational default, not a scientific constraint. A trivial call may be cheap, but uncommitted reasoning must not accumulate merely because more context remains.
+
+### Rehydrate budget
+
+Default fresh-bounce read set is now:
+
+1. `handoffs/CURRENT.md`;
+2. the one artifact named there as the current canonical input;
+3. at most three additional files needed for the narrow objective.
+
+Do not begin by listing or rereading the full repository.
+
+### No-polling rule
+
+A launch bounce must:
+
+1. freeze/commit launch state;
+2. record run ID when available;
+3. stop.
+
+Do not repeatedly poll a long GitHub Actions job inside the same bounce.
+
+Result readback belongs to a later fresh bounce.
+
+### Checkpoint-before-expansion rule
+
+The moment a Council converges, an implementation slice becomes useful, or an interpretation becomes stable:
+
+> checkpoint it before opening the next question.
+
+Do not keep a converged result only in chat while beginning implementation.
+
+### Fixed current-state pointer
+
+`handoffs/CURRENT.md` is the fast rehydration pointer.
+
+Every substantive bounce should update it atomically with the new handoff.
+
+It contains:
+
+- latest bounce ID;
+- current stage;
+- canonical input/output;
+- one next action;
+- authority boundary.
+
+If `CURRENT.md` disagrees with remembered chat state, GitHub wins.
+
+### Timeout semantics
+
+If the session ends before the next atomic commit:
+
+> everything after the last atomic commit is discarded as non-canonical.
+
+A future worker resumes from `handoffs/CURRENT.md`, not from inferred unfinished chat work.
+
+### Human-interaction policy
+
+The worker may chain many atomic micro-bounces within one user turn without asking for approval between them, provided authority does not expand.
+
+The safety mechanism is **Git checkpoint frequency**, not mandatory human interruption after every bounce.
+
+If a human asks for progress at any point, report only GitHub-canonical progress plus currently active external runs.
