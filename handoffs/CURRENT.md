@@ -1,32 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B172
-> **Stage:** STRATA-001 / PILOT RESULT RECOVERED
+> **Latest bounce:** B173
+> **Stage:** STRATA-002 / COUNCIL COMPLETE
 
-## Canonical result
+## Parent result
 
-- 36 / 36 trials valid
-- HOT anonymous residency: 1.0000 in every arm
-- DIRECT post-scan file residency: 0.0000
-- BUFFERED/MMAP post-scan file residency: ~0.87–0.95
-- DIRECT avoided MemoryHigh events in the pilot
-- no swap before HOT retouch
+STRATA-001 pilot is canonicalized and showed:
+
+- zero HOT-residency headroom in tested file-pressure cells;
+- large page-cache / MemoryHigh-pressure difference between buffered and direct I/O.
+
+## New study
+
+STRATA-002 — Advisory Cold-Stream Cache Control
 
 See:
 
-- `docs/STRATA-001-PILOT-RESULT.md`
-- `evidence/STRATA-001-PILOT/recovered-summary.json`
-- `evidence/STRATA-001-PILOT/block-pairs.csv`
+- `docs/STRATA-002-COUNCIL.md`
 
-## Decision
+## Next action
 
-Do not confirm the current HOT-residency endpoint.
+Freeze STRATA-002-PILOT-v1.
 
-Converge a next-stage Council focused on personal-PC-applicable cold-stream cache management.
+## Individual-PC direction
 
-## Attribution
-
-Inspired by Niko1221/Strata; independent implementation.
+Test whether ordinary buffered reads plus standard Linux COLD/one-shot advice can capture much of O_DIRECT's memory-pressure benefit without O_DIRECT's operational constraints.
 
 ## Authority boundary
 
