@@ -1,20 +1,19 @@
 # CURRENT
 
-> **Latest bounce:** B174
-> **Stage:** STRATA-002 / PILOT CONTRACT FROZEN
+> **Latest bounce:** B175
+> **Stage:** STRATA-002 / PILOT IMPLEMENTED, ORDINARY CI PENDING
 
-## Frozen files
+## Implementation
 
-- `specs/STRATA-002-PILOT-v1.json`
-- `docs/STRATA-002-PILOT-v1.md`
+STRATA-002 advisory cold-stream pilot is implemented.
 
 ## Next action
 
-Implement STRATA-002-PILOT-v1.
+Read ordinary CI for B175 exactly once.
 
 ## Individual-PC direction
 
-Test ordinary buffered I/O plus Linux one-shot/COLD advice before considering any invasive or global memory policy.
+The experiment now directly tests whether standard buffered reads plus Linux advice can approach O_DIRECT's low-pressure footprint without O_DIRECT's operational constraints.
 
 ## Authority boundary
 
