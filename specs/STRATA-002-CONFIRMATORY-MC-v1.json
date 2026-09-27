@@ -1,0 +1,33 @@
+{
+  "analysis_id": "STRATA-002-CONFIRMATORY-MC-v1",
+  "source_run": 36338522437,
+  "source_artifact_id": 10938470859,
+  "source_artifact_digest": "sha256:bec214018ea7a71e948cdb13c76c5292613f2fc0dd16a1bb03929988c747149d",
+  "pilot_blocks": 8,
+  "pilot_efficacy_successes": 8,
+  "efficacy_success_threshold_mib": 64.0,
+  "efficacy_null_probability": 0.5,
+  "efficacy_alpha_one_sided": 0.025,
+  "design_success_probability": 0.8,
+  "conservative_success_probability_method": "one-sided exact Clopper-Pearson 95% lower bound for 8/8",
+  "conservative_success_probability": 0.6876560219336321,
+  "latency_ratio_target": 1.25,
+  "latency_one_sided_confidence": 0.95,
+  "pilot_scan_ratio_values": [
+    1.0443856304534282,
+    1.0095148167898071,
+    0.2599925020804434,
+    2.9691211394039363,
+    0.5597804522824279,
+    1.4650049269252898,
+    0.7690888216175071,
+    2.0247057409224176
+  ],
+  "latency_model": "normal_on_log_ratio_using_pilot_sample_mean_and_sample_sd",
+  "candidate_blocks": [16, 24, 32, 40, 48, 56, 64, 72],
+  "monte_carlo_resamples_per_candidate": 200000,
+  "seed": 2026092803,
+  "joint_pass_rule": "efficacy_exact_sign_gate AND latency_upper_bound_gate",
+  "selection_rule": "first candidate with joint design assurance >= 0.80; NONE if no candidate qualifies",
+  "authority": "DESIGN_ONLY_NO_PHYSICAL_LAUNCH"
+}
