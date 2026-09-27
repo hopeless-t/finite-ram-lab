@@ -1,24 +1,13 @@
 # CURRENT
 
-> **Latest bounce:** B184
-> **Stage:** STRATA-002 / CONFIRMATORY MC IMPLEMENTATION CI IN PROGRESS
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B185
+> **Stage:** STRATA-002 / CONFIRMATORY MC IMPLEMENTATION CI PASS
 
-## Pending external run
+## Next action
 
-- implementation commit: `36e9e4fbf55df3641a247614525db9cbc72c9c88`
-- CI run: `36339042934`
-- last observed status: `in_progress`
+Launch exactly one design-only STRATA-002 confirmatory MC workflow.
 
-## Next fresh-turn action
-
-Read CI run `36339042934` exactly once.
-
-- SUCCESS → launch exactly one design-MC workflow.
-- pending → checkpoint EXTERNAL_WAIT.
-- failure → inspect failure only.
-
-## Current strongest practical candidate
+## Current practical candidate
 
 `buffered + sliding POSIX_FADV_DONTNEED`
 
