@@ -1,16 +1,22 @@
 # CURRENT
 
-> **Latest bounce:** B161
-> **Stage:** STRATA-001 / PILOT CONTRACT FROZEN
+> **Latest bounce:** B162
+> **Stage:** STRATA-001 / PILOT IMPLEMENTED, ORDINARY CI PENDING
 
-## Frozen contract
+## Implementation
 
-- `specs/STRATA-001-PILOT-v1.json`
-- `docs/STRATA-001-PILOT-v1.md`
+- workload
+- schedule/aggregator
+- tests
+- manual-only pilot workflow
+
+See:
+
+- `handoffs/B162-STRATA001-PILOT-IMPLEMENT.md`
 
 ## Next action
 
-Implement STRATA-001-PILOT-v1 workload + analysis + tests + workflow.
+Read ordinary CI for B162 exactly once.
 
 ## Attribution
 

@@ -1,0 +1,145 @@
+name: STRATA-001 Pilot v1
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3, 4, 5]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Prepare cold file outside trial cgroups
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from finite_ram_lab.strata001_probe import _prepare_file
+          p = Path("$RUNNER_TEMP") / "strata001-pilot-cold.bin"
+          _prepare_file(p, 96 * 1024 * 1024, 4 * 1024 * 1024)
+          print(p)
+          PY
+
+      - name: Build pilot schedule
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          mkdir -p "evidence/STRATA-001-PILOT/block-${BLOCK}/raw"
+          python -m finite_ram_lab.strata001_pilot_study schedule \
+            --spec specs/STRATA-001-PILOT-v1.json \
+            --block "${BLOCK}" \
+            --out "evidence/STRATA-001-PILOT/block-${BLOCK}/schedule.csv"
+
+      - name: Run bounded pressure pilot
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          MAX_BYTES=$((320 * 1024 * 1024))
+          FILE="$RUNNER_TEMP/strata001-pilot-cold.bin"
+          SCHEDULE="evidence/STRATA-001-PILOT/block-${BLOCK}/schedule.csv"
+
+          tail -n +2 "$SCHEDULE" | while IFS=, read -r ORDER HIGH_MIB ARM; do
+            HIGH_BYTES=$((HIGH_MIB * 1024 * 1024))
+            UNIT="finite-ram-strata001-${GITHUB_RUN_ID}-${BLOCK}-${ORDER}"
+            OUT="$GITHUB_WORKSPACE/evidence/STRATA-001-PILOT/block-${BLOCK}/raw/trial-${ORDER}-high${HIGH_MIB}-${ARM}.json"
+
+            sudo systemd-run \
+              --pipe --wait --collect --quiet \
+              --unit="$UNIT" \
+              -p MemoryAccounting=yes \
+              -p MemoryHigh="$HIGH_BYTES" \
+              -p MemoryMax="$MAX_BYTES" \
+              "$PY" -m finite_ram_lab.strata001_pilot_workload \
+                --arm "$ARM" \
+                --file "$FILE" \
+                --hot-anon-mib 64 \
+                --buffer-mib 4 \
+                --expected-file-mib 96 \
+                --expected-high-bytes "$HIGH_BYTES" \
+                --expected-max-bytes "$MAX_BYTES" \
+                --precache-limit 0.10 \
+                --out "$OUT" >/dev/null
+          done
+
+          sudo chown -R "$(id -u):$(id -g)" "evidence/STRATA-001-PILOT/block-${BLOCK}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: strata001-pilot-block-${{ matrix.block }}
+          path: evidence/STRATA-001-PILOT/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: strata001-pilot-block-*
+          path: evidence/STRATA-001-PILOT
+
+      - name: Aggregate pilot
+        run: |
+          python -m finite_ram_lab.strata001_pilot_study aggregate \
+            --spec specs/STRATA-001-PILOT-v1.json \
+            --input-root evidence/STRATA-001-PILOT \
+            --out-dir evidence/STRATA-001-PILOT/aggregate
+
+      - name: Job summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          s=json.load(open("evidence/STRATA-001-PILOT/aggregate/summary.json"))
+          print("# STRATA-001 Pilot v1")
+          print()
+          print("Inspired by [Niko1221/Strata](https://github.com/Niko1221/Strata).")
+          print()
+          print(f"Execution status: **{s['execution_status']}**")
+          print()
+          print("| MemoryHigh | Direct - Buffered HOT residency | Direct / Buffered total work |")
+          print("| ---: | ---: | ---: |")
+          for level in ("160", "168"):
+              p=s["paired_primary"][level]
+              print(
+                  f"| {level} MiB | "
+                  f"{p['hot_residency_diff_direct_minus_buffered']['median']:.4f} | "
+                  f"{p['work_ratio_direct_over_buffered']['median']:.4f} |"
+              )
+          print()
+          print("Pilot only: no hypothesis-support decision is authorized.")
+          PY
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: STRATA-001-PILOT-${{ github.run_id }}
+          path: evidence/STRATA-001-PILOT/aggregate/
+          if-no-files-found: error
+          retention-days: 90
