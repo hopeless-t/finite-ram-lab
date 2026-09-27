@@ -1,0 +1,26 @@
+{
+  "experiment_id": "STRATA-001-CAPABILITY",
+  "inspiration": {
+    "repository": "https://github.com/Niko1221/Strata",
+    "observed_commit": "8117643ccc68e3d08f80d38e064333742d4474bb",
+    "concept": "keep semantically cold SSD data out of host page-cache pressure via direct I/O"
+  },
+  "runner": "ubuntu-24.04",
+  "file_mib_per_arm": 16,
+  "chunk_kib": 4096,
+  "page_size": 4096,
+  "arms": ["mmap", "buffered_pread", "direct_pread"],
+  "prepare": {
+    "fsync": true,
+    "posix_fadvise_dontneed": true,
+    "require_precache_fraction_le": 0.10
+  },
+  "capability_checks": {
+    "all_arms_read_exact_bytes": true,
+    "direct_io_succeeds_without_buffered_fallback": true,
+    "buffered_postcache_fraction_ge": 0.50,
+    "mmap_postcache_fraction_ge": 0.50,
+    "direct_postcache_fraction_le": 0.10
+  },
+  "authority": "CAPABILITY_ONLY"
+}

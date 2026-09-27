@@ -1,40 +1,27 @@
 # CURRENT
 
-> **Latest bounce:** B152
-> **Stage:** STRATA-001 / COUNCIL COMPLETE
+> **Latest bounce:** B153
+> **Stage:** STRATA-001 / CAPABILITY CONTRACT FROZEN
 
-## Active user-directed study
+## Inspired study
 
-STRATA-001 — Cold-file Page-Cache Bypass Preservation
+STRATA-001 is explicitly attributed to Niko1221/Strata.
 
-Inspired by Niko1221/Strata:
+## Frozen capability contract
 
-- upstream: https://github.com/Niko1221/Strata
-- observed revision: `8117643ccc68e3d08f80d38e064333742d4474bb`
-
-Canonical notes:
-
-- `docs/STRATA-001-COUNCIL.md`
-- `docs/STRATA-INSPIRATION.md`
-
-No Strata source code has been copied.
-
-## Research sequence
-
-1. capability probe;
-2. bounded pilot;
-3. Monte Carlo sizing;
-4. confirmatory experiment.
-
-## Parallel LABEL-001 lane
-
-B151 contains the fix for the prior LABEL-001 unit-test failure.
-Its replacement CI remains to be reconciled later.
+- `specs/STRATA-001-CAPABILITY.json`
+- `docs/STRATA-001-CAPABILITY.md`
 
 ## Next action
 
-Freeze and implement STRATA-001 capability/pilot probe.
+Implement capability probe + tests + manual-only workflow.
+
+Do not launch the pressured-memory pilot yet.
+
+## Parallel lane
+
+LABEL-001 B151 CI fix still requires later readback.
 
 ## Authority boundary
 
-No deployment, kernel change, or generalized cache-bypass policy is authorized.
+Capability only.
