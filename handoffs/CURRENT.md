@@ -1,27 +1,36 @@
 # CURRENT
 
-> **Latest bounce:** B192
-> **Stage:** LOCAL-VALIDITY-001 CI QUEUED
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B193
+> **Stage:** LOCAL-VALIDITY READY / OSS PRODUCT SEED FROZEN
 
-## Pending external run
+## Validated
 
-- design commit: `5211023d8bfbc1767ab86723ff62f2e9ecfcb0a6`
-- CI run: `36340015641`
-- last observed status: `queued`
+LOCAL-VALIDITY-001 design CI:
 
-## Current research position
+- run: `36340015641`
+- conclusion: `success`
 
-- STRATA-002 DONTNEED mechanism is strong on hosted pressure metrics.
-- hosted timing confirmation remains noisy.
-- LLM memory semantics are now explicitly classified.
-- local external-validity protocol is frozen.
-- local execution still requires a finite-ram-specific MVCA gate.
+## Product seed
 
-## Next fresh-turn action
+See:
 
-Read CI run `36340015641` exactly once.
+- `docs/FINITE-RAM-OSS-SEED-v1.md`
+
+Do not create standalone OSS repo yet.
+
+## Extraction gates
+
+- G0 hosted mechanism: PASS
+- G1 local synthetic validation: PENDING
+- G2 real STREAM_COLD dogfood: PENDING
+- G3 portability: PENDING
+- G4 stable cost envelope: PENDING
+- G5 OSS extraction: FUTURE
+
+## Next action
+
+Execute LOCAL-VALIDITY only under an explicit finite-ram-specific MVCA gate/lease.
 
 ## Authority boundary
 
-Design only.
+Design/product seed only.
