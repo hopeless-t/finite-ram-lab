@@ -1,39 +1,26 @@
 # CURRENT
 
-> **Latest bounce:** B191
-> **Stage:** LOCAL-VALIDITY-001 DESIGN FROZEN
+> **Latest bounce:** B192
+> **Stage:** LOCAL-VALIDITY-001 CI QUEUED
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Hosted conclusion
+## Pending external run
 
-- STRATA-002 pressure mechanism: strong
-- hosted timing confirmation: inefficient due runner variance
-- MC selection through 72 blocks: NONE
+- design commit: `5211023d8bfbc1767ab86723ff62f2e9ecfcb0a6`
+- CI run: `36340015641`
+- last observed status: `queued`
 
-## Article intake
+## Current research position
 
-Local-LLM memory taxonomy absorbed:
+- STRATA-002 DONTNEED mechanism is strong on hosted pressure metrics.
+- hosted timing confirmation remains noisy.
+- LLM memory semantics are now explicitly classified.
+- local external-validity protocol is frozen.
+- local execution still requires a finite-ram-specific MVCA gate.
 
-- PERSISTENT_HOT
-- SESSION_HOT
-- PHASE_HOT
-- STREAM_COLD
-- REUSABLE_WARM
+## Next fresh-turn action
 
-Capacity and bandwidth are now separate reporting axes.
-
-## Local protocol
-
-See:
-
-- `docs/LOCAL-VALIDITY-001.md`
-
-No local execution is authorized.
-
-## Next action
-
-Validate B191 via ordinary CI.
-
-Then wait for a finite-ram-specific MVCA gate before L0/L1 execution.
+Read CI run `36340015641` exactly once.
 
 ## Authority boundary
 
