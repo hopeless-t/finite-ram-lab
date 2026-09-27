@@ -1,0 +1,62 @@
+name: Continuity Observer v1
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+      - EXP-003 Design Monte Carlo
+      - GATE-001 Empirical Policy Analysis
+      - GATE-002 Class-Conditional Frontier
+      - SIG-001 Calibration Design Monte Carlo
+      - SIG-001 Low-Q Tail Monte Carlo
+    types:
+      - completed
+
+permissions: {}
+
+jobs:
+  observe:
+    if: ${{ github.event.workflow_run.head_branch == 'main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Write metadata-only observation
+        env:
+          OBSERVER_EVENT_PATH: ${{ github.event_path }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          event = json.loads(Path(os.environ["OBSERVER_EVENT_PATH"]).read_text())
+          run = event["workflow_run"]
+
+          observation = {
+              "schema_version": 1,
+              "observer_id": "CONTINUITY-OBSERVER-v1",
+              "authority": "NON_AUTHORITATIVE_OBSERVATION",
+              "workflow_name": run["name"],
+              "run_id": run["id"],
+              "run_attempt": run.get("run_attempt"),
+              "event": run["event"],
+              "head_branch": run["head_branch"],
+              "head_sha": run["head_sha"],
+              "status": run["status"],
+              "conclusion": run["conclusion"],
+              "created_at": run["created_at"],
+              "updated_at": run["updated_at"],
+          }
+
+          out = Path("continuity-observation.json")
+          out.write_text(json.dumps(observation, indent=2, sort_keys=True) + "\n")
+          print(json.dumps(observation, sort_keys=True))
+          PY
+
+      - name: Upload observation artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: continuity-observer-${{ github.event.workflow_run.id }}
+          path: continuity-observation.json
+          if-no-files-found: error
+          retention-days: 30

@@ -1,30 +1,27 @@
 # CURRENT
 
-> **Latest bounce:** B145
-> **Stage:** CONTINUITY OBSERVER COUNCIL COMPLETE
+> **Latest bounce:** B146
+> **Stage:** CONTINUITY-OBSERVER-v1 IMPLEMENTED / RESEARCH RESUMED
 
-## Decision
+## Reliability lane
 
-Adopt `CONTINUITY-OBSERVER-v1` as an artifact-only, non-authoritative `workflow_run` observer.
+- `.github/workflows/continuity-observer.yml`
+- `docs/CONTINUITY-OBSERVER-v1.md`
+- handoff: `handoffs/B146-CONTINUITY-OBSERVER.md`
 
-Hard constraints:
+Observer dogfood may complete asynchronously as an external GitHub event.
+It is not a research gate.
 
-- no repository writes;
-- no checkout;
-- no predecessor artifacts;
-- no secrets;
-- `permissions: {}`;
-- main branch only;
-- metadata-only observation artifact.
+## Research state to resume
 
-See:
+SIG-001 offline calibrator is implemented and CI-validated.
 
-- `handoffs/B145-CONTINUITY-OBSERVER-COUNCIL.md`
+No real semantic provider has yet been prospectively calibrated.
 
 ## Next action
 
-Implement the observer lane, then resume finite-ram-lab research without waiting for its dogfood run.
+Run the next scientific Council to choose the lowest-authority prospective provider/calibration experiment.
 
 ## Authority boundary
 
-Observation only.
+No provider, deployed gate, or memory intervention is authorized.
