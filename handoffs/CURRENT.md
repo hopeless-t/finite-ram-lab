@@ -1,30 +1,40 @@
 # CURRENT
 
-> **Latest bounce:** B151
-> **Stage:** LABEL-001 CI FIX COMMITTED / STRATA-INSPIRED STUDY AUTHORIZED BY USER
+> **Latest bounce:** B152
+> **Stage:** STRATA-001 / COUNCIL COMPLETE
 
-## LABEL-001 lane
+## Active user-directed study
 
-- prior CI run `36292826020`: FAIL
-- root cause: per-block class-support assumption in confusion bootstrap helper
-- fix committed in B151
-- ordinary CI validation pending
+STRATA-001 — Cold-file Page-Cache Bypass Preservation
 
-LABEL-001 analysis launch is temporarily deferred by explicit user reprioritization.
+Inspired by Niko1221/Strata:
 
-## Active side-study direction
+- upstream: https://github.com/Niko1221/Strata
+- observed revision: `8117643ccc68e3d08f80d38e064333742d4474bb`
 
-Open a Strata-inspired finite-memory study with explicit provenance to:
+Canonical notes:
 
-- `Niko1221/Strata`
-- observed upstream commit `8117643ccc68e3d08f80d38e064333742d4474bb`
+- `docs/STRATA-001-COUNCIL.md`
+- `docs/STRATA-INSPIRATION.md`
 
-No Strata source code is to be copied into finite-ram-lab for the initial study.
+No Strata source code has been copied.
+
+## Research sequence
+
+1. capability probe;
+2. bounded pilot;
+3. Monte Carlo sizing;
+4. confirmatory experiment.
+
+## Parallel LABEL-001 lane
+
+B151 contains the fix for the prior LABEL-001 unit-test failure.
+Its replacement CI remains to be reconciled later.
 
 ## Next action
 
-Converge STRATA-001 Council and freeze the smallest independent experiment.
+Freeze and implement STRATA-001 capability/pilot probe.
 
 ## Authority boundary
 
-No deployment or memory intervention outside bounded experiments is authorized.
+No deployment, kernel change, or generalized cache-bypass policy is authorized.

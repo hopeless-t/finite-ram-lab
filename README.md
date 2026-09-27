@@ -239,3 +239,14 @@ See:
 And, for future architecture:
 
 > **Do not choose the control plane before measuring the coordination gap.**
+
+
+## Inspired research
+
+### STRATA-001 — page-cache bypass and semantic HOT-memory preservation
+
+STRATA-001 was inspired by [Niko1221/Strata](https://github.com/Niko1221/Strata), whose explicit VRAM/RAM/SSD tiering and Linux direct-I/O path motivated a narrower Finite RAM Lab question: whether keeping intentionally COLD file data out of page-cache pressure can preserve intentionally HOT anonymous memory under a finite memory budget.
+
+See [the Strata inspiration note](docs/STRATA-INSPIRATION.md) and [STRATA-001 Council](docs/STRATA-001-COUNCIL.md).
+
+The initial study is an independent implementation; no Strata source code is copied into Finite RAM Lab.
