@@ -1,26 +1,26 @@
 # CURRENT
 
-> **Latest bounce:** B153
-> **Stage:** STRATA-001 / CAPABILITY CONTRACT FROZEN
+> **Latest bounce:** B154
+> **Stage:** STRATA-001 / CAPABILITY PROBE IMPLEMENTED, ORDINARY CI PENDING
 
-## Inspired study
+## Implementation
 
-STRATA-001 is explicitly attributed to Niko1221/Strata.
+- `src/finite_ram_lab/strata001_probe.py`
+- `tests/test_strata001_probe.py`
+- `.github/workflows/strata-001-capability.yml`
 
-## Frozen capability contract
-
-- `specs/STRATA-001-CAPABILITY.json`
-- `docs/STRATA-001-CAPABILITY.md`
+The experiment workflow itself is manual-only.
 
 ## Next action
 
-Implement capability probe + tests + manual-only workflow.
+Read ordinary CI for B154 exactly once.
 
-Do not launch the pressured-memory pilot yet.
+- SUCCESS → launch one bounded STRATA-001 capability run.
+- FAIL → inspect the failure only.
 
-## Parallel lane
+## Attribution
 
-LABEL-001 B151 CI fix still requires later readback.
+STRATA-001 remains explicitly inspired by Niko1221/Strata and contains no copied Strata source.
 
 ## Authority boundary
 
