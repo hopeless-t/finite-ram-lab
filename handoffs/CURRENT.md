@@ -1,29 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B150
-> **Stage:** LABEL-001 / IMPLEMENTATION CI PENDING
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B151
+> **Stage:** LABEL-001 CI FIX COMMITTED / STRATA-INSPIRED STUDY AUTHORIZED BY USER
 
-## Pending external run
+## LABEL-001 lane
 
-- implementation commit: `c07f08167edca9996cbc279cb9e1c74e2368c849`
-- CI run: `36292826020`
-- last observed status: `in_progress`
-- handoff: `handoffs/B150-LABEL001-CI-PENDING-TURN-CLOSE.md`
+- prior CI run `36292826020`: FAIL
+- root cause: per-block class-support assumption in confusion bootstrap helper
+- fix committed in B151
+- ordinary CI validation pending
 
-## Next fresh-turn action
+LABEL-001 analysis launch is temporarily deferred by explicit user reprioritization.
 
-Read CI run `36292826020` exactly once.
+## Active side-study direction
 
-- SUCCESS → launch only frozen LABEL-001 offline analysis.
-- FAIL → inspect failure only; do not launch.
+Open a Strata-inspired finite-memory study with explicit provenance to:
 
-## Reliability policy
+- `Niko1221/Strata`
+- observed upstream commit `8117643ccc68e3d08f80d38e064333742d4474bb`
 
-This is an intentional `EXTERNAL_WAIT` boundary under EXECUTION-CONTINUITY-v1.
+No Strata source code is to be copied into finite-ram-lab for the initial study.
 
-No polling loop is active.
+## Next action
+
+Converge STRATA-001 Council and freeze the smallest independent experiment.
 
 ## Authority boundary
 
-No provider or memory intervention is authorized.
+No deployment or memory intervention outside bounded experiments is authorized.

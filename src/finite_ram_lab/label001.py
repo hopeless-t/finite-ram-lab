@@ -35,21 +35,30 @@ def _ratio_ci(values: np.ndarray) -> list[float]:
     ]
 
 
-def _confusion_metrics(tp: float, fp: float, fn: float, tn: float) -> dict[str, float]:
+def _confusion_metrics(
+    tp: float,
+    fp: float,
+    fn: float,
+    tn: float,
+    *,
+    require_class_support: bool = True,
+) -> dict[str, float | None]:
     total = tp + fp + fn + tn
     pos = tp + fn
     neg = tn + fp
-    if total <= 0 or pos <= 0 or neg <= 0:
+    if total <= 0:
+        raise ValueError("no binary observations")
+    if require_class_support and (pos <= 0 or neg <= 0):
         raise ValueError("insufficient binary class support")
     return {
         "prevalence": float(pos / total),
-        "sensitivity": float(tp / pos),
-        "specificity": float(tn / neg),
+        "sensitivity": float(tp / pos) if pos > 0 else None,
+        "specificity": float(tn / neg) if neg > 0 else None,
         "agreement": float((tp + tn) / total),
     }
 
 
-def _confusion_for_frame(df: pd.DataFrame, gap_column: str) -> dict[str, Any]:
+def _confusion_counts(df: pd.DataFrame, gap_column: str) -> dict[str, int]:
     gap = df[gap_column].to_numpy(dtype=float)
     assigned_misaligned = ~_as_bool(df["aligned"])
 
@@ -60,21 +69,31 @@ def _confusion_for_frame(df: pd.DataFrame, gap_column: str) -> dict[str, Any]:
     pred = assigned_misaligned[binary]
     truth = observable_misaligned[binary]
 
-    tp = int(np.count_nonzero(pred & truth))
-    fp = int(np.count_nonzero(pred & ~truth))
-    fn = int(np.count_nonzero(~pred & truth))
-    tn = int(np.count_nonzero(~pred & ~truth))
-    metrics = _confusion_metrics(tp, fp, fn, tn)
-
     return {
-        "tp": tp,
-        "fp": fp,
-        "fn": fn,
-        "tn": tn,
+        "tp": int(np.count_nonzero(pred & truth)),
+        "fp": int(np.count_nonzero(pred & ~truth)),
+        "fn": int(np.count_nonzero(~pred & truth)),
+        "tn": int(np.count_nonzero(~pred & ~truth)),
         "ambiguous": int(np.count_nonzero(~binary)),
         "binary_trials": int(np.count_nonzero(binary)),
-        **metrics,
     }
+
+
+def _confusion_for_frame(
+    df: pd.DataFrame,
+    gap_column: str,
+    *,
+    require_class_support: bool = True,
+) -> dict[str, Any]:
+    counts = _confusion_counts(df, gap_column)
+    metrics = _confusion_metrics(
+        counts["tp"],
+        counts["fp"],
+        counts["fn"],
+        counts["tn"],
+        require_class_support=require_class_support,
+    )
+    return {**counts, **metrics}
 
 
 def _bootstrap_confusion(
@@ -91,7 +110,7 @@ def _bootstrap_confusion(
     rows = []
     for block in blocks:
         g = df[df["block"] == block]
-        c = _confusion_for_frame(g, gap_column)
+        c = _confusion_counts(g, gap_column)
         rows.append([c["tp"], c["fp"], c["fn"], c["tn"]])
 
     stats = np.asarray(rows, dtype=float)
@@ -259,7 +278,11 @@ def analyze(spec: dict[str, Any], trials_path: str | Path) -> dict[str, Any]:
     pressure = {}
     for level in sorted(map(int, spec["required_pressures_mib"])):
         g = df[df["memory_high_mib"] == level]
-        pressure[str(level)] = _confusion_for_frame(g, "residency_gap")
+        pressure[str(level)] = _confusion_for_frame(
+            g,
+            "residency_gap",
+            require_class_support=False,
+        )
 
     mechanism = _spearman_cluster_bootstrap(
         df,
