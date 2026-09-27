@@ -1,26 +1,32 @@
 # CURRENT
 
-> **Latest bounce:** B154
-> **Stage:** STRATA-001 / CAPABILITY PROBE IMPLEMENTED, ORDINARY CI PENDING
+> **Latest bounce:** B155
+> **Stage:** STRATA-001 / CAPABILITY IMPLEMENTATION CI PENDING
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Implementation
+## Pending external run
 
-- `src/finite_ram_lab/strata001_probe.py`
-- `tests/test_strata001_probe.py`
-- `.github/workflows/strata-001-capability.yml`
+- implementation commit: `f519877a0a71a0d503c89ba79435665fc41d80a0`
+- CI run: `36334490681`
+- last observed status: `in_progress`
+- handoff: `handoffs/B155-STRATA001-CI-PENDING-TURN-CLOSE.md`
 
-The experiment workflow itself is manual-only.
+## Next fresh-turn action
 
-## Next action
+Read CI run `36334490681` exactly once.
 
-Read ordinary CI for B154 exactly once.
-
-- SUCCESS → launch one bounded STRATA-001 capability run.
-- FAIL → inspect the failure only.
+- SUCCESS → launch one bounded STRATA-001 capability workflow.
+- FAIL → inspect failure only; do not launch.
 
 ## Attribution
 
-STRATA-001 remains explicitly inspired by Niko1221/Strata and contains no copied Strata source.
+STRATA-001 is explicitly inspired by Niko1221/Strata.
+
+No upstream source code is copied.
+
+## Parallel lane
+
+LABEL-001 remains preserved after B151's sparse-cluster fix.
 
 ## Authority boundary
 
