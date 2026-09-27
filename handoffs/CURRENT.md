@@ -1,19 +1,35 @@
 # CURRENT
 
-> **Latest bounce:** B175
-> **Stage:** STRATA-002 / PILOT IMPLEMENTED, ORDINARY CI PENDING
+> **Latest bounce:** B176
+> **Stage:** STRATA-002 / PILOT IMPLEMENTATION CI IN PROGRESS
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Implementation
+## Pending external run
 
-STRATA-002 advisory cold-stream pilot is implemented.
+- implementation commit: `38a8f3b48454f1f2bcd3da4fa16e8fa601aac27b`
+- CI run: `36337992770`
+- last observed status: `in_progress`
 
-## Next action
+## Next fresh-turn action
 
-Read ordinary CI for B175 exactly once.
+Read CI run `36337992770` exactly once.
 
-## Individual-PC direction
+- SUCCESS → launch exactly one bounded STRATA-002-PILOT-v1 run.
+- pending → checkpoint EXTERNAL_WAIT.
+- failure → inspect failure only.
 
-The experiment now directly tests whether standard buffered reads plus Linux advice can approach O_DIRECT's low-pressure footprint without O_DIRECT's operational constraints.
+## Research direction
+
+Test practical COLD-stream advice:
+
+- buffered baseline
+- buffered + NOREUSE
+- buffered + sliding DONTNEED
+- direct reference
+
+## Individual-PC relevance
+
+The target is application-level control of one-shot large reads, not global cache destruction.
 
 ## Authority boundary
 
