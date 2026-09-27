@@ -1,27 +1,25 @@
 # CURRENT
 
-> **Latest bounce:** B146
-> **Stage:** CONTINUITY-OBSERVER-v1 IMPLEMENTED / RESEARCH RESUMED
+> **Latest bounce:** B147
+> **Stage:** LABEL-001 / COUNCIL COMPLETE
 
-## Reliability lane
+## Scientific decision
 
-- `.github/workflows/continuity-observer.yml`
-- `docs/CONTINUITY-OBSERVER-v1.md`
-- handoff: `handoffs/B146-CONTINUITY-OBSERVER.md`
+Audit the assignment-derived alignment label against the natural NO_HINT residency outcome before selecting a real semantic provider.
 
-Observer dogfood may complete asynchronously as an external GitHub event.
-It is not a research gate.
+Primary observable outcome:
 
-## Research state to resume
+`hot_fraction < cold_fraction`
 
-SIG-001 offline calibrator is implemented and CI-validated.
+See:
 
-No real semantic provider has yet been prospectively calibrated.
+- `handoffs/B147-LABEL001-COUNCIL.md`
 
 ## Next action
 
-Run the next scientific Council to choose the lowest-authority prospective provider/calibration experiment.
+Freeze LABEL-001 analysis contract using the existing EXP-003 aggregate artifact.
 
 ## Authority boundary
 
-No provider, deployed gate, or memory intervention is authorized.
+Retrospective analysis only.
+No provider or memory intervention is authorized.
