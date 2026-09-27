@@ -1,0 +1,49 @@
+{
+  "experiment_id": "STRATA-001-PILOT-v1",
+  "inspiration": {
+    "repository": "https://github.com/Niko1221/Strata",
+    "observed_commit": "8117643ccc68e3d08f80d38e064333742d4474bb"
+  },
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 6,
+  "base_schedule_seed": 2026092801,
+  "memory_high_mib": [160, 168],
+  "memory_max_mib": 320,
+  "hot_anon_mib": 64,
+  "cold_file_mib": 96,
+  "buffer_mib": 4,
+  "arms": ["mmap", "buffered_pread", "direct_pread"],
+  "trials_per_cell_per_block": 1,
+  "expected_trials": 36,
+  "file_prepare": {
+    "fsync": true,
+    "posix_fadvise_dontneed": true,
+    "require_precache_fraction_le": 0.10
+  },
+  "required_checks": [
+    "six_runner_blocks_present",
+    "thirty_six_trials_present",
+    "all_trials_valid",
+    "no_oom",
+    "memory_limits_match",
+    "all_cells_present_once_per_block",
+    "direct_io_no_fallback",
+    "file_cold_before_each_scan",
+    "content_integrity"
+  ],
+  "primary_pilot_contrast": {
+    "arms": ["direct_pread", "buffered_pread"],
+    "outcome": "hot_resident_fraction_pre_retouch",
+    "estimand": "paired_block_difference_direct_minus_buffered"
+  },
+  "secondary_outcomes": [
+    "log_hot_retouch_ms_ratio_direct_over_buffered",
+    "total_work_ms_ratio_direct_over_buffered",
+    "file_resident_fraction_post_scan",
+    "cgroup_anon_bytes_pre_retouch",
+    "cgroup_file_bytes_pre_retouch",
+    "swap_mib_pre_retouch"
+  ],
+  "inference": "PILOT_ONLY_NO_HYPOTHESIS_GATE",
+  "next_step": "MONTE_CARLO_SIZE_CONFIRMATORY_DESIGN"
+}

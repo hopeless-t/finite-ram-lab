@@ -1,19 +1,16 @@
 # CURRENT
 
-> **Latest bounce:** B160
-> **Stage:** STRATA-001 / PRESSURE PILOT COUNCIL COMPLETE
+> **Latest bounce:** B161
+> **Stage:** STRATA-001 / PILOT CONTRACT FROZEN
 
-## Decision
+## Frozen contract
 
-Proceed with a 36-trial bounded pressure pilot.
-
-See:
-
-- `docs/STRATA-001-PILOT-COUNCIL.md`
+- `specs/STRATA-001-PILOT-v1.json`
+- `docs/STRATA-001-PILOT-v1.md`
 
 ## Next action
 
-Freeze STRATA-001-PILOT-v1 contract.
+Implement STRATA-001-PILOT-v1 workload + analysis + tests + workflow.
 
 ## Attribution
 
