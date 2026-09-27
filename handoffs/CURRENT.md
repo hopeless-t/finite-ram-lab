@@ -1,35 +1,25 @@
 # CURRENT
 
-> **Latest bounce:** B176
-> **Stage:** STRATA-002 / PILOT IMPLEMENTATION CI IN PROGRESS
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B177
+> **Stage:** STRATA-002 / PILOT IMPLEMENTATION CI PASS
 
-## Pending external run
+## Validation
 
 - implementation commit: `38a8f3b48454f1f2bcd3da4fa16e8fa601aac27b`
 - CI run: `36337992770`
-- last observed status: `in_progress`
+- conclusion: `success`
 
-## Next fresh-turn action
+## Next action
 
-Read CI run `36337992770` exactly once.
+Launch exactly one bounded STRATA-002-PILOT-v1 run.
 
-- SUCCESS → launch exactly one bounded STRATA-002-PILOT-v1 run.
-- pending → checkpoint EXTERNAL_WAIT.
-- failure → inspect failure only.
+## Future dogfood transport
 
-## Research direction
+Catfood Lab mainline reports read-only E2E success through:
 
-Test practical COLD-stream advice:
+`Web ChatGPT → Secure MCP Tunnel → MVCA → Local Desktop Commander`
 
-- buffered baseline
-- buffered + NOREUSE
-- buffered + sliding DONTNEED
-- direct reference
-
-## Individual-PC relevance
-
-The target is application-level control of one-shot large reads, not global cache destruction.
+This is not yet used as experimental evidence.
 
 ## Authority boundary
 
