@@ -1,27 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B144
-> **Stage:** EXECUTION-CONTINUITY-v1 FROZEN
+> **Latest bounce:** B145
+> **Stage:** CONTINUITY OBSERVER COUNCIL COMPLETE
 
-## Operational policy
+## Decision
 
-- `ops/EXECUTION-CONTINUITY-v1.json`
-- `docs/EXECUTION-CONTINUITY-v1.md`
-- handoff: `handoffs/B144-EXECUTION-CONTINUITY-v1.md`
+Adopt `CONTINUITY-OBSERVER-v1` as an artifact-only, non-authoritative `workflow_run` observer.
 
-## Active reliability controls
+Hard constraints:
 
-- max 8 canonical bounces per assistant turn;
-- final bounce reserved for close/checkpoint;
-- minimal external tool payloads;
-- explicit turn-stop reasons;
-- fresh-turn reconcile;
-- no retry after unknown delivery.
+- no repository writes;
+- no checkout;
+- no predecessor artifacts;
+- no secrets;
+- `permissions: {}`;
+- main branch only;
+- metadata-only observation artifact.
+
+See:
+
+- `handoffs/B145-CONTINUITY-OBSERVER-COUNCIL.md`
 
 ## Next action
 
-Resume finite-ram-lab research under the new bounded-turn policy.
+Implement the observer lane, then resume finite-ram-lab research without waiting for its dogfood run.
 
 ## Authority boundary
 
-No scientific or intervention authority changed.
+Observation only.
