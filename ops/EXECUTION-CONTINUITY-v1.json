@@ -1,0 +1,20 @@
+{
+  "policy_id": "EXECUTION-CONTINUITY-v1",
+  "max_total_canonical_bounces_per_assistant_turn": 8,
+  "reserved_turn_close_bounces": 1,
+  "max_external_tool_calls_between_user_updates": 3,
+  "external_status_reads_per_bounce": 1,
+  "emit_full_external_api_payloads_by_default": false,
+  "unknown_delivery_retry_count": 0,
+  "fresh_turn_rehydrate_required": true,
+  "external_side_effect_reconcile_required": true,
+  "planned_stop_reasons": [
+    "TURN_CAP",
+    "EXTERNAL_WAIT",
+    "TOOL_FAILURE",
+    "HUMAN_GATE",
+    "COMPLETE"
+  ],
+  "detected_unplanned_stop_reason": "RUNTIME_LOSS",
+  "turn_close_required": true
+}
