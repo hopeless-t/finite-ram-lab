@@ -1,17 +1,15 @@
 # CURRENT
 
-> **Latest bounce:** B156
-> **Stage:** STRATA-001 / IMPLEMENTATION CI PASS
+> **Latest bounce:** B157
+> **Stage:** STRATA-001 / CAPABILITY LAUNCHED
 
-## Validation
+## Launch
 
-- implementation commit: `f519877a0a71a0d503c89ba79435665fc41d80a0`
-- CI run: `36334490681`
-- conclusion: `success`
+The capability workflow was given a self-file-only push trigger so the connected GitHub surface can launch one run without workflow_dispatch API access.
 
 ## Next action
 
-Launch exactly one bounded STRATA-001 capability run.
+Discover the STRATA-001 capability run for B157 exactly once.
 
 ## Attribution
 

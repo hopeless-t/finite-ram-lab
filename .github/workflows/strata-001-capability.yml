@@ -2,6 +2,11 @@ name: STRATA-001 Capability
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/strata-001-capability.yml"
 
 permissions:
   contents: read
