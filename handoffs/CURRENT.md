@@ -1,29 +1,29 @@
 # CURRENT
 
-> **Latest bounce:** B189
-> **Stage:** STRATA-002 / CONFIRMATORY MC COMPLETE
+> **Latest bounce:** B190
+> **Stage:** STRATA-002 COMPLETE ENOUGH FOR LOCAL-VALIDITY DESIGN / LLM MEMORY TAXONOMY ABSORBED
 
-## Confirmatory design result
+## Confirmatory MC
 
-- MC run: `36339291206`
-- result: `NONE_WITHIN_FROZEN_RANGE`
-- 72-block joint assurance: `0.698875`
+- run: `36339291206`
+- result: no candidate through 72 blocks reached 80% joint assurance
+- hosted timing variance is the limiting factor
 
-Hosted timing variance, not pressure-effect absence, is the limiting factor.
+## LLM memory taxonomy
 
 See:
 
-- `docs/STRATA-002-CONFIRMATORY-MC-RESULT.md`
+- `docs/LLM-MEMORY-SEMANTICS-v1.md`
 
-## Decision
+Key rule:
 
-Do not automatically extend hosted confirmatory sizing.
-
-Prioritize local external-validity design.
+Only explicit `STREAM_COLD` ranges are candidates for DONTNEED.
 
 ## Next action
 
-Integrate LLM memory semantics and capacity/bandwidth framing into local dogfood design.
+Freeze a read-only local external-validity protocol.
+
+Do not execute it until a finite-ram-specific MVCA gate/lease exists.
 
 ## Authority boundary
 
