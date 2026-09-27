@@ -1,0 +1,39 @@
+{
+  "metric_set": "STRATA-002-MEMORY-EFFICIENCY-METRICS-v1",
+  "source_run": 36338522437,
+  "source_scope": "MemoryHigh=160MiB; HOT anon=64MiB; COLD file=96MiB; buffer=4MiB",
+  "buffered_dontneed_vs_buffered": {
+    "resident_footprint_reduction": {
+      "median_fraction": 0.52127162,
+      "min_fraction": 0.51709655,
+      "max_fraction": 0.52546183,
+      "median_saved_mib": 82.9765625
+    },
+    "recovered_memory_headroom": {
+      "buffered_median_headroom_mib": 0.681640625,
+      "dontneed_median_headroom_mib": 84.140625,
+      "recovered_mib": 83.458984375,
+      "normalized_to_memory_high_fraction": 0.52161865234375
+    },
+    "cold_stream_amplification_factor": {
+      "buffered_median_vs_direct": 2.097005,
+      "dontneed_median_vs_direct": 1.000051
+    },
+    "cold_cache_retention_fraction": {
+      "buffered_median": 0.8645833333333333,
+      "dontneed_median": 0.0
+    },
+    "pressure_event_suppression": {
+      "blocks_with_complete_suppression": 8,
+      "blocks_total": 8,
+      "median_high_events_avoided": 5.0
+    },
+    "scan_time_cost_ratio": {
+      "median": 1.0269502236216177,
+      "geometric_mean": 1.0048348619516836,
+      "min": 0.2599925020804434,
+      "max": 2.9691211394039363
+    }
+  },
+  "interpretation_boundary": "Workload/cgroup-specific; not a total-system-RAM saving claim."
+}
