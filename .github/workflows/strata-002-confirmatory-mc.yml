@@ -2,6 +2,11 @@ name: STRATA-002 Confirmatory MC v1
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/strata-002-confirmatory-mc.yml"
 
 permissions:
   contents: read
