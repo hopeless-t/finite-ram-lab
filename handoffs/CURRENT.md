@@ -1,11 +1,11 @@
 # CURRENT
 
-> **Latest bounce:** B182
-> **Stage:** STRATA-002 / CONFIRMATORY MC CONTRACT FROZEN
+> **Latest bounce:** B183
+> **Stage:** STRATA-002 / CONFIRMATORY MC IMPLEMENTED, CI PENDING
 
 ## Next action
 
-Implement STRATA-002-CONFIRMATORY-MC-v1 and validate via ordinary CI.
+Read ordinary CI for B183 exactly once.
 
 ## Authority boundary
 

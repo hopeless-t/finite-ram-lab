@@ -1,0 +1,39 @@
+name: STRATA-002 Confirmatory MC v1
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  simulate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Run deterministic design Monte Carlo
+        run: |
+          mkdir -p evidence/STRATA-002-CONFIRMATORY-MC
+          python -m finite_ram_lab.strata002_confirmatory_mc \
+            --spec specs/STRATA-002-CONFIRMATORY-MC-v1.json \
+            --out evidence/STRATA-002-CONFIRMATORY-MC/result.json \
+            --markdown evidence/STRATA-002-CONFIRMATORY-MC/result.md
+
+      - name: Job summary
+        run: cat evidence/STRATA-002-CONFIRMATORY-MC/result.md >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: STRATA-002-CONFIRMATORY-MC-${{ github.run_id }}
+          path: evidence/STRATA-002-CONFIRMATORY-MC/
+          if-no-files-found: error
+          retention-days: 90
