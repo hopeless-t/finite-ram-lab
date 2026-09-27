@@ -1,0 +1,23 @@
+{
+  "analysis_id": "LABEL-001",
+  "source_run": 36253713012,
+  "source_artifact_id": 10910048127,
+  "source_artifact_name": "EXP-003-aggregate-36253713012",
+  "source_artifact_sha256": "08bfd999833274db962f9a017933aa53216d8fdff8ea003a54b81ce33ebed4d3",
+  "source_member": "trials.csv",
+  "source_member_sha256": "29aa46c700b817785bdc67ae4a6eb3c3330887ff5a06efd1f7516aa6ed53ba66",
+  "required_arm": "no_hint",
+  "required_pressures_mib": [160, 162],
+  "expected_runner_blocks": 16,
+  "expected_trials": 128,
+  "primary_observable_label": "hot_fraction < cold_fraction",
+  "ambiguous_label": "hot_fraction == cold_fraction",
+  "assignment_proxy": "not aligned",
+  "primary_continuous_gap": "hot_fraction - cold_fraction",
+  "secondary_continuous_gap": "hot_first16_fraction - cold_first16_fraction",
+  "cluster_bootstrap_resamples": 100000,
+  "cluster_bootstrap_seed": 2026092706,
+  "association": "spearman(residency_gap, log(hot_retouch_ms))",
+  "pressure_stratified_descriptives": true,
+  "first16_is_secondary_only": true
+}

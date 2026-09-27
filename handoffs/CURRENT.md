@@ -1,25 +1,19 @@
 # CURRENT
 
-> **Latest bounce:** B147
-> **Stage:** LABEL-001 / COUNCIL COMPLETE
+> **Latest bounce:** B148
+> **Stage:** LABEL-001 / ANALYSIS CONTRACT FROZEN
 
-## Scientific decision
+## Frozen contract
 
-Audit the assignment-derived alignment label against the natural NO_HINT residency outcome before selecting a real semantic provider.
-
-Primary observable outcome:
-
-`hot_fraction < cold_fraction`
-
-See:
-
-- `handoffs/B147-LABEL001-COUNCIL.md`
+- `specs/LABEL-001.json`
+- `docs/LABEL-001.md`
+- handoff: `handoffs/B148-LABEL001-DESIGN.md`
 
 ## Next action
 
-Freeze LABEL-001 analysis contract using the existing EXP-003 aggregate artifact.
+Implement the LABEL-001 offline analyzer and unit tests only.
 
 ## Authority boundary
 
-Retrospective analysis only.
+Retrospective label audit only.
 No provider or memory intervention is authorized.
