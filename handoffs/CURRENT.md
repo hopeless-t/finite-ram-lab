@@ -1,30 +1,20 @@
 # CURRENT
 
-> **Latest bounce:** B173
-> **Stage:** STRATA-002 / COUNCIL COMPLETE
+> **Latest bounce:** B174
+> **Stage:** STRATA-002 / PILOT CONTRACT FROZEN
 
-## Parent result
+## Frozen files
 
-STRATA-001 pilot is canonicalized and showed:
-
-- zero HOT-residency headroom in tested file-pressure cells;
-- large page-cache / MemoryHigh-pressure difference between buffered and direct I/O.
-
-## New study
-
-STRATA-002 — Advisory Cold-Stream Cache Control
-
-See:
-
-- `docs/STRATA-002-COUNCIL.md`
+- `specs/STRATA-002-PILOT-v1.json`
+- `docs/STRATA-002-PILOT-v1.md`
 
 ## Next action
 
-Freeze STRATA-002-PILOT-v1.
+Implement STRATA-002-PILOT-v1.
 
 ## Individual-PC direction
 
-Test whether ordinary buffered reads plus standard Linux COLD/one-shot advice can capture much of O_DIRECT's memory-pressure benefit without O_DIRECT's operational constraints.
+Test ordinary buffered I/O plus Linux one-shot/COLD advice before considering any invasive or global memory policy.
 
 ## Authority boundary
 

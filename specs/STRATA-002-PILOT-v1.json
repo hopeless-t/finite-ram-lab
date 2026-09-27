@@ -1,0 +1,62 @@
+{
+  "experiment_id": "STRATA-002-PILOT-v1",
+  "inspiration": {
+    "parent_study": "STRATA-001-PILOT-v1",
+    "repository": "https://github.com/Niko1221/Strata"
+  },
+  "runner": "ubuntu-24.04",
+  "required_linux_noreuse_semantics": ">=6.3",
+  "runner_blocks": 8,
+  "base_schedule_seed": 2026092802,
+  "memory_high_mib": 160,
+  "memory_max_mib": 320,
+  "hot_anon_mib": 64,
+  "cold_file_mib": 96,
+  "buffer_mib": 4,
+  "arms": [
+    "buffered",
+    "buffered_noreuse",
+    "buffered_dontneed",
+    "direct"
+  ],
+  "trials_per_arm_per_block": 1,
+  "expected_trials": 32,
+  "file_prepare": {
+    "fsync": true,
+    "posix_fadvise_dontneed": true,
+    "require_precache_fraction_le": 0.10
+  },
+  "advice": {
+    "buffered_noreuse": "POSIX_FADV_NOREUSE full-file before scan",
+    "buffered_dontneed": "POSIX_FADV_DONTNEED after each completed 4MiB aligned chunk"
+  },
+  "primary_outcomes": [
+    "memory_high_events_scan_delta",
+    "memory_current_mib_post_scan",
+    "memory_peak_mib_post_scan",
+    "file_resident_fraction_post_scan"
+  ],
+  "secondary_outcomes": [
+    "scan_ms",
+    "work_ms",
+    "pgscan_scan_delta",
+    "pgsteal_scan_delta",
+    "cgroup_file_mib_post_scan",
+    "hot_resident_fraction_pre_retouch",
+    "hot_retouch_ms",
+    "swap_mib_post_scan"
+  ],
+  "required_checks": [
+    "eight_runner_blocks_present",
+    "thirty_two_trials_present",
+    "all_trials_valid",
+    "all_arms_once_per_block",
+    "file_cold_before_each_scan",
+    "advice_support_explicit",
+    "direct_no_fallback",
+    "content_integrity",
+    "no_oom"
+  ],
+  "inference": "PILOT_ONLY_NO_HYPOTHESIS_GATE",
+  "next_step": "MONTE_CARLO_ONLY_IF_ADVISORY_ARM_CHANGES_PRESSURE"
+}
