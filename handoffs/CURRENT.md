@@ -1,26 +1,39 @@
 # CURRENT
 
-> **Latest bounce:** B162
-> **Stage:** STRATA-001 / PILOT IMPLEMENTED, ORDINARY CI PENDING
+> **Latest bounce:** B163
+> **Stage:** STRATA-001 / PILOT IMPLEMENTATION CI QUEUED
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Implementation
+## Pending external run
 
-- workload
-- schedule/aggregator
-- tests
-- manual-only pilot workflow
+- implementation commit: `4ad80f8f35f18fe6fc35cff699d2fe313ce126bf`
+- CI run: `36336653793`
+- last observed status: `queued`
 
-See:
+## Next fresh-turn action
 
-- `handoffs/B162-STRATA001-PILOT-IMPLEMENT.md`
+Read CI run `36336653793` exactly once.
 
-## Next action
+- SUCCESS → launch exactly one bounded STRATA-001-PILOT-v1 run.
+- pending → checkpoint EXTERNAL_WAIT.
+- failure → inspect failure only.
 
-Read ordinary CI for B162 exactly once.
+## Pilot contract
+
+- 6 blocks
+- 36 total trials
+- MemoryHigh 160 / 168 MiB
+- HOT anon 64 MiB
+- COLD file 96 MiB
+- MMAP / BUFFERED_PREAD / DIRECT_PREAD
 
 ## Attribution
 
 Inspired by Niko1221/Strata; independent implementation.
+
+## Parallel lane
+
+LABEL-001 remains preserved after B151.
 
 ## Authority boundary
 
