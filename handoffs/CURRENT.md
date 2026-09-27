@@ -1,26 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B170
-> **Stage:** STRATA-001 / PILOT AGGREGATE PATH FIX, CI PENDING
+> **Latest bounce:** B171
+> **Stage:** STRATA-001 / PILOT AGGREGATE FIX CI QUEUED
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Reconciled pilot
+## Pending validation
 
-- pilot run: `36336994450`
-- all six block jobs: SUCCESS
-- aggregate job: FAILURE
-- cause: downloaded artifact directory name not recognized
+- aggregate-fix commit: `71612c6b37dcfe5a9d332f5c8d0f9d1ed444d280`
+- CI run: `36337262716`
+- last observed status: `queued`
 
-## Fix
+## Preserved pilot evidence
 
-Collector now accepts `strata001-pilot-block-*`.
+Pilot run `36336994450` completed all six block jobs successfully.
 
-## Next action
+Only aggregation failed due to downloaded artifact directory naming.
 
-Read ordinary CI for B170 exactly once.
+## Next fresh-turn action
 
-- SUCCESS → recover and aggregate the existing six block artifacts; do not re-run trials.
+Read CI run `36337262716` exactly once.
+
+- SUCCESS → recover and aggregate the existing six block artifacts.
 - pending → checkpoint EXTERNAL_WAIT.
 - failure → inspect failure only.
+
+Do not re-run physical pilot trials unless recovery is impossible.
 
 ## Attribution
 
