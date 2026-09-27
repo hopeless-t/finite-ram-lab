@@ -1,28 +1,25 @@
 # CURRENT
 
-> **Latest bounce:** B158
-> **Stage:** STRATA-001 / CAPABILITY RUN QUEUED
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B159
+> **Stage:** STRATA-001 / CAPABILITY PASS
 
-## Pending external run
+## Capability evidence
 
-- launch commit: `c3ac290eedb5587493a9ac35bce68d8066ea8a8d`
-- STRATA-001 capability run: `36336116804`
-- last observed status: `queued`
-- ordinary CI run: `36336116792`
-- last observed CI status: `queued`
+- run: `36336116804`
+- artifact: `10937625451`
+- result: PASS
+- MMAP post-cache: 1.0000
+- BUFFERED_PREAD post-cache: 1.0000
+- DIRECT_PREAD post-cache: 0.0000
 
-## Next fresh-turn action
+See:
 
-Read capability run `36336116804` exactly once.
+- `docs/STRATA-001-CAPABILITY-RESULT.md`
+- `handoffs/B159-STRATA001-CAPABILITY-PASS.md`
 
-- SUCCESS → inspect capability artifact/result.
-- still pending → checkpoint EXTERNAL_WAIT.
-- failure → inspect failure only.
+## Next action
 
-## Attribution
-
-Inspired by Niko1221/Strata; independent implementation.
+Converge and freeze a bounded STRATA-001 pressure pilot.
 
 ## Parallel lane
 
@@ -30,4 +27,4 @@ LABEL-001 remains preserved after B151.
 
 ## Authority boundary
 
-Capability only.
+No generalized cache-bypass policy or deployment is authorized.
