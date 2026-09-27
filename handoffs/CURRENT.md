@@ -1,29 +1,39 @@
 # CURRENT
 
-> **Latest bounce:** B190
-> **Stage:** STRATA-002 COMPLETE ENOUGH FOR LOCAL-VALIDITY DESIGN / LLM MEMORY TAXONOMY ABSORBED
+> **Latest bounce:** B191
+> **Stage:** LOCAL-VALIDITY-001 DESIGN FROZEN
 
-## Confirmatory MC
+## Hosted conclusion
 
-- run: `36339291206`
-- result: no candidate through 72 blocks reached 80% joint assurance
-- hosted timing variance is the limiting factor
+- STRATA-002 pressure mechanism: strong
+- hosted timing confirmation: inefficient due runner variance
+- MC selection through 72 blocks: NONE
 
-## LLM memory taxonomy
+## Article intake
+
+Local-LLM memory taxonomy absorbed:
+
+- PERSISTENT_HOT
+- SESSION_HOT
+- PHASE_HOT
+- STREAM_COLD
+- REUSABLE_WARM
+
+Capacity and bandwidth are now separate reporting axes.
+
+## Local protocol
 
 See:
 
-- `docs/LLM-MEMORY-SEMANTICS-v1.md`
+- `docs/LOCAL-VALIDITY-001.md`
 
-Key rule:
-
-Only explicit `STREAM_COLD` ranges are candidates for DONTNEED.
+No local execution is authorized.
 
 ## Next action
 
-Freeze a read-only local external-validity protocol.
+Validate B191 via ordinary CI.
 
-Do not execute it until a finite-ram-specific MVCA gate/lease exists.
+Then wait for a finite-ram-specific MVCA gate before L0/L1 execution.
 
 ## Authority boundary
 
