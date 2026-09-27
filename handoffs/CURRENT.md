@@ -1,30 +1,24 @@
 # CURRENT
 
-> **Latest bounce:** B159
-> **Stage:** STRATA-001 / CAPABILITY PASS
+> **Latest bounce:** B160
+> **Stage:** STRATA-001 / PRESSURE PILOT COUNCIL COMPLETE
 
-## Capability evidence
+## Decision
 
-- run: `36336116804`
-- artifact: `10937625451`
-- result: PASS
-- MMAP post-cache: 1.0000
-- BUFFERED_PREAD post-cache: 1.0000
-- DIRECT_PREAD post-cache: 0.0000
+Proceed with a 36-trial bounded pressure pilot.
 
 See:
 
-- `docs/STRATA-001-CAPABILITY-RESULT.md`
-- `handoffs/B159-STRATA001-CAPABILITY-PASS.md`
+- `docs/STRATA-001-PILOT-COUNCIL.md`
 
 ## Next action
 
-Converge and freeze a bounded STRATA-001 pressure pilot.
+Freeze STRATA-001-PILOT-v1 contract.
 
-## Parallel lane
+## Attribution
 
-LABEL-001 remains preserved after B151.
+Inspired by Niko1221/Strata; independent implementation.
 
 ## Authority boundary
 
-No generalized cache-bypass policy or deployment is authorized.
+Pilot only.
