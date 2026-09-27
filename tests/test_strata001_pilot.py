@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import json
+import tempfile
 import unittest
+from pathlib import Path
 
 import pandas as pd
 
-from finite_ram_lab.strata001_pilot_study import paired_effects, schedule_rows
+from finite_ram_lab.strata001_pilot_study import collect, paired_effects, schedule_rows
 
 
 SPEC = {
@@ -57,6 +60,52 @@ class Strata001PilotTests(unittest.TestCase):
         self.assertLess(
             p["log_hot_retouch_ratio_direct_over_buffered"], 0.0
         )
+
+    def test_collect_accepts_download_artifact_directory_name(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            raw = root / "strata001-pilot-block-3" / "raw"
+            raw.mkdir(parents=True)
+            payload = {
+                "status": "PASS",
+                "cgroup": {
+                    "pre_retouch": {
+                        "memory_stat": {"anon": 1, "file": 2},
+                        "memory_swap_current": 0,
+                    }
+                },
+                "hot": {
+                    "pre_retouch_residency": {"resident_fraction": 1.0},
+                    "retouch_ns": 1000000,
+                },
+                "file": {
+                    "pre_scan_residency": {"resident_fraction": 0.0},
+                    "post_scan_residency": {"resident_fraction": 1.0},
+                },
+                "scan": {
+                    "elapsed_ns": 2000000,
+                    "direct_io": False,
+                    "error": None,
+                },
+                "work_interval_ns": 3000000,
+                "retouch_deltas": {
+                    "pswpin": 0,
+                    "workingset_refault_anon": 0,
+                    "pgmajfault": 0,
+                    "pgscan": 0,
+                    "pgsteal": 0,
+                },
+                "checks": {
+                    "content_integrity": True,
+                    "no_oom": True,
+                },
+            }
+            (raw / "trial-0-high160-mmap.json").write_text(
+                json.dumps(payload) + "\n"
+            )
+            df = collect(root)
+            self.assertEqual(len(df), 1)
+            self.assertEqual(int(df.iloc[0]["block"]), 3)
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ import pandas as pd
 FILE_RE = re.compile(
     r"trial-(?P<order>\d+)-high(?P<high>\d+)-(?P<arm>mmap|buffered_pread|direct_pread)\.json$"
 )
-BLOCK_RE = re.compile(r"(?:strata001-)?block-(?P<block>\d+)$")
+BLOCK_RE = re.compile(r"(?:(?:strata001(?:-pilot)?-)?block)-(?P<block>\d+)$")
 
 
 def load_spec(path: str | Path) -> dict[str, Any]:
@@ -52,7 +52,11 @@ def write_schedule(spec: dict[str, Any], block: int, out: str | Path) -> None:
 
 def collect(root: Path) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
-    dirs = sorted(root.glob("block-*")) + sorted(root.glob("strata001-block-*"))
+    dirs = (
+        sorted(root.glob("block-*"))
+        + sorted(root.glob("strata001-block-*"))
+        + sorted(root.glob("strata001-pilot-block-*"))
+    )
 
     for d in dirs:
         bm = BLOCK_RE.search(d.name)
