@@ -1,30 +1,28 @@
 # CURRENT
 
-> **Latest bounce:** B171
-> **Stage:** STRATA-001 / PILOT AGGREGATE FIX CI QUEUED
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B172
+> **Stage:** STRATA-001 / PILOT RESULT RECOVERED
 
-## Pending validation
+## Canonical result
 
-- aggregate-fix commit: `71612c6b37dcfe5a9d332f5c8d0f9d1ed444d280`
-- CI run: `36337262716`
-- last observed status: `queued`
+- 36 / 36 trials valid
+- HOT anonymous residency: 1.0000 in every arm
+- DIRECT post-scan file residency: 0.0000
+- BUFFERED/MMAP post-scan file residency: ~0.87–0.95
+- DIRECT avoided MemoryHigh events in the pilot
+- no swap before HOT retouch
 
-## Preserved pilot evidence
+See:
 
-Pilot run `36336994450` completed all six block jobs successfully.
+- `docs/STRATA-001-PILOT-RESULT.md`
+- `evidence/STRATA-001-PILOT/recovered-summary.json`
+- `evidence/STRATA-001-PILOT/block-pairs.csv`
 
-Only aggregation failed due to downloaded artifact directory naming.
+## Decision
 
-## Next fresh-turn action
+Do not confirm the current HOT-residency endpoint.
 
-Read CI run `36337262716` exactly once.
-
-- SUCCESS → recover and aggregate the existing six block artifacts.
-- pending → checkpoint EXTERNAL_WAIT.
-- failure → inspect failure only.
-
-Do not re-run physical pilot trials unless recovery is impossible.
+Converge a next-stage Council focused on personal-PC-applicable cold-stream cache management.
 
 ## Attribution
 
@@ -32,4 +30,4 @@ Inspired by Niko1221/Strata; independent implementation.
 
 ## Authority boundary
 
-Pilot recovery only.
+Research only.

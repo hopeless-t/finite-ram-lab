@@ -1,0 +1,57 @@
+{
+  "experiment_id": "STRATA-001-PILOT-v1",
+  "status": "PASS",
+  "inference": "PILOT_ONLY",
+  "source_run": 36336994450,
+  "collector_fix_commit": "71612c6b37dcfe5a9d332f5c8d0f9d1ed444d280",
+  "collector_fix_ci_run": 36337262716,
+  "runner_blocks": 6,
+  "trials": 36,
+  "validity": {
+    "all_trials_pass": true,
+    "no_oom": true,
+    "all_cells_present_once_per_block": true,
+    "direct_io_no_fallback": true,
+    "file_cold_before_each_scan": true,
+    "content_integrity": true
+  },
+  "primary": {
+    "160": {
+      "hot_residency_direct_median": 1.0,
+      "hot_residency_buffered_median": 1.0,
+      "paired_difference_median": 0.0,
+      "paired_difference_values": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    },
+    "168": {
+      "hot_residency_direct_median": 1.0,
+      "hot_residency_buffered_median": 1.0,
+      "paired_difference_median": 0.0,
+      "paired_difference_values": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    }
+  },
+  "mechanism": {
+    "160": {
+      "file_post_mmap": 0.8658854166666667,
+      "file_post_buffered": 0.8736979166666667,
+      "file_post_direct": 0.0,
+      "memory_current_mib_mmap": 159.859375,
+      "memory_current_mib_buffered": 159.787109375,
+      "memory_current_mib_direct": 75.859375,
+      "median_high_events_mmap": 50.5,
+      "median_high_events_buffered": 6.0,
+      "median_high_events_direct": 0.0
+    },
+    "168": {
+      "file_post_mmap": 0.953125,
+      "file_post_buffered": 0.9348958333333334,
+      "file_post_direct": 0.0,
+      "memory_current_mib_mmap": 167.859375,
+      "memory_current_mib_buffered": 165.896484375,
+      "memory_current_mib_direct": 75.859375,
+      "median_high_events_mmap": 17.0,
+      "median_high_events_buffered": 2.0,
+      "median_high_events_direct": 0.0
+    }
+  },
+  "decision": "REFRAME_BEFORE_CONFIRMATORY_MONTE_CARLO"
+}
