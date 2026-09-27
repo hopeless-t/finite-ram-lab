@@ -1,23 +1,28 @@
 # CURRENT
 
-> **Latest bounce:** B149
-> **Stage:** LABEL-001 / ANALYZER IMPLEMENTED, CI PENDING
+> **Latest bounce:** B150
+> **Stage:** LABEL-001 / IMPLEMENTATION CI PENDING
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Implementation
+## Pending external run
 
-- `src/finite_ram_lab/label001.py`
-- `tests/test_label001.py`
-- handoff: `handoffs/B149-LABEL001-IMPLEMENT.md`
+- implementation commit: `c07f08167edca9996cbc279cb9e1c74e2368c849`
+- CI run: `36292826020`
+- last observed status: `in_progress`
+- handoff: `handoffs/B150-LABEL001-CI-PENDING-TURN-CLOSE.md`
 
-## Next action
+## Next fresh-turn action
 
-Read B149 ordinary CI exactly once.
+Read CI run `36292826020` exactly once.
 
-If SUCCESS, launch only LABEL-001 retrospective analysis.
+- SUCCESS → launch only frozen LABEL-001 offline analysis.
+- FAIL → inspect failure only; do not launch.
 
-## Reliability note
+## Reliability policy
 
-This turn is operating under EXECUTION-CONTINUITY-v1.
+This is an intentional `EXTERNAL_WAIT` boundary under EXECUTION-CONTINUITY-v1.
+
+No polling loop is active.
 
 ## Authority boundary
 
