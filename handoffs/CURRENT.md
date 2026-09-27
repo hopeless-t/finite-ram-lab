@@ -1,25 +1,19 @@
 # CURRENT
 
-> **Latest bounce:** B177
-> **Stage:** STRATA-002 / PILOT IMPLEMENTATION CI PASS
+> **Latest bounce:** B178
+> **Stage:** STRATA-002 / PILOT LAUNCHED
 
-## Validation
+## Launch
 
-- implementation commit: `38a8f3b48454f1f2bcd3da4fa16e8fa601aac27b`
-- CI run: `36337992770`
-- conclusion: `success`
+One bounded STRATA-002-PILOT-v1 run has been triggered.
 
 ## Next action
 
-Launch exactly one bounded STRATA-002-PILOT-v1 run.
+Discover the pilot run for B178 exactly once.
 
-## Future dogfood transport
+## Future local dogfood
 
-Catfood Lab mainline reports read-only E2E success through:
-
-`Web ChatGPT → Secure MCP Tunnel → MVCA → Local Desktop Commander`
-
-This is not yet used as experimental evidence.
+The newly proven MVCA secure-tunnel E2E path is recorded as future transport only. No local mutation is authorized by this research bounce.
 
 ## Authority boundary
 
