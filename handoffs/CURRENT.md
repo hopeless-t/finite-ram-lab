@@ -1,34 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B188
-> **Stage:** STRATA-002 / EFFICIENCY METRICS FROZEN + CONFIRMATORY MC PENDING
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B189
+> **Stage:** STRATA-002 / CONFIRMATORY MC COMPLETE
 
-## Frozen practical metrics
+## Confirmatory design result
 
-DONTNEED vs buffered:
+- MC run: `36339291206`
+- result: `NONE_WITHIN_FROZEN_RANGE`
+- 72-block joint assurance: `0.698875`
 
-- Resident Footprint Reduction median: 52.13%
-- median saved footprint: 82.98 MiB
-- recovered MemoryHigh headroom: 83.46 MiB
-- cold-stream amplification: 2.10x -> ~1.00x
-- high-event suppression: 8/8 blocks
-- COLD file residency: ~86.5% -> 0%
+Hosted timing variance, not pressure-effect absence, is the limiting factor.
 
 See:
 
-- `docs/STRATA-002-MEMORY-EFFICIENCY-METRICS-v1.md`
-- `evidence/STRATA-002-PILOT/efficiency-metrics-v1.json`
+- `docs/STRATA-002-CONFIRMATORY-MC-RESULT.md`
 
-## Pending external run
+## Decision
 
-- confirmatory design MC: `36339291206`
-- last observed status: `queued`
+Do not automatically extend hosted confirmatory sizing.
 
-## Next fresh-turn action
+Prioritize local external-validity design.
 
-Read MC run `36339291206` exactly once.
+## Next action
+
+Integrate LLM memory semantics and capacity/bandwidth framing into local dogfood design.
 
 ## Authority boundary
 
-Design/research only.
+Design only.
