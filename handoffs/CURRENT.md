@@ -1,17 +1,15 @@
 # CURRENT
 
-> **Latest bounce:** B167
-> **Stage:** STRATA-001 / PILOT PRE-LAUNCH CI PASS
+> **Latest bounce:** B168
+> **Stage:** STRATA-001 / PILOT LAUNCHED
 
-## Validation
+## Launch
 
-- fix commit: `914289e419c821ede3ea2895f752d3c9de973fc9`
-- CI run: `36336850152`
-- conclusion: `success`
+One bounded STRATA-001-PILOT-v1 run has been triggered through a self-file-only push trigger.
 
 ## Next action
 
-Launch exactly one bounded STRATA-001-PILOT-v1 run.
+Discover the pilot run for B168 exactly once.
 
 ## Attribution
 

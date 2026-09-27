@@ -2,6 +2,11 @@ name: STRATA-001 Pilot v1
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/strata-001-pilot.yml"
 
 permissions:
   contents: read
