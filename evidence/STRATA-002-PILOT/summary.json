@@ -1,0 +1,40 @@
+{
+  "experiment_id": "STRATA-002-PILOT-v1",
+  "status": "PASS",
+  "source_run": 36338522437,
+  "aggregate_artifact_id": 10938470859,
+  "aggregate_artifact_digest": "sha256:bec214018ea7a71e948cdb13c76c5292613f2fc0dd16a1bb03929988c747149d",
+  "runner_blocks": 8,
+  "trials": 32,
+  "decision": {
+    "buffered_dontneed": "ADVANCE_TO_CONFIRMATORY_DESIGN",
+    "buffered_noreuse": "DO_NOT_ADVANCE",
+    "direct": "REFERENCE_ONLY"
+  },
+  "cells": {
+    "buffered": {
+      "median_high_events": 5.0,
+      "median_memory_current_mib": 159.318359375,
+      "median_file_post_fraction": 0.8645833333333333,
+      "median_scan_ms": 86.36094800000001
+    },
+    "buffered_noreuse": {
+      "median_high_events": 5.5,
+      "median_memory_current_mib": 158.99609375,
+      "median_file_post_fraction": 0.8541666666666666,
+      "median_scan_ms": 59.960615000000004
+    },
+    "buffered_dontneed": {
+      "median_high_events": 0.0,
+      "median_memory_current_mib": 75.859375,
+      "median_file_post_fraction": 0.0,
+      "median_scan_ms": 82.420075
+    },
+    "direct": {
+      "median_high_events": 0.0,
+      "median_memory_current_mib": 75.859375,
+      "median_file_post_fraction": 0.0,
+      "median_scan_ms": 89.6249665
+    }
+  }
+}
