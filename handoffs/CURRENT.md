@@ -1,20 +1,37 @@
 # CURRENT
 
-> **Latest bounce:** B178
-> **Stage:** STRATA-002 / PILOT LAUNCHED
+> **Latest bounce:** B179
+> **Stage:** STRATA-002 / PILOT QUEUED
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Launch
+## Pending hosted runs
 
-One bounded STRATA-002-PILOT-v1 run has been triggered.
+- launch commit: `3029d39523bfe072d28284b38e92fed0a9154287`
+- STRATA-002 pilot run: `36338522437`
+- last observed status: `queued`
+- ordinary CI run: `36338522444`
+- last observed status: `queued`
 
-## Next action
+## Next fresh-turn action
 
-Discover the pilot run for B178 exactly once.
+Read STRATA-002 pilot run `36338522437` exactly once.
 
-## Future local dogfood
+- SUCCESS → inspect aggregate artifact/result.
+- pending → checkpoint EXTERNAL_WAIT.
+- failure → inspect failure only.
 
-The newly proven MVCA secure-tunnel E2E path is recorded as future transport only. No local mutation is authorized by this research bounce.
+## Local dogfood readiness
+
+MVCA read-only status observation:
+
+- canonical state: CURRENT
+- NO_ACTIVE_GATE
+- authority_grant: NONE
+
+No LDC tool call was attempted.
+
+See `docs/LOCAL-DOGFOOD-READINESS-v1.md`.
 
 ## Authority boundary
 
-Research only.
+Hosted research only.
