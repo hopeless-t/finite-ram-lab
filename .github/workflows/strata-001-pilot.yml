@@ -28,9 +28,10 @@ jobs:
       - name: Prepare cold file outside trial cgroups
         run: |
           python - <<'PY'
+          import os
           from pathlib import Path
           from finite_ram_lab.strata001_probe import _prepare_file
-          p = Path("$RUNNER_TEMP") / "strata001-pilot-cold.bin"
+          p = Path(os.environ["RUNNER_TEMP"]) / "strata001-pilot-cold.bin"
           _prepare_file(p, 96 * 1024 * 1024, 4 * 1024 * 1024)
           print(p)
           PY

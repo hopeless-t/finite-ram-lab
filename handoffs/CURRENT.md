@@ -1,17 +1,15 @@
 # CURRENT
 
-> **Latest bounce:** B164
-> **Stage:** STRATA-001 / PILOT IMPLEMENTATION CI PASS
+> **Latest bounce:** B165
+> **Stage:** STRATA-001 / PILOT PRE-LAUNCH WORKFLOW FIX, CI PENDING
 
-## Validation
+## Fix
 
-- implementation commit: `4ad80f8f35f18fe6fc35cff699d2fe313ce126bf`
-- CI run: `36336653793`
-- conclusion: `success`
+Cold-file preparation now resolves `RUNNER_TEMP` through the process environment rather than a literal string.
 
 ## Next action
 
-Launch exactly one bounded STRATA-001-PILOT-v1 run.
+Read ordinary CI for B165 exactly once.
 
 ## Attribution
 
