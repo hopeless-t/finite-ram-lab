@@ -1,0 +1,6 @@
+MEMCG-002 explicit hosted launch
+B298
+Implementation repair: 3e563db223c80938a09a8a1567c8b9fe4e5836d4
+Repair CI: 36455336164 success
+Causal probe: FIXED_TOUCH / MIGRATE_TOUCH / ROUNDTRIP_TOUCH / ROUNDTRIP_CONTROL; A->B after step128; B->A after step192; 4 blocks / 16 trials.
+Hosted research only. No local execution.
