@@ -1,34 +1,53 @@
 # CURRENT
 
-> **Latest bounce:** B276
-> **Stage:** EVIDENCE-001 WORKFLOW REPAIRED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B277
+> **Stage:** EVIDENCE-001 REPAIR CI EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Failed hosted build
+## EVIDENCE-001 repair
 
-Run `36446699329` failed before corpus construction.
-
-Exposed invariant:
+Failed run `36446699329` exposed:
 
 `ModuleNotFoundError: No module named 'finite_ram_lab'`
 
-No scientific result was produced or accepted.
+Repair commit:
 
-## Repair
+`167701853fa148a87c2ceeb8108f4960561bead1`
 
-EVIDENCE-001 workflow now installs the repository package before invoking:
+adds repository package installation before corpus construction.
 
-`python -m finite_ram_lab.evidence001_sql_corpus`
+Repair CI:
 
-No launch retry has been issued.
+`36446882842`
+
+Single B277 read:
+
+`queued`
+
+Do not poll again in this bounce.
+
+No second EVIDENCE-001 launch has been issued.
+
+## Mathematical next direction
+
+Once SQL corpus validation passes, freeze a page-quantization probe rather than fitting a smooth capacity law.
+
+Candidate mathematics:
+- discrete first differences;
+- modulo analysis over 4 KiB multiples;
+- lattice/step-width inference;
+- change-point tests around powers of two;
+- blockwise replication and counterexample SQL.
+
+The previously noticed ~256 KiB structure remains a hypothesis, not an accepted mechanism.
 
 ## Next fresh-bounce action
 
-Discover/read ordinary CI for the B276 repair commit exactly once.
+Read `36446882842` exactly once.
 
-- success -> update the existing EVIDENCE-001 launch marker with a new explicit launch generation;
+- success -> new explicit EVIDENCE-001 launch generation;
 - pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only the exposed invariant.
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 
