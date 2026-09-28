@@ -1,48 +1,77 @@
 # CURRENT
 
-> **Latest bounce:** B288
-> **Stage:** MATH-001 IMPLEMENTED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B289
+> **Stage:** MATH-001 IMPLEMENTED + CI EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## MATH-001 implementation
+## MEMCG-001 accepted evidence
 
-Files:
-- `src/finite_ram_lab/math001_model_competition.py`
-- `.github/workflows/math-001-model-competition.yml`
-- `tests/test_math001_model_competition.py`
+Run:
+`36449072026`
 
-Input:
-`evidence/MEMCG-001/event-sequence-v1.json`
+Verdict:
+`SUPPORT_H64`
 
-Competition:
-- LINEAR
-- STAIRCASE(Q)
-- RESET_STAIRCASE(Q)
-- ARBITRARY_EVENTS
+4/4 touch blocks support a 64-page positive accounting quantum.
+0/4 controls show non-zero jumps.
 
-Q:
+Block2 contains one negative discontinuity at step173.
+Reset-aware segmentation gives exact Q64 staircases on both sides with different phases.
+
+## MATH-001
+
+Exact implementation:
+
+`1da3d8db4da5bd0d87a066293fff719ae3f25125`
+
+Model competition:
+- linear
+- stationary Q staircase
+- reset-aware Q staircase
+- arbitrary positions
+- null/control
+
+Q panel:
 `1,2,4,8,16,32,64,128`
 
-Scores:
-- full sequence SSE/RMSE
+Primary scoring:
+- full sequence residual
 - combinatorial MDL
-- leave-one-block-out prediction
-- divisor false-prediction penalty
-- reset-aware phase segmentation
-- spectral coherence diagnostic
+- leave-one-block-out predictive F1
 
-No launch marker exists.
+Ordinary CI:
+
+`36452184202`
+
+Single B289 read:
+
+`in_progress`
+
+Do not poll again in this bounce.
 
 ## Next fresh-bounce action
 
-Discover/read B288 ordinary CI exactly once.
+Read CI `36452184202` exactly once.
 
 - success -> explicit MATH-001 launch;
 - pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
+## Later physical follow-up
+
+If MODEL64_WINS:
+design MEMCG-002 as a causal state-reset test, likely comparing:
+- fixed-CPU pinned execution;
+- deliberate one-time CPU migration in the same cgroup;
+- no-touch migration control.
+
+Rationale:
+upstream memcg stock is per-CPU; migration should perturb phase/state if the hidden-stock interpretation is correct.
+
+Local LDC replication should follow only after hosted causal evidence and under a separately bound MVCA execution scope.
+
 ## Authority boundary
 
-Hosted research only.
+Hosted research only in current bounce.
 No local-PC execution.
 No memory-control policy.
