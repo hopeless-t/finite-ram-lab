@@ -7,6 +7,7 @@ import platform
 from pathlib import Path
 
 from .calculators import CATALOG, run_spec, template
+from .recorder import ingest_many
 
 
 def _dump(data: object) -> None:
@@ -38,6 +39,16 @@ def cmd_run_spec(args: argparse.Namespace) -> None:
             "tool": result["tool"],
             "out": str(out),
         }
+    )
+
+
+def cmd_ingest_evidence(args: argparse.Namespace) -> None:
+    _dump(
+        ingest_many(
+            args.inputs,
+            args.db,
+            rebuild=args.rebuild,
+        )
     )
 
 
@@ -98,6 +109,19 @@ def main() -> None:
     p.add_argument("spec")
     p.add_argument("--out", required=True)
     p.set_defaults(func=cmd_run_spec)
+
+    p = sub.add_parser(
+        "ingest-evidence",
+        help="Build or extend the REC-001 SQLite projection from JSONL evidence",
+    )
+    p.add_argument("inputs", nargs="+")
+    p.add_argument("--db", required=True)
+    p.add_argument(
+        "--rebuild",
+        action="store_true",
+        help="Delete the existing SQLite projection before ingesting inputs",
+    )
+    p.set_defaults(func=cmd_ingest_evidence)
 
     p = sub.add_parser(
         "doctor",

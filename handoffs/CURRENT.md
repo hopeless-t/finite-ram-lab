@@ -1,40 +1,48 @@
 # CURRENT
 
-> **Latest bounce:** B207
-> **Stage:** REC-001 / RECORDER v0 DESIGN FROZEN
+> **Latest bounce:** B208
+> **Stage:** REC-001 / v0 IMPLEMENTED / HOSTED VALIDATION PENDING
 
 ## Parent research state
 
-STRATA-005 external-validity design remains frozen from B206.
+STRATA-005 external-validity design remains frozen from B206 and unchanged.
 
-It varies MemoryHigh at 144 and 176 MiB, retains 160 MiB as the existing anchor, and keeps the existing workload/runner family. See `docs/STRATA-005-EXTERNAL-VALIDITY-v1.md`.
+## REC-001 state
 
-## Council decision
+The B207 Council authorized a deliberately small observation-only recorder before STRATA-005 implementation.
 
-Before STRATA-005 implementation, add a deliberately small observation-only evidence recorder.
+REC-001 v0 is now implemented:
 
-See:
+- append-only canonical JSONL evidence;
+- schema-versioned run/sample/event/summary/end records;
+- SQLite query projection;
+- deterministic canonical JSON duplicate checks;
+- idempotent re-ingestion;
+- conflicting duplicate rejection;
+- file-level transactional rollback;
+- rebuildable projection;
+- CLI ingestion command;
+- unit tests.
 
-- `docs/REC-001-COUNCIL.md`
-- `docs/REC-001-RECORDER-v0.md`
+## Critical boundary
 
-## Frozen recorder contract
+The recorder is not assumed to be measurement-transparent.
 
-- JSONL is canonical raw evidence.
-- SQLite is a rebuildable query projection.
-- records are schema-versioned;
-- measurements, events, and derived summaries remain distinct;
-- provenance is explicit;
-- duplicate ingestion must be idempotent or fail on conflict;
-- v0 performs no reclaim/control action.
+A hosted recorder-on versus recorder-off overhead check is required before recorder-instrumented performance results become authoritative.
 
-## Critical validation
+## Validation state
 
-Recorder overhead is itself an experimental concern. Before recorder-instrumented performance claims become authoritative, recorder-on versus recorder-off overhead must be measured.
+Hosted CI for the B208 implementation has not yet been accepted into evidence.
 
 ## Next action
 
-Implement the minimal stdlib REC-001 recorder and SQLite ingester with tests. Do not launch STRATA-005 yet.
+Read B208 hosted CI exactly once.
+
+- success -> canonicalize REC-001 v0 implementation PASS, then freeze a minimal recorder-overhead validation;
+- pending -> retain this checkpoint and stop with EXTERNAL_WAIT;
+- failure -> inspect failure only; do not blindly retry.
+
+STRATA-005 remains unlaunched.
 
 ## Authority boundary
 
