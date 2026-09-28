@@ -1,0 +1,6 @@
+MATH-001 explicit hosted launch
+B290
+Implementation: 1da3d8db4da5bd0d87a066293fff719ae3f25125
+CI: 36452184202 success
+Model competition over MEMCG-001: Q panel 1,2,4,8,16,32,64,128; reset-aware SSE; combinatorial MDL; leave-one-block-out prediction; divisor-alias penalty.
+Hosted research only. No local execution.
