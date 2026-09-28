@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B229
-> **Stage:** STRATA-005 / EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B230
+> **Stage:** STRATA-005 / HOSTED RUN LAUNCHED + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## REC-002
 
@@ -22,32 +22,55 @@ Canonical hosted PASS:
 - 26 REC-001 records per trial
 - aggregate reports raw-MiB and release/high onset screens
 
-Ordinary CI `36428893054`: completed / success.
+Pre-launch ordinary CI `36428893054`: completed / success.
 
 ## Launch
 
-B229 creates `launch/STRATA-005-v1.txt`, the explicit path-gated trigger for the hosted workflow.
+Exact launch commit:
 
-No study parameter changed at launch.
+`93283b041c53db57dab709f7f433e464037358c9`
+
+Explicit marker:
+
+`launch/STRATA-005-v1.txt`
+
+Hosted STRATA-005 run:
+
+`36430416271`
+
+Single discovery/status read in B230:
+
+`queued`
+
+Do not poll again in this bounce.
+
+Ordinary CI `36430416229` was also created by the launch commit; it is not the scientific result and was not polled.
 
 ## Source intake
 
-Naive-N0.5-Flash intake remains recorded at `docs/NAIVE-N05-FLASH-INTAKE-v1.md`.
+`docs/NAIVE-N05-FLASH-INTAKE-v1.md` records the Naive-N0.5-Flash intake.
 
-It does not alter STRATA-005. Semantic reuse distance remains a future-study proposal.
+Council result remains:
 
-## Next action
+- DONTNEED evidence transfer: NO
+- mechanism transfer: YES
+- measurement-design transfer: STRONG YES
+- semantic reuse distance: future-study proposal only
 
-Discover/read the STRATA-005 workflow run for this exact launch commit once.
+## Next fresh-bounce action
 
-- success -> collect and analyze evidence;
+Read run `36430416271` exactly once.
+
+- success -> fetch artifacts once and validate/atomize all 40 trials;
 - pending/in_progress -> checkpoint EXTERNAL_WAIT and stop;
 - failure -> inspect only the exposed invariant; no blind rerun.
+
+After valid cross-pressure observations exist, revisit whether Monte Carlo adds information.
 
 ## Operating policy
 
 Research remains mainline.
-Monte Carlo remains deferred until cross-pressure observations exist.
+Recorder repair remains sidecar work driven by concrete counterexamples.
 
 ## Authority boundary
 
