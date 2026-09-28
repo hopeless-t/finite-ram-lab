@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import tempfile
 import unittest
+from pathlib import Path
 
-from finite_ram_lab.rec002_overhead import ARMS, schedule_rows, summarize_trials
+from finite_ram_lab.rec002_overhead import ARMS, schedule_rows, summarize_trials, write_schedule
 
 
 def _trial(block: int, mode: str) -> dict:
@@ -31,6 +33,14 @@ class Rec002Tests(unittest.TestCase):
             set(ARMS),
         )
         self.assertEqual(len(schedule_rows(3)), 2)
+
+    def test_schedule_file_uses_unix_line_endings(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "schedule.csv"
+            write_schedule(path, 0)
+            raw = path.read_bytes()
+        self.assertNotIn(b"\\r", raw)
+        self.assertEqual(raw.count(b"\\n"), 3)
 
     def test_schedule_changes_across_blocks(self) -> None:
         orders = [tuple(row["mode"] for row in schedule_rows(i)) for i in range(8)]

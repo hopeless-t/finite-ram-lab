@@ -27,7 +27,7 @@ def write_schedule(path: str | Path, block: int) -> None:
     out = Path(path)
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=["order", "mode"])
+        writer = csv.DictWriter(fh, fieldnames=["order", "mode"], lineterminator="\n")
         writer.writeheader()
         writer.writerows(schedule_rows(block))
 

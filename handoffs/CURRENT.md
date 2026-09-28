@@ -1,55 +1,41 @@
 # CURRENT
 
-> **Latest bounce:** B213
-> **Stage:** REC-002 / HOSTED RUN + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B214
+> **Stage:** REC-002 / INFRASTRUCTURE FAILURE FIXED / CI PENDING
 
-## REC-002 launch
+## REC-002 run 1
 
-Launch commit:
+Hosted run `36419229167` = `completed / failure`.
 
-`90995d3c8bccfea4870dd4e87d561bc5639ca10b`
+All 8 blocks failed before measurement because the generated CSV schedule used CRLF and Bash retained `\\r` in the final `mode` field. Representative error:
 
-Hosted workflow run:
+`argument --mode: invalid choice: 'recorder_off\\r'`
 
-`36419229167`
+There are zero valid observer-effect trials from this run. It must not be interpreted as recorder or pressure evidence.
 
-Last and only REC-002 status read in B213:
+## B214 fix
 
-`queued`
+The schedule producer now explicitly uses LF-only CSV via `lineterminator="\\n"` and a byte-level regression test rejects carriage returns.
 
-Do not poll this run again in the same bounce.
-
-## Frozen study
-
-- 8 hosted runner blocks;
-- paired recorder_off / recorder_on;
-- 16 total trials;
-- MemoryHigh=160 MiB;
-- MemoryMax=320 MiB;
-- hot anonymous memory=64 MiB;
-- cold file=96 MiB;
-- DONTNEED=80 MiB;
-- recorder_on emits 26 synchronous JSONL records;
-- SQLite ingest is outside the measured interval.
+This is a portability/interface correction. It does not authorize an automatic rerun.
 
 ## Next fresh-bounce action
 
-Read REC-002 run `36419229167` once.
+Read ordinary CI for the B214 fix exactly once.
 
-- success -> inspect aggregate artifact once and canonicalize observer-effect findings;
+- success -> accept the fix and create a distinct REC-002 relaunch marker/commit;
 - pending -> checkpoint EXTERNAL_WAIT and stop;
 - failure -> inspect failure only; no blind retry.
 
 ## Parent research state
 
-REC-001 v0 is repository-valid.
+REC-001 v0 remains repository-valid.
 
 STRATA-005 external-validity design remains frozen from B206 and unlaunched.
 
 ## Authority boundary
 
-Hosted REC-002 only.
+Hosted research/repository work only.
 No local-PC execution.
 No STRATA-005 launch inferred.
 No memory-control policy authorized.
