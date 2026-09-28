@@ -1,77 +1,80 @@
 # CURRENT
 
-> **Latest bounce:** B247
-> **Stage:** STRATA-007 PASS / CROSS-IMAGE PORTABILITY SUPPORTED
-> **Turn stop reason:** READY_FOR_NEXT_DESIGN
+> **Latest bounce:** B248
+> **Stage:** STRATA-008 COLD-CAPACITY INVARIANCE DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## Canonical cross-image result
+## Canonical mechanism evidence
 
-STRATA-007 run:
-
-`36435758885`
-
-Launch SHA:
-
-`615cc9957d4f7e49cc60a7d799431ba149d6f22b`
-
-Aggregate:
-
-- artifact `STRATA-007-CROSS-IMAGE-36435758885`
-- id `10975842099`
-- digest `sha256:1f677697ec810dd1f25dee0c7657044d55a52dee3874806579266bbae2370eb4`
-- trials 24 / 24
-- PASS
-
-Ubuntu 26.04 result:
-
-`80 < K <= 88 MiB`
-
-`144 < K+hot <= 152 MiB`
-
-Ubuntu 24.04 STRATA-004 anchor has the same brackets.
-
-All four 26.04 blocks reproduced the same onset.
-
-## Leading mechanism
-
-Across pressure, live-set, and hosted-image axes:
+Across STRATA-005/006/007, the leading tested mechanism is:
 
 `K ~= MemoryHigh - effective_live_set`
 
-remains the leading tested mechanism.
+It has survived:
 
-The non-hot component is measurable but not universal.
+- pressure variation
+- hot/live-set variation
+- Ubuntu hosted-image variation
 
-Ubuntu 26.04 DONTNEED non-hot floor:
+STRATA-007 Ubuntu 26.04 anchor:
 
-- median 12.8125 MiB
-- range approximately 12.805–13.313 MiB
+- cold file 96 MiB
+- `80 < K <= 88 MiB`
+- `144 < K+hot <= 152 MiB`
+- DONTNEED non-hot floor median 12.8125 MiB
 
-## Recorder sidecar issue
+## STRATA-008 frozen design
 
-The STRATA-007 environment receipt captured a blank `systemd_version` field.
+Change only total one-shot cold capacity:
 
-The scientific run remains valid because `systemd-run` executed successfully and the new image/kernel identity was recorded.
+- cold file 192 MiB
 
-Future receipts must query `systemd-run --version` rather than `systemd --version`.
+Hold:
+
+- Ubuntu 26.04
+- Python 3.12
+- MemoryHigh 160 MiB
+- MemoryMax 320 MiB
+- hot anon 64 MiB
+- read chunk 4 MiB
+- buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
+- 4 blocks
+- 24 trials
+- REC-001 density unchanged
+
+Question:
+
+Does doubled total cold capacity preserve the same onset and retained-floor bounds while increasing only total work/advice activity?
+
+Design:
+
+`docs/STRATA-008-COLD-CAPACITY-v1.md`
+
+## Recorder sidecar repair
+
+STRATA-007 environment receipts had blank `systemd_version`.
+
+STRATA-008 must use:
+
+`systemd-run --version | head -n1`
+
+for the version receipt.
 
 ## Monte Carlo
 
-Deferred. Two substrate families with identical coarse onset intervals do not identify a useful portability distribution.
+Deferred until doubled-capacity physical evidence exists.
 
 ## Next fresh-bounce action
 
-Freeze a total-cold-volume test:
+Implement STRATA-008:
 
-- runner Ubuntu 26.04
-- MemoryHigh 160 MiB
-- hot anon 64 MiB
-- current 96 MiB cold-file result reused as anchor
-- increase total cold file size materially
-- preserve read chunk, DONTNEED mechanism, cadence panel, Recorder density
-- ask whether knee and retained floor remain bounded independently of total cold capacity
+- spec
+- deterministic scheduler/trial/aggregate
+- Ubuntu 26.04 hosted workflow
+- repaired environment receipt
+- regression tests
 
-Do not launch in the design bounce.
+Do not launch during implementation.
 
 ## Queued future studies
 
@@ -82,9 +85,9 @@ No local execution is authorized.
 
 ## Authority boundary
 
-Hosted research only.
+Hosted repository/research work only.
 No local-PC execution.
+No STRATA-008 launch.
 No memory-control policy authorized.
 Proposal != Decision.
 Expressibility != Executability.
-No blind retry after unknown delivery.
