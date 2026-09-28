@@ -1,79 +1,56 @@
 # CURRENT
 
-> **Latest bounce:** B281
-> **Stage:** MEMCG-001 PAGE-CHARGE QUANTIZATION DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B282
+> **Stage:** MEMCG-001 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## EVIDENCE-001
+## MEMCG-001 implementation
 
-SQL corpus PASS.
+Files:
+- `specs/MEMCG-001-PAGE-CHARGE-QUANTIZATION-v1.json`
+- `experiments/memcg001_worker.c`
+- `src/finite_ram_lab/memcg001_quantization.py`
+- `.github/workflows/memcg-001-quantization.yml`
+- `tests/test_memcg001_quantization.py`
 
-It rediscovered:
-- pressure fixed-knee contradiction;
-- common live-set transform `144 < K+hot <= 152`;
-- capacity-knee invariance across 96/192/384 MiB;
-- clean-floor span 0.248046875 MiB.
-
-## MEMCG-001
-
-Direct falsification test for a candidate discrete accounting structure.
-
-Upstream mechanism candidate:
-- `MEMCG_CHARGE_BATCH = 64U`
-- with 4 KiB base pages -> 256 KiB
-
-Frozen hosted experiment:
-- Ubuntu 26.04
+Measurement:
+- fresh systemd cgroup per trial
 - C worker
-- page size must be 4096
-- fresh transient cgroup per trial
-- self-pin to one CPU
-- 256 one-page samples
-- touch and no-touch control
-- 4 blocks
-- 8 trials
+- fixed CPU affinity
+- 4096-byte page requirement
+- 256 samples after one-page touch increments
+- identical no-touch control
+- 4 blocks / 8 trials
 
-Analysis:
-- baseline-corrected `memory.current`
+Math:
+- baseline-corrected current pages
 - first differences
-- significant jump magnitudes
-- Q lattice search
-- modulo phase
+- significant jump extraction
+- candidate Q={1,2,4,8,16,32,64,128}
+- magnitude lattice score
+- modulo phase concentration
 - jump spacing
 - autocorrelation
-- control comparison
+- preregistered H64 decision
 
-Decision:
-- SUPPORT_H64 only with >=3/4 block replication under preregistered magnitude/spacing criteria;
-- REJECT_H64 for stable contrary evidence;
-- otherwise INCONCLUSIVE.
-
-Design:
-`docs/MEMCG-001-PAGE-CHARGE-QUANTIZATION-v1.md`
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement:
-- C worker
-- Python schedule/aggregate/math analyzer
-- spec
-- Ubuntu 26.04 workflow
-- tests
+Discover/read B282 ordinary CI exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-001 hosted launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
-## LDC
+## LDC path
 
-LDC makes later local replication practical:
-- local checkout/test/build;
-- actual Lubuntu kernel/cgroup receipt;
-- exact same worker and analyzer;
-- GitHub publication afterward.
+If hosted result is stable, prepare a separate MVCA-bound local replication using the same C worker/analyzer on Lubuntu.
 
-But local execution requires its own MVCA scope/approval/binding.
+No local execution in current bounce.
 
 ## Authority boundary
 
-Hosted repository/research work only in current bounce.
+Hosted repository/research only.
 No local-PC execution.
 No memory-control policy.

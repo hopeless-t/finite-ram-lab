@@ -1,0 +1,21 @@
+{
+  "experiment_id": "MEMCG-001-PAGE-CHARGE-QUANTIZATION-v1",
+  "runner": "ubuntu-26.04",
+  "runner_blocks": 4,
+  "base_schedule_seed": 2026092909,
+  "required_page_size": 4096,
+  "steps": 256,
+  "modes": ["touch", "control"],
+  "expected_trials": 8,
+  "significant_jump_pages": 16,
+  "candidate_quanta_pages": [1, 2, 4, 8, 16, 32, 64, 128],
+  "h64_jump_range_pages": [60, 68],
+  "h64_spacing_range_pages": [62, 66],
+  "h64_required_touch_blocks": 3,
+  "source_mechanism": {
+    "linux_commit": "72d3fcf802c45d00b300f25b848a93c3a2bd7c7e",
+    "symbol": "MEMCG_CHARGE_BATCH",
+    "value_pages": 64
+  },
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
