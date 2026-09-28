@@ -1,0 +1,40 @@
+{
+  "experiment_id": "STRATA-008-COLD-CAPACITY-v1",
+  "runner": "ubuntu-26.04",
+  "runner_blocks": 4,
+  "base_schedule_seed": 2026092823,
+  "memory_high_mib": 160,
+  "memory_max_mib": 320,
+  "hot_anon_mib": 64,
+  "cold_file_mib": 192,
+  "read_chunk_mib": 4,
+  "arms": ["buffered", "dontneed_64m", "dontneed_72m", "dontneed_80m", "dontneed_88m", "dontneed_96m"],
+  "release_interval_mib": {
+    "buffered": null,
+    "dontneed_64m": 64,
+    "dontneed_72m": 72,
+    "dontneed_80m": 80,
+    "dontneed_88m": 88,
+    "dontneed_96m": 96
+  },
+  "expected_trials": 24,
+  "anchor": {
+    "experiment_id": "STRATA-007-CROSS-IMAGE-v1",
+    "cold_file_mib": 96,
+    "raw_release_interval_bracket": "80 MiB < onset <= 88 MiB",
+    "knee_plus_hot_bracket": "144 MiB < K+hot <= 152 MiB",
+    "median_non_hot_floor_mib": 12.8125
+  },
+  "file_prepare": {
+    "fsync": true,
+    "posix_fadvise_dontneed": true,
+    "require_precache_fraction_le": 0.1
+  },
+  "recorder": {
+    "enabled": true,
+    "checkpoint_metric": "memory.current",
+    "records_per_trial": 50,
+    "sqlite_inside_measured_interval": false
+  },
+  "authority": "HOSTED_RESEARCH_ONLY"
+}

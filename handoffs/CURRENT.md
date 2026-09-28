@@ -1,91 +1,48 @@
 # CURRENT
 
-> **Latest bounce:** B248
-> **Stage:** STRATA-008 COLD-CAPACITY INVARIANCE DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B249
+> **Stage:** STRATA-008 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## Canonical mechanism evidence
+## STRATA-008 implementation
 
-Across STRATA-005/006/007, the leading tested mechanism is:
+Exact implementation adds:
 
-`K ~= MemoryHigh - effective_live_set`
+- `specs/STRATA-008-COLD-CAPACITY-v1.json`
+- `src/finite_ram_lab/strata008_cold_capacity.py`
+- `.github/workflows/strata-008-cold-capacity.yml`
+- `tests/test_strata008_cold_capacity.py`
 
-It has survived:
-
-- pressure variation
-- hot/live-set variation
-- Ubuntu hosted-image variation
-
-STRATA-007 Ubuntu 26.04 anchor:
-
-- cold file 96 MiB
-- `80 < K <= 88 MiB`
-- `144 < K+hot <= 152 MiB`
-- DONTNEED non-hot floor median 12.8125 MiB
-
-## STRATA-008 frozen design
-
-Change only total one-shot cold capacity:
-
-- cold file 192 MiB
-
-Hold:
+Frozen study:
 
 - Ubuntu 26.04
 - Python 3.12
 - MemoryHigh 160 MiB
 - MemoryMax 320 MiB
 - hot anon 64 MiB
+- cold file 192 MiB
 - read chunk 4 MiB
 - buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
 - 4 blocks
-- 24 trials
-- REC-001 density unchanged
+- 24 total trials
 
-Question:
+Recorder records/trial = 50 because 192 MiB / 4 MiB = 48 scan checkpoints plus start/end.
 
-Does doubled total cold capacity preserve the same onset and retained-floor bounds while increasing only total work/advice activity?
+Environment receipt now uses `systemd-run --version`.
 
-Design:
-
-`docs/STRATA-008-COLD-CAPACITY-v1.md`
-
-## Recorder sidecar repair
-
-STRATA-007 environment receipts had blank `systemd_version`.
-
-STRATA-008 must use:
-
-`systemd-run --version | head -n1`
-
-for the version receipt.
-
-## Monte Carlo
-
-Deferred until doubled-capacity physical evidence exists.
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement STRATA-008:
+Discover/read B249 ordinary CI exactly once.
 
-- spec
-- deterministic scheduler/trial/aggregate
-- Ubuntu 26.04 hosted workflow
-- repaired environment receipt
-- regression tests
-
-Do not launch during implementation.
-
-## Queued future studies
-
-- Naive-N0.5-Flash semantic reuse / reconstructible-state
-- LLM-jp-4.1 local worker + state-lifetime dogfood
-
-No local execution is authorized.
+- success -> explicit STRATA-008 launch in a separate commit;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only the exposed invariant.
 
 ## Authority boundary
 
-Hosted repository/research work only.
+Hosted repository/research only.
 No local-PC execution.
 No STRATA-008 launch.
 No memory-control policy authorized.
