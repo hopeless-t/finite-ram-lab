@@ -1,0 +1,21 @@
+STRATA-006 Live-Set Headroom v1 — explicit hosted launch marker
+
+Launch generation: B239
+Implementation commit: 65035dfc4d4e2f9e5ec4075dda84fc39807e69cc
+Implementation CI: 36433776719 = success
+
+Authorized scope:
+- hosted GitHub Actions research only
+- frozen STRATA-006 design
+- MemoryHigh 160 MiB
+- MemoryMax 320 MiB
+- hot anon 56 / 72 MiB
+- buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
+- four blocks per hot setting
+- 48 trials total
+- REC-001 density: 26 records/trial
+
+This marker does not authorize local-PC execution, policy deployment, retry after unknown delivery, or changes to the frozen design.
+
+Proposal != Decision.
+Expressibility != Executability.
