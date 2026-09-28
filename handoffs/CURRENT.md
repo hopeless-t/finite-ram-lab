@@ -1,50 +1,58 @@
 # CURRENT
 
-> **Latest bounce:** B226
-> **Stage:** STRATA-005 / RECORDER PATH REPAIRED / CI PENDING
+> **Latest bounce:** B227
+> **Stage:** STRATA-005 / RECORDER PATH REPAIRED + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## REC-002
 
-Canonical PASS: run `36427808785`, 16/16 valid trials, zero Recorder-induced MemoryHigh-event delta in all 8 paired blocks.
+Canonical hosted PASS:
+
+- run: `36427808785`
+- trials: 16 / 16
+- all 8 paired blocks: recorder-induced MemoryHigh-event delta = 0
+- Recorder accepted for STRATA-005 at the tested 26-record density
 
 ## STRATA-005
 
-B225 implementation was read back before launch and a semantic mismatch was found: Recorder was declared in the spec but bypassed by the workflow.
+B226 commit:
 
-B226 repaired the execution path.
+`645c119257c53243bfa444962f96d4ea368ab9cb`
 
-Every trial now goes through the STRATA-005 wrapper and records:
+Execution contract now matches the frozen design and Recorder policy.
 
-- run_start
-- 24 memory.current checkpoint samples
-- run_end
+Each of the future 40 trials will:
 
-Expected REC-001 record count: 26.
+- execute under MemoryHigh 144 or 176 MiB;
+- use one of buffered / 48 / 64 / 80 / 96 MiB arms;
+- emit exactly 26 REC-001 raw records;
+- emit one trial JSON with raw and normalized outcomes.
 
-The wrapper also emits the trial JSON consumed by aggregation.
+The aggregate validates the exact 2 x 4 x 5 matrix and reports raw-MiB and release/high onset screens.
 
-## Frozen design
+## Hosted validation
 
-- MemoryHigh: 144 / 176 MiB
-- arms: buffered / 48 / 64 / 80 / 96 MiB
-- 4 blocks per pressure
-- 40 total trials
-- MemoryMax: 320 MiB
-- hot anon: 64 MiB
-- cold file: 96 MiB
-- read chunk: 4 MiB
+Ordinary CI:
+
+`36428893054`
+
+Last and only status read in B227:
+
+`in_progress`
+
+Do not poll again in the same bounce.
 
 ## Next fresh-bounce action
 
-Read B226 ordinary CI once.
+Read `36428893054` once.
 
-- success -> explicit launch marker in a separate commit;
+- success -> explicit STRATA-005 launch marker and 40-trial hosted run;
 - pending -> checkpoint EXTERNAL_WAIT;
-- failure -> inspect only the failure and repair atomically.
+- failure -> repair the exposed invariant only.
 
 ## Operating policy
 
-Research mainline continues; Recorder repair is triggered by concrete counterexamples.
+Research remains mainline. Recorder repair is sidecar work driven by concrete counterexamples.
 
 ## Authority boundary
 
