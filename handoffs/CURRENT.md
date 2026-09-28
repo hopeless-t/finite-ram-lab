@@ -1,48 +1,53 @@
 # CURRENT
 
-> **Latest bounce:** B225
-> **Stage:** STRATA-005 IMPLEMENTED / CI VALIDATION NEXT / NOT LAUNCHED
+> **Latest bounce:** B226
+> **Stage:** STRATA-005 / RECORDER PATH REPAIRED / CI PENDING
 
-## Canonical parent evidence
+## REC-002
 
-REC-002 run `36427808785` passed 16/16 trials and found zero MemoryHigh-event regime changes across all 8 paired blocks. Recorder is accepted for STRATA-005 only at the tested density.
+Canonical PASS: run `36427808785`, 16/16 valid trials, zero Recorder-induced MemoryHigh-event delta in all 8 paired blocks.
 
-## STRATA-005 implementation
+## STRATA-005
 
-Frozen design:
-- MemoryHigh 144 and 176 MiB
-- buffered + DONTNEED 48/64/80/96 MiB
+B225 implementation was read back before launch and a semantic mismatch was found: Recorder was declared in the spec but bypassed by the workflow.
+
+B226 repaired the execution path.
+
+Every trial now goes through the STRATA-005 wrapper and records:
+
+- run_start
+- 24 memory.current checkpoint samples
+- run_end
+
+Expected REC-001 record count: 26.
+
+The wrapper also emits the trial JSON consumed by aggregation.
+
+## Frozen design
+
+- MemoryHigh: 144 / 176 MiB
+- arms: buffered / 48 / 64 / 80 / 96 MiB
 - 4 blocks per pressure
-- 40 hosted trials
-- MemoryMax 320 MiB
-- hot anon 64 MiB
-- cold file 96 MiB
+- 40 total trials
+- MemoryMax: 320 MiB
+- hot anon: 64 MiB
+- cold file: 96 MiB
+- read chunk: 4 MiB
 
-B225 added the machine-readable spec, deterministic scheduler/aggregator, unit tests, and a hosted workflow.
+## Next fresh-bounce action
 
-The workflow is `workflow_dispatch` only. This commit does not launch STRATA-005.
+Read B226 ordinary CI once.
 
-## Pseudo-Council
-
-Converged: vary one causal axis only. Do not add runner-substrate variation until cross-pressure evidence exists. Keep throughput descriptive. Do not infer a controller formula from two pressure settings.
-
-## Monte Carlo
-
-Deferred until empirical cross-pressure observations exist.
-
-## Next action
-
-Read ordinary CI for the B225 exact head once.
-
-- success -> launch STRATA-005 in a separate explicit bounce;
+- success -> explicit launch marker in a separate commit;
 - pending -> checkpoint EXTERNAL_WAIT;
-- failure -> inspect only the exposed implementation failure and repair atomically.
+- failure -> inspect only the failure and repair atomically.
+
+## Operating policy
+
+Research mainline continues; Recorder repair is triggered by concrete counterexamples.
 
 ## Authority boundary
 
 Hosted research only.
 No local-PC execution.
 No memory-control policy authorized.
-Proposal != Decision.
-Expressibility != Executability.
-No blind retry after unknown delivery.

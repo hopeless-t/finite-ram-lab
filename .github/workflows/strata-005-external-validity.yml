@@ -2,6 +2,11 @@ name: STRATA-005 External Validity v1
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "launch/STRATA-005-v1.txt"
 
 permissions:
   contents: read
@@ -9,61 +14,132 @@ permissions:
 jobs:
   block:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
         pressure: [144, 176]
         block: [0, 1, 2, 3]
+
     steps:
       - uses: actions/checkout@v7
+
       - uses: actions/setup-python@v7
-        with: {python-version: "3.12"}
-      - run: python -m pip install -e ".[analysis]"
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
       - name: Prepare cold file
         run: |
           python - <<'PY'
           import os
           from pathlib import Path
           from finite_ram_lab.strata001_probe import _prepare_file
-          p=Path(os.environ["RUNNER_TEMP"])/"strata005-cold.bin"
-          _prepare_file(p,96*1024*1024,4*1024*1024)
+          p = Path(os.environ["RUNNER_TEMP"]) / "strata005-cold.bin"
+          _prepare_file(p, 96 * 1024 * 1024, 4 * 1024 * 1024)
+          print(p)
           PY
-      - name: Schedule
-        env: {PRESSURE: ${{ matrix.pressure }}, BLOCK: ${{ matrix.block }}}
+
+      - name: Build schedule and environment
+        env:
+          PRESSURE: ${{ matrix.pressure }}
+          BLOCK: ${{ matrix.block }}
         run: |
-          ROOT="evidence/STRATA-005/high-${PRESSURE}/block-${BLOCK}"; mkdir -p "${ROOT}/raw" "${ROOT}/recorder"
-          python -m finite_ram_lab.strata005_external_validity schedule --spec specs/STRATA-005-EXTERNAL-VALIDITY-v1.json --pressure "${PRESSURE}" --block "${BLOCK}" --out "${ROOT}/schedule.csv"
-      - name: Run
-        env: {PRESSURE: ${{ matrix.pressure }}, BLOCK: ${{ matrix.block }}}
+          ROOT="evidence/STRATA-005/high-${PRESSURE}/block-${BLOCK}"
+          mkdir -p "${ROOT}/raw"
+          python -m finite_ram_lab.strata005_external_validity schedule             --spec specs/STRATA-005-EXTERNAL-VALIDITY-v1.json             --pressure "${PRESSURE}"             --block "${BLOCK}"             --out "${ROOT}/schedule.csv"
+          {
+            echo "kernel_release=$(uname -r)"
+            echo "systemd_version=$(systemd --version | head -n1)"
+            echo "cgroup_fs_type=$(stat -fc %T /sys/fs/cgroup)"
+            cat /etc/os-release
+          } > "${ROOT}/environment.txt"
+
+      - name: Run five-arm panel with Recorder
+        env:
+          PRESSURE: ${{ matrix.pressure }}
+          BLOCK: ${{ matrix.block }}
         run: |
           set -euo pipefail
-          PY="$(command -v python)"; HIGH_BYTES=$((PRESSURE*1024*1024)); MAX_BYTES=$((320*1024*1024))
+          PY="$(command -v python)"
+          HIGH_BYTES=$((PRESSURE * 1024 * 1024))
+          MAX_BYTES=$((320 * 1024 * 1024))
+          FILE="$RUNNER_TEMP/strata005-cold.bin"
           ROOT="$GITHUB_WORKSPACE/evidence/STRATA-005/high-${PRESSURE}/block-${BLOCK}"
+
           tail -n +2 "${ROOT}/schedule.csv" | while IFS=, read -r ORDER ARM; do
-            OUT="${ROOT}/raw/trial-${ORDER}-${ARM}.json"
-            RAW="${ROOT}/recorder/trial-${ORDER}-${ARM}.jsonl"
             UNIT="finite-ram-strata005-${GITHUB_RUN_ID}-${PRESSURE}-${BLOCK}-${ORDER}"
-            sudo systemd-run --pipe --wait --collect --quiet --unit="$UNIT" -p MemoryAccounting=yes -p MemoryHigh="$HIGH_BYTES" -p MemoryMax="$MAX_BYTES"               "$PY" -m finite_ram_lab.strata004_knee_workload --arm "$ARM" --file "$RUNNER_TEMP/strata005-cold.bin" --hot-anon-mib 64 --buffer-mib 4 --expected-file-mib 96 --expected-high-bytes "$HIGH_BYTES" --expected-max-bytes "$MAX_BYTES" --precache-limit 0.10 --out "$OUT" >/dev/null
+            OUT="${ROOT}/raw/trial-${ORDER}-${ARM}.json"
+            RAW="${ROOT}/raw/trial-${ORDER}-${ARM}.jsonl"
+
+            sudo systemd-run               --pipe --wait --collect --quiet               --unit="$UNIT"               -p MemoryAccounting=yes               -p MemoryHigh="$HIGH_BYTES"               -p MemoryMax="$MAX_BYTES"               "$PY" -m finite_ram_lab.strata005_external_validity trial                 --spec specs/STRATA-005-EXTERNAL-VALIDITY-v1.json                 --pressure "$PRESSURE"                 --block "$BLOCK"                 --order "$ORDER"                 --arm "$ARM"                 --source-commit "$GITHUB_SHA"                 --file "$FILE"                 --raw-evidence "$RAW"                 --out "$OUT"
           done
+
           sudo chown -R "$(id -u):$(id -g)" "${ROOT}"
+
       - uses: actions/upload-artifact@v7
         with:
           name: strata005-high-${{ matrix.pressure }}-block-${{ matrix.block }}
           path: evidence/STRATA-005/high-${{ matrix.pressure }}/block-${{ matrix.block }}/
           if-no-files-found: error
           retention-days: 90
+
   aggregate:
     needs: block
     runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v7
+
       - uses: actions/setup-python@v7
-        with: {python-version: "3.12"}
-      - run: python -m pip install -e ".[analysis]"
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
       - uses: actions/download-artifact@v8
-        with: {pattern: "strata005-high-*", path: "evidence/STRATA-005"}
-      - run: python -m finite_ram_lab.strata005_external_validity aggregate --spec specs/STRATA-005-EXTERNAL-VALIDITY-v1.json --input-root evidence/STRATA-005 --out evidence/STRATA-005/aggregate/summary.json
+        with:
+          pattern: strata005-high-*
+          path: evidence/STRATA-005/input
+
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/STRATA-005/aggregate
+          python -m finite_ram_lab.strata005_external_validity aggregate             --spec specs/STRATA-005-EXTERNAL-VALIDITY-v1.json             --input-root evidence/STRATA-005/input             --out evidence/STRATA-005/aggregate/summary.json
+
+      - name: Summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          s = json.load(open("evidence/STRATA-005/aggregate/summary.json"))
+          print("# STRATA-005 External Validity v1")
+          print()
+          print(f"Trials: {s['trial_count']}")
+          print()
+          print("| High MiB | Arm | median high events | positive trials | peak MiB | peak/high | scan ms |")
+          print("| ---: | --- | ---: | ---: | ---: | ---: | ---: |")
+          for high in ("144", "176"):
+              for arm, c in s["cells"][high].items():
+                  print(
+                      f"| {high} | {arm} | {c['median_memory_high_events']:.1f} | "
+                      f"{c['positive_high_event_trials']} | "
+                      f"{c['median_max_scan_memory_bytes']/(1024*1024):.3f} | "
+                      f"{c['median_peak_fraction_of_high']:.5f} | "
+                      f"{c['median_scan_elapsed_ns']/1e6:.3f} |"
+                  )
+          print()
+          for row in s["onset_screen"]:
+              print(
+                  f"MemoryHigh={row['memory_high_mib']} MiB: "
+                  f"{row['raw_release_interval_bracket']} ; "
+                  f"normalized {row['normalized_release_fraction_bracket']}"
+              )
+          PY
+
       - uses: actions/upload-artifact@v7
         with:
           name: STRATA-005-EXTERNAL-VALIDITY-${{ github.run_id }}
