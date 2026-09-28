@@ -67,6 +67,7 @@ jobs:
           HIGH_BYTES=$((PRESSURE * 1024 * 1024))
           MAX_BYTES=$((320 * 1024 * 1024))
           FILE="$RUNNER_TEMP/strata005-cold.bin"
+          SPEC="$GITHUB_WORKSPACE/specs/STRATA-005-EXTERNAL-VALIDITY-v1.json"
           ROOT="$GITHUB_WORKSPACE/evidence/STRATA-005/high-${PRESSURE}/block-${BLOCK}"
 
           tail -n +2 "${ROOT}/schedule.csv" | while IFS=, read -r ORDER ARM; do
@@ -74,7 +75,7 @@ jobs:
             OUT="${ROOT}/raw/trial-${ORDER}-${ARM}.json"
             RAW="${ROOT}/raw/trial-${ORDER}-${ARM}.jsonl"
 
-            sudo systemd-run               --pipe --wait --collect --quiet               --unit="$UNIT"               -p MemoryAccounting=yes               -p MemoryHigh="$HIGH_BYTES"               -p MemoryMax="$MAX_BYTES"               "$PY" -m finite_ram_lab.strata005_external_validity trial                 --spec specs/STRATA-005-EXTERNAL-VALIDITY-v1.json                 --pressure "$PRESSURE"                 --block "$BLOCK"                 --order "$ORDER"                 --arm "$ARM"                 --source-commit "$GITHUB_SHA"                 --file "$FILE"                 --raw-evidence "$RAW"                 --out "$OUT"
+            sudo systemd-run               --pipe --wait --collect --quiet               --unit="$UNIT"               -p MemoryAccounting=yes               -p MemoryHigh="$HIGH_BYTES"               -p MemoryMax="$MAX_BYTES"               "$PY" -m finite_ram_lab.strata005_external_validity trial                 --spec "$SPEC"                 --pressure "$PRESSURE"                 --block "$BLOCK"                 --order "$ORDER"                 --arm "$ARM"                 --source-commit "$GITHUB_SHA"                 --file "$FILE"                 --raw-evidence "$RAW"                 --out "$OUT"
           done
 
           sudo chown -R "$(id -u):$(id -g)" "${ROOT}"

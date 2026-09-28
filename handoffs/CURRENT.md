@@ -1,76 +1,58 @@
 # CURRENT
 
-> **Latest bounce:** B230
-> **Stage:** STRATA-005 / HOSTED RUN LAUNCHED + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B231
+> **Stage:** STRATA-005 / PORTABLE SPEC-PATH REPAIR / CI PENDING
 
-## REC-002
+## Failed hosted run
 
-Canonical hosted PASS:
+Run `36430416271`:
 
-- run: `36427808785`
-- trials: 16 / 16
-- all 8 paired blocks: recorder-induced MemoryHigh-event delta = 0
-- Recorder accepted for STRATA-005 at the tested 26-record density
+- completed / failure
+- 8 / 8 matrix jobs failed before scientific measurement
+- valid STRATA-005 trials: 0
+- aggregate skipped
 
-## STRATA-005 frozen contract
+Representative root cause:
+
+`FileNotFoundError: specs/STRATA-005-EXTERNAL-VALIDITY-v1.json`
+
+This run carries no pressure or DONTNEED inference.
+
+## B231 repair
+
+The `systemd-run` trial boundary no longer depends on repository cwd.
+
+The workflow now passes the spec using:
+
+`$GITHUB_WORKSPACE/specs/STRATA-005-EXTERNAL-VALIDITY-v1.json`
+
+A workflow-contract regression test rejects restoration of the relative trial spec path.
+
+Frozen STRATA-005 design is unchanged:
 
 - MemoryHigh: 144 / 176 MiB
 - arms: buffered / DONTNEED 48 / 64 / 80 / 96 MiB
 - 4 blocks per pressure
-- 40 total trials
+- 40 trials
 - 26 REC-001 records per trial
-- aggregate reports raw-MiB and release/high onset screens
-
-Pre-launch ordinary CI `36428893054`: completed / success.
-
-## Launch
-
-Exact launch commit:
-
-`93283b041c53db57dab709f7f433e464037358c9`
-
-Explicit marker:
-
-`launch/STRATA-005-v1.txt`
-
-Hosted STRATA-005 run:
-
-`36430416271`
-
-Single discovery/status read in B230:
-
-`queued`
-
-Do not poll again in this bounce.
-
-Ordinary CI `36430416229` was also created by the launch commit; it is not the scientific result and was not polled.
 
 ## Source intake
 
-`docs/NAIVE-N05-FLASH-INTAKE-v1.md` records the Naive-N0.5-Flash intake.
+Naive-N0.5-Flash remains a later-study mechanism and measurement-design source only. It does not modify STRATA-005.
 
-Council result remains:
+## Monte Carlo
 
-- DONTNEED evidence transfer: NO
-- mechanism transfer: YES
-- measurement-design transfer: STRONG YES
-- semantic reuse distance: future-study proposal only
+Deferred: cross-pressure observations still do not exist.
 
 ## Next fresh-bounce action
 
-Read run `36430416271` exactly once.
+Read B231 ordinary CI exactly once.
 
-- success -> fetch artifacts once and validate/atomize all 40 trials;
+- success -> create a new explicit STRATA-005 relaunch marker change;
 - pending/in_progress -> checkpoint EXTERNAL_WAIT and stop;
-- failure -> inspect only the exposed invariant; no blind rerun.
+- failure -> inspect only the exposed invariant.
 
-After valid cross-pressure observations exist, revisit whether Monte Carlo adds information.
-
-## Operating policy
-
-Research remains mainline.
-Recorder repair remains sidecar work driven by concrete counterexamples.
+Do not use GitHub's rerun action for `36430416271`; successful validation would authorize a new explicit launch, not a blind retry.
 
 ## Authority boundary
 
