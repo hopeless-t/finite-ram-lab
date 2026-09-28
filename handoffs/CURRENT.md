@@ -1,15 +1,15 @@
 # CURRENT
 
-> **Latest bounce:** B195
-> **Stage:** STRATA-003 / PILOT CONTRACT FROZEN
+> **Latest bounce:** B196
+> **Stage:** STRATA-003 / PILOT IMPLEMENTED, CI PENDING
+
+## Implementation
+
+Release-cadence response-surface pilot implemented.
 
 ## Next action
 
-Implement STRATA-003-PILOT-v1.
-
-## Product question
-
-Find the coarsest DONTNEED release cadence that still prevents transient pressure.
+Read ordinary CI for B196 exactly once.
 
 ## Authority boundary
 
