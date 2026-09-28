@@ -1,42 +1,45 @@
 # CURRENT
 
-> **Latest bounce:** B205
-> **Stage:** STRATA-004 / PASS CANONICALIZED
+> **Latest bounce:** B206
+> **Stage:** STRATA-005 / EXTERNAL-VALIDITY DESIGN FROZEN
 
-## Result
+## Parent result
 
 STRATA-004: 64 / 64 valid trials.
 
-Hosted pressure-event response:
-
-- DONTNEED 32 / 48 / 64 / 72 / 80 MiB: median MemoryHigh events = 0
-- 88 MiB: 2
-- 96 MiB: 5
-- buffered: 5
-
-Current hosted knee bracket:
+Hosted anchor at MemoryHigh=160 MiB:
 
 `80 MiB < knee <= 88 MiB`
 
-See `docs/STRATA-004-KNEE-RESULT.md`.
+80 MiB peaked at ~157.86 MiB, so zero median high events does not make it a portable safe default.
 
-## Important boundary observation
+## Frozen next study
 
-80 MiB peaks at ~157.86 MiB against MemoryHigh=160 MiB. Zero median high events does not make it a portable safe default.
+See `docs/STRATA-005-EXTERNAL-VALIDITY-v1.md`.
 
-Hosted throughput is noisy/non-monotonic and is not a selection signal.
+Vary one axis first:
+
+- MemoryHigh 144 MiB
+- MemoryHigh 176 MiB
+- existing 160 MiB result retained as anchor
+- arms: buffered, DONTNEED 48 / 64 / 80 / 96 MiB
+- 4 runner blocks per new pressure setting
+- 40 new hosted trials
+
+Purpose: test whether pressure-event onset is better explained by pressure headroom / normalized coordinates than by one fixed MiB cadence.
 
 ## Next action
 
-Explore and converge a small external-validity study. Prefer testing whether cadence should scale with pressure headroom instead of freezing a single MiB constant.
+Implement the frozen STRATA-005 spec/workflow and validation tests **without launching**. Launch is a separate action.
 
 ## Monte Carlo
 
-Deferred until empirical cross-pressure or cross-substrate distributions exist.
+Deferred until cross-pressure empirical observations exist.
 
 ## Authority boundary
 
 Hosted research only.
 No local-PC execution.
+No launch inferred.
 No retry/rerun inferred.
 No OSS default cadence authorized.
