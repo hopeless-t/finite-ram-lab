@@ -1,63 +1,29 @@
 # CURRENT
 
-> **Latest bounce:** B262
-> **Stage:** REC-003 IMPLEMENTED + CI EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B263
+> **Stage:** REC-003 / EXPLICIT HOSTED LAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
-## Canonical scientific result
+Implementation CI `36441838606`: completed / success.
 
-STRATA-009 run `36440093666`: PASS, 20/20.
+Exact launch commit:
 
-Cold dataset 384 MiB exceeded MemoryMax 320 MiB while bounded DONTNEED streaming preserved:
+`ce6866a92fc22bd09145c9837b1208023f801004`
 
-`80 < K <= 88 MiB`
+REC-003 frozen execution:
 
-with no OOM.
-
-96 / 192 / 384 MiB therefore share the same observed knee.
-
-## Fine-floor measurement caveat
-
-Post-scan non-hot floor increased slightly across capacities, but `_file_residency()` mmaps the full file and runs mincore before memory.current is captured.
-
-Fine floor growth remains HOLD pending REC-003.
-
-## REC-003 implementation
-
-Exact commit:
-
-`a9eaf6a384eccb86a9c59b6e8d072cbb7f371a47`
-
-Observer-only 96 / 192 / 384 MiB audit:
-
+- file sizes 96 / 192 / 384 MiB
 - 4 blocks
-- 12 trials
+- 12 observer-only trials
 - fresh systemd unit per size
-- no streaming
-- no hot anon
-- phase memory.current + memory.stat
+- no streaming workload
+- no hot anonymous allocation
+- mmap / ctypes / mincore phase snapshots
+- memory.current + selected memory.stat
 - final memory.peak
 
-CI:
+Question: is the sub-MiB floor growth partly caused by the residency observer itself?
 
-`36441838606`
+Next fresh-bounce action: discover/read REC-003 for exact launch commit once.
 
-Single B262 read:
-
-`in_progress`
-
-Do not poll again in this bounce.
-
-## Next fresh-bounce action
-
-Read `36441838606` exactly once.
-
-- success -> explicit REC-003 launch;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only the exposed invariant.
-
-## Authority boundary
-
-Hosted repository/research only.
-No local-PC execution.
-No memory-control policy.
+Hosted research only. No local-PC execution. No memory-control policy.
