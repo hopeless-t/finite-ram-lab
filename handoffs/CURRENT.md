@@ -1,57 +1,79 @@
 # CURRENT
 
-> **Latest bounce:** B280
-> **Stage:** EVIDENCE-001 PASS / READY FOR MEMCG QUANTIZATION DESIGN
-> **Turn stop reason:** READY_FOR_NEXT_DESIGN
+> **Latest bounce:** B281
+> **Stage:** MEMCG-001 PAGE-CHARGE QUANTIZATION DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## SQL corpus
+## EVIDENCE-001
 
-Run `36447185071`: PASS.
+SQL corpus PASS.
 
-Canonical artifact:
-- `corpus.sqlite`
-- `query-results.json`
-- `query-results.md`
-- artifact id `10981205287`
+It rediscovered:
+- pressure fixed-knee contradiction;
+- common live-set transform `144 < K+hot <= 152`;
+- capacity-knee invariance across 96/192/384 MiB;
+- clean-floor span 0.248046875 MiB.
 
-Rediscovered:
-- pressure fixed raw-knee intersection empty;
-- common live-set transform `144 < K+hot <= 152 MiB`;
-- capacity knee invariant at `80 < K <= 88 MiB` across 96/192/384 MiB;
-- clean floor span 0.248046875 MiB.
+## MEMCG-001
 
-## New mechanism candidate
+Direct falsification test for a candidate discrete accounting structure.
 
-Current Linux source defines:
+Upstream mechanism candidate:
+- `MEMCG_CHARGE_BATCH = 64U`
+- with 4 KiB base pages -> 256 KiB
 
-`MEMCG_CHARGE_BATCH = 64U`
+Frozen hosted experiment:
+- Ubuntu 26.04
+- C worker
+- page size must be 4096
+- fresh transient cgroup per trial
+- self-pin to one CPU
+- 256 one-page samples
+- touch and no-touch control
+- 4 blocks
+- 8 trials
 
-With 4 KiB pages this corresponds to:
+Analysis:
+- baseline-corrected `memory.current`
+- first differences
+- significant jump magnitudes
+- Q lattice search
+- modulo phase
+- jump spacing
+- autocorrelation
+- control comparison
 
-`256 KiB`
+Decision:
+- SUPPORT_H64 only with >=3/4 block replication under preregistered magnitude/spacing criteria;
+- REJECT_H64 for stable contrary evidence;
+- otherwise INCONCLUSIVE.
 
-The ~256 KiB structure seen in REC-003/004 is therefore worth a direct falsification experiment.
-
-This is not yet an accepted law.
+Design:
+`docs/MEMCG-001-PAGE-CHARGE-QUANTIZATION-v1.md`
 
 ## Next fresh-bounce action
 
-Freeze MEMCG-001:
+Implement:
+- C worker
+- Python schedule/aggregate/math analyzer
+- spec
+- Ubuntu 26.04 workflow
+- tests
 
-- anonymous allocation in one-page (4 KiB) steps;
-- fresh cgroup per trial;
-- measure memory.current and selected memory.stat;
-- include a no-touch measurement control;
-- sample at least through 128 pages, preferably 192 pages;
-- analyze first differences, jump spacing, modulo residue, candidate lattice width, and change points at 32/64/128 pages;
-- replicate across independent blocks;
-- preserve exact kernel/page-size/environment receipt.
+Do not launch during implementation.
 
-Hosted experiment first.
-Local LDC replication is a later substrate-replication action requiring its own MVCA-bound execution scope.
+## LDC
+
+LDC makes later local replication practical:
+- local checkout/test/build;
+- actual Lubuntu kernel/cgroup receipt;
+- exact same worker and analyzer;
+- GitHub publication afterward.
+
+But local execution requires its own MVCA scope/approval/binding.
 
 ## Authority boundary
 
-Hosted repository/research work authorized.
-No local-PC execution in this bounce.
+Hosted repository/research work only in current bounce.
+No local-PC execution.
 No memory-control policy.
