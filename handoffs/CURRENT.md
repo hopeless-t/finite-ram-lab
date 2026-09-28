@@ -1,37 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B245
-> **Stage:** STRATA-007 / EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B246
+> **Stage:** STRATA-007 / LAUNCH COMMITTED + RUN MATERIALIZATION WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## Canonical mechanism
 
-STRATA-006 on Ubuntu 24.04 supports:
+Ubuntu 24.04 evidence currently supports:
 
 `K ~= MemoryHigh - effective_live_set`
 
-with transformed interval:
+At MemoryHigh 160 MiB, hot anon 64 MiB:
+
+`80 < K <= 88 MiB`
+
+and:
 
 `144 < K+hot <= 152 MiB`.
 
-## STRATA-007 validation
+## STRATA-007 launch
 
-Implementation commit:
+Exact B245 launch commit:
 
-`a1e3f4ab042d3272178c6f435b88f2d25a8c01de`
+`615cc9957d4f7e49cc60a7d799431ba149d6f22b`
 
-Ordinary CI:
-
-`36435391877`
-
-Single B245 read:
-
-- completed
-- success
-
-## Launch
-
-B245 creates:
+Explicit marker:
 
 `launch/STRATA-007-v1.txt`
 
@@ -45,20 +38,32 @@ Frozen execution:
 - cold file 96 MiB
 - buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
 - 4 blocks
-- 24 total new trials
+- 24 trials
 - REC-001 density unchanged
 
-Ubuntu 24.04 remains historical anchor only.
+Ubuntu 24.04 is reused only as historical anchor.
+
+## Run discovery
+
+One exact-head discovery read was performed after B245.
+
+Result:
+
+`0 matching workflow runs`
+
+Interpretation: run materialization/delivery is not yet known.
+
+Do not infer failure and do not launch again.
 
 ## Monte Carlo
 
-Deferred until cross-image observations exist.
+Deferred until cross-image physical observations exist.
 
 ## Next fresh-bounce action
 
-Discover/read the STRATA-007 workflow run for the exact B245 launch commit once.
+Search exact head `615cc9957d4f7e49cc60a7d799431ba149d6f22b` for push-triggered runs once.
 
-- success -> fetch aggregate artifact once and validate/atomize 24 trials;
+- STRATA-007 success -> fetch aggregate artifact once and validate/atomize 24 trials;
 - pending/in_progress -> checkpoint EXTERNAL_WAIT;
 - failure -> inspect only the exposed invariant;
 - absent -> EXTERNAL_WAIT without retry.
