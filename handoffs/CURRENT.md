@@ -1,44 +1,48 @@
 # CURRENT
 
-> **Latest bounce:** B210
-> **Stage:** REC-002 / IMPLEMENTED / ORDINARY CI PENDING
+> **Latest bounce:** B211
+> **Stage:** REC-002 / IMPLEMENTED + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## REC-001
+## REC-002 implementation
 
-REC-001 v0 is repository-valid; parent CI run `36416819473` succeeded.
+Commit:
 
-## REC-002
+`175d7a9232ead6f3ce39a5c0e57d7583d38ff1e0`
 
-The frozen recorder-overhead screen is implemented.
+The implementation preserves implementation != launch.
 
-Design:
+REC-002 can launch only by manual workflow dispatch or by a later commit touching:
 
-- 8 hosted runner blocks;
-- paired recorder_off / recorder_on;
-- MemoryHigh = 160 MiB;
-- MemoryMax = 320 MiB;
-- STRATA DONTNEED 80 MiB boundary workload;
-- 16 total trials;
-- recorder_on emits 26 synchronous JSONL records;
-- no SQLite ingestion in the measured interval.
+`launch/REC-002-v1.txt`
 
-Implementation launch is intentionally separate.
+No launch marker exists yet.
 
-REC-002 runs only on manual dispatch or a commit touching `launch/REC-002-v1.txt`.
+## Hosted validation
 
-## Validation state
+Ordinary CI run:
 
-B210 ordinary CI has not yet been accepted.
+`36417680847`
 
-## Next action
+Last and only status read in B211:
 
-Read B210 CI exactly once.
+`in_progress`
 
-- success -> add the explicit REC-002 launch marker in a new bounce;
+Do not poll this run again in the same bounce.
+
+## Next fresh-bounce action
+
+Read CI run `36417680847` once.
+
+- success -> canonicalize B210 implementation acceptance and create the explicit REC-002 launch marker;
 - pending -> checkpoint EXTERNAL_WAIT and stop;
-- failure -> inspect failure only and do not launch.
+- failure -> inspect failure only; do not blindly retry.
 
-STRATA-005 remains frozen and unlaunched.
+## Parent research state
+
+REC-001 v0 is repository-valid.
+
+STRATA-005 external-validity design remains frozen from B206 and unlaunched.
 
 ## Authority boundary
 
