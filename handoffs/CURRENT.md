@@ -1,58 +1,68 @@
 # CURRENT
 
-> **Latest bounce:** B270
-> **Stage:** REC-004 / HOSTED RUN LAUNCHED + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B271
+> **Stage:** REC-004 PASS / MEASUREMENT HYGIENE ADOPTED
+> **Turn stop reason:** READY_FOR_EVIDENCE_CORPUS_DESIGN
 
-## Accepted scientific state
+## Accepted finite-RAM result
 
-Capacity-series knee remains:
+Across 96 / 192 / 384 MiB cold capacities:
 
 `80 < K <= 88 MiB`
 
-for 96 / 192 / 384 MiB, including 384 MiB > MemoryMax 320 MiB.
+including 384 MiB > MemoryMax 320 MiB.
 
-REC-003 showed target-size-dependent observer contamination. Historical fine post-scan floor growth is retired as a workload-law candidate.
+Leading empirical model:
+
+`instantaneous RAM demand ~= effective live set + unreleased streaming interval + bounded overhead`
+
+for the tested one-shot streaming workload.
 
 ## REC-004
 
-Exact launch commit:
+Run `36443845901`: PASS, 12/12.
 
-`fc0a3d0b8d221777225d7a4a4ae1e5841a0e2367`
+Prospective workload floor is now:
 
-Scientific run:
+`post_scan_pre_observer`
 
-`36443845901`
+Historical post-observer floor values remain immutable but are not clean workload-floor measurements.
 
-Single B270 read:
+Clean pre-observer medians:
+- 96 MiB: 12.6875 MiB
+- 192 MiB: 12.8046875 MiB
+- 384 MiB: 12.935546875 MiB
 
-`in_progress`
+The block-level pattern is not monotonic, so no smooth capacity scaling law is accepted.
 
-Do not poll again in this bounce.
+Canonical result:
 
-Frozen execution:
-- 96 / 192 / 384 MiB
-- DONTNEED 64 MiB
-- hot anon 64 MiB
-- MemoryHigh 160 MiB
-- MemoryMax 320 MiB
-- 4 blocks
-- 12 paired trials
-
-Each trial measures:
-1. post_scan_pre_observer
-2. historical _file_residency()
-3. post_scan_post_observer
-
-Question: does the clean workload floor stay capacity-bounded while the observer introduces the small size-dependent shift?
+`docs/REC-004-RESULT.md`
 
 ## Next fresh-bounce action
 
-Read run `36443845901` exactly once.
+Freeze a SQL/queryable evidence-corpus design that normalizes accepted STRATA/REC experiments into a single row-oriented schema.
 
-- success -> fetch aggregate once and validate/atomize 12 trials;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only the exposed invariant.
+Minimum dimensions:
+- experiment
+- run
+- block/trial
+- runner/image
+- MemoryHigh/MemoryMax
+- hot anon
+- cold capacity
+- release cadence
+- scan peak
+- MemoryHigh events
+- OOM
+- clean floor when available
+- legacy/post-observer floor
+- observer delta
+- evidence status/provenance
+
+Queries should discover candidate relations and counterexamples without changing raw evidence.
+
+Do not launch physical experiments in the corpus-design bounce.
 
 ## Authority boundary
 
