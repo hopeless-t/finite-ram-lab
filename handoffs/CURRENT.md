@@ -1,1 +1,55 @@
-# CURRENT\n\n> **Latest bounce:** B220\n> **Stage:** REC-003 / MONTE CARLO CORRUPTION IMPLEMENTED / CI PENDING\n\n## Accepted lifecycle hardening\n\nREC-003 lifecycle hardening passed ordinary CI run 36425701676.\n\n## Atomic path ownership\n\nRaw evidence paths are now claimed by exclusive creation. A second writer cannot silently join an existing JSONL stream.\n\n## Monte Carlo corruption campaign\n\nrec003_corruption_mc.py now generates valid controls and compound corruption worlds across 12 mutation families.\n\nThe production StreamContractValidator is the strict oracle. A deliberately relaxed legacy-like validator is a negative control.\n\nUnit CI runs deterministic 5,000-world campaigns. A separate hosted 100,000-world launch remains pending.\n\nJAXA-derived rule: use stochastic failure observations to find fragile design regions and feed counterexamples back into design. Synthetic frequency is not real-world failure probability.\n\n## Next action\n\nRead B220 ordinary CI exactly once.\n\n- success -> launch the separate 100,000-world REC-003 campaign and/or continue physical write-failure injection;\n- pending -> checkpoint EXTERNAL_WAIT;\n- failure -> preserve the counterexample and repair before any launch.\n\nREC-002 remains un-relaunched.\nSTRATA-005 remains frozen and unlaunched.\n\n## Authority boundary\n\nRepository/hosted synthetic validation only.\nNo local-PC execution.\nNo STRATA-005 launch inferred.\nNo memory-control policy authorized.\n
+# CURRENT
+
+> **Latest bounce:** B221
+> **Stage:** REC-003 / MONTE CARLO CORRUPTION + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
+
+## Hardening implemented
+
+- lifecycle fail-close: one file = one run, contiguous seq, terminal run_end;
+- clean incomplete crash logs remain forensic/incomplete;
+- malformed partial JSON rolls back;
+- raw evidence path ownership uses exclusive create;
+- incomplete projection can later be completed from a full raw stream.
+
+## Monte Carlo campaign
+
+Commit:
+
+`a2f49a1865655d7ec79d95525d58df7e3f06053c`
+
+12 corruption families are sampled in one-to-four mutation combinations, with valid controls and a relaxed negative-control validator.
+
+Unit CI uses deterministic 5,000-world campaigns. A separate 100,000-world hosted campaign remains unlaunched.
+
+## Hosted validation
+
+Ordinary CI run:
+
+`36427033616`
+
+Last and only read in B221:
+
+`in_progress`
+
+Do not poll again in the same bounce.
+
+## Next fresh-bounce action
+
+Read `36427033616` once.
+
+- success -> launch the dedicated 100,000-world REC-003 campaign in a separate commit;
+- pending -> checkpoint EXTERNAL_WAIT;
+- failure -> preserve and fix the discovered counterexample before any launch.
+
+Then attack physical write/flush/partial-write corruption.
+
+REC-002 remains un-relaunched.
+STRATA-005 remains frozen and unlaunched.
+
+## Authority boundary
+
+Repository/hosted synthetic validation only.
+No local-PC execution.
+No STRATA-005 launch inferred.
+No memory-control policy authorized.
