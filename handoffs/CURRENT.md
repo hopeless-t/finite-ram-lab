@@ -1,67 +1,46 @@
 # CURRENT
 
-> **Latest bounce:** B272
-> **Stage:** EVIDENCE-001 SQL CORPUS DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B273
+> **Stage:** EVIDENCE-001 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## Accepted scientific state
+## SQL corpus implementation
 
-The robust accepted relation remains:
+Files:
 
-`instantaneous RAM demand ~= effective live set + unreleased streaming interval + bounded overhead`
+- `evidence/EVIDENCE-001/seed-v1.json`
+- `sql/evidence001_schema.sql`
+- `src/finite_ram_lab/evidence001_sql_corpus.py`
+- `.github/workflows/evidence-001-sql-corpus.yml`
+- `tests/test_evidence001_sql_corpus.py`
 
-for the tested one-shot Linux streaming workload.
-
-Capacity series 96 / 192 / 384 MiB shares:
-
-`80 < K <= 88 MiB`
-
-including 384 MiB > MemoryMax.
-
-REC-004 adopts `post_scan_pre_observer` as the prospective clean workload-floor measurement.
-
-## EVIDENCE-001 frozen design
-
-Build a deterministic SQLite corpus over canonical accepted results:
-
+Seeded canonical experiments:
 - STRATA-004..009
 - REC-003..004
 
-Core tables:
-- experiments
-- response_cells
-- onset_intervals
-- measurement_notes
-
-Measurement semantics are explicit:
+Semantic protection:
 - clean_pre_observer
 - legacy_post_observer
 - post_observer_diagnostic
 - not_applicable
 
-Required SQL analyses:
-- fixed-knee contradiction across pressure
-- K+hot interval compatibility
+Discovery output tests:
+- fixed raw knee contradiction across pressure
+- live-set transformed interval intersection
 - cold-capacity knee invariance
 - clean-floor span
-- observer contamination
-- next-axis ranking
+- observer-effect rows
+- next untested-axis ranking
 
-Design:
-
-`docs/EVIDENCE-001-SQL-CORPUS-v1.md`
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement:
-- schema.sql
-- normalized seed JSON
-- deterministic SQLite builder
-- discovery query bundle
-- tests
-- hosted workflow gated by launch/EVIDENCE-001-v1.txt
+Discover/read B273 ordinary CI exactly once.
 
-Do not launch during implementation.
+- success -> explicit EVIDENCE-001 hosted launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 

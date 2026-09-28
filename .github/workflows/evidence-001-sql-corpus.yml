@@ -1,0 +1,47 @@
+name: EVIDENCE-001 SQL Corpus v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "launch/EVIDENCE-001-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Build corpus and run discovery SQL
+        run: |
+          mkdir -p evidence/EVIDENCE-001/output
+          python -m finite_ram_lab.evidence001_sql_corpus \
+            --seed evidence/EVIDENCE-001/seed-v1.json \
+            --schema sql/evidence001_schema.sql \
+            --db evidence/EVIDENCE-001/output/corpus.sqlite \
+            --json-out evidence/EVIDENCE-001/output/query-results.json \
+            --md-out evidence/EVIDENCE-001/output/query-results.md
+      - name: SQLite integrity
+        run: |
+          python - <<'PY'
+          import sqlite3
+          p="evidence/EVIDENCE-001/output/corpus.sqlite"
+          con=sqlite3.connect(p)
+          assert con.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
+          assert con.execute("SELECT COUNT(*) FROM experiments").fetchone()[0] == 8
+          print(con.execute("SELECT COUNT(*) FROM response_cells").fetchone()[0])
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: EVIDENCE-001-SQL-CORPUS-${{ github.run_id }}
+          path: evidence/EVIDENCE-001/output/
+          if-no-files-found: error
+          retention-days: 90
