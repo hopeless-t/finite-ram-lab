@@ -1,17 +1,11 @@
 # CURRENT
 
-> **Latest bounce:** B198
-> **Stage:** STRATA-003 / PILOT IMPLEMENTATION CI PASS
-
-## Validation
-
-- implementation commit: `078a0b1c0bf50622190e7840613595fe93a549aa`
-- CI run: `36361555805`
-- conclusion: `success`
+> **Latest bounce:** B199
+> **Stage:** STRATA-003 / PILOT LAUNCHED
 
 ## Next action
 
-Launch exactly one bounded STRATA-003-PILOT-v1 run.
+Discover the STRATA-003 pilot run for B199 exactly once.
 
 ## Authority boundary
 
