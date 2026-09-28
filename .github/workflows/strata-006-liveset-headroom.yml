@@ -1,0 +1,170 @@
+name: STRATA-006 Live-Set Headroom v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "launch/STRATA-006-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        hot: [56, 72]
+        block: [0, 1, 2, 3]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Prepare cold file
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from finite_ram_lab.strata001_probe import _prepare_file
+          p = Path(os.environ["RUNNER_TEMP"]) / "strata006-cold.bin"
+          _prepare_file(p, 96 * 1024 * 1024, 4 * 1024 * 1024)
+          print(p)
+          PY
+
+      - name: Build schedule and environment
+        env:
+          HOT: ${{ matrix.hot }}
+          BLOCK: ${{ matrix.block }}
+        run: |
+          ROOT="evidence/STRATA-006/hot-${HOT}/block-${BLOCK}"
+          mkdir -p "${ROOT}/raw"
+          python -m finite_ram_lab.strata006_liveset_headroom schedule \
+            --spec specs/STRATA-006-LIVESET-HEADROOM-v1.json \
+            --hot "${HOT}" \
+            --block "${BLOCK}" \
+            --out "${ROOT}/schedule.csv"
+          {
+            echo "kernel_release=$(uname -r)"
+            echo "systemd_version=$(systemd --version | head -n1)"
+            echo "cgroup_fs_type=$(stat -fc %T /sys/fs/cgroup)"
+            cat /etc/os-release
+          } > "${ROOT}/environment.txt"
+
+      - name: Run six-arm panel with Recorder
+        env:
+          HOT: ${{ matrix.hot }}
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          HIGH_BYTES=$((160 * 1024 * 1024))
+          MAX_BYTES=$((320 * 1024 * 1024))
+          FILE="$RUNNER_TEMP/strata006-cold.bin"
+          SPEC="$GITHUB_WORKSPACE/specs/STRATA-006-LIVESET-HEADROOM-v1.json"
+          ROOT="$GITHUB_WORKSPACE/evidence/STRATA-006/hot-${HOT}/block-${BLOCK}"
+
+          tail -n +2 "${ROOT}/schedule.csv" | while IFS=, read -r ORDER ARM; do
+            UNIT="finite-ram-strata006-${GITHUB_RUN_ID}-${HOT}-${BLOCK}-${ORDER}"
+            OUT="${ROOT}/raw/trial-${ORDER}-${ARM}.json"
+            RAW="${ROOT}/raw/trial-${ORDER}-${ARM}.jsonl"
+
+            sudo systemd-run \
+              --pipe --wait --collect --quiet \
+              --unit="$UNIT" \
+              -p MemoryAccounting=yes \
+              -p MemoryHigh="$HIGH_BYTES" \
+              -p MemoryMax="$MAX_BYTES" \
+              "$PY" -m finite_ram_lab.strata006_liveset_headroom trial \
+                --spec "$SPEC" \
+                --hot "$HOT" \
+                --block "$BLOCK" \
+                --order "$ORDER" \
+                --arm "$ARM" \
+                --source-commit "$GITHUB_SHA" \
+                --file "$FILE" \
+                --raw-evidence "$RAW" \
+                --out "$OUT"
+          done
+
+          sudo chown -R "$(id -u):$(id -g)" "${ROOT}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: strata006-hot-${{ matrix.hot }}-block-${{ matrix.block }}
+          path: evidence/STRATA-006/hot-${{ matrix.hot }}/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: strata006-hot-*
+          path: evidence/STRATA-006/input
+
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/STRATA-006/aggregate
+          python -m finite_ram_lab.strata006_liveset_headroom aggregate \
+            --spec specs/STRATA-006-LIVESET-HEADROOM-v1.json \
+            --input-root evidence/STRATA-006/input \
+            --out evidence/STRATA-006/aggregate/summary.json
+
+      - name: Summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          s = json.load(open("evidence/STRATA-006/aggregate/summary.json"))
+          print("# STRATA-006 Live-Set Headroom v1")
+          print()
+          print(f"Trials: {s['trial_count']}")
+          print()
+          print("| Hot MiB | Arm | median high events | positive trials | peak MiB | scan ms |")
+          print("| ---: | --- | ---: | ---: | ---: | ---: |")
+          for hot in ("56", "72"):
+              for arm, c in s["cells"][hot].items():
+                  print(
+                      f"| {hot} | {arm} | {c['median_memory_high_events']:.1f} | "
+                      f"{c['positive_high_event_trials']} | "
+                      f"{c['median_max_scan_memory_bytes']/(1024*1024):.3f} | "
+                      f"{c['median_scan_elapsed_ns']/1e6:.3f} |"
+                  )
+          print()
+          for row in s["onset_screen"]:
+              print(
+                  f"hot={row['hot_anon_mib']} MiB: "
+                  f"{row['raw_release_interval_bracket']} ; "
+                  f"{row['knee_plus_hot_bracket']}"
+              )
+          PY
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: STRATA-006-LIVESET-HEADROOM-${{ github.run_id }}
+          path: evidence/STRATA-006/aggregate/
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,41 @@
+{
+  "experiment_id": "STRATA-006-LIVESET-HEADROOM-v1",
+  "runner": "ubuntu-24.04",
+  "runner_blocks_per_hot": 4,
+  "base_schedule_seed": 2026092813,
+  "memory_high_mib": 160,
+  "memory_max_mib": 320,
+  "hot_anon_mib": [56, 72],
+  "cold_file_mib": 96,
+  "read_chunk_mib": 4,
+  "arms": ["buffered", "dontneed_64m", "dontneed_72m", "dontneed_80m", "dontneed_88m", "dontneed_96m"],
+  "release_interval_mib": {
+    "buffered": null,
+    "dontneed_64m": 64,
+    "dontneed_72m": 72,
+    "dontneed_80m": 80,
+    "dontneed_88m": 88,
+    "dontneed_96m": 96
+  },
+  "expected_trials": 48,
+  "file_prepare": {
+    "fsync": true,
+    "posix_fadvise_dontneed": true,
+    "require_precache_fraction_le": 0.1
+  },
+  "recorder": {
+    "enabled": true,
+    "checkpoint_metric": "memory.current",
+    "records_per_trial": 26,
+    "sqlite_inside_measured_interval": false
+  },
+  "analysis": [
+    "raw_onset_by_hot",
+    "knee_plus_hot_interval",
+    "effective_floor_interval",
+    "non_hot_floor_interval",
+    "peak_fraction_of_high",
+    "headroom_over_hot_mib"
+  ],
+  "authority": "HOSTED_RESEARCH_ONLY"
+}

@@ -1,93 +1,71 @@
 # CURRENT
 
-> **Latest bounce:** B236
-> **Stage:** STRATA-006 LIVE-SET HEADROOM DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B237
+> **Stage:** STRATA-006 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## Canonical STRATA-005 result
+## Parent result
 
-Run `36431449193`: PASS, 40 / 40 trials.
+STRATA-005 run `36431449193`: PASS, 40/40.
 
-Observed onset:
+Canonical interpretation:
 
-- H=144: `64 < K <= 80`
-- H=160 anchor: `80 < K <= 88`
-- H=176: `K > 96`
+- fixed raw-MiB knee rejected for tested pressure configurations;
+- additive effective-live-set headroom remains supported directionally;
+- no controller formula or OSS default authorized.
 
-Fixed raw cadence is not consistent across the tested pressure settings.
+## STRATA-006
 
-Additive interpretation:
+Frozen question:
 
-`K = H - B`
+At MemoryHigh=160 MiB, does changing hot/live-set size move the DONTNEED knee inversely?
 
-with common feasible:
+Implementation now exists for:
 
-`B in [72, 80) MiB`
+- hot anon 56 / 72 MiB
+- buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
+- 4 blocks per hot setting
+- 48 total trials
+- Recorder 26 records/trial
 
-and observed STRATA-005 DONTNEED post-scan floor around `76.72 MiB`.
-
-## STRATA-006 frozen design
-
-Question: at fixed MemoryHigh, does changing hot/live-set size move the knee inversely?
-
-Constants:
-
-- MemoryHigh 160 MiB
-- MemoryMax 320 MiB
-- cold file 96 MiB
-- read chunk 4 MiB
-- same hosted runner family and DONTNEED implementation
-- same Recorder density
-
-New hot-anon settings:
-
-- 56 MiB
-- 72 MiB
-
-Reuse STRATA-004 hot=64 MiB as anchor.
-
-Arms:
-
-- buffered
-- DONTNEED 64 / 72 / 80 / 88 / 96 MiB
-
-Budget:
-
-- 2 x 6 x 4 = 48 new hosted trials
-
-Primary discriminator:
+Primary transformed discriminator:
 
 `K + hot_anon ~= constant`
 
-versus fixed raw `K`.
+against fixed raw `K`.
 
-Frozen design document:
+Files:
 
-`docs/STRATA-006-LIVESET-HEADROOM-v1.md`
+- `docs/STRATA-006-LIVESET-HEADROOM-v1.md`
+- `specs/STRATA-006-LIVESET-HEADROOM-v1.json`
+- `src/finite_ram_lab/strata006_liveset_headroom.py`
+- `.github/workflows/strata-006-liveset-headroom.yml`
+- `tests/test_strata006_liveset_headroom.py`
+
+Workflow launch is gated by:
+
+`launch/STRATA-006-v1.txt`
+
+No launch marker has been created.
 
 ## Monte Carlo
 
 Deferred until STRATA-006 observations exist.
+
+## Next fresh-bounce action
+
+Discover/read B237 ordinary CI exactly once.
+
+- success -> explicit STRATA-006 launch marker in a separate commit;
+- pending/in_progress -> checkpoint EXTERNAL_WAIT and stop;
+- failure -> inspect only the exposed invariant.
 
 ## Queued future studies
 
 - Naive-N0.5-Flash semantic reuse / reconstructible-state study
 - LLM-jp-4.1 local-worker + state-lifetime dogfood
 
-They are proposals and do not authorize local execution.
-
-## Next fresh-bounce action
-
-Implement STRATA-006:
-
-- machine-readable spec
-- deterministic schedule
-- trial wrapper using REC-001
-- aggregate validation
-- hosted workflow
-- regression tests
-
-Do not launch in the implementation bounce.
+No local execution is authorized for either.
 
 ## Authority boundary
 
