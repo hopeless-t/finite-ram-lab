@@ -1,20 +1,20 @@
 # CURRENT
 
-> **Latest bounce:** B287
-> **Stage:** MATH-001 MODEL COMPETITION DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B288
+> **Stage:** MATH-001 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## MEMCG-001
+## MATH-001 implementation
 
-Canonical verdict:
-`SUPPORT_H64`
+Files:
+- `src/finite_ram_lab/math001_model_competition.py`
+- `.github/workflows/math-001-model-competition.yml`
+- `tests/test_math001_model_competition.py`
 
-But original best-Q scoring has divisor aliasing.
+Input:
+`evidence/MEMCG-001/event-sequence-v1.json`
 
-## MATH-001
-
-Frozen candidate models:
-- NULL
+Competition:
 - LINEAR
 - STAIRCASE(Q)
 - RESET_STAIRCASE(Q)
@@ -23,31 +23,23 @@ Frozen candidate models:
 Q:
 `1,2,4,8,16,32,64,128`
 
-Primary metrics:
-- full-sequence RMSE/MAE
-- combinatorial MDL position code
-- MDL savings vs arbitrary positions
-- leave-one-block-out predictive precision/recall/F1
+Scores:
+- full sequence SSE/RMSE
+- combinatorial MDL
+- leave-one-block-out prediction
+- divisor false-prediction penalty
+- reset-aware phase segmentation
+- spectral coherence diagnostic
 
-Reset-aware segments are defined only by observed negative memory.current discontinuities.
-
-Decision:
-- MODEL64_WINS
-- OTHER_Q_WINS
-- MIXED_MODEL
-
-Design:
-`docs/MATH-001-MODEL-COMPETITION-v1.md`
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement:
-- deterministic analyzer
-- markdown renderer
-- tests for divisor alias rejection
-- hosted workflow gated by `launch/MATH-001-v1.txt`
+Discover/read B288 ordinary CI exactly once.
 
-Do not launch during implementation.
+- success -> explicit MATH-001 launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 

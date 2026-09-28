@@ -1,0 +1,48 @@
+name: MATH-001 Model Competition v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "launch/MATH-001-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  compete:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run model competition
+        run: |
+          mkdir -p evidence/MATH-001/output
+          python -m finite_ram_lab.math001_model_competition \
+            --input evidence/MEMCG-001/event-sequence-v1.json \
+            --json-out evidence/MATH-001/output/model-competition.json \
+            --md-out evidence/MATH-001/output/model-competition.md
+      - name: Verify preregistered output shape
+        run: |
+          python - <<'PY'
+          import json
+          p="evidence/MATH-001/output/model-competition.json"
+          d=json.load(open(p))
+          assert d["decision"] in {"MODEL64_WINS","OTHER_Q_WINS","MIXED_MODEL"}
+          assert len(d["leave_one_block_out"]) == 4
+          assert len(d["q_prediction"]) == 8
+          print(d["decision"])
+          PY
+      - uses: actions/upload-artifact@v7
+        with:
+          name: MATH-001-MODEL-COMPETITION-${{ github.run_id }}
+          path: evidence/MATH-001/output/
+          if-no-files-found: error
+          retention-days: 90
