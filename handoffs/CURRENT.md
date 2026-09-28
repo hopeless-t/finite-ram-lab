@@ -1,30 +1,46 @@
 # CURRENT
 
-> **Latest bounce:** B233
-> **Stage:** STRATA-005 / EXPLICIT HOSTED RELAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B234
+> **Stage:** STRATA-005 / RELAUNCH COMMITTED + RUN MATERIALIZATION WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## Repair validation
 
-Spec-path repair commit:
+Spec-path repair:
 
 `baf6264a4bdee456e040ab1015b2eb7f7f059cc1`
 
-Ordinary CI run `36430872975` was read exactly once in B233:
-
-- status: completed
-- conclusion: success
+CI `36430872975`: completed / success.
 
 ## Prior failed run
 
-`36430416271` remains invalid for scientific inference:
+Run `36430416271` remains invalid for scientific inference:
 
-- failed before spec loading completed
 - valid trials: 0
-- no DONTNEED/headroom result
-- do not rerun it
+- failure occurred before scientific measurement
+- no blind rerun
 
-## STRATA-005 frozen contract
+## Relaunch
+
+Exact B233 commit:
+
+`9f0ed686406a49b42e14d855e3d941970e55c94d`
+
+The commit revised `launch/STRATA-005-v1.txt` as a new explicit execution after validated repair.
+
+Main ref update returned success.
+
+## Run discovery
+
+One exact-head discovery read was performed immediately after B233.
+
+Result:
+
+`0 matching workflow runs`
+
+Interpretation: run materialization/delivery is not yet known. Do not infer failure and do not launch again.
+
+## Frozen STRATA-005 contract
 
 - MemoryHigh: 144 / 176 MiB
 - arms: buffered / DONTNEED 48 / 64 / 80 / 96 MiB
@@ -32,29 +48,18 @@ Ordinary CI run `36430872975` was read exactly once in B233:
 - 40 total trials
 - 26 REC-001 records per trial
 
-## Relaunch
-
-B233 revises the explicit path-gated marker:
-
-`launch/STRATA-005-v1.txt`
-
-This is a new explicit hosted execution after validated repair. It does not change the study design.
-
-## Source intake
-
-Naive-N0.5-Flash remains recorded as mechanism/measurement-design input for a later semantic-reuse study only.
-
 ## Monte Carlo
 
 Deferred until valid cross-pressure observations exist.
 
 ## Next fresh-bounce action
 
-Discover/read the STRATA-005 run for the exact B233 relaunch commit once.
+Search exact head `9f0ed686406a49b42e14d855e3d941970e55c94d` for push-triggered runs once.
 
-- success -> fetch artifacts once and validate/atomize all 40 trials;
+- STRATA-005 success -> fetch artifacts once and validate/atomize 40 trials;
 - pending/in_progress -> checkpoint EXTERNAL_WAIT and stop;
-- failure -> inspect only the exposed invariant.
+- failure -> inspect the exposed invariant only;
+- absent -> checkpoint EXTERNAL_WAIT; do not relaunch.
 
 ## Authority boundary
 
