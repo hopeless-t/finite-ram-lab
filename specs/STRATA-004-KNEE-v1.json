@@ -1,0 +1,74 @@
+{
+  "experiment_id": "STRATA-004-KNEE-v1",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 8,
+  "base_schedule_seed": 2026092805,
+  "memory_high_mib": 160,
+  "memory_max_mib": 320,
+  "hot_anon_mib": 64,
+  "cold_file_mib": 96,
+  "read_chunk_mib": 4,
+  "arms": [
+    "buffered",
+    "dontneed_32m",
+    "dontneed_48m",
+    "dontneed_64m",
+    "dontneed_72m",
+    "dontneed_80m",
+    "dontneed_88m",
+    "dontneed_96m"
+  ],
+  "release_interval_mib": {
+    "buffered": null,
+    "dontneed_32m": 32,
+    "dontneed_48m": 48,
+    "dontneed_64m": 64,
+    "dontneed_72m": 72,
+    "dontneed_80m": 80,
+    "dontneed_88m": 88,
+    "dontneed_96m": 96
+  },
+  "trials_per_arm_per_block": 1,
+  "expected_trials": 64,
+  "file_prepare": {
+    "fsync": true,
+    "posix_fadvise_dontneed": true,
+    "require_precache_fraction_le": 0.1
+  },
+  "checkpoint_every_mib": 4,
+  "primary_outcomes": [
+    "memory_high_events_scan_delta",
+    "max_scan_memory_current_mib",
+    "post_scan_memory_current_mib",
+    "file_resident_fraction_post_scan"
+  ],
+  "secondary_outcomes": [
+    "advice_calls",
+    "scan_ms",
+    "throughput_mib_s",
+    "pgscan_scan_delta",
+    "pgsteal_scan_delta",
+    "hot_resident_fraction_pre_retouch",
+    "hot_retouch_ms",
+    "swap_mib_post_scan"
+  ],
+  "environment_capture": [
+    "kernel_release",
+    "os_release",
+    "systemd_version",
+    "cgroup_fs_type"
+  ],
+  "required_checks": [
+    "eight_runner_blocks_present",
+    "sixty_four_trials_present",
+    "all_trials_valid",
+    "all_arms_once_per_block",
+    "file_cold_before_each_scan",
+    "release_ranges_page_aligned",
+    "advice_success",
+    "content_integrity",
+    "no_oom"
+  ],
+  "inference": "TARGETED_KNEE_REFINEMENT_NO_DEFAULT_SELECTION",
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
