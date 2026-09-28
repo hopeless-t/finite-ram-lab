@@ -1,0 +1,6 @@
+MEMCG-001 explicit hosted launch
+B284
+Implementation: ed930823ca0d02b1aa080f1b072fe26452bc28a0
+CI: 36448740557 success
+Hosted quantization probe: C worker; 4096-byte pages; 256 one-page steps; touch/control; 4 blocks; lattice/modulo/spacing/autocorrelation analysis.
+Hosted research only. No local execution.
