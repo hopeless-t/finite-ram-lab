@@ -1,68 +1,67 @@
 # CURRENT
 
-> **Latest bounce:** B271
-> **Stage:** REC-004 PASS / MEASUREMENT HYGIENE ADOPTED
-> **Turn stop reason:** READY_FOR_EVIDENCE_CORPUS_DESIGN
+> **Latest bounce:** B272
+> **Stage:** EVIDENCE-001 SQL CORPUS DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## Accepted finite-RAM result
+## Accepted scientific state
 
-Across 96 / 192 / 384 MiB cold capacities:
-
-`80 < K <= 88 MiB`
-
-including 384 MiB > MemoryMax 320 MiB.
-
-Leading empirical model:
+The robust accepted relation remains:
 
 `instantaneous RAM demand ~= effective live set + unreleased streaming interval + bounded overhead`
 
-for the tested one-shot streaming workload.
+for the tested one-shot Linux streaming workload.
 
-## REC-004
+Capacity series 96 / 192 / 384 MiB shares:
 
-Run `36443845901`: PASS, 12/12.
+`80 < K <= 88 MiB`
 
-Prospective workload floor is now:
+including 384 MiB > MemoryMax.
 
-`post_scan_pre_observer`
+REC-004 adopts `post_scan_pre_observer` as the prospective clean workload-floor measurement.
 
-Historical post-observer floor values remain immutable but are not clean workload-floor measurements.
+## EVIDENCE-001 frozen design
 
-Clean pre-observer medians:
-- 96 MiB: 12.6875 MiB
-- 192 MiB: 12.8046875 MiB
-- 384 MiB: 12.935546875 MiB
+Build a deterministic SQLite corpus over canonical accepted results:
 
-The block-level pattern is not monotonic, so no smooth capacity scaling law is accepted.
+- STRATA-004..009
+- REC-003..004
 
-Canonical result:
+Core tables:
+- experiments
+- response_cells
+- onset_intervals
+- measurement_notes
 
-`docs/REC-004-RESULT.md`
+Measurement semantics are explicit:
+- clean_pre_observer
+- legacy_post_observer
+- post_observer_diagnostic
+- not_applicable
+
+Required SQL analyses:
+- fixed-knee contradiction across pressure
+- K+hot interval compatibility
+- cold-capacity knee invariance
+- clean-floor span
+- observer contamination
+- next-axis ranking
+
+Design:
+
+`docs/EVIDENCE-001-SQL-CORPUS-v1.md`
 
 ## Next fresh-bounce action
 
-Freeze a SQL/queryable evidence-corpus design that normalizes accepted STRATA/REC experiments into a single row-oriented schema.
+Implement:
+- schema.sql
+- normalized seed JSON
+- deterministic SQLite builder
+- discovery query bundle
+- tests
+- hosted workflow gated by launch/EVIDENCE-001-v1.txt
 
-Minimum dimensions:
-- experiment
-- run
-- block/trial
-- runner/image
-- MemoryHigh/MemoryMax
-- hot anon
-- cold capacity
-- release cadence
-- scan peak
-- MemoryHigh events
-- OOM
-- clean floor when available
-- legacy/post-observer floor
-- observer delta
-- evidence status/provenance
-
-Queries should discover candidate relations and counterexamples without changing raw evidence.
-
-Do not launch physical experiments in the corpus-design bounce.
+Do not launch during implementation.
 
 ## Authority boundary
 
