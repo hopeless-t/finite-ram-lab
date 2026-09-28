@@ -1,27 +1,24 @@
 # CURRENT
 
-> **Latest bounce:** B251
-> **Stage:** STRATA-008 / EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B252
+> **Stage:** STRATA-008 / LAUNCH COMMITTED + RUN MATERIALIZATION WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Validation
+## Leading mechanism
 
-Implementation commit:
+Current hosted evidence supports:
 
-`d709e9e7c71b03faa9e519079c42663f3feb3a8e`
+`K ~= MemoryHigh - effective_live_set`
 
-CI:
+across pressure, hot live-set, and Ubuntu image changes.
 
-`36436853395`
+## STRATA-008 launch
 
-Single B251 read:
+Exact B251 launch commit:
 
-- completed
-- success
+`1843e566c8cf6e18322861cd6c7ee51b28cccc30`
 
-## Launch
-
-B251 creates:
+Explicit marker:
 
 `launch/STRATA-008-v1.txt`
 
@@ -39,13 +36,21 @@ Frozen execution:
 - 24 trials
 - REC-001 50 records/trial
 
-96 MiB STRATA-007 remains historical anchor only.
+96 MiB cold-file STRATA-007 remains historical anchor only.
+
+## Run discovery
+
+One exact-head discovery read after B251 returned:
+
+`0 matching workflow runs`
+
+Do not infer failure and do not launch again.
 
 ## Next fresh-bounce action
 
-Discover/read the STRATA-008 workflow run for the exact B251 launch commit once.
+Search exact head `1843e566c8cf6e18322861cd6c7ee51b28cccc30` for push-triggered runs once.
 
-- success -> fetch aggregate artifact once and validate/atomize 24 trials;
+- STRATA-008 success -> fetch aggregate artifact once and validate/atomize 24 trials;
 - pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only the exposed invariant;
 - absent -> EXTERNAL_WAIT without retry.
