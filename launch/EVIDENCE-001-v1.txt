@@ -1,4 +1,6 @@
 EVIDENCE-001 explicit hosted launch
-B275
+B278
+Repair commit: 167701853fa148a87c2ceeb8108f4960561bead1
+Repair CI: 36446882842 success
 Build deterministic SQLite corpus from canonical STRATA-004..009 and REC-003..004 evidence; emit corpus.sqlite and discovery results.
 Hosted research only. No local execution.
