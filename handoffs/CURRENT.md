@@ -1,56 +1,73 @@
 # CURRENT
 
-> **Latest bounce:** B305
-> **Stage:** MEMCG-003 HOSTED RUN + PMNDRS MATH LENS FROZEN
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B306
+> **Stage:** MEMCG-003 REJECTED WITH OBSERVER CONTAMINATION / MEMCG-003B FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## MEMCG-003
+## MEMCG-003 canonical result
 
-Implementation:
-`b64f32ad3b38d4a6ca8bdfda36e4c12fe62d5569`
+Canonical run:
+`36459951576`
 
-Launch:
-`6cb688d7c8578ce95e217e83adcb7249a3555efa`
+Decision:
+`REJECT_K7_SLOT_MODEL`
 
-Two scientific runs materialized for the exact launch head.
+DISTINCT_CHURN thresholds:
+`[2,1,4,2]`
 
-Canonicalization rule fixed before reading results:
-- canonical: `36459951576` (first materialized run)
-- duplicate/noncanonical: `36459972685`
+Best K / posterior mode:
+`2`
 
-Do not select between runs based on results.
+However the target was touched after every observation.
 
-Single discovery state:
-- canonical run: in_progress
-- duplicate run: queued
+Controls also produced +64 recharges:
+- same-memcg: every block
+- no-churn: every block
+- six-only: every block
 
-Do not poll again in this bounce.
+Therefore the observed first-event threshold is contaminated by destructive probing.
+
+Canonical result:
+`docs/MEMCG-003-RESULT.md`
+
+## Diagnostic stock-drop-only pattern
+
+- DISTINCT_CHURN: [3,2,6,7]
+- SIX_ONLY: [5,None,1,4]
+- SAME_MEMCG_ACTIVITY: [None,None,None,None]
+- NO_CHURN: [None,None,7,None]
+
+Distinct churn has an effect, but K=7 is not cleanly observable under the current control plane.
+
+## MEMCG-003B
+
+Frozen repair:
+`docs/MEMCG-003B-NONCONSUMING-SEVEN-SLOT-v1.md`
+
+Changes:
+- passive target memory.current only during challenger sequence;
+- target never touched during threshold observation;
+- exactly one final recharge-confirmation touch;
+- orchestration CPU separated from stock-test CPU.
+
+Candidate K remains 1..10.
 
 ## pmndrs/math
 
-Pinned source:
-`pmndrs/math@98762395c1f34d7d594d31165e8005fd6915c431`
+MATH-002 remains frozen as a secondary geometric/permutation lens.
 
-Secondary design:
-`docs/MATH-002-PMNDRS-GEOMETRIC-LENS-v1.md`
-
-Use after canonical MEMCG-003 result:
-- quickhull2 response/control envelopes
-- quickhull3 secondary envelope
-- seeded mulberry32 permutation null
-- geometric transition score near m in {6,7,8}
-
-This geometry lens is secondary and cannot override the preregistered MEMCG-003 threshold/Bayesian decision.
+For contaminated MEMCG-003 it is diagnostic only.
+Substantive geometric model competition waits for MEMCG-003B.
 
 ## Next fresh-bounce action
 
-Read canonical run `36459951576` exactly once.
+Implement MEMCG-003B:
+- passive observer orchestrator
+- two-CPU isolation
+- final one-shot recharge confirmation
+- analyzer/tests/workflow
 
-- success -> fetch canonical aggregate once, analyze MEMCG-003, then run/implement the frozen pmndrs/math secondary lens on that canonical evidence;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only exposed invariant.
-
-Ignore duplicate run for scientific model selection.
+Do not launch during implementation.
 
 ## Authority boundary
 
