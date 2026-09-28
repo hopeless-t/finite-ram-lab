@@ -1,49 +1,60 @@
 # CURRENT
 
-> **Latest bounce:** B217
-> **Stage:** REC-003 / LIFECYCLE CORRUPTION HARDENED / CI PENDING
+> **Latest bounce:** B218
+> **Stage:** REC-003 / LIFECYCLE HARDENING + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## REC-002 status
+## Break/fix completed in B217
 
-The first REC-002 hosted run remains invalid with zero valid trials.
+### REC-002 harness
 
-The CRLF producer bug is fixed, and the byte-level regression test has now been rewritten to inspect actual CR/LF control bytes.
+The CR/LF regression test was rewritten to inspect actual control bytes.
 
-No REC-002 relaunch has been authorized by this commit.
+### REC-003 lifecycle corruption
 
-## REC-003 first corruption family
+The ingester now rejects atomically:
 
-JSONL stream lifecycle is now fail-closed for:
+- records after run_end;
+- a second run_end;
+- sequence gaps;
+- mixed run IDs in one JSONL file.
 
-- record after run_end;
-- second run_end;
-- sequence gap;
-- mixed run IDs.
-
-The stream contract is:
+It requires:
 
 - one file = one run;
 - first record = run_start seq 0;
-- seq is contiguous;
+- contiguous seq;
 - run_end is terminal.
 
-Clean incomplete crash logs remain ingestible for forensic analysis with NULL run status.
+A clean crash-truncated stream without run_end remains queryable as an incomplete run with NULL status.
 
-Malformed partial JSON remains rejected atomically.
+Malformed partial JSON remains a hard rollback failure.
 
-See `docs/REC-003-CORRUPTION-v0.md`.
+## Validation
 
-## Next action
+B217 commit:
 
-Read B217 ordinary CI exactly once.
+`8a5875790610eacc7b8cc7e72ef9184d3975b690`
 
-- success -> accept lifecycle hardening and continue bounded break/fix work or separately relaunch REC-002;
+Ordinary CI:
+
+`36425701676`
+
+Last and only read in B218:
+
+`in_progress`
+
+Do not poll again in the same bounce.
+
+## Next fresh-bounce action
+
+Read CI run `36425701676` once.
+
+- success -> accept this corruption-hardening tranche and attack the next REC-003 family;
 - pending -> checkpoint EXTERNAL_WAIT;
-- failure -> inspect failure only; no blind retry.
+- failure -> inspect failure only and repair the violated invariant.
 
-## Parent research state
-
-REC-001 v0 remains the evidence substrate under hardening.
+REC-002 relaunch remains separate.
 
 STRATA-005 remains frozen and unlaunched.
 
