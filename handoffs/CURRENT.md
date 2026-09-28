@@ -1,17 +1,37 @@
 # CURRENT
 
-> **Latest bounce:** B275
-> **Stage:** EVIDENCE-001 / EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B276
+> **Stage:** EVIDENCE-001 WORKFLOW REPAIRED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-Implementation CI `36445229520`: completed / success.
+## Failed hosted build
 
-Exact launch commit:
+Run `36446699329` failed before corpus construction.
 
-`b59dc942edbd074d995c9b1a105d6feac68b5b3e`
+Exposed invariant:
 
-Build the canonical SQLite corpus over STRATA-004..009 and REC-003..004.
+`ModuleNotFoundError: No module named 'finite_ram_lab'`
 
-Next fresh-bounce action: discover/read the EVIDENCE-001 workflow for the exact launch commit once.
+No scientific result was produced or accepted.
 
-Hosted research only. No local-PC execution. No memory-control policy.
+## Repair
+
+EVIDENCE-001 workflow now installs the repository package before invoking:
+
+`python -m finite_ram_lab.evidence001_sql_corpus`
+
+No launch retry has been issued.
+
+## Next fresh-bounce action
+
+Discover/read ordinary CI for the B276 repair commit exactly once.
+
+- success -> update the existing EVIDENCE-001 launch marker with a new explicit launch generation;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only the exposed invariant.
+
+## Authority boundary
+
+Hosted repository/research only.
+No local-PC execution.
+No memory-control policy.
