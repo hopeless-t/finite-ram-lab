@@ -1,58 +1,55 @@
 # CURRENT
 
-> **Latest bounce:** B216
-> **Stage:** REC-002 / LF FIX TEST CORRECTED + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B217
+> **Stage:** REC-003 / LIFECYCLE CORRUPTION HARDENED / CI PENDING
 
-## Invalid first REC-002 launch
+## REC-002 status
 
-Hosted run `36419229167` produced zero valid trials.
+The first REC-002 hosted run remains invalid with zero valid trials.
 
-All 8 blocks failed before measurement because CRLF contaminated the final Bash-read mode token.
+The CRLF producer bug is fixed, and the byte-level regression test has now been rewritten to inspect actual CR/LF control bytes.
 
-No recorder-overhead or pressure inference is allowed from that run.
+No REC-002 relaunch has been authorized by this commit.
 
-## Fix chain
+## REC-003 first corruption family
 
-B214:
-- producer explicitly emits LF via `lineterminator="\n"`.
+JSONL stream lifecycle is now fail-closed for:
 
-B215:
-- regression test corrected to inspect actual `b"\r"` and `b"\n"` bytes rather than literal backslash sequences.
+- record after run_end;
+- second run_end;
+- sequence gap;
+- mixed run IDs.
 
-B215 commit:
+The stream contract is:
 
-`366a1b990584984fdab36fc0e18d2d8e2dfd3a87`
+- one file = one run;
+- first record = run_start seq 0;
+- seq is contiguous;
+- run_end is terminal.
 
-## Hosted validation
+Clean incomplete crash logs remain ingestible for forensic analysis with NULL run status.
 
-Ordinary CI run:
+Malformed partial JSON remains rejected atomically.
 
-`36423465750`
+See `docs/REC-003-CORRUPTION-v0.md`.
 
-Last and only status read in B216:
+## Next action
 
-`queued`
+Read B217 ordinary CI exactly once.
 
-Do not poll again in the same bounce.
-
-## Next fresh-bounce action
-
-Read CI run `36423465750` once.
-
-- success -> accept the LF/interface fix and create a distinct REC-002 relaunch commit;
-- pending -> checkpoint EXTERNAL_WAIT and stop;
+- success -> accept lifecycle hardening and continue bounded break/fix work or separately relaunch REC-002;
+- pending -> checkpoint EXTERNAL_WAIT;
 - failure -> inspect failure only; no blind retry.
 
 ## Parent research state
 
-REC-001 v0 remains repository-valid.
+REC-001 v0 remains the evidence substrate under hardening.
 
-STRATA-005 external-validity design remains frozen from B206 and unlaunched.
+STRATA-005 remains frozen and unlaunched.
 
 ## Authority boundary
 
-Hosted research/repository work only.
+Repository/hosted validation only.
 No local-PC execution.
 No STRATA-005 launch inferred.
 No memory-control policy authorized.

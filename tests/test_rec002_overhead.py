@@ -39,8 +39,8 @@ class Rec002Tests(unittest.TestCase):
             path = Path(td) / "schedule.csv"
             write_schedule(path, 0)
             raw = path.read_bytes()
-        self.assertNotIn(b"\\r", raw)
-        self.assertEqual(raw.count(b"\\n"), 3)
+        self.assertNotIn(b"\r", raw)
+        self.assertEqual(raw.count(b"\n"), 3)
 
     def test_schedule_changes_across_blocks(self) -> None:
         orders = [tuple(row["mode"] for row in schedule_rows(i)) for i in range(8)]

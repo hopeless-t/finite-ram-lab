@@ -431,7 +431,9 @@ def ingest_jsonl(path: str | Path, db_path: str | Path) -> dict[str, int | str]:
         _init_db(conn)
         inserted = 0
         duplicates = 0
-        last_seq: dict[str, int] = {}
+        file_run_id: str | None = None
+        expected_seq = 0
+        ended = False
         conn.execute("BEGIN")
 
         with source.open("r", encoding="utf-8") as fh:
@@ -446,13 +448,31 @@ def ingest_jsonl(path: str | Path, db_path: str | Path) -> dict[str, int | str]:
                 validate_record(record)
                 run_id = record["run_id"]
                 seq = record["seq"]
+                record_type = record["record_type"]
 
-                previous = last_seq.get(run_id)
-                if previous is not None and seq <= previous:
+                if file_run_id is None:
+                    if record_type != "run_start" or seq != 0:
+                        raise EvidenceError(
+                            f"{source}:{line_number}: first record must be run_start seq=0"
+                        )
+                    file_run_id = run_id
+                elif run_id != file_run_id:
                     raise EvidenceError(
-                        f"{source}:{line_number}: seq must increase within run {run_id}"
+                        f"{source}:{line_number}: mixed run_id values in one JSONL file"
                     )
-                last_seq[run_id] = seq
+
+                if seq != expected_seq:
+                    raise EvidenceError(
+                        f"{source}:{line_number}: expected seq={expected_seq}, got seq={seq}"
+                    )
+                if ended:
+                    raise EvidenceError(
+                        f"{source}:{line_number}: record appears after run_end"
+                    )
+
+                expected_seq += 1
+                if record_type == "run_end":
+                    ended = True
 
                 raw = canonical_json(record)
                 existing = conn.execute(

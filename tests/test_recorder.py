@@ -116,6 +116,119 @@ class RecorderTests(unittest.TestCase):
             with sqlite3.connect(db) as conn:
                 self.assertEqual(conn.execute("SELECT count(*) FROM records").fetchone()[0], 0)
 
+    def test_record_after_run_end_is_rejected_atomically(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            raw = root / "run.jsonl"
+            poisoned = root / "poisoned.jsonl"
+            db = root / "evidence.db"
+            self._record_run(raw)
+
+            records = [json.loads(line) for line in raw.read_text(encoding="utf-8").splitlines()]
+            tail = dict(records[1])
+            tail["seq"] = 5
+            tail["monotonic_ns"] = int(records[-1]["monotonic_ns"]) + 1
+            poisoned.write_text(
+                "\n".join(json.dumps(r, sort_keys=True, separators=(",", ":")) for r in [*records, tail])
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(EvidenceError):
+                ingest_jsonl(poisoned, db)
+
+            with sqlite3.connect(db) as conn:
+                self.assertEqual(conn.execute("SELECT count(*) FROM records").fetchone()[0], 0)
+
+    def test_second_run_end_is_rejected_atomically(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            raw = root / "run.jsonl"
+            poisoned = root / "poisoned.jsonl"
+            db = root / "evidence.db"
+            self._record_run(raw)
+
+            records = [json.loads(line) for line in raw.read_text(encoding="utf-8").splitlines()]
+            second_end = dict(records[-1])
+            second_end["seq"] = 5
+            second_end["monotonic_ns"] = int(records[-1]["monotonic_ns"]) + 1
+            poisoned.write_text(
+                "\n".join(json.dumps(r, sort_keys=True, separators=(",", ":")) for r in [*records, second_end])
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(EvidenceError):
+                ingest_jsonl(poisoned, db)
+
+            with sqlite3.connect(db) as conn:
+                self.assertEqual(conn.execute("SELECT count(*) FROM records").fetchone()[0], 0)
+
+    def test_sequence_gap_is_rejected_atomically(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            raw = root / "run.jsonl"
+            poisoned = root / "poisoned.jsonl"
+            db = root / "evidence.db"
+            self._record_run(raw)
+
+            records = [json.loads(line) for line in raw.read_text(encoding="utf-8").splitlines()]
+            records[2]["seq"] = 3
+            poisoned.write_text(
+                "\n".join(json.dumps(r, sort_keys=True, separators=(",", ":")) for r in records)
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(EvidenceError):
+                ingest_jsonl(poisoned, db)
+
+            with sqlite3.connect(db) as conn:
+                self.assertEqual(conn.execute("SELECT count(*) FROM records").fetchone()[0], 0)
+
+    def test_mixed_run_ids_are_rejected_atomically(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            raw = root / "run.jsonl"
+            poisoned = root / "poisoned.jsonl"
+            db = root / "evidence.db"
+            self._record_run(raw)
+
+            records = [json.loads(line) for line in raw.read_text(encoding="utf-8").splitlines()]
+            records[2]["run_id"] = "other-run"
+            poisoned.write_text(
+                "\n".join(json.dumps(r, sort_keys=True, separators=(",", ":")) for r in records)
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(EvidenceError):
+                ingest_jsonl(poisoned, db)
+
+            with sqlite3.connect(db) as conn:
+                self.assertEqual(conn.execute("SELECT count(*) FROM records").fetchone()[0], 0)
+
+    def test_incomplete_crash_log_remains_ingestible_as_incomplete(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            raw = root / "run.jsonl"
+            incomplete = root / "incomplete.jsonl"
+            db = root / "evidence.db"
+            self._record_run(raw)
+
+            lines = raw.read_text(encoding="utf-8").splitlines()
+            incomplete.write_text("\n".join(lines[:-1]) + "\n", encoding="utf-8")
+
+            result = ingest_jsonl(incomplete, db)
+            self.assertEqual(result["inserted"], 4)
+
+            with sqlite3.connect(db) as conn:
+                status = conn.execute(
+                    "SELECT status FROM runs WHERE run_id = ?",
+                    ("run-1",),
+                ).fetchone()[0]
+                self.assertIsNone(status)
+
     def test_rebuild_projection_from_jsonl(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
