@@ -106,6 +106,37 @@ def validate_record(record: dict[str, Any]) -> None:
         raise EvidenceError("phase must be a non-empty string when present")
 
 
+class StreamContractValidator:
+    """Validate one JSONL stream as exactly one ordered run."""
+
+    def __init__(self) -> None:
+        self.run_id: str | None = None
+        self.expected_seq = 0
+        self.ended = False
+
+    def accept(self, record: dict[str, Any], *, context: str = "record") -> None:
+        validate_record(record)
+        run_id = record["run_id"]
+        seq = record["seq"]
+        record_type = record["record_type"]
+
+        if self.run_id is None:
+            if record_type != "run_start" or seq != 0:
+                raise EvidenceError(f"{context}: first record must be run_start seq=0")
+            self.run_id = run_id
+        elif run_id != self.run_id:
+            raise EvidenceError(f"{context}: mixed run_id values in one JSONL file")
+
+        if seq != self.expected_seq:
+            raise EvidenceError(f"{context}: expected seq={self.expected_seq}, got seq={seq}")
+        if self.ended:
+            raise EvidenceError(f"{context}: record appears after run_end")
+
+        self.expected_seq += 1
+        if record_type == "run_end":
+            self.ended = True
+
+
 class EvidenceRecorder:
     """Append-only REC-001 JSONL recorder for one run."""
 
@@ -115,9 +146,10 @@ class EvidenceRecorder:
         self.path = Path(path)
         self.run_id = run_id
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        if self.path.exists() and self.path.stat().st_size:
-            raise EvidenceError(f"refusing to append to non-empty evidence file: {self.path}")
-        self._fh = self.path.open("a", encoding="utf-8", buffering=buffer_bytes)
+        try:
+            self._fh = self.path.open("x", encoding="utf-8", buffering=buffer_bytes)
+        except FileExistsError as exc:
+            raise EvidenceError(f"evidence path already claimed: {self.path}") from exc
         self._seq = 0
         self._started = False
         self._ended = False
@@ -431,9 +463,7 @@ def ingest_jsonl(path: str | Path, db_path: str | Path) -> dict[str, int | str]:
         _init_db(conn)
         inserted = 0
         duplicates = 0
-        file_run_id: str | None = None
-        expected_seq = 0
-        ended = False
+        stream = StreamContractValidator()
         conn.execute("BEGIN")
 
         with source.open("r", encoding="utf-8") as fh:
@@ -448,31 +478,7 @@ def ingest_jsonl(path: str | Path, db_path: str | Path) -> dict[str, int | str]:
                 validate_record(record)
                 run_id = record["run_id"]
                 seq = record["seq"]
-                record_type = record["record_type"]
-
-                if file_run_id is None:
-                    if record_type != "run_start" or seq != 0:
-                        raise EvidenceError(
-                            f"{source}:{line_number}: first record must be run_start seq=0"
-                        )
-                    file_run_id = run_id
-                elif run_id != file_run_id:
-                    raise EvidenceError(
-                        f"{source}:{line_number}: mixed run_id values in one JSONL file"
-                    )
-
-                if seq != expected_seq:
-                    raise EvidenceError(
-                        f"{source}:{line_number}: expected seq={expected_seq}, got seq={seq}"
-                    )
-                if ended:
-                    raise EvidenceError(
-                        f"{source}:{line_number}: record appears after run_end"
-                    )
-
-                expected_seq += 1
-                if record_type == "run_end":
-                    ended = True
+                stream.accept(record, context=f"{source}:{line_number}")
 
                 raw = canonical_json(record)
                 existing = conn.execute(

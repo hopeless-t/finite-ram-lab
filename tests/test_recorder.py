@@ -229,6 +229,39 @@ class RecorderTests(unittest.TestCase):
                 ).fetchone()[0]
                 self.assertIsNone(status)
 
+    def test_evidence_path_claim_is_exclusive(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            path = Path(td) / "run.jsonl"
+            first = EvidenceRecorder(path, "run-1")
+            try:
+                with self.assertRaises(EvidenceError):
+                    EvidenceRecorder(path, "run-2")
+            finally:
+                first.close()
+
+    def test_incomplete_then_complete_file_can_finish_projection(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            complete = root / "complete.jsonl"
+            incomplete = root / "incomplete.jsonl"
+            db = root / "evidence.db"
+            self._record_run(complete)
+            lines = complete.read_text(encoding="utf-8").splitlines()
+            incomplete.write_text("\n".join(lines[:-1]) + "\n", encoding="utf-8")
+
+            first = ingest_jsonl(incomplete, db)
+            second = ingest_jsonl(complete, db)
+            self.assertEqual(first["inserted"], 4)
+            self.assertEqual(second["inserted"], 1)
+            self.assertEqual(second["duplicates"], 4)
+
+            with sqlite3.connect(db) as conn:
+                row = conn.execute(
+                    "SELECT status, end_seq FROM runs WHERE run_id = ?",
+                    ("run-1",),
+                ).fetchone()
+                self.assertEqual(row, ("PASS", 4))
+
     def test_rebuild_projection_from_jsonl(self) -> None:
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
