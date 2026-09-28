@@ -1,82 +1,68 @@
 # CURRENT
 
-> **Latest bounce:** B241
-> **Stage:** STRATA-006 PASS / LIVE-SET HEADROOM MECHANISM REPLICATED
-> **Turn stop reason:** READY_FOR_NEXT_DESIGN
+> **Latest bounce:** B242
+> **Stage:** STRATA-007 CROSS-IMAGE PORTABILITY DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## STRATA-006 canonical PASS
+## Canonical mechanism
 
-Run:
-
-`36434232753`
-
-Launch SHA:
-
-`f9fc73fcf8170b129f2e1a91e1f8614d3927ed8e`
-
-Aggregate artifact:
-
-- name: `STRATA-006-LIVESET-HEADROOM-36434232753`
-- id: `10974842004`
-- digest: `sha256:4bee6f7e6cd1b0efdc342187d08204513f2f3e05e7422ad8a87c5d05353e6eb7`
-- trials: 48 / 48
-- execution status: PASS
-
-## Mechanism result
-
-At MemoryHigh=160 MiB:
-
-- hot=56: `88 < K <= 96`
-- hot=64 STRATA-004 anchor: `80 < K <= 88`
-- hot=72: `72 < K <= 80`
-
-Each transforms to:
-
-`144 < K + hot <= 152 MiB`
-
-Block replication:
-
-- hot=56: 4/4 blocks same bracket
-- hot=72: 4/4 blocks same bracket
-
-Measured DONTNEED non-hot floor:
-
-- hot=56 median: 12.734375 MiB
-- hot=72 median: 12.794921875 MiB
-
-Leading tested mechanism on this hosted substrate:
+STRATA-005/006 support on GitHub-hosted Ubuntu 24.04:
 
 `K ~= MemoryHigh - effective_live_set`
 
-with:
+with direct live-set replication at MemoryHigh=160 MiB.
 
-`effective_live_set ~= hot_anon + substrate/workload overhead`
-
-The observed ~12.8 MiB non-hot floor is not a portable constant or OSS default.
-
-Full result:
+STRATA-006 full result:
 
 `docs/STRATA-006-RESULT.md`
 
+## STRATA-007 frozen design
+
+New hosted image:
+
+`ubuntu-26.04`
+
+Reuse Ubuntu 24.04 STRATA-004 as anchor.
+
+Freeze:
+
+- MemoryHigh 160 MiB
+- MemoryMax 320 MiB
+- hot anon 64 MiB
+- cold file 96 MiB
+- read chunk 4 MiB
+- Python 3.12 requested explicitly
+- buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
+- 4 blocks
+- 24 new trials
+- REC-001 density unchanged
+
+Portability discriminator:
+
+- prior 24.04: `80 < K <= 88`
+- transformed: `144 < K+hot <= 152`
+
+If 26.04 shifts outside the compatible interval, introduce an explicit substrate-overhead term rather than forcing one universal constant.
+
+Design:
+
+`docs/STRATA-007-CROSS-IMAGE-v1.md`
+
 ## Monte Carlo
 
-Deferred. Cross-substrate variation has not yet been measured.
+Deferred until cross-image observations exist.
 
 ## Next fresh-bounce action
 
-Freeze a portability design that changes hosted software substrate/image while preserving:
+Implement STRATA-007:
 
-- MemoryHigh
-- hot anon
-- cold file
-- read chunk
-- DONTNEED implementation
-- cadence panel
-- Recorder density
+- spec
+- deterministic schedule / trial / aggregate
+- `ubuntu-26.04` hosted workflow
+- environment receipt
+- tests
 
-Prefer one new substrate against a reusable current-substrate anchor.
-
-Do not launch in the design bounce.
+Do not launch during implementation.
 
 ## Queued future studies
 
@@ -87,9 +73,9 @@ These remain proposals only.
 
 ## Authority boundary
 
-Hosted research only.
+Hosted repository/research work only.
 No local-PC execution.
+No STRATA-007 launch.
 No memory-control policy authorized.
 Proposal != Decision.
 Expressibility != Executability.
-No blind retry after unknown delivery.
