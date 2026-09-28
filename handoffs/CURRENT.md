@@ -1,52 +1,54 @@
 # CURRENT
 
-> **Latest bounce:** B211
-> **Stage:** REC-002 / IMPLEMENTED + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B212
+> **Stage:** REC-002 / HOSTED LAUNCH REQUESTED
 
-## REC-002 implementation
+## B210 implementation acceptance
 
 Commit:
 
 `175d7a9232ead6f3ce39a5c0e57d7583d38ff1e0`
 
-The implementation preserves implementation != launch.
+Ordinary CI run `36417680847` completed successfully.
 
-REC-002 can launch only by manual workflow dispatch or by a later commit touching:
+## REC-002 launch
+
+The explicit launch marker now exists:
 
 `launch/REC-002-v1.txt`
 
-No launch marker exists yet.
+This is the only newly authorized hosted execution.
 
-## Hosted validation
+Frozen design:
 
-Ordinary CI run:
+- 8 hosted runner blocks;
+- paired recorder_off / recorder_on;
+- 16 total trials;
+- MemoryHigh=160 MiB;
+- MemoryMax=320 MiB;
+- hot anonymous memory=64 MiB;
+- cold file=96 MiB;
+- DONTNEED=80 MiB;
+- recorder_on emits 26 synchronous JSONL records;
+- no SQLite ingest in the measured interval.
 
-`36417680847`
+## Next action
 
-Last and only status read in B211:
+Read the REC-002 workflow for the B212 launch commit exactly once.
 
-`in_progress`
-
-Do not poll this run again in the same bounce.
-
-## Next fresh-bounce action
-
-Read CI run `36417680847` once.
-
-- success -> canonicalize B210 implementation acceptance and create the explicit REC-002 launch marker;
+- success -> inspect aggregate artifact once and canonicalize the observer-effect result;
 - pending -> checkpoint EXTERNAL_WAIT and stop;
-- failure -> inspect failure only; do not blindly retry.
+- failure -> inspect failure only; no blind retry.
 
 ## Parent research state
 
 REC-001 v0 is repository-valid.
 
-STRATA-005 external-validity design remains frozen from B206 and unlaunched.
+STRATA-005 remains frozen from B206 and unlaunched.
 
 ## Authority boundary
 
-Hosted research/repository work only.
+Hosted REC-002 only.
 No local-PC execution.
 No STRATA-005 launch inferred.
 No memory-control policy authorized.

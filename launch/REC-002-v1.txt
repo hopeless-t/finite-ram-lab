@@ -1,0 +1,12 @@
+REC-002-OVERHEAD-v1 launch marker
+
+B210 implementation commit:
+175d7a9232ead6f3ce39a5c0e57d7583d38ff1e0
+
+Ordinary CI:
+36417680847 = success
+
+Purpose:
+Launch the frozen hosted recorder observer-effect screen only.
+
+This marker does not authorize STRATA-005 launch or any memory-control policy.
