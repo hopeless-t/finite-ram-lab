@@ -1,0 +1,4 @@
+REC-004 explicit hosted launch
+B269
+Paired hygiene validation: 96/192/384 MiB; DONTNEED 64 MiB; hot anon 64 MiB; MemoryHigh 160 MiB; MemoryMax 320 MiB; 4 blocks; 12 trials; capture post_scan_pre_observer then historical residency observer then post_scan_post_observer.
+Hosted research only. No local execution.
