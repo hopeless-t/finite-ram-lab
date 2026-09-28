@@ -1,49 +1,44 @@
 # CURRENT
 
-> **Latest bounce:** B209
-> **Stage:** REC-002 / RECORDER OVERHEAD DESIGN FROZEN
+> **Latest bounce:** B210
+> **Stage:** REC-002 / IMPLEMENTED / ORDINARY CI PENDING
 
 ## REC-001
 
-REC-001 v0 implementation commit:
+REC-001 v0 is repository-valid; parent CI run `36416819473` succeeded.
 
-`496b0203c3075b22394aafdfb13ccb438d6331c5`
+## REC-002
 
-Hosted CI run `36416819473` completed with conclusion `success`.
+The frozen recorder-overhead screen is implemented.
 
-The implementation is accepted as repository-valid.
+Design:
 
-## Frozen next study
+- 8 hosted runner blocks;
+- paired recorder_off / recorder_on;
+- MemoryHigh = 160 MiB;
+- MemoryMax = 320 MiB;
+- STRATA DONTNEED 80 MiB boundary workload;
+- 16 total trials;
+- recorder_on emits 26 synchronous JSONL records;
+- no SQLite ingestion in the measured interval.
 
-See `docs/REC-002-OVERHEAD-v1.md`.
+Implementation launch is intentionally separate.
 
-REC-002 tests observer effect in a sensitive hosted boundary condition:
+REC-002 runs only on manual dispatch or a commit touching `launch/REC-002-v1.txt`.
 
-- MemoryHigh = 160 MiB
-- MemoryMax = 320 MiB
-- hot anonymous memory = 64 MiB
-- cold file = 96 MiB
-- DONTNEED = 80 MiB
-- recorder_off vs recorder_on
-- 8 paired runner blocks
-- 16 total trials
-- recorder_on emits 26 JSONL records per trial
-- SQLite ingest stays outside the pressure-sensitive interval
+## Validation state
 
-Primary outcomes:
-
-- MemoryHigh event delta;
-- maximum scan memory.current;
-- scan elapsed time;
-- JSONL bytes written.
-
-## Parent research state
-
-STRATA-005 external-validity design remains frozen from B206 and unchanged.
+B210 ordinary CI has not yet been accepted.
 
 ## Next action
 
-Implement REC-002 and its validation tests. Hosted launch remains a separate execution step.
+Read B210 CI exactly once.
+
+- success -> add the explicit REC-002 launch marker in a new bounce;
+- pending -> checkpoint EXTERNAL_WAIT and stop;
+- failure -> inspect failure only and do not launch.
+
+STRATA-005 remains frozen and unlaunched.
 
 ## Authority boundary
 

@@ -5,6 +5,7 @@ import json
 import mmap
 import os
 import time
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -64,6 +65,7 @@ def _scan(
     scratch: mmap.mmap,
     chunk: int,
     cg: Path,
+    checkpoint_hook: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     if arm not in ARMS:
         raise ValueError(f"unknown arm: {arm}")
@@ -227,6 +229,8 @@ def _scan(
                 released_until = total
 
             checkpoint["post_advice"] = _compact_snapshot(cg)
+            if checkpoint_hook is not None:
+                checkpoint_hook(checkpoint)
             checkpoints.append(checkpoint)
     finally:
         view.release()
@@ -263,6 +267,7 @@ def run(
     expected_high: int,
     expected_max: int,
     precache_limit: float,
+    checkpoint_hook: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     if arm not in ARMS:
         raise ValueError("invalid arm")
@@ -301,6 +306,7 @@ def run(
             scratch=scratch,
             chunk=buffer_size,
             cg=cg,
+            checkpoint_hook=checkpoint_hook,
         )
 
         file_post = _file_residency(file_path)
