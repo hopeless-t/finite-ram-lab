@@ -1,72 +1,77 @@
 # CURRENT
 
-> **Latest bounce:** B246
-> **Stage:** STRATA-007 / LAUNCH COMMITTED + RUN MATERIALIZATION WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B247
+> **Stage:** STRATA-007 PASS / CROSS-IMAGE PORTABILITY SUPPORTED
+> **Turn stop reason:** READY_FOR_NEXT_DESIGN
 
-## Canonical mechanism
+## Canonical cross-image result
 
-Ubuntu 24.04 evidence currently supports:
+STRATA-007 run:
 
-`K ~= MemoryHigh - effective_live_set`
+`36435758885`
 
-At MemoryHigh 160 MiB, hot anon 64 MiB:
-
-`80 < K <= 88 MiB`
-
-and:
-
-`144 < K+hot <= 152 MiB`.
-
-## STRATA-007 launch
-
-Exact B245 launch commit:
+Launch SHA:
 
 `615cc9957d4f7e49cc60a7d799431ba149d6f22b`
 
-Explicit marker:
+Aggregate:
 
-`launch/STRATA-007-v1.txt`
+- artifact `STRATA-007-CROSS-IMAGE-36435758885`
+- id `10975842099`
+- digest `sha256:1f677697ec810dd1f25dee0c7657044d55a52dee3874806579266bbae2370eb4`
+- trials 24 / 24
+- PASS
 
-Frozen execution:
+Ubuntu 26.04 result:
 
-- runner `ubuntu-26.04`
-- Python 3.12
-- MemoryHigh 160 MiB
-- MemoryMax 320 MiB
-- hot anon 64 MiB
-- cold file 96 MiB
-- buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
-- 4 blocks
-- 24 trials
-- REC-001 density unchanged
+`80 < K <= 88 MiB`
 
-Ubuntu 24.04 is reused only as historical anchor.
+`144 < K+hot <= 152 MiB`
 
-## Run discovery
+Ubuntu 24.04 STRATA-004 anchor has the same brackets.
 
-One exact-head discovery read was performed after B245.
+All four 26.04 blocks reproduced the same onset.
 
-Result:
+## Leading mechanism
 
-`0 matching workflow runs`
+Across pressure, live-set, and hosted-image axes:
 
-Interpretation: run materialization/delivery is not yet known.
+`K ~= MemoryHigh - effective_live_set`
 
-Do not infer failure and do not launch again.
+remains the leading tested mechanism.
+
+The non-hot component is measurable but not universal.
+
+Ubuntu 26.04 DONTNEED non-hot floor:
+
+- median 12.8125 MiB
+- range approximately 12.805–13.313 MiB
+
+## Recorder sidecar issue
+
+The STRATA-007 environment receipt captured a blank `systemd_version` field.
+
+The scientific run remains valid because `systemd-run` executed successfully and the new image/kernel identity was recorded.
+
+Future receipts must query `systemd-run --version` rather than `systemd --version`.
 
 ## Monte Carlo
 
-Deferred until cross-image physical observations exist.
+Deferred. Two substrate families with identical coarse onset intervals do not identify a useful portability distribution.
 
 ## Next fresh-bounce action
 
-Search exact head `615cc9957d4f7e49cc60a7d799431ba149d6f22b` for push-triggered runs once.
+Freeze a total-cold-volume test:
 
-- STRATA-007 success -> fetch aggregate artifact once and validate/atomize 24 trials;
-- pending/in_progress -> checkpoint EXTERNAL_WAIT;
-- failure -> inspect only the exposed invariant;
-- absent -> EXTERNAL_WAIT without retry.
+- runner Ubuntu 26.04
+- MemoryHigh 160 MiB
+- hot anon 64 MiB
+- current 96 MiB cold-file result reused as anchor
+- increase total cold file size materially
+- preserve read chunk, DONTNEED mechanism, cadence panel, Recorder density
+- ask whether knee and retained floor remain bounded independently of total cold capacity
+
+Do not launch in the design bounce.
 
 ## Queued future studies
 
