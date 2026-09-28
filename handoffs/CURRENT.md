@@ -1,77 +1,28 @@
 # CURRENT
 
-> **Latest bounce:** B289
-> **Stage:** MATH-001 IMPLEMENTED + CI EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B290
+> **Stage:** MATH-001 EXPLICIT HOSTED LAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
-## MEMCG-001 accepted evidence
-
-Run:
-`36449072026`
-
-Verdict:
-`SUPPORT_H64`
-
-4/4 touch blocks support a 64-page positive accounting quantum.
-0/4 controls show non-zero jumps.
-
-Block2 contains one negative discontinuity at step173.
-Reset-aware segmentation gives exact Q64 staircases on both sides with different phases.
-
-## MATH-001
-
-Exact implementation:
-
+Implementation:
 `1da3d8db4da5bd0d87a066293fff719ae3f25125`
 
-Model competition:
-- linear
-- stationary Q staircase
-- reset-aware Q staircase
-- arbitrary positions
-- null/control
+Implementation CI:
+`36452184202 = success`
 
-Q panel:
-`1,2,4,8,16,32,64,128`
+Exact launch commit:
+`8ba7be304522c2a2653b99e858b5e7671281d071`
 
-Primary scoring:
-- full sequence residual
-- combinatorial MDL
-- leave-one-block-out predictive F1
+Question:
+does one model family/Q dominate both MDL and held-out prediction over MEMCG-001 evidence?
 
-Ordinary CI:
+Decision space:
+- MODEL64_WINS
+- OTHER_Q_WINS
+- MIXED_MODEL
 
-`36452184202`
+Next fresh-bounce action:
+discover/read exact-head MATH-001 workflow once.
 
-Single B289 read:
-
-`in_progress`
-
-Do not poll again in this bounce.
-
-## Next fresh-bounce action
-
-Read CI `36452184202` exactly once.
-
-- success -> explicit MATH-001 launch;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only exposed invariant.
-
-## Later physical follow-up
-
-If MODEL64_WINS:
-design MEMCG-002 as a causal state-reset test, likely comparing:
-- fixed-CPU pinned execution;
-- deliberate one-time CPU migration in the same cgroup;
-- no-touch migration control.
-
-Rationale:
-upstream memcg stock is per-CPU; migration should perturb phase/state if the hidden-stock interpretation is correct.
-
-Local LDC replication should follow only after hosted causal evidence and under a separately bound MVCA execution scope.
-
-## Authority boundary
-
-Hosted research only in current bounce.
+Hosted research only.
 No local-PC execution.
-No memory-control policy.
