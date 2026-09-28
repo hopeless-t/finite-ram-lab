@@ -1,0 +1,129 @@
+name: REC-003 Residency Observer Footprint v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "launch/REC-003-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3]
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Prepare observer files
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from finite_ram_lab.strata001_probe import _prepare_file
+          root = Path(os.environ["RUNNER_TEMP"]) / "rec003"
+          root.mkdir(parents=True, exist_ok=True)
+          for size in (96, 192, 384):
+              p = root / f"observer-{size}.bin"
+              _prepare_file(p, size * 1024 * 1024, 4 * 1024 * 1024)
+              print(p)
+          PY
+
+      - name: Build schedule and environment
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          ROOT="evidence/REC-003/block-${BLOCK}"
+          mkdir -p "${ROOT}/raw"
+          python -m finite_ram_lab.rec003_residency_observer schedule \
+            --spec specs/REC-003-RESIDENCY-OBSERVER-FOOTPRINT-v1.json \
+            --block "${BLOCK}" \
+            --out "${ROOT}/schedule.csv"
+          {
+            echo "kernel_release=$(uname -r)"
+            echo "systemd_version=$(systemd-run --version | head -n1)"
+            echo "cgroup_fs_type=$(stat -fc %T /sys/fs/cgroup)"
+            echo "image_os=${ImageOS:-}"
+            echo "image_version=${ImageVersion:-}"
+            echo "runner_arch=${RUNNER_ARCH:-}"
+            cat /etc/os-release
+          } > "${ROOT}/environment.txt"
+
+      - name: Run observer-only trials
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          SPEC="$GITHUB_WORKSPACE/specs/REC-003-RESIDENCY-OBSERVER-FOOTPRINT-v1.json"
+          ROOT="$GITHUB_WORKSPACE/evidence/REC-003/block-${BLOCK}"
+          FILE_ROOT="$RUNNER_TEMP/rec003"
+
+          tail -n +2 "${ROOT}/schedule.csv" | while IFS=, read -r ORDER SIZE; do
+            UNIT="finite-ram-rec003-${GITHUB_RUN_ID}-${BLOCK}-${ORDER}"
+            OUT="${ROOT}/raw/trial-${ORDER}-${SIZE}m.json"
+            FILE="${FILE_ROOT}/observer-${SIZE}.bin"
+
+            sudo systemd-run \
+              --pipe --wait --collect --quiet \
+              --unit="$UNIT" \
+              -p MemoryAccounting=yes \
+              "$PY" -m finite_ram_lab.rec003_residency_observer trial \
+                --spec "$SPEC" \
+                --block "$BLOCK" \
+                --order "$ORDER" \
+                --size-mib "$SIZE" \
+                --file "$FILE" \
+                --source-commit "$GITHUB_SHA" \
+                --out "$OUT"
+          done
+          sudo chown -R "$(id -u):$(id -g)" "${ROOT}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: rec003-block-${{ matrix.block }}
+          path: evidence/REC-003/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: rec003-block-*
+          path: evidence/REC-003/input
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/REC-003/aggregate
+          python -m finite_ram_lab.rec003_residency_observer aggregate \
+            --spec specs/REC-003-RESIDENCY-OBSERVER-FOOTPRINT-v1.json \
+            --input-root evidence/REC-003/input \
+            --out evidence/REC-003/aggregate/summary.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: REC-003-RESIDENCY-OBSERVER-${{ github.run_id }}
+          path: evidence/REC-003/aggregate/
+          if-no-files-found: error
+          retention-days: 90

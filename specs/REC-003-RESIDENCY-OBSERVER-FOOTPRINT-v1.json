@@ -1,0 +1,12 @@
+{
+  "experiment_id": "REC-003-RESIDENCY-OBSERVER-FOOTPRINT-v1",
+  "runner": "ubuntu-26.04",
+  "runner_blocks": 4,
+  "base_schedule_seed": 2026092903,
+  "file_sizes_mib": [96, 192, 384],
+  "prepare_chunk_mib": 4,
+  "expected_trials": 12,
+  "settle_seconds": 0.05,
+  "memory_stat_fields": ["anon", "file", "kernel", "pagetables", "slab", "sock", "shmem"],
+  "authority": "HOSTED_RESEARCH_ONLY"
+}

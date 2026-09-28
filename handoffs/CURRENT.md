@@ -1,73 +1,53 @@
 # CURRENT
 
-> **Latest bounce:** B260
-> **Stage:** REC-003 RESIDENCY OBSERVER FOOTPRINT DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B261
+> **Stage:** REC-003 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## Canonical scientific state
+REC-003 implementation now exists for:
 
-STRATA-009 run `36440093666`: PASS, 20/20.
+- file sizes 96 / 192 / 384 MiB
+- 4 independent runner blocks
+- fresh systemd unit per size
+- 12 total trials
+- no streaming workload
+- no hot anonymous allocation
 
-Capacity series 96 / 192 / 384 MiB retains the same:
-
-`80 < K <= 88 MiB`
-
-including 384 MiB > MemoryMax 320 MiB.
-
-## Fine-floor HOLD
-
-The measured post-scan non-hot floor rises slightly with cold capacity.
-
-But `_file_residency()` mmaps the full file and runs mincore before post-scan memory.current is captured.
-
-Do not interpret the small floor trend as a workload law yet.
-
-## REC-003 frozen design
-
-Observer-only file sizes:
-
-- 96 MiB
-- 192 MiB
-- 384 MiB
-
-Fresh systemd unit per trial, 4 blocks per size, 12 trials total.
-
-Phase snapshots:
+Measured phases:
 
 - baseline
-- mmap
-- ctypes view
-- mincore vector
-- post-mincore
-- post-count
-- post-cleanup
-- post-gc-settle
+- after mmap
+- after ctypes view
+- after mincore vector allocation
+- after mincore
+- after resident count
+- after cleanup
+- after gc + settle
 
-Capture memory.current, selected memory.stat, and memory.peak.
+Each phase records memory.current and selected memory.stat fields.
+Final memory.peak is also recorded.
 
-No streaming workload.
-No hot anonymous allocation.
+Purpose: determine whether the sub-MiB post-scan floor trend in STRATA-007/008/009 is observer-induced.
 
-Design:
+Files:
 
-`docs/REC-003-RESIDENCY-OBSERVER-FOOTPRINT-v1.md`
+- `specs/REC-003-RESIDENCY-OBSERVER-FOOTPRINT-v1.json`
+- `src/finite_ram_lab/rec003_residency_observer.py`
+- `.github/workflows/rec-003-residency-observer.yml`
+- `tests/test_rec003_residency_observer.py`
+
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement REC-003:
+Discover/read B261 ordinary CI exactly once.
 
-- spec
-- observer instrumentation module
-- Ubuntu 26.04 workflow
-- aggregate
-- tests
-
-Do not launch during implementation.
+- success -> explicit REC-003 launch in a separate commit;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only the exposed invariant.
 
 ## Authority boundary
 
 Hosted repository/research only.
 No local-PC execution.
 No memory-control policy.
-Proposal != Decision.
-Expressibility != Executability.
