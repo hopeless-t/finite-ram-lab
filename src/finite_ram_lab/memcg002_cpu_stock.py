@@ -145,10 +145,16 @@ def analyze_trial(
 
     pre = [e for e in pos if e["step"] <= migrate_after]
     after_migrate = [e for e in pos if e["step"] > migrate_after]
-    b_side = [
-        e for e in pos
-        if migrate_after < e["step"] <= return_after
-    ]
+    if arm == "migrate_touch":
+        b_side = [
+            e for e in pos
+            if e["step"] > migrate_after
+        ]
+    else:
+        b_side = [
+            e for e in pos
+            if migrate_after < e["step"] <= return_after
+        ]
     a_return = [e for e in pos if e["step"] > return_after]
 
     pre_phase = _phase(pre, q)
