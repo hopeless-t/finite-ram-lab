@@ -1,75 +1,53 @@
 # CURRENT
 
-> **Latest bounce:** B301
-> **Stage:** MEMCG-003 SEVEN-SLOT EVICTION DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B302
+> **Stage:** MEMCG-003 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
 ## Accepted chain
 
-MEMCG-001:
-`SUPPORT_H64`
+MEMCG-001: `SUPPORT_H64`
+MATH-001: `MODEL64_WINS`
+MEMCG-002: naive durable per-CPU model rejected; seven-slot shared cache candidate retained.
 
-MATH-001:
-`MODEL64_WINS`
+## MEMCG-003 implementation
 
-MEMCG-002:
-`REJECT_PERCPU_STOCK` for the naive durable one-stock-per-CPU model.
+Files:
+- `specs/MEMCG-003-SEVEN-SLOT-EVICTION-v1.json`
+- `experiments/memcg003_holder.c`
+- `src/finite_ram_lab/memcg003_seven_slot.py`
+- `.github/workflows/memcg-003-seven-slot.yml`
+- `tests/test_memcg003_seven_slot.py`
 
-But:
-- FIXED_TOUCH 4/4 PASS
-- ROUNDTRIP_CONTROL 4/4 PASS
-- MIGRATE_TOUCH 3/4 PASS
-- ROUNDTRIP_TOUCH 1/4 PASS
-- PERCPU_PHASE exceptions 11 vs GLOBAL_PHASE 31
-
-## Source correction
-
-Upstream Linux defines:
-`NR_MEMCG_STOCK = 7`
-
-Each CPU has a seven-slot shared memcg charge cache with rotating drain/eviction.
-
-## MEMCG-003
-
-Frozen design:
-`docs/MEMCG-003-SEVEN-SLOT-EVICTION-v1.md`
-
-Core test:
+Intervention:
 - fill 7 persistent wash memcgs on one CPU;
-- insert target;
-- add persistent distinct challengers one by one;
-- probe target stock survival;
-- infer first eviction threshold E.
-
-Source prediction:
-`E ~= 7`
-
-Candidate K:
-`1..10`
+- insert persistent target;
+- add distinct challengers;
+- probe target after each insertion.
 
 Controls:
-- same-memcg activity
-- six-only
+- same-memcg repeated activity
+- six-only challengers
 - no-churn
 
-Analysis:
-- threshold error
-- MDL
-- Bayesian discrete K posterior
+Primary source prediction:
+target eviction/fresh recharge near challenger #7.
+
+Math:
+- threshold E
+- candidate K=1..10
 - leave-one-block-out prediction
-- counterexample reporting
+- discrete posterior over K
+
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement MEMCG-003 only:
-- persistent holder worker
-- interactive target worker
-- orchestration
-- analyzer
-- tests
-- hosted workflow
+Discover/read B302 ordinary CI exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-003 launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 
