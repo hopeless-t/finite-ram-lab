@@ -1,35 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B232
-> **Stage:** STRATA-005 / SPEC-PATH REPAIR + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B233
+> **Stage:** STRATA-005 / EXPLICIT HOSTED RELAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
-## Failed hosted study attempt
+## Repair validation
 
-Run `36430416271` completed with failure before scientific measurement.
-
-- 8 / 8 matrix jobs failed at spec loading
-- valid STRATA-005 trials: 0
-- aggregate skipped
-- no pressure/DONTNEED inference authorized
-
-Root cause:
-
-`systemd-run` child received repository-relative `specs/STRATA-005-EXTERNAL-VALIDITY-v1.json`.
-
-## Repair
-
-B231 commit:
+Spec-path repair commit:
 
 `baf6264a4bdee456e040ab1015b2eb7f7f059cc1`
 
-The trial now receives:
+Ordinary CI run `36430872975` was read exactly once in B233:
 
-`$GITHUB_WORKSPACE/specs/STRATA-005-EXTERNAL-VALIDITY-v1.json`
+- status: completed
+- conclusion: success
 
-through an explicit absolute-path variable. A regression test guards the workflow contract.
+## Prior failed run
 
-Frozen design remains unchanged:
+`36430416271` remains invalid for scientific inference:
+
+- failed before spec loading completed
+- valid trials: 0
+- no DONTNEED/headroom result
+- do not rerun it
+
+## STRATA-005 frozen contract
 
 - MemoryHigh: 144 / 176 MiB
 - arms: buffered / DONTNEED 48 / 64 / 80 / 96 MiB
@@ -37,21 +32,17 @@ Frozen design remains unchanged:
 - 40 total trials
 - 26 REC-001 records per trial
 
-## CI
+## Relaunch
 
-Exact-head CI run:
+B233 revises the explicit path-gated marker:
 
-`36430872975`
+`launch/STRATA-005-v1.txt`
 
-Single B232 read:
-
-`queued`
-
-Do not poll again in this bounce.
+This is a new explicit hosted execution after validated repair. It does not change the study design.
 
 ## Source intake
 
-Naive-N0.5-Flash remains recorded as mechanism/measurement-design input for a later semantic-reuse study. It does not alter STRATA-005.
+Naive-N0.5-Flash remains recorded as mechanism/measurement-design input for a later semantic-reuse study only.
 
 ## Monte Carlo
 
@@ -59,13 +50,11 @@ Deferred until valid cross-pressure observations exist.
 
 ## Next fresh-bounce action
 
-Read `36430872975` exactly once.
+Discover/read the STRATA-005 run for the exact B233 relaunch commit once.
 
-- success -> make a new explicit STRATA-005 relaunch marker change;
+- success -> fetch artifacts once and validate/atomize all 40 trials;
 - pending/in_progress -> checkpoint EXTERNAL_WAIT and stop;
 - failure -> inspect only the exposed invariant.
-
-Do not use rerun on `36430416271`.
 
 ## Authority boundary
 

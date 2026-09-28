@@ -1,4 +1,10 @@
-STRATA-005 External Validity v1 — explicit hosted launch marker
+STRATA-005 External Validity v1 — explicit hosted relaunch marker
+
+Relaunch generation: B233
+Predecessor failed run: 36430416271
+Predecessor failure class: implementation/interface defect before scientific measurement
+Repair commit: baf6264a4bdee456e040ab1015b2eb7f7f059cc1
+Repair validation CI: 36430872975 = success
 
 Authorized scope:
 - hosted GitHub Actions research only
@@ -9,12 +15,10 @@ Authorized scope:
 - 40 trials total
 - REC-001 density: 26 records/trial
 
-This marker does not authorize local-PC execution, policy deployment, retries after unknown delivery, or changes to the frozen design.
+This is a new explicit execution, not a rerun of run 36430416271.
+The failed run produced zero valid scientific trials.
 
-Pre-launch validation:
-- ordinary CI run 36428893054: completed / success
-- REC-002 run 36427808785: canonical PASS
-- source-intake B228 does not modify STRATA-005
+This marker does not authorize local-PC execution, policy deployment, changes to the frozen design, or retries after unknown delivery.
 
 Proposal != Decision.
 Expressibility != Executability.
