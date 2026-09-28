@@ -1,0 +1,25 @@
+STRATA-007 Cross-Image Portability v1 — explicit hosted launch marker
+
+Launch generation: B245
+Implementation commit: a1e3f4ab042d3272178c6f435b88f2d25a8c01de
+Implementation CI: 36435391877 = success
+
+Authorized scope:
+- hosted GitHub Actions research only
+- runner image: ubuntu-26.04
+- Python requested: 3.12
+- MemoryHigh 160 MiB
+- MemoryMax 320 MiB
+- hot anon 64 MiB
+- cold file 96 MiB
+- buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
+- four blocks
+- 24 trials total
+- REC-001 density: 26 records/trial
+
+Ubuntu 24.04 is reused only as the pre-existing STRATA-004 anchor; it is not rerun here.
+
+This marker does not authorize local-PC execution, memory-policy deployment, changes to the frozen design, or retries after unknown delivery.
+
+Proposal != Decision.
+Expressibility != Executability.

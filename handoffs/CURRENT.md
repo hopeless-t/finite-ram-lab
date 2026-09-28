@@ -1,60 +1,54 @@
 # CURRENT
 
-> **Latest bounce:** B244
-> **Stage:** STRATA-007 IMPLEMENTED + CI EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B245
+> **Stage:** STRATA-007 / EXPLICIT HOSTED LAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
 ## Canonical mechanism
 
-STRATA-006 run `36434232753`: PASS, 48/48.
-
-Leading tested mechanism on Ubuntu 24.04:
+STRATA-006 on Ubuntu 24.04 supports:
 
 `K ~= MemoryHigh - effective_live_set`
 
-with hot-set replication:
-
-- hot56 -> `88 < K <= 96`
-- hot64 -> `80 < K <= 88`
-- hot72 -> `72 < K <= 80`
-
-all mapping to:
+with transformed interval:
 
 `144 < K+hot <= 152 MiB`.
 
-## STRATA-007 implementation
+## STRATA-007 validation
 
-Exact B243 commit:
+Implementation commit:
 
 `a1e3f4ab042d3272178c6f435b88f2d25a8c01de`
 
-Frozen portability screen:
+Ordinary CI:
 
-- new runner `ubuntu-26.04`
-- existing `ubuntu-24.04` STRATA-004 anchor
-- explicit Python 3.12
+`36435391877`
+
+Single B245 read:
+
+- completed
+- success
+
+## Launch
+
+B245 creates:
+
+`launch/STRATA-007-v1.txt`
+
+Frozen execution:
+
+- runner `ubuntu-26.04`
+- Python 3.12
 - MemoryHigh 160 MiB
 - MemoryMax 320 MiB
 - hot anon 64 MiB
 - cold file 96 MiB
 - buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
 - 4 blocks
-- 24 trials
+- 24 total new trials
 - REC-001 density unchanged
 
-No launch marker exists.
-
-## CI
-
-Exact-head CI run:
-
-`36435391877`
-
-Single B244 read:
-
-`in_progress`
-
-Do not poll again in this bounce.
+Ubuntu 24.04 remains historical anchor only.
 
 ## Monte Carlo
 
@@ -62,11 +56,12 @@ Deferred until cross-image observations exist.
 
 ## Next fresh-bounce action
 
-Read `36435391877` exactly once.
+Discover/read the STRATA-007 workflow run for the exact B245 launch commit once.
 
-- success -> explicit STRATA-007 launch in a separate commit;
+- success -> fetch aggregate artifact once and validate/atomize 24 trials;
 - pending/in_progress -> checkpoint EXTERNAL_WAIT;
-- failure -> inspect only the exposed invariant.
+- failure -> inspect only the exposed invariant;
+- absent -> EXTERNAL_WAIT without retry.
 
 ## Queued future studies
 
@@ -77,9 +72,8 @@ No local execution is authorized.
 
 ## Authority boundary
 
-Hosted repository/research work only.
+Hosted research only.
 No local-PC execution.
-No STRATA-007 launch.
 No memory-control policy authorized.
 Proposal != Decision.
 Expressibility != Executability.
