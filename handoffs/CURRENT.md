@@ -1,71 +1,72 @@
 # CURRENT
 
-> **Latest bounce:** B237
-> **Stage:** STRATA-006 IMPLEMENTED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B238
+> **Stage:** STRATA-006 IMPLEMENTED + CI MATERIALIZATION WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Parent result
+## Canonical parent result
 
 STRATA-005 run `36431449193`: PASS, 40/40.
 
-Canonical interpretation:
+Directional result:
 
-- fixed raw-MiB knee rejected for tested pressure configurations;
-- additive effective-live-set headroom remains supported directionally;
-- no controller formula or OSS default authorized.
+`K = MemoryHigh - effective_live_set_floor`
 
-## STRATA-006
+is more consistent with the tested data than a universal fixed raw-MiB knee.
 
-Frozen question:
+No controller/default is authorized.
 
-At MemoryHigh=160 MiB, does changing hot/live-set size move the DONTNEED knee inversely?
+## STRATA-006 implementation
 
-Implementation now exists for:
+Exact B237 commit:
 
+`65035dfc4d4e2f9e5ec4075dda84fc39807e69cc`
+
+Frozen test:
+
+- MemoryHigh 160 MiB
 - hot anon 56 / 72 MiB
+- reuse hot=64 MiB STRATA-004 anchor
 - buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
-- 4 blocks per hot setting
-- 48 total trials
-- Recorder 26 records/trial
+- 4 blocks per hot
+- 48 total new trials
+- REC-001 density unchanged
 
-Primary transformed discriminator:
+Primary discriminator:
 
 `K + hot_anon ~= constant`
 
-against fixed raw `K`.
+versus fixed raw `K`.
 
-Files:
+Implementation exists but launch has not occurred.
 
-- `docs/STRATA-006-LIVESET-HEADROOM-v1.md`
-- `specs/STRATA-006-LIVESET-HEADROOM-v1.json`
-- `src/finite_ram_lab/strata006_liveset_headroom.py`
-- `.github/workflows/strata-006-liveset-headroom.yml`
-- `tests/test_strata006_liveset_headroom.py`
+## CI discovery
 
-Workflow launch is gated by:
+One exact-head discovery read in B238:
 
-`launch/STRATA-006-v1.txt`
+`0 matching workflow runs`
 
-No launch marker has been created.
+Do not infer failure and do not create a launch marker yet.
 
 ## Monte Carlo
 
-Deferred until STRATA-006 observations exist.
+Deferred until STRATA-006 physical observations exist.
 
 ## Next fresh-bounce action
 
-Discover/read B237 ordinary CI exactly once.
+Search exact head `65035dfc4d4e2f9e5ec4075dda84fc39807e69cc` for ordinary CI once.
 
-- success -> explicit STRATA-006 launch marker in a separate commit;
-- pending/in_progress -> checkpoint EXTERNAL_WAIT and stop;
-- failure -> inspect only the exposed invariant.
+- success -> explicit STRATA-006 launch in a new bounce;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only;
+- absent -> EXTERNAL_WAIT without retry.
 
 ## Queued future studies
 
-- Naive-N0.5-Flash semantic reuse / reconstructible-state study
-- LLM-jp-4.1 local-worker + state-lifetime dogfood
+- Naive-N0.5-Flash semantic reuse / reconstructible-state
+- LLM-jp-4.1 local worker + state-lifetime dogfood
 
-No local execution is authorized for either.
+These remain proposals only.
 
 ## Authority boundary
 
@@ -75,3 +76,4 @@ No STRATA-006 launch.
 No memory-control policy authorized.
 Proposal != Decision.
 Expressibility != Executability.
+No blind retry after unknown delivery.
