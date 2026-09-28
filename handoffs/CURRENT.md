@@ -1,62 +1,42 @@
 # CURRENT
 
-> **Latest bounce:** B295
-> **Stage:** MEMCG-002 IMPLEMENTED + CI EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B296
+> **Stage:** MEMCG-002 ANALYZER REPAIRED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
 ## Accepted chain
 
-MEMCG-001:
-`SUPPORT_H64`
+MEMCG-001: `SUPPORT_H64`
+MATH-001: `MODEL64_WINS`
 
-MATH-001:
-`MODEL64_WINS`
+## MEMCG-002 repair
 
-MATH-001 details:
-- Q64 reset-aware SSE = 0
-- Q64 minimum MDL = 30 bits
-- Q64 leave-one-block-out F1 = 1.0 in 4/4 folds
-
-## MEMCG-002
-
-Exact implementation:
-
+Initial implementation:
 `19776a4c50412d5b929f8b1130f83b22e2345f04`
 
-Study:
-- 4 blocks
-- 4 arms
-- 16 trials
-- startup pinned on CPU A
-- deliberate A->B migration after step128
-- optional B->A return after step192
-- same fresh cgroup and process
-
-Primary causal test:
-does CPU migration reset the Q64 phase in the source-predicted direction while return to A restores old A state?
-
-Ordinary CI:
-
+Failed CI:
 `36454940719`
 
-Single B295 read:
+Exposed invariant:
+MIGRATE_TOUCH remains on CPU B from step129 through256, but B-side spacing was truncated at step192.
 
-`queued`
+Repair commit:
+`3e563db223c80938a09a8a1567c8b9fe4e5836d4`
 
-Do not poll again in this bounce.
+Repair only changes analyzer interval semantics:
+- MIGRATE_TOUCH B-side: >128 through end;
+- ROUNDTRIP B-side: 129..192.
+
+No scientific design changed.
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Read CI `36454940719` exactly once.
+Read ordinary CI for `3e563db223c80938a09a8a1567c8b9fe4e5836d4` exactly once.
 
-- success -> explicit MEMCG-002 hosted launch;
+- success -> explicit MEMCG-002 launch;
 - pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
-
-## Local follow-up
-
-Only after hosted causal evidence:
-prepare an exact-worker Lubuntu replication through MVCA -> LDC under its own bound execution scope.
 
 ## Authority boundary
 
