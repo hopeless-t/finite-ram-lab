@@ -1,0 +1,4 @@
+EVIDENCE-001 explicit hosted launch
+B275
+Build deterministic SQLite corpus from canonical STRATA-004..009 and REC-003..004 evidence; emit corpus.sqlite and discovery results.
+Hosted research only. No local execution.
