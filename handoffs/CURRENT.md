@@ -1,59 +1,78 @@
 # CURRENT
 
-> **Latest bounce:** B252
-> **Stage:** STRATA-008 / LAUNCH COMMITTED + RUN MATERIALIZATION WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B253
+> **Stage:** STRATA-008 PASS / BOUNDED-WORKING-SET CAPACITY DECOUPLING
+> **Turn stop reason:** READY_FOR_NEXT_DESIGN
+
+## STRATA-008 PASS
+
+Run:
+
+`36437651740`
+
+Launch SHA:
+
+`1843e566c8cf6e18322861cd6c7ee51b28cccc30`
+
+Aggregate:
+
+- artifact id `10976142662`
+- digest `sha256:8fbdf646686efe6923afd57e78c859b79ceeda9f2124b2c6fd6023de88909186`
+- 24 / 24 trials
+- PASS
+
+## Capacity result
+
+Cold capacity:
+
+- 96 MiB anchor -> `80 < K <= 88`
+- 192 MiB -> `80 < K <= 88`
+
+Both:
+
+`144 < K+hot <= 152 MiB`
+
+Total work/advice activity increased, but the onset and retained DONTNEED floor stayed bounded.
+
+Empirical bootstrap of DONTNEED non-hot floor:
+
+- 96 MiB median: 12.8125 MiB
+- 192 MiB median: 13.0546875 MiB
+- observed shift: +0.2421875 MiB
+- 95% bootstrap interval: approximately [-0.001953, +0.250000] MiB
+
+Interpretation: bounded sub-MiB floor movement, not exact equality.
+
+Full result:
+
+`docs/STRATA-008-RESULT.md`
+
+Bootstrap receipt:
+
+`evidence/STRATA-008/empirical-bootstrap-v1.json`
 
 ## Leading mechanism
 
 Current hosted evidence supports:
 
-`K ~= MemoryHigh - effective_live_set`
+`instantaneous RAM demand ~= effective live set + unreleased streaming interval`
 
-across pressure, hot live-set, and Ubuntu image changes.
-
-## STRATA-008 launch
-
-Exact B251 launch commit:
-
-`1843e566c8cf6e18322861cd6c7ee51b28cccc30`
-
-Explicit marker:
-
-`launch/STRATA-008-v1.txt`
-
-Frozen execution:
-
-- Ubuntu 26.04
-- Python 3.12
-- MemoryHigh 160 MiB
-- MemoryMax 320 MiB
-- hot anon 64 MiB
-- cold file 192 MiB
-- read chunk 4 MiB
-- buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
-- 4 blocks
-- 24 trials
-- REC-001 50 records/trial
-
-96 MiB cold-file STRATA-007 remains historical anchor only.
-
-## Run discovery
-
-One exact-head discovery read after B251 returned:
-
-`0 matching workflow runs`
-
-Do not infer failure and do not launch again.
+rather than total one-shot dataset capacity.
 
 ## Next fresh-bounce action
 
-Search exact head `1843e566c8cf6e18322861cd6c7ee51b28cccc30` for push-triggered runs once.
+Freeze STRATA-009 as a cold-capacity boundary test:
 
-- STRATA-008 success -> fetch aggregate artifact once and validate/atomize 24 trials;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only the exposed invariant;
-- absent -> EXTERNAL_WAIT without retry.
+- cold file 384 MiB;
+- MemoryMax remains 320 MiB;
+- MemoryHigh remains 160 MiB;
+- hot anon remains 64 MiB;
+- same Ubuntu 26.04 runner, Python 3.12, read chunk, DONTNEED cadence panel, Recorder semantics;
+- reuse 192 MiB as anchor.
+
+Question: can total one-shot dataset capacity exceed the cgroup MemoryMax while instantaneous demand remains bounded?
+
+Do not launch in the design bounce.
 
 ## Authority boundary
 
@@ -62,4 +81,3 @@ No local-PC execution.
 No memory-control policy authorized.
 Proposal != Decision.
 Expressibility != Executability.
-No blind retry after unknown delivery.

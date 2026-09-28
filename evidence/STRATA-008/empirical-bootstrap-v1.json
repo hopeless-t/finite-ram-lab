@@ -1,0 +1,31 @@
+{
+  "analysis_id": "STRATA-008-EMPIRICAL-BOOTSTRAP-v1",
+  "source_runs": {
+    "cold_96_mib": "36435758885",
+    "cold_192_mib": "36437651740"
+  },
+  "sample": {
+    "metric": "post_scan_non_hot_floor_mib",
+    "arm_filter": "dontneed_*",
+    "n_96": 20,
+    "n_192": 20
+  },
+  "method": {
+    "kind": "independent_nonparametric_bootstrap",
+    "seed": 20260928,
+    "resamples": 200000
+  },
+  "observed": {
+    "median_96_mib": 12.8125,
+    "median_192_mib": 13.0546875,
+    "median_difference_192_minus_96_mib": 0.2421875,
+    "mean_96_mib": 12.921875,
+    "mean_192_mib": 13.055859375,
+    "mean_difference_192_minus_96_mib": 0.133984375
+  },
+  "bootstrap_95_percent": {
+    "median_difference_mib": [-0.001953125, 0.25],
+    "mean_difference_mib": [0.034765625, 0.231640625]
+  },
+  "interpretation": "Capacity doubling may shift the retained floor slightly, but observed movement is sub-MiB and does not alter the 8 MiB onset bracket."
+}
