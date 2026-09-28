@@ -1,0 +1,23 @@
+{
+  "experiment_id": "MEMCG-003B-NONCONSUMING-SEVEN-SLOT-v1",
+  "runner": "ubuntu-26.04",
+  "runner_blocks": 4,
+  "required_page_size": 4096,
+  "wash_count": 7,
+  "challenger_count": 8,
+  "arms": ["distinct_churn","same_memcg_activity","six_only","no_churn"],
+  "expected_trials": 16,
+  "significant_drop_pages": 16,
+  "q64_min_pages": 60,
+  "q64_max_pages": 68,
+  "candidate_k": [1,2,3,4,5,6,7,8,9,10],
+  "source_k": 7,
+  "support_window": [6,7,8],
+  "required_support_blocks": 3,
+  "source_mechanism": {
+    "linux_commit": "72d3fcf802c45d00b300f25b848a93c3a2bd7c7e",
+    "nr_memcg_stock": 7,
+    "charge_batch_pages": 64
+  },
+  "authority": "HOSTED_RESEARCH_ONLY"
+}

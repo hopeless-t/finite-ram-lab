@@ -1,73 +1,45 @@
 # CURRENT
 
-> **Latest bounce:** B306
-> **Stage:** MEMCG-003 REJECTED WITH OBSERVER CONTAMINATION / MEMCG-003B FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B307
+> **Stage:** MEMCG-003B IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## MEMCG-003 canonical result
+## MEMCG-003B implementation
 
-Canonical run:
-`36459951576`
+Files:
+- `specs/MEMCG-003B-NONCONSUMING-SEVEN-SLOT-v1.json`
+- `src/finite_ram_lab/memcg003b_nonconsuming.py`
+- `.github/workflows/memcg-003b-nonconsuming.yml`
+- `tests/test_memcg003b_nonconsuming.py`
 
-Decision:
-`REJECT_K7_SLOT_MODEL`
+Worker:
+reuses `experiments/memcg003_holder.c`.
 
-DISTINCT_CHURN thresholds:
-`[2,1,4,2]`
+Repairs:
+- passive target observation only during churn;
+- no target touches during threshold estimation;
+- one final target touch;
+- control CPU and stock CPU separated.
 
-Best K / posterior mode:
-`2`
+Primary threshold:
+`E_drop = first passive target memory.current drop >=16 pages`
 
-However the target was touched after every observation.
+Candidate K:
+`1..10`
 
-Controls also produced +64 recharges:
-- same-memcg: every block
-- no-churn: every block
-- six-only: every block
-
-Therefore the observed first-event threshold is contaminated by destructive probing.
-
-Canonical result:
-`docs/MEMCG-003-RESULT.md`
-
-## Diagnostic stock-drop-only pattern
-
-- DISTINCT_CHURN: [3,2,6,7]
-- SIX_ONLY: [5,None,1,4]
-- SAME_MEMCG_ACTIVITY: [None,None,None,None]
-- NO_CHURN: [None,None,7,None]
-
-Distinct churn has an effect, but K=7 is not cleanly observable under the current control plane.
-
-## MEMCG-003B
-
-Frozen repair:
-`docs/MEMCG-003B-NONCONSUMING-SEVEN-SLOT-v1.md`
-
-Changes:
-- passive target memory.current only during challenger sequence;
-- target never touched during threshold observation;
-- exactly one final recharge-confirmation touch;
-- orchestration CPU separated from stock-test CPU.
-
-Candidate K remains 1..10.
+No launch marker exists.
 
 ## pmndrs/math
 
-MATH-002 remains frozen as a secondary geometric/permutation lens.
-
-For contaminated MEMCG-003 it is diagnostic only.
-Substantive geometric model competition waits for MEMCG-003B.
+MATH-002 remains frozen and waits for MEMCG-003B clean data.
 
 ## Next fresh-bounce action
 
-Implement MEMCG-003B:
-- passive observer orchestrator
-- two-CPU isolation
-- final one-shot recharge confirmation
-- analyzer/tests/workflow
+Discover/read B307 ordinary CI exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-003B launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 
