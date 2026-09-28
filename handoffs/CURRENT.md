@@ -1,68 +1,78 @@
 # CURRENT
 
 > **Latest bounce:** B301
-> **Stage:** MEMCG-003 DESIGN FROZEN / IMPLEMENTATION NEXT
-> **Turn stop reason:** SHORT_BOUNCE_CHECKPOINT
+> **Stage:** MEMCG-003 SEVEN-SLOT EVICTION DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
 ## Accepted chain
 
-MEMCG-001: `SUPPORT_H64`
-MATH-001: `MODEL64_WINS`
-MEMCG-002: naive durable per-CPU-stock model rejected; CPU-conditioned phase remains favored.
+MEMCG-001:
+`SUPPORT_H64`
 
-Canonical MEMCG-002 result:
-`docs/MEMCG-002-RESULT.md`
+MATH-001:
+`MODEL64_WINS`
 
-## B301
+MEMCG-002:
+`REJECT_PERCPU_STOCK` for the naive durable one-stock-per-CPU model.
 
-MEMCG-003 design:
-`docs/MEMCG-003-SEVEN-SLOT-OCCUPANCY-v1.md`
+But:
+- FIXED_TOUCH 4/4 PASS
+- ROUNDTRIP_CONTROL 4/4 PASS
+- MIGRATE_TOUCH 3/4 PASS
+- ROUNDTRIP_TOUCH 1/4 PASS
+- PERCPU_PHASE exceptions 11 vs GLOBAL_PHASE 31
 
-Design commit:
-`a51ee50ff85af00190f5d602a1a9f1c29eaf736e`
+## Source correction
 
-Status:
-`DESIGN FROZEN / NOT LAUNCHED`
+Upstream Linux defines:
+`NR_MEMCG_STOCK = 7`
 
-Question:
-Can controlled distinct-memcg occupancy expose the source-derived `NR_MEMCG_STOCK = 7` boundary?
+Each CPU has a seven-slot shared memcg charge cache with rotating drain/eviction.
 
-Arms:
-- helper count k=0..10 on target CPU;
-- same-helper-memcg control;
-- other-CPU locality control.
+## MEMCG-003
 
-Measurements include:
-- target/helper memory.current;
-- memory.stat;
-- memory.events;
-- PSI memory where readable;
-- insertion/re-touch latency;
-- pages/sec and cgroup lifecycle cost;
-- environment/affinity receipts.
+Frozen design:
+`docs/MEMCG-003-SEVEN-SLOT-EVICTION-v1.md`
 
-Monte Carlo design diagnostic:
-50,000 sweeps, 3% observation flips, 5% missing.
-- true boundary 7 -> exact 7 selected 86.6%;
-- no-boundary null -> spurious exact 7 about 0.29%.
-These are design diagnostics, not p-values.
+Core test:
+- fill 7 persistent wash memcgs on one CPU;
+- insert target;
+- add persistent distinct challengers one by one;
+- probe target stock survival;
+- infer first eviction threshold E.
 
-Pseudo-Council:
-APPROVE design freeze.
-Do not approve launch.
+Source prediction:
+`E ~= 7`
 
-## Next short bounce
+Candidate K:
+`1..10`
 
-Implement hosted MEMCG-003 runner/analyzer/workflow and synthetic tests.
-Ordinary implementation CI must pass before any explicit launch marker.
-No experiment execution merely because workflow code exists.
+Controls:
+- same-memcg activity
+- six-only
+- no-churn
+
+Analysis:
+- threshold error
+- MDL
+- Bayesian discrete K posterior
+- leave-one-block-out prediction
+- counterexample reporting
+
+## Next fresh-bounce action
+
+Implement MEMCG-003 only:
+- persistent holder worker
+- interactive target worker
+- orchestration
+- analyzer
+- tests
+- hosted workflow
+
+Do not launch during implementation.
 
 ## Authority boundary
 
-Hosted Linux accounting research only.
+Hosted research only.
 No local-PC execution.
-No Remote Desktop Commander.
 No memory-control policy.
-Proposal != Decision.
-Expressibility != Executability.
-No blind retry after unknown delivery.
