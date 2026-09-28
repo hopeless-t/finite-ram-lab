@@ -1,52 +1,54 @@
 # CURRENT
 
-> **Latest bounce:** B222
-> **Stage:** RESEARCH MAINLINE RESUMED / REC-002 RELAUNCH REQUESTED
+> **Latest bounce:** B223
+> **Stage:** RESEARCH MAINLINE / REC-002 RELAUNCH + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Recorder status
+## Operating policy
 
-Recorder is now treated as **research-ready / fail-visible** for the current scope.
+Recorder is treated as research-ready / fail-visible for the current scope.
 
-Accepted properties include:
+Research experiments are the mainline again. Recorder hardening continues only when real runs expose defects or a meaningful Recorder change warrants bounded robustness validation.
 
-- malformed evidence fails visibly;
-- lifecycle corruption fails closed;
-- clean incomplete runs remain explicitly incomplete;
-- JSONL is canonical and SQLite is rebuildable;
-- duplicate conflicts are explicit;
-- evidence-path ownership is exclusive;
-- deterministic corruption regressions exist;
-- REC-003 Monte Carlo attack machinery exists.
-
-REC-003 remains a sidecar hardening tool. A 100,000-world campaign is not required before returning to the research mainline.
-
-## Research policy
-
-Run experiments first. Repair Recorder defects when real workloads expose them. Every real counterexample becomes a deterministic regression before reuse.
-
-See `docs/RECORDER-RESEARCH-READY-POLICY.md`.
+REC-003 100k Monte Carlo remains available but is not a prerequisite for research progress.
 
 ## REC-002
 
-A fresh REC-002 observer-effect relaunch has been requested by updating:
+Relaunch commit:
 
-`launch/REC-002-v1.txt`
+`15530bfa7e619e44e97302109422f7331d131dc5`
 
-The first run `36419229167` remains invalid with zero valid measurement trials.
+Hosted REC-002 run:
 
-## Next action
+`36427808785`
 
-Read the fresh REC-002 hosted run exactly once.
+Last and only status read in B223:
 
-- success -> inspect aggregate artifact and canonicalize observer-effect findings;
+`queued`
+
+Do not poll again in the same bounce.
+
+## Next fresh-bounce action
+
+Read REC-002 run `36427808785` once.
+
+- success -> inspect aggregate observer-effect evidence;
 - pending -> checkpoint EXTERNAL_WAIT;
-- failure -> inspect failure only and repair the exposed issue.
+- failure -> inspect and repair only the exposed failure.
 
-If REC-002 supports use of Recorder in this workload, proceed to STRATA-005 implementation/launch.
+If REC-002 supports Recorder use under the boundary workload, move directly back to STRATA-005 external-validity work.
 
-## Parent research state
+## STRATA-005
 
-STRATA-005 external-validity design remains frozen from B206.
+Frozen design remains:
+
+- MemoryHigh 144 and 176 MiB;
+- five-arm panel: buffered, 48, 64, 80, 96 MiB;
+- four runner blocks per setting;
+- 40 new trials;
+- normalized headroom analysis.
+
+No launch yet.
 
 ## Authority boundary
 
