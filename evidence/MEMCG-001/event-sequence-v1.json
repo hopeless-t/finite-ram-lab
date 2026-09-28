@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "experiment_id": "MEMCG-001-PAGE-CHARGE-QUANTIZATION-v1",
+  "run_id": "36449072026",
+  "launch_commit": "68f9e1f9f170ff4181255b6669ebcb94221b70a5",
+  "aggregate_artifact": {
+    "id": "10982376614",
+    "digest": "sha256:507c826852d31d778e551827f5785ba7a8483981b3ffb3d60da4f4e2c33d84a9"
+  },
+  "environment": {
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "7.0.0-1012-azure",
+    "systemd": "259 (259.5-0ubuntu3.4)",
+    "cgroup_fs": "cgroup2fs",
+    "page_size": 4096,
+    "online_cpus": 4,
+    "image_os": "ubuntu26",
+    "image_version": "20260920.143.1",
+    "arch": "X64"
+  },
+  "trials": [
+    {
+      "block": 0,
+      "mode": "touch",
+      "cpu": 0,
+      "final_delta_pages": 256,
+      "events": [
+        {
+          "step": 34,
+          "delta_pages": 64
+        },
+        {
+          "step": 98,
+          "delta_pages": 64
+        },
+        {
+          "step": 162,
+          "delta_pages": 64
+        },
+        {
+          "step": 226,
+          "delta_pages": 64
+        }
+      ]
+    },
+    {
+      "block": 0,
+      "mode": "control",
+      "cpu": 3,
+      "final_delta_pages": 0,
+      "events": []
+    },
+    {
+      "block": 1,
+      "mode": "touch",
+      "cpu": 0,
+      "final_delta_pages": 256,
+      "events": [
+        {
+          "step": 34,
+          "delta_pages": 64
+        },
+        {
+          "step": 98,
+          "delta_pages": 64
+        },
+        {
+          "step": 162,
+          "delta_pages": 64
+        },
+        {
+          "step": 226,
+          "delta_pages": 64
+        }
+      ]
+    },
+    {
+      "block": 1,
+      "mode": "control",
+      "cpu": 2,
+      "final_delta_pages": 0,
+      "events": []
+    },
+    {
+      "block": 2,
+      "mode": "touch",
+      "cpu": 3,
+      "final_delta_pages": 255,
+      "events": [
+        {
+          "step": 35,
+          "delta_pages": 64
+        },
+        {
+          "step": 99,
+          "delta_pages": 64
+        },
+        {
+          "step": 163,
+          "delta_pages": 64
+        },
+        {
+          "step": 173,
+          "delta_pages": -65
+        },
+        {
+          "step": 186,
+          "delta_pages": 64
+        },
+        {
+          "step": 250,
+          "delta_pages": 64
+        }
+      ]
+    },
+    {
+      "block": 2,
+      "mode": "control",
+      "cpu": 2,
+      "final_delta_pages": 0,
+      "events": []
+    },
+    {
+      "block": 3,
+      "mode": "touch",
+      "cpu": 2,
+      "final_delta_pages": 256,
+      "events": [
+        {
+          "step": 37,
+          "delta_pages": 64
+        },
+        {
+          "step": 101,
+          "delta_pages": 64
+        },
+        {
+          "step": 165,
+          "delta_pages": 64
+        },
+        {
+          "step": 229,
+          "delta_pages": 64
+        }
+      ]
+    },
+    {
+      "block": 3,
+      "mode": "control",
+      "cpu": 1,
+      "final_delta_pages": 0,
+      "events": []
+    }
+  ]
+}

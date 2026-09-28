@@ -1,63 +1,59 @@
 # CURRENT
 
-> **Latest bounce:** B285
-> **Stage:** MEMCG-001 HOSTED RUN + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B286
+> **Stage:** MEMCG-001 PASS / SUPPORT_H64 / READY FOR MODEL COMPETITION
+> **Turn stop reason:** READY_FOR_MATH_DESIGN
 
 ## MEMCG-001
 
-Exact launch commit:
-
-`68f9e1f9f170ff4181255b6669ebcb94221b70a5`
-
-Scientific run:
-
+Run:
 `36449072026`
 
-Single B285 read:
+Result:
+`SUPPORT_H64`
 
-`in_progress`
+- touch support: 4/4
+- control support: 0/4
+- positive jump magnitude: exactly 64 pages
 
-Do not poll again in this bounce.
+Three blocks are exact stationary 64-page staircases.
 
-## Current mathematics
+Block2 contains one negative discontinuity at step173. Before and after it, the positive jumps form exact 64-page lattices with different phases.
 
-Already implemented:
-- first differences
-- jump extraction
-- Q-lattice search
-- modulo phase
-- jump spacing
-- autocorrelation
-- touch/control comparison
+Canonical result:
+`docs/MEMCG-001-RESULT.md`
 
-## Candidate next mathematics
-
-Choose after seeing the signal:
-
-- stationary periodic structure -> FFT/periodogram + MDL;
-- nonstationary phase/scale -> wavelet + Bayesian change-point;
-- latent noisy states -> HMM/state-space + Allan variance;
-- weak/no pattern -> entropy/mutual information + held-out model comparison;
-- broader multi-axis corpus -> symbolic regression with complexity penalty;
-- discrete magnitude structure -> integer-relation / rational lattice search.
-
-The selection itself must be evidence-driven.
+Compact event evidence:
+`evidence/MEMCG-001/event-sequence-v1.json`
 
 ## Next fresh-bounce action
 
-Read run `36449072026` exactly once.
+Freeze MATH-001 model competition.
 
-- success -> artifact analysis + preregistered H64 verdict + evidence-driven mathematical follow-up;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only exposed invariant.
+Candidate models:
+- page-linear
+- stationary staircase Q
+- reset-aware staircase Q
+- arbitrary events
+- null/control
 
-## LDC
+Candidate Q:
+`1,2,4,8,16,32,64,128`
 
-If hosted signal is reproducible, prepare a separate MVCA-bound local replication on Lubuntu using the exact same worker and analyzer.
+Primary comparison:
+- MDL / combinatorial description length
+- leave-one-block-out predictive F1
+- full-sequence residual
+- reset-aware segmentation at observed negative discontinuities
+
+Secondary:
+- periodogram / spectral power only as supporting evidence
+
+Goal:
+select the simplest predictive model without privileging Q64.
 
 ## Authority boundary
 
-Hosted repository/research only in current bounce.
+Hosted research only.
 No local-PC execution.
 No memory-control policy.
