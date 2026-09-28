@@ -1,29 +1,36 @@
 # CURRENT
 
-> **Latest bounce:** B214
-> **Stage:** REC-002 / INFRASTRUCTURE FAILURE FIXED / CI PENDING
+> **Latest bounce:** B215
+> **Stage:** REC-002 / LF FIX TEST CORRECTED / CI PENDING
 
 ## REC-002 run 1
 
-Hosted run `36419229167` = `completed / failure`.
+Hosted run `36419229167` produced zero valid trials.
 
-All 8 blocks failed before measurement because the generated CSV schedule used CRLF and Bash retained `\\r` in the final `mode` field. Representative error:
+All 8 blocks failed before measurement because CRLF from the CSV producer contaminated the final Bash-read mode token with `\r`.
 
-`argument --mode: invalid choice: 'recorder_off\\r'`
+No recorder/pressure inference is permitted from that run.
 
-There are zero valid observer-effect trials from this run. It must not be interpreted as recorder or pressure evidence.
+## B214 producer fix
 
-## B214 fix
+The CSV producer now explicitly emits LF via:
 
-The schedule producer now explicitly uses LF-only CSV via `lineterminator="\\n"` and a byte-level regression test rejects carriage returns.
+`lineterminator="\n"`
 
-This is a portability/interface correction. It does not authorize an automatic rerun.
+## B215 test correction
+
+B214 ordinary CI run `36421446792` exposed a regression-test bug: the test searched for literal backslash characters instead of control bytes.
+
+The test now correctly checks:
+
+- carriage return byte absent: `b"\r"`;
+- newline byte count equals 3: `b"\n"`.
 
 ## Next fresh-bounce action
 
-Read ordinary CI for the B214 fix exactly once.
+Read ordinary CI for B215 exactly once.
 
-- success -> accept the fix and create a distinct REC-002 relaunch marker/commit;
+- success -> accept the interface fix and create a separate REC-002 relaunch commit;
 - pending -> checkpoint EXTERNAL_WAIT and stop;
 - failure -> inspect failure only; no blind retry.
 
