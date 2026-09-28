@@ -1,75 +1,76 @@
 # CURRENT
 
-> **Latest bounce:** B242
-> **Stage:** STRATA-007 CROSS-IMAGE PORTABILITY DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B243
+> **Stage:** STRATA-007 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
 ## Canonical mechanism
 
-STRATA-005/006 support on GitHub-hosted Ubuntu 24.04:
+STRATA-006 run `36434232753`: PASS, 48/48.
 
-`K ~= MemoryHigh - effective_live_set`
+At MemoryHigh=160 MiB:
 
-with direct live-set replication at MemoryHigh=160 MiB.
+- hot56 -> `88 < K <= 96`
+- hot64 anchor -> `80 < K <= 88`
+- hot72 -> `72 < K <= 80`
 
-STRATA-006 full result:
+All map to:
 
-`docs/STRATA-006-RESULT.md`
+`144 < K+hot <= 152 MiB`.
 
-## STRATA-007 frozen design
+## STRATA-007
 
-New hosted image:
+Portability implementation now exists for:
 
-`ubuntu-26.04`
-
-Reuse Ubuntu 24.04 STRATA-004 as anchor.
-
-Freeze:
-
+- runner `ubuntu-26.04`
+- explicit Python 3.12
 - MemoryHigh 160 MiB
 - MemoryMax 320 MiB
 - hot anon 64 MiB
 - cold file 96 MiB
-- read chunk 4 MiB
-- Python 3.12 requested explicitly
 - buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
 - 4 blocks
-- 24 new trials
-- REC-001 density unchanged
+- 24 trials
+- same Recorder density
 
-Portability discriminator:
+Primary question:
 
-- prior 24.04: `80 < K <= 88`
-- transformed: `144 < K+hot <= 152`
+Does the Ubuntu 26.04 onset remain compatible with the Ubuntu 24.04 anchor:
 
-If 26.04 shifts outside the compatible interval, introduce an explicit substrate-overhead term rather than forcing one universal constant.
+`80 < K <= 88`
 
-Design:
+and:
 
-`docs/STRATA-007-CROSS-IMAGE-v1.md`
+`144 < K+hot <= 152`?
+
+Files:
+
+- `docs/STRATA-007-CROSS-IMAGE-v1.md`
+- `specs/STRATA-007-CROSS-IMAGE-v1.json`
+- `src/finite_ram_lab/strata007_cross_image.py`
+- `.github/workflows/strata-007-cross-image.yml`
+- `tests/test_strata007_cross_image.py`
+
+No launch marker exists.
 
 ## Monte Carlo
 
-Deferred until cross-image observations exist.
+Deferred until STRATA-007 observations exist.
 
 ## Next fresh-bounce action
 
-Implement STRATA-007:
+Discover/read B243 ordinary CI exactly once.
 
-- spec
-- deterministic schedule / trial / aggregate
-- `ubuntu-26.04` hosted workflow
-- environment receipt
-- tests
-
-Do not launch during implementation.
+- success -> explicit STRATA-007 launch in a new bounce;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only the exposed invariant.
 
 ## Queued future studies
 
 - Naive-N0.5-Flash semantic reuse / reconstructible-state
 - LLM-jp-4.1 local worker + state-lifetime dogfood
 
-These remain proposals only.
+No local execution is authorized.
 
 ## Authority boundary
 
