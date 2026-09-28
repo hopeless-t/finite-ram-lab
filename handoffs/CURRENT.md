@@ -1,36 +1,46 @@
 # CURRENT
 
-> **Latest bounce:** B215
-> **Stage:** REC-002 / LF FIX TEST CORRECTED / CI PENDING
+> **Latest bounce:** B216
+> **Stage:** REC-002 / LF FIX TEST CORRECTED + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## REC-002 run 1
+## Invalid first REC-002 launch
 
 Hosted run `36419229167` produced zero valid trials.
 
-All 8 blocks failed before measurement because CRLF from the CSV producer contaminated the final Bash-read mode token with `\r`.
+All 8 blocks failed before measurement because CRLF contaminated the final Bash-read mode token.
 
-No recorder/pressure inference is permitted from that run.
+No recorder-overhead or pressure inference is allowed from that run.
 
-## B214 producer fix
+## Fix chain
 
-The CSV producer now explicitly emits LF via:
+B214:
+- producer explicitly emits LF via `lineterminator="\n"`.
 
-`lineterminator="\n"`
+B215:
+- regression test corrected to inspect actual `b"\r"` and `b"\n"` bytes rather than literal backslash sequences.
 
-## B215 test correction
+B215 commit:
 
-B214 ordinary CI run `36421446792` exposed a regression-test bug: the test searched for literal backslash characters instead of control bytes.
+`366a1b990584984fdab36fc0e18d2d8e2dfd3a87`
 
-The test now correctly checks:
+## Hosted validation
 
-- carriage return byte absent: `b"\r"`;
-- newline byte count equals 3: `b"\n"`.
+Ordinary CI run:
+
+`36423465750`
+
+Last and only status read in B216:
+
+`queued`
+
+Do not poll again in the same bounce.
 
 ## Next fresh-bounce action
 
-Read ordinary CI for B215 exactly once.
+Read CI run `36423465750` once.
 
-- success -> accept the interface fix and create a separate REC-002 relaunch commit;
+- success -> accept the LF/interface fix and create a distinct REC-002 relaunch commit;
 - pending -> checkpoint EXTERNAL_WAIT and stop;
 - failure -> inspect failure only; no blind retry.
 
