@@ -1,0 +1,4 @@
+STRATA-009 explicit hosted launch
+B257
+Frozen design: 384 MiB cold file; MemoryHigh 160 MiB; MemoryMax 320 MiB; hot anon 64 MiB; DONTNEED 64/72/80/88/96 MiB; 4 blocks; 20 trials.
+Hosted research only. No local execution.
