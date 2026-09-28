@@ -1,25 +1,26 @@
 # CURRENT
 
-> **Latest bounce:** B212
-> **Stage:** REC-002 / HOSTED LAUNCH REQUESTED
-
-## B210 implementation acceptance
-
-Commit:
-
-`175d7a9232ead6f3ce39a5c0e57d7583d38ff1e0`
-
-Ordinary CI run `36417680847` completed successfully.
+> **Latest bounce:** B213
+> **Stage:** REC-002 / HOSTED RUN + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## REC-002 launch
 
-The explicit launch marker now exists:
+Launch commit:
 
-`launch/REC-002-v1.txt`
+`90995d3c8bccfea4870dd4e87d561bc5639ca10b`
 
-This is the only newly authorized hosted execution.
+Hosted workflow run:
 
-Frozen design:
+`36419229167`
+
+Last and only REC-002 status read in B213:
+
+`queued`
+
+Do not poll this run again in the same bounce.
+
+## Frozen study
 
 - 8 hosted runner blocks;
 - paired recorder_off / recorder_on;
@@ -30,13 +31,13 @@ Frozen design:
 - cold file=96 MiB;
 - DONTNEED=80 MiB;
 - recorder_on emits 26 synchronous JSONL records;
-- no SQLite ingest in the measured interval.
+- SQLite ingest is outside the measured interval.
 
-## Next action
+## Next fresh-bounce action
 
-Read the REC-002 workflow for the B212 launch commit exactly once.
+Read REC-002 run `36419229167` once.
 
-- success -> inspect aggregate artifact once and canonicalize the observer-effect result;
+- success -> inspect aggregate artifact once and canonicalize observer-effect findings;
 - pending -> checkpoint EXTERNAL_WAIT and stop;
 - failure -> inspect failure only; no blind retry.
 
@@ -44,7 +45,7 @@ Read the REC-002 workflow for the B212 launch commit exactly once.
 
 REC-001 v0 is repository-valid.
 
-STRATA-005 remains frozen from B206 and unlaunched.
+STRATA-005 external-validity design remains frozen from B206 and unlaunched.
 
 ## Authority boundary
 
