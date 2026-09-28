@@ -1,58 +1,29 @@
 # CURRENT
 
-> **Latest bounce:** B303
-> **Stage:** MEMCG-003 IMPLEMENTED + CI EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
-
-## Accepted chain
-
-MEMCG-001: `SUPPORT_H64`
-MATH-001: `MODEL64_WINS`
-MEMCG-002: naive durable per-CPU model rejected; source-corrected seven-slot shared-cache hypothesis retained.
-
-## MEMCG-003
+> **Latest bounce:** B304
+> **Stage:** MEMCG-003 EXPLICIT HOSTED LAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
 Implementation:
 `b64f32ad3b38d4a6ca8bdfda36e4c12fe62d5569`
 
-Ordinary CI:
-`36459629772`
+Implementation CI:
+`36459629772 = success`
 
-Single B303 read:
-`in_progress`
+Exact launch commit:
+`6cb688d7c8578ce95e217e83adcb7249a3555efa`
 
-Do not poll again in this bounce.
+Question:
+does controlled same-CPU memcg churn reveal a finite target-eviction threshold near the source-level seven-slot capacity?
 
-No launch marker exists.
-
-Experiment:
-- fill seven persistent wash memcgs on one CPU;
-- insert target;
-- add distinct challengers one by one;
-- probe target after each insertion;
-- infer first eviction threshold E.
-
-Controls:
-- same-memcg repeated activity
-- six-only challengers
-- no-churn
+Primary source prediction:
+`K=7`
 
 Candidate K:
 `1..10`
 
-Source prediction:
-`K=7`
-
-## Next fresh-bounce action
-
-Read CI `36459629772` exactly once.
-
-- success -> explicit MEMCG-003 hosted launch;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only exposed invariant.
-
-## Authority boundary
+Next fresh-bounce action:
+discover/read exact-head MEMCG-003 workflow once.
 
 Hosted research only.
 No local-PC execution.
-No memory-control policy.
