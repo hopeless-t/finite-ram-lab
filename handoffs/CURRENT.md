@@ -1,17 +1,24 @@
 # CURRENT
 
-> **Latest bounce:** B257
-> **Stage:** STRATA-009 / EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
-
-Implementation CI `36438923685`: completed / success.
+> **Latest bounce:** B258
+> **Stage:** STRATA-009 / HOSTED RUN LAUNCHED + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 Exact launch commit:
 
 `01e73be662613d164f62287f126ef002c8ff234c`
 
-Frozen study:
+Scientific run:
 
+`36440093666`
+
+Single B258 read:
+
+`in_progress`
+
+Do not poll again in this bounce.
+
+Frozen study:
 - Ubuntu 26.04
 - MemoryHigh 160 MiB
 - MemoryMax 320 MiB
@@ -25,6 +32,6 @@ Frozen study:
 
 Question: can bounded streaming preserve the same knee when total dataset capacity exceeds MemoryMax?
 
-Next fresh-bounce action: discover/read STRATA-009 for exact launch commit once.
+Next fresh-bounce action: read run `36440093666` exactly once.
 
 Hosted research only. No local-PC execution. No memory-control policy.
