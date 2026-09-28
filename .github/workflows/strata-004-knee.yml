@@ -1,0 +1,178 @@
+name: STRATA-004 Knee v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/strata-004-knee.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3, 4, 5, 6, 7]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Prepare cold file outside trial cgroups
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from finite_ram_lab.strata001_probe import _prepare_file
+          p = Path(os.environ["RUNNER_TEMP"]) / "strata004-knee-cold.bin"
+          _prepare_file(p, 96 * 1024 * 1024, 4 * 1024 * 1024)
+          print(p)
+          PY
+
+      - name: Build schedule and capture environment
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          ROOT="evidence/STRATA-004-KNEE/block-${BLOCK}"
+          mkdir -p "${ROOT}/raw"
+          python -m finite_ram_lab.strata004_knee_study schedule \
+            --spec specs/STRATA-004-KNEE-v1.json \
+            --block "${BLOCK}" \
+            --out "${ROOT}/schedule.csv"
+
+          {
+            echo "kernel_release=$(uname -r)"
+            echo "systemd_version=$(systemd --version | head -n1)"
+            echo "cgroup_fs_type=$(stat -fc %T /sys/fs/cgroup)"
+            if test -f /sys/fs/cgroup/cgroup.controllers; then
+              echo "cgroup_v2=yes"
+            else
+              echo "cgroup_v2=no"
+            fi
+            echo "--- os-release ---"
+            cat /etc/os-release
+          } > "${ROOT}/environment.txt"
+
+      - name: Run knee refinement
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          HIGH_BYTES=$((160 * 1024 * 1024))
+          MAX_BYTES=$((320 * 1024 * 1024))
+          FILE="$RUNNER_TEMP/strata004-knee-cold.bin"
+          ROOT="$GITHUB_WORKSPACE/evidence/STRATA-004-KNEE/block-${BLOCK}"
+          SCHEDULE="${ROOT}/schedule.csv"
+
+          tail -n +2 "$SCHEDULE" | while IFS=, read -r ORDER ARM; do
+            UNIT="finite-ram-strata004-${GITHUB_RUN_ID}-${BLOCK}-${ORDER}"
+            OUT="${ROOT}/raw/trial-${ORDER}-${ARM}.json"
+
+            sudo systemd-run \
+              --pipe --wait --collect --quiet \
+              --unit="$UNIT" \
+              -p MemoryAccounting=yes \
+              -p MemoryHigh="$HIGH_BYTES" \
+              -p MemoryMax="$MAX_BYTES" \
+              "$PY" -m finite_ram_lab.strata004_knee_workload \
+                --arm "$ARM" \
+                --file "$FILE" \
+                --hot-anon-mib 64 \
+                --buffer-mib 4 \
+                --expected-file-mib 96 \
+                --expected-high-bytes "$HIGH_BYTES" \
+                --expected-max-bytes "$MAX_BYTES" \
+                --precache-limit 0.10 \
+                --out "$OUT" >/dev/null
+          done
+
+          sudo chown -R "$(id -u):$(id -g)" "${ROOT}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: strata004-knee-block-${{ matrix.block }}
+          path: evidence/STRATA-004-KNEE/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: strata004-knee-block-*
+          path: evidence/STRATA-004-KNEE
+
+      - name: Aggregate refinement
+        run: |
+          python -m finite_ram_lab.strata004_knee_study aggregate \
+            --spec specs/STRATA-004-KNEE-v1.json \
+            --input-root evidence/STRATA-004-KNEE \
+            --out-dir evidence/STRATA-004-KNEE/aggregate
+
+          python - <<'PY'
+          from pathlib import Path
+          import shutil
+          root = Path("evidence/STRATA-004-KNEE")
+          out = root / "aggregate" / "environment"
+          out.mkdir(parents=True, exist_ok=True)
+          for p in sorted(root.glob("strata004-knee-block-*/environment.txt")):
+              shutil.copy2(p, out / f"{p.parent.name}.txt")
+          PY
+
+      - name: Job summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          s=json.load(open("evidence/STRATA-004-KNEE/aggregate/summary.json"))
+          print("# STRATA-004 Knee v1")
+          print()
+          print("| Arm | high events | max scan MiB | post scan MiB | file residency | calls | scan ms |")
+          print("| --- | ---: | ---: | ---: | ---: | ---: | ---: |")
+          for arm in (
+              "buffered", "dontneed_32m", "dontneed_48m", "dontneed_64m",
+              "dontneed_72m", "dontneed_80m", "dontneed_88m", "dontneed_96m"
+          ):
+              c=s["cells"][arm]
+              print(
+                  f"| {arm} | {c['median_memory_high_events']:.1f} | "
+                  f"{c['median_max_scan_memory_mib']:.2f} | "
+                  f"{c['median_post_scan_memory_mib']:.2f} | "
+                  f"{c['median_file_post_fraction']:.4f} | "
+                  f"{c['median_advice_calls']:.1f} | "
+                  f"{c['median_scan_ms']:.2f} |"
+              )
+          print()
+          print("Targeted response surface only; no OSS default cadence is selected.")
+          PY
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: STRATA-004-KNEE-${{ github.run_id }}
+          path: evidence/STRATA-004-KNEE/aggregate/
+          if-no-files-found: error
+          retention-days: 90
