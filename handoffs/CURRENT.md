@@ -1,67 +1,72 @@
 # CURRENT
 
-> **Latest bounce:** B259
-> **Stage:** STRATA-009 PASS / DATASET CAPACITY DECOUPLED ACROSS MEMORYMAX
-> **Turn stop reason:** READY_FOR_OBSERVER_AUDIT_DESIGN
+> **Latest bounce:** B260
+> **Stage:** REC-003 RESIDENCY OBSERVER FOOTPRINT DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## STRATA-009 PASS
+## Canonical scientific state
 
-Run `36440093666`, 20/20 trials.
+STRATA-009 run `36440093666`: PASS, 20/20.
 
-Cold dataset:
-
-`384 MiB > MemoryMax 320 MiB`
-
-Yet all bounded-policy arms completed without OOM.
-
-Onset:
+Capacity series 96 / 192 / 384 MiB retains the same:
 
 `80 < K <= 88 MiB`
 
-This matches the 96 MiB and 192 MiB capacity studies.
-
-Capacity series:
-
-- 96 MiB -> `80 < K <= 88`
-- 192 MiB -> `80 < K <= 88`
-- 384 MiB -> `80 < K <= 88`
-
-Leading mechanism:
-
-`instantaneous RAM demand ~= effective live set + unreleased streaming interval`
-
-for the tested one-shot streaming workload.
+including 384 MiB > MemoryMax 320 MiB.
 
 ## Fine-floor HOLD
 
-192->384 empirical bootstrap:
+The measured post-scan non-hot floor rises slightly with cold capacity.
 
-- median shift +0.2421875 MiB
-- 95% interval approximately [+0.023438, +0.376953] MiB
+But `_file_residency()` mmaps the full file and runs mincore before post-scan memory.current is captured.
 
-But `_file_residency()` mmaps the full target and calls `mincore` before post-scan memory.current is captured.
+Do not interpret the small floor trend as a workload law yet.
 
-The small floor shift may therefore include observer footprint.
+## REC-003 frozen design
 
-Do not claim a floor-growth law yet.
+Observer-only file sizes:
+
+- 96 MiB
+- 192 MiB
+- 384 MiB
+
+Fresh systemd unit per trial, 4 blocks per size, 12 trials total.
+
+Phase snapshots:
+
+- baseline
+- mmap
+- ctypes view
+- mincore vector
+- post-mincore
+- post-count
+- post-cleanup
+- post-gc-settle
+
+Capture memory.current, selected memory.stat, and memory.peak.
+
+No streaming workload.
+No hot anonymous allocation.
+
+Design:
+
+`docs/REC-003-RESIDENCY-OBSERVER-FOOTPRINT-v1.md`
 
 ## Next fresh-bounce action
 
-Freeze an observer-only residency-footprint design:
+Implement REC-003:
 
-- Ubuntu 26.04
-- file sizes 96 / 192 / 384 MiB
-- no streaming workload
-- measure cgroup memory.current around `_file_residency()`
-- distinguish transient peak from retained post-call delta
-- repeat across independent blocks
-- preserve environment receipt
+- spec
+- observer instrumentation module
+- Ubuntu 26.04 workflow
+- aggregate
+- tests
 
-No launch in the design bounce.
+Do not launch during implementation.
 
 ## Authority boundary
 
-Hosted research only.
+Hosted repository/research only.
 No local-PC execution.
 No memory-control policy.
 Proposal != Decision.
