@@ -1,45 +1,44 @@
 # CURRENT
 
-> **Latest bounce:** B206
-> **Stage:** STRATA-005 / EXTERNAL-VALIDITY DESIGN FROZEN
+> **Latest bounce:** B207
+> **Stage:** REC-001 / RECORDER v0 DESIGN FROZEN
 
-## Parent result
+## Parent research state
 
-STRATA-004: 64 / 64 valid trials.
+STRATA-005 external-validity design remains frozen from B206.
 
-Hosted anchor at MemoryHigh=160 MiB:
+It varies MemoryHigh at 144 and 176 MiB, retains 160 MiB as the existing anchor, and keeps the existing workload/runner family. See `docs/STRATA-005-EXTERNAL-VALIDITY-v1.md`.
 
-`80 MiB < knee <= 88 MiB`
+## Council decision
 
-80 MiB peaked at ~157.86 MiB, so zero median high events does not make it a portable safe default.
+Before STRATA-005 implementation, add a deliberately small observation-only evidence recorder.
 
-## Frozen next study
+See:
 
-See `docs/STRATA-005-EXTERNAL-VALIDITY-v1.md`.
+- `docs/REC-001-COUNCIL.md`
+- `docs/REC-001-RECORDER-v0.md`
 
-Vary one axis first:
+## Frozen recorder contract
 
-- MemoryHigh 144 MiB
-- MemoryHigh 176 MiB
-- existing 160 MiB result retained as anchor
-- arms: buffered, DONTNEED 48 / 64 / 80 / 96 MiB
-- 4 runner blocks per new pressure setting
-- 40 new hosted trials
+- JSONL is canonical raw evidence.
+- SQLite is a rebuildable query projection.
+- records are schema-versioned;
+- measurements, events, and derived summaries remain distinct;
+- provenance is explicit;
+- duplicate ingestion must be idempotent or fail on conflict;
+- v0 performs no reclaim/control action.
 
-Purpose: test whether pressure-event onset is better explained by pressure headroom / normalized coordinates than by one fixed MiB cadence.
+## Critical validation
+
+Recorder overhead is itself an experimental concern. Before recorder-instrumented performance claims become authoritative, recorder-on versus recorder-off overhead must be measured.
 
 ## Next action
 
-Implement the frozen STRATA-005 spec/workflow and validation tests **without launching**. Launch is a separate action.
-
-## Monte Carlo
-
-Deferred until cross-pressure empirical observations exist.
+Implement the minimal stdlib REC-001 recorder and SQLite ingester with tests. Do not launch STRATA-005 yet.
 
 ## Authority boundary
 
-Hosted research only.
+Hosted research/repository work only.
 No local-PC execution.
-No launch inferred.
-No retry/rerun inferred.
-No OSS default cadence authorized.
+No STRATA-005 launch inferred.
+No memory-control policy authorized.
