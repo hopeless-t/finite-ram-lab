@@ -1,57 +1,38 @@
 # CURRENT
 
-> **Latest bounce:** B204
-> **Stage:** STRATA-004 / IMPLEMENTED + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B205
+> **Stage:** STRATA-004 / PASS CANONICALIZED
 
-## Parent result
+## Result
 
-STRATA-003: 56 / 56 valid trials.
+STRATA-004: 64 / 64 valid trials.
 
-Observed pressure-avoidance bracket:
+Hosted pressure-event response:
 
-`32 MiB < knee <= 96 MiB`
+- DONTNEED 32 / 48 / 64 / 72 / 80 MiB: median MemoryHigh events = 0
+- 88 MiB: 2
+- 96 MiB: 5
+- buffered: 5
 
-## Frozen STRATA-004 study
+Current hosted knee bracket:
 
-See:
+`80 MiB < knee <= 88 MiB`
 
-- `docs/STRATA-004-KNEE-v1.md`
-- `specs/STRATA-004-KNEE-v1.json`
+See `docs/STRATA-004-KNEE-RESULT.md`.
 
-Arms:
+## Important boundary observation
 
-- buffered
-- DONTNEED 32 / 48 / 64 / 72 / 80 / 88 / 96 MiB
+80 MiB peaks at ~157.86 MiB against MemoryHigh=160 MiB. Zero median high events does not make it a portable safe default.
 
-Design:
+Hosted throughput is noisy/non-monotonic and is not a selection signal.
 
-- 8 runner blocks
-- 64 total trials
-- workload shape unchanged from STRATA-003
-- runner/kernel/cgroup provenance captured
+## Next action
 
-## Launch
-
-- launch commit: `4d22de0570030c987db3e76416c009e67c58341a`
-- STRATA-004 hosted run: `36392457515`
-- last observed status: `queued`
-- ordinary CI run: `36392457516`
-- last observed status: `in_progress`
-
-One external status read has already been consumed for this turn.
-
-## Next fresh-turn action
-
-Read run `36392457515` exactly once.
-
-- success -> inspect aggregate artifact once and canonicalize result
-- pending -> checkpoint EXTERNAL_WAIT and stop
-- failure -> inspect failure only; no blind retry
+Explore and converge a small external-validity study. Prefer testing whether cadence should scale with pressure headroom instead of freezing a single MiB constant.
 
 ## Monte Carlo
 
-Deferred until empirical transition localization is tighter.
+Deferred until empirical cross-pressure or cross-substrate distributions exist.
 
 ## Authority boundary
 
