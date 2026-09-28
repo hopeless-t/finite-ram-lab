@@ -1,7 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B203
-> **Stage:** STRATA-004 / KNEE REFINEMENT FROZEN
+> **Latest bounce:** B204
+> **Stage:** STRATA-004 / IMPLEMENTED + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## Parent result
 
@@ -11,7 +12,7 @@ Observed pressure-avoidance bracket:
 
 `32 MiB < knee <= 96 MiB`
 
-## Frozen STRATA-004 contract
+## Frozen STRATA-004 study
 
 See:
 
@@ -28,18 +29,33 @@ Design:
 - 8 runner blocks
 - 64 total trials
 - workload shape unchanged from STRATA-003
-- runner/kernel/cgroup provenance captured for later external-validity work
+- runner/kernel/cgroup provenance captured
+
+## Launch
+
+- launch commit: `4d22de0570030c987db3e76416c009e67c58341a`
+- STRATA-004 hosted run: `36392457515`
+- last observed status: `queued`
+- ordinary CI run: `36392457516`
+- last observed status: `in_progress`
+
+One external status read has already been consumed for this turn.
+
+## Next fresh-turn action
+
+Read run `36392457515` exactly once.
+
+- success -> inspect aggregate artifact once and canonicalize result
+- pending -> checkpoint EXTERNAL_WAIT and stop
+- failure -> inspect failure only; no blind retry
 
 ## Monte Carlo
 
 Deferred until empirical transition localization is tighter.
 
-## Next action
-
-Implement the frozen hosted study without changing the historical STRATA-003 contract.
-
 ## Authority boundary
 
 Hosted research only.
 No local-PC execution.
+No retry/rerun inferred.
 No OSS default cadence authorized.
