@@ -1,15 +1,26 @@
 # CURRENT
 
-> **Latest bounce:** B196
-> **Stage:** STRATA-003 / PILOT IMPLEMENTED, CI PENDING
+> **Latest bounce:** B197
+> **Stage:** STRATA-003 / PILOT IMPLEMENTATION CI IN PROGRESS
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## Implementation
+## Pending external run
 
-Release-cadence response-surface pilot implemented.
+- implementation commit: `078a0b1c0bf50622190e7840613595fe93a549aa`
+- CI run: `36361555805`
+- last observed status: `in_progress`
 
-## Next action
+## Next fresh-turn action
 
-Read ordinary CI for B196 exactly once.
+Read CI run `36361555805` exactly once.
+
+- SUCCESS → launch exactly one bounded STRATA-003-PILOT-v1 run.
+- pending → checkpoint EXTERNAL_WAIT.
+- failure → inspect failure only.
+
+## Product question
+
+How coarse can DONTNEED release cadence become before transient pressure returns?
 
 ## Authority boundary
 
