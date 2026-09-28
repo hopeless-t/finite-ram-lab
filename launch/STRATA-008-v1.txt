@@ -1,0 +1,26 @@
+STRATA-008 Cold-Capacity Invariance v1 — explicit hosted launch marker
+
+Launch generation: B251
+Implementation commit: d709e9e7c71b03faa9e519079c42663f3feb3a8e
+Implementation CI: 36436853395 = success
+
+Authorized scope:
+- hosted GitHub Actions research only
+- runner: ubuntu-26.04
+- Python requested: 3.12
+- MemoryHigh 160 MiB
+- MemoryMax 320 MiB
+- hot anon 64 MiB
+- cold file 192 MiB
+- read chunk 4 MiB
+- buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
+- four blocks
+- 24 trials total
+- REC-001 density: 50 records/trial
+
+The 96 MiB STRATA-007 result remains historical anchor and is not rerun here.
+
+This marker does not authorize local-PC execution, policy deployment, changes to the frozen design, or retries after unknown delivery.
+
+Proposal != Decision.
+Expressibility != Executability.
