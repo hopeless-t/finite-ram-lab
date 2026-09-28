@@ -1,0 +1,4 @@
+REC-003 explicit hosted launch
+B263
+Observer-only audit: file sizes 96/192/384 MiB; 4 blocks; 12 trials; fresh systemd unit per size; no streaming workload; no hot anonymous allocation.
+Hosted research only. No local execution.
