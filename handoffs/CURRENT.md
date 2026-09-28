@@ -1,63 +1,82 @@
 # CURRENT
 
-> **Latest bounce:** B240
-> **Stage:** STRATA-006 / HOSTED RUN LAUNCHED + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B241
+> **Stage:** STRATA-006 PASS / LIVE-SET HEADROOM MECHANISM REPLICATED
+> **Turn stop reason:** READY_FOR_NEXT_DESIGN
 
-## Canonical parent result
+## STRATA-006 canonical PASS
 
-STRATA-005 run `36431449193`: PASS, 40/40.
-
-Directional model under test:
-
-`K = MemoryHigh - effective_live_set_floor`
-
-## STRATA-006 frozen contract
-
-- MemoryHigh: 160 MiB
-- MemoryMax: 320 MiB
-- hot anon: 56 / 72 MiB
-- existing hot=64 MiB STRATA-004 anchor retained separately
-- arms: buffered / DONTNEED 64 / 72 / 80 / 88 / 96 MiB
-- 4 blocks per hot setting
-- 48 total new trials
-- REC-001: 26 records/trial
-
-Primary discriminator:
-
-`K + hot_anon ~= constant`
-
-versus fixed raw `K`.
-
-## Launch
-
-Exact launch commit:
-
-`f9fc73fcf8170b129f2e1a91e1f8614d3927ed8e`
-
-Hosted STRATA-006 run:
+Run:
 
 `36434232753`
 
-Single discovery/status read in B240:
+Launch SHA:
 
-`queued`
+`f9fc73fcf8170b129f2e1a91e1f8614d3927ed8e`
 
-Do not poll again in this bounce.
+Aggregate artifact:
 
-Ordinary CI `36434232954` also exists and was queued at discovery; it is not the scientific result and was not polled.
+- name: `STRATA-006-LIVESET-HEADROOM-36434232753`
+- id: `10974842004`
+- digest: `sha256:4bee6f7e6cd1b0efdc342187d08204513f2f3e05e7422ad8a87c5d05353e6eb7`
+- trials: 48 / 48
+- execution status: PASS
+
+## Mechanism result
+
+At MemoryHigh=160 MiB:
+
+- hot=56: `88 < K <= 96`
+- hot=64 STRATA-004 anchor: `80 < K <= 88`
+- hot=72: `72 < K <= 80`
+
+Each transforms to:
+
+`144 < K + hot <= 152 MiB`
+
+Block replication:
+
+- hot=56: 4/4 blocks same bracket
+- hot=72: 4/4 blocks same bracket
+
+Measured DONTNEED non-hot floor:
+
+- hot=56 median: 12.734375 MiB
+- hot=72 median: 12.794921875 MiB
+
+Leading tested mechanism on this hosted substrate:
+
+`K ~= MemoryHigh - effective_live_set`
+
+with:
+
+`effective_live_set ~= hot_anon + substrate/workload overhead`
+
+The observed ~12.8 MiB non-hot floor is not a portable constant or OSS default.
+
+Full result:
+
+`docs/STRATA-006-RESULT.md`
 
 ## Monte Carlo
 
-Deferred until valid live-set-axis observations exist.
+Deferred. Cross-substrate variation has not yet been measured.
 
 ## Next fresh-bounce action
 
-Read run `36434232753` exactly once.
+Freeze a portability design that changes hosted software substrate/image while preserving:
 
-- success -> fetch aggregate artifact once and validate/atomize all 48 trials;
-- pending/in_progress -> checkpoint EXTERNAL_WAIT and stop;
-- failure -> inspect only the exposed invariant; no blind rerun.
+- MemoryHigh
+- hot anon
+- cold file
+- read chunk
+- DONTNEED implementation
+- cadence panel
+- Recorder density
+
+Prefer one new substrate against a reusable current-substrate anchor.
+
+Do not launch in the design bounce.
 
 ## Queued future studies
 
