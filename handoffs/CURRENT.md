@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B227
-> **Stage:** STRATA-005 / RECORDER PATH REPAIRED + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B228
+> **Stage:** STRATA-005 / CI PASS / NAIVE-N0.5-FLASH INTAKE RECORDED
+> **Turn stop reason:** READY_FOR_EXPLICIT_HOSTED_LAUNCH
 
 ## REC-002
 
@@ -15,47 +15,64 @@ Canonical hosted PASS:
 
 ## STRATA-005
 
-B226 commit:
+B226 implementation commit:
 
 `645c119257c53243bfa444962f96d4ea368ab9cb`
 
-Execution contract now matches the frozen design and Recorder policy.
+Frozen execution contract:
 
-Each of the future 40 trials will:
-
-- execute under MemoryHigh 144 or 176 MiB;
-- use one of buffered / 48 / 64 / 80 / 96 MiB arms;
-- emit exactly 26 REC-001 raw records;
-- emit one trial JSON with raw and normalized outcomes.
-
-The aggregate validates the exact 2 x 4 x 5 matrix and reports raw-MiB and release/high onset screens.
+- MemoryHigh: 144 / 176 MiB
+- arms: buffered / DONTNEED 48 / 64 / 80 / 96 MiB
+- 4 blocks per pressure
+- 40 total trials
+- 26 REC-001 records per trial
+- aggregate reports raw-MiB and release/high onset screens
 
 ## Hosted validation
 
-Ordinary CI:
+Ordinary CI run `36428893054` was read exactly once in B228:
 
-`36428893054`
+- status: completed
+- conclusion: success
+- validate job: success
 
-Last and only status read in B227:
+Do not re-read it merely for reassurance.
 
-`in_progress`
+## Source intake
 
-Do not poll again in the same bounce.
+`docs/NAIVE-N05-FLASH-INTAKE-v1.md` records the Naive-N0.5-Flash mechanism-transfer intake.
+
+Council result:
+
+- evidence transfer to DONTNEED: NO
+- mechanism transfer: YES
+- measurement-design transfer: STRONG YES
+- STRATA-005 remains frozen and unchanged
+- semantic reuse distance is a later-study candidate, not an executable decision
 
 ## Next fresh-bounce action
 
-Read `36428893054` once.
+Create explicit `launch/STRATA-005-v1.txt`.
 
-- success -> explicit STRATA-005 launch marker and 40-trial hosted run;
-- pending -> checkpoint EXTERNAL_WAIT;
-- failure -> repair the exposed invariant only.
+That marker is the authorized hosted-study trigger already encoded in the workflow path filter.
+
+Then discover/read the resulting STRATA-005 external run once.
+
+- success -> collect and atomize evidence;
+- pending -> checkpoint EXTERNAL_WAIT and stop;
+- failure -> inspect the exposed invariant only; no blind rerun.
 
 ## Operating policy
 
-Research remains mainline. Recorder repair is sidecar work driven by concrete counterexamples.
+Research remains mainline.
+Recorder repair remains sidecar work driven by concrete counterexamples.
+Monte Carlo remains deferred until cross-pressure observations exist.
 
 ## Authority boundary
 
 Hosted research only.
 No local-PC execution.
 No memory-control policy authorized.
+Proposal != Decision.
+Expressibility != Executability.
+No blind retry after unknown delivery.
