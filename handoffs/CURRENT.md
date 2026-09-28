@@ -1,70 +1,51 @@
 # CURRENT
 
-> **Latest bounce:** B266
-> **Stage:** REC-004 PRE/POST OBSERVER HYGIENE DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B267
+> **Stage:** REC-004 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## Accepted mechanism
+## REC-004 implementation
 
-Capacity-series knee:
+Exact hygiene contract:
 
-- 96 MiB -> `80 < K <= 88`
-- 192 MiB -> `80 < K <= 88`
-- 384 MiB -> `80 < K <= 88`
+- external cold verification outside measured cgroup;
+- no pre-scan mincore inside measured unit;
+- scan at DONTNEED 64 MiB;
+- capture `post_scan_pre_observer`;
+- run historical `_file_residency()`;
+- capture `post_scan_post_observer`.
 
-384 MiB exceeds MemoryMax 320 MiB and completes without OOM under bounded DONTNEED streaming.
-
-## REC-003
-
-Observer-only audit PASS.
-
-Residency observer has a target-size-dependent cgroup footprint, especially at 384 MiB.
-
-The historical fine floor-growth sequence is measurement-contaminated and no longer a workload-law candidate.
-
-## REC-004 frozen design
-
-Paired hygiene validation:
-
+Matrix:
 - Ubuntu 26.04
+- file sizes 96 / 192 / 384 MiB
 - MemoryHigh 160 MiB
 - MemoryMax 320 MiB
 - hot anon 64 MiB
-- DONTNEED 64 MiB
-- cold capacities 96 / 192 / 384 MiB
 - 4 blocks
 - 12 trials
 
-Each trial captures:
-
-1. `post_scan_pre_observer`
-2. existing `_file_residency()`
-3. `post_scan_post_observer`
-
 Primary paired metric:
 
-`observer_current_delta = post - pre`
+`observer_current_delta = post_observer - pre_observer`
 
-Design:
+No launch marker exists.
 
-`docs/REC-004-PREPOST-OBSERVER-HYGIENE-v1.md`
+Files:
+- `specs/REC-004-PREPOST-OBSERVER-HYGIENE-v1.json`
+- `src/finite_ram_lab/rec004_prepost_observer_hygiene.py`
+- `.github/workflows/rec-004-prepost-observer.yml`
+- `tests/test_rec004_prepost_observer_hygiene.py`
 
 ## Next fresh-bounce action
 
-Implement REC-004:
-- hygienic workload wrapper / variant
-- spec
-- deterministic schedule
-- aggregate
-- Ubuntu 26.04 workflow
-- tests
+Discover/read B267 ordinary CI exactly once.
 
-Do not launch during implementation.
+- success -> explicit REC-004 launch in a separate commit;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 
 Hosted repository/research only.
 No local-PC execution.
 No memory-control policy.
-Proposal != Decision.
-Expressibility != Executability.

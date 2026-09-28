@@ -1,0 +1,15 @@
+{
+  "experiment_id": "REC-004-PREPOST-OBSERVER-HYGIENE-v1",
+  "runner": "ubuntu-26.04",
+  "runner_blocks": 4,
+  "base_schedule_seed": 2026092907,
+  "memory_high_mib": 160,
+  "memory_max_mib": 320,
+  "hot_anon_mib": 64,
+  "read_chunk_mib": 4,
+  "release_arm": "dontneed_64m",
+  "file_sizes_mib": [96, 192, 384],
+  "expected_trials": 12,
+  "external_cold_fraction_max": 0.1,
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
