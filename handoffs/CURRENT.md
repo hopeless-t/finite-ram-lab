@@ -1,28 +1,63 @@
 # CURRENT
 
-> **Latest bounce:** B284
-> **Stage:** MEMCG-001 EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B285
+> **Stage:** MEMCG-001 HOSTED RUN + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-Implementation:
-`ed930823ca0d02b1aa080f1b072fe26452bc28a0`
-
-Implementation CI:
-`36448740557 = success`
+## MEMCG-001
 
 Exact launch commit:
+
 `68f9e1f9f170ff4181255b6669ebcb94221b70a5`
 
-Study:
-- 256 one-page samples
-- touch vs no-touch control
-- 4 blocks / 8 trials
-- C worker / CPU pinning / fresh cgroup
-- Q-lattice / modulo phase / jump spacing / autocorrelation
+Scientific run:
 
-Question: does a reproducible 64-page / 256-KiB memcg accounting structure appear?
+`36449072026`
 
-Next fresh-bounce action: discover/read exact-head MEMCG-001 run once.
+Single B285 read:
 
-Hosted research only.
+`in_progress`
+
+Do not poll again in this bounce.
+
+## Current mathematics
+
+Already implemented:
+- first differences
+- jump extraction
+- Q-lattice search
+- modulo phase
+- jump spacing
+- autocorrelation
+- touch/control comparison
+
+## Candidate next mathematics
+
+Choose after seeing the signal:
+
+- stationary periodic structure -> FFT/periodogram + MDL;
+- nonstationary phase/scale -> wavelet + Bayesian change-point;
+- latent noisy states -> HMM/state-space + Allan variance;
+- weak/no pattern -> entropy/mutual information + held-out model comparison;
+- broader multi-axis corpus -> symbolic regression with complexity penalty;
+- discrete magnitude structure -> integer-relation / rational lattice search.
+
+The selection itself must be evidence-driven.
+
+## Next fresh-bounce action
+
+Read run `36449072026` exactly once.
+
+- success -> artifact analysis + preregistered H64 verdict + evidence-driven mathematical follow-up;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
+
+## LDC
+
+If hosted signal is reproducible, prepare a separate MVCA-bound local replication on Lubuntu using the exact same worker and analyzer.
+
+## Authority boundary
+
+Hosted repository/research only in current bounce.
 No local-PC execution.
+No memory-control policy.
