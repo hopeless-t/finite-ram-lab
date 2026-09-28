@@ -1,23 +1,15 @@
 # CURRENT
 
-> **Latest bounce:** B194
-> **Stage:** STRATA-003 / RELEASE-CADENCE COUNCIL COMPLETE
-
-## Research question
-
-Find the DONTNEED release-cadence knee for a future finite-ram helper.
+> **Latest bounce:** B195
+> **Stage:** STRATA-003 / PILOT CONTRACT FROZEN
 
 ## Next action
 
-Freeze STRATA-003-PILOT-v1.
+Implement STRATA-003-PILOT-v1.
 
-## Local path
+## Product question
 
-LOCAL-VALIDITY-001 remains ready but requires a finite-ram-specific MVCA gate.
-
-## OSS extraction
-
-G1–G4 remain pending.
+Find the coarsest DONTNEED release cadence that still prevents transient pressure.
 
 ## Authority boundary
 

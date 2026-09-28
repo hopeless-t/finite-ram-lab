@@ -1,0 +1,74 @@
+{
+  "experiment_id": "STRATA-003-PILOT-v1",
+  "runner": "ubuntu-24.04",
+  "runner_blocks": 8,
+  "base_schedule_seed": 2026092804,
+  "memory_high_mib": 160,
+  "memory_max_mib": 320,
+  "hot_anon_mib": 64,
+  "cold_file_mib": 96,
+  "read_chunk_mib": 4,
+  "arms": [
+    "buffered",
+    "dontneed_4m",
+    "dontneed_8m",
+    "dontneed_16m",
+    "dontneed_32m",
+    "dontneed_96m",
+    "direct"
+  ],
+  "release_interval_mib": {
+    "buffered": null,
+    "dontneed_4m": 4,
+    "dontneed_8m": 8,
+    "dontneed_16m": 16,
+    "dontneed_32m": 32,
+    "dontneed_96m": 96,
+    "direct": null
+  },
+  "trials_per_arm_per_block": 1,
+  "expected_trials": 56,
+  "file_prepare": {
+    "fsync": true,
+    "posix_fadvise_dontneed": true,
+    "require_precache_fraction_le": 0.10
+  },
+  "checkpoint_every_mib": 4,
+  "primary_outcomes": [
+    "memory_high_events_scan_delta",
+    "max_scan_memory_current_mib",
+    "post_scan_memory_current_mib",
+    "file_resident_fraction_post_scan"
+  ],
+  "secondary_outcomes": [
+    "advice_calls",
+    "scan_ms",
+    "throughput_mib_s",
+    "pgscan_scan_delta",
+    "pgsteal_scan_delta",
+    "hot_resident_fraction_pre_retouch",
+    "hot_retouch_ms",
+    "swap_mib_post_scan"
+  ],
+  "derived_metrics": [
+    "pressure_avoidance_efficiency",
+    "transient_footprint_reduction",
+    "final_footprint_reduction",
+    "advice_density_calls_per_gib",
+    "scan_time_cost_ratio"
+  ],
+  "required_checks": [
+    "eight_runner_blocks_present",
+    "fifty_six_trials_present",
+    "all_trials_valid",
+    "all_arms_once_per_block",
+    "file_cold_before_each_scan",
+    "release_ranges_page_aligned",
+    "advice_success",
+    "direct_no_fallback",
+    "content_integrity",
+    "no_oom"
+  ],
+  "inference": "PILOT_RESPONSE_SURFACE_NO_DEFAULT_SELECTION",
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
