@@ -1,0 +1,131 @@
+name: STRATA-009 Dataset Greater Than MemoryMax v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "launch/STRATA-009-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3]
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Prepare 384 MiB cold file
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from finite_ram_lab.strata001_probe import _prepare_file
+          p = Path(os.environ["RUNNER_TEMP"]) / "strata009-cold.bin"
+          _prepare_file(p, 384 * 1024 * 1024, 4 * 1024 * 1024)
+          print(p)
+          PY
+
+      - name: Build schedule and environment
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          ROOT="evidence/STRATA-009/block-${BLOCK}"
+          mkdir -p "${ROOT}/raw"
+          python -m finite_ram_lab.strata009_dataset_gt_memorymax schedule \
+            --spec specs/STRATA-009-DATASET-GT-MEMORYMAX-v1.json \
+            --block "${BLOCK}" \
+            --out "${ROOT}/schedule.csv"
+          {
+            echo "kernel_release=$(uname -r)"
+            echo "systemd_version=$(systemd-run --version | head -n1)"
+            echo "cgroup_fs_type=$(stat -fc %T /sys/fs/cgroup)"
+            echo "image_os=${ImageOS:-}"
+            echo "image_version=${ImageVersion:-}"
+            echo "runner_arch=${RUNNER_ARCH:-}"
+            cat /etc/os-release
+          } > "${ROOT}/environment.txt"
+
+      - name: Run five bounded-policy arms
+        env:
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          HIGH_BYTES=$((160 * 1024 * 1024))
+          MAX_BYTES=$((320 * 1024 * 1024))
+          FILE="$RUNNER_TEMP/strata009-cold.bin"
+          SPEC="$GITHUB_WORKSPACE/specs/STRATA-009-DATASET-GT-MEMORYMAX-v1.json"
+          ROOT="$GITHUB_WORKSPACE/evidence/STRATA-009/block-${BLOCK}"
+
+          tail -n +2 "${ROOT}/schedule.csv" | while IFS=, read -r ORDER ARM; do
+            UNIT="finite-ram-strata009-${GITHUB_RUN_ID}-${BLOCK}-${ORDER}"
+            OUT="${ROOT}/raw/trial-${ORDER}-${ARM}.json"
+            RAW="${ROOT}/raw/trial-${ORDER}-${ARM}.jsonl"
+
+            sudo systemd-run \
+              --pipe --wait --collect --quiet \
+              --unit="$UNIT" \
+              -p MemoryAccounting=yes \
+              -p MemoryHigh="$HIGH_BYTES" \
+              -p MemoryMax="$MAX_BYTES" \
+              "$PY" -m finite_ram_lab.strata009_dataset_gt_memorymax trial \
+                --spec "$SPEC" \
+                --block "$BLOCK" \
+                --order "$ORDER" \
+                --arm "$ARM" \
+                --source-commit "$GITHUB_SHA" \
+                --file "$FILE" \
+                --raw-evidence "$RAW" \
+                --out "$OUT"
+          done
+          sudo chown -R "$(id -u):$(id -g)" "${ROOT}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: strata009-block-${{ matrix.block }}
+          path: evidence/STRATA-009/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: strata009-block-*
+          path: evidence/STRATA-009/input
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/STRATA-009/aggregate
+          python -m finite_ram_lab.strata009_dataset_gt_memorymax aggregate \
+            --spec specs/STRATA-009-DATASET-GT-MEMORYMAX-v1.json \
+            --input-root evidence/STRATA-009/input \
+            --out evidence/STRATA-009/aggregate/summary.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: STRATA-009-DATASET-GT-MEMORYMAX-${{ github.run_id }}
+          path: evidence/STRATA-009/aggregate/
+          if-no-files-found: error
+          retention-days: 90

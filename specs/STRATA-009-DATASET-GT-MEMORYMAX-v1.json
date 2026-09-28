@@ -1,0 +1,34 @@
+{
+  "experiment_id": "STRATA-009-DATASET-GT-MEMORYMAX-v1",
+  "runner": "ubuntu-26.04",
+  "runner_blocks": 4,
+  "base_schedule_seed": 2026092901,
+  "memory_high_mib": 160,
+  "memory_max_mib": 320,
+  "hot_anon_mib": 64,
+  "cold_file_mib": 384,
+  "read_chunk_mib": 4,
+  "arms": ["dontneed_64m", "dontneed_72m", "dontneed_80m", "dontneed_88m", "dontneed_96m"],
+  "release_interval_mib": {
+    "dontneed_64m": 64,
+    "dontneed_72m": 72,
+    "dontneed_80m": 80,
+    "dontneed_88m": 88,
+    "dontneed_96m": 96
+  },
+  "expected_trials": 20,
+  "anchor": {
+    "experiment_id": "STRATA-008-COLD-CAPACITY-v1",
+    "cold_file_mib": 192,
+    "raw_release_interval_bracket": "80 MiB < onset <= 88 MiB",
+    "knee_plus_hot_bracket": "144 MiB < K+hot <= 152 MiB",
+    "median_non_hot_floor_mib": 13.0546875
+  },
+  "file_prepare": {
+    "require_precache_fraction_le": 0.1
+  },
+  "recorder": {
+    "records_per_trial": 98
+  },
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
