@@ -1,84 +1,99 @@
 # CURRENT
 
-> **Latest bounce:** B235
-> **Stage:** STRATA-005 PASS / EFFECTIVE-LIVE-SET HEADROOM MODEL
-> **Turn stop reason:** READY_FOR_NEXT_DESIGN
+> **Latest bounce:** B236
+> **Stage:** STRATA-006 LIVE-SET HEADROOM DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## STRATA-005 canonical PASS
+## Canonical STRATA-005 result
 
-Hosted run:
+Run `36431449193`: PASS, 40 / 40 trials.
 
-`36431449193`
+Observed onset:
 
-Launch SHA:
+- H=144: `64 < K <= 80`
+- H=160 anchor: `80 < K <= 88`
+- H=176: `K > 96`
 
-`9f0ed686406a49b42e14d855e3d941970e55c94d`
+Fixed raw cadence is not consistent across the tested pressure settings.
 
-Aggregate artifact:
+Additive interpretation:
 
-- `STRATA-005-EXTERNAL-VALIDITY-36431449193`
-- artifact id `10973632531`
-- digest `sha256:8702206b4cb645796f0c2ca17f60bc155898d380225f6216804b790396592554`
-- trial count: 40
-- execution status: PASS
+`K = H - B`
 
-## Onset evidence
-
-- MemoryHigh 144 MiB: `64 < knee <= 80 MiB`
-- MemoryHigh 160 MiB, STRATA-004 anchor: `80 < knee <= 88 MiB`
-- MemoryHigh 176 MiB: `knee > 96 MiB`
-
-A fixed raw-MiB knee cannot satisfy all three observations.
-
-## Effective-live-set headroom interpretation
-
-For `K = H - B`, all three observations are consistent with:
+with common feasible:
 
 `B in [72, 80) MiB`
 
-STRATA-005 DONTNEED cells have median post-scan resident floor approximately:
+and observed STRATA-005 DONTNEED post-scan floor around `76.72 MiB`.
 
-`76.72 MiB`
+## STRATA-006 frozen design
 
-Accepted directional interpretation:
+Question: at fixed MemoryHigh, does changing hot/live-set size move the knee inversely?
 
-**pressure-event onset tracks remaining headroom above an effective live-set floor more plausibly than a universal fixed release cadence.**
+Constants:
 
-This is not a controller formula or OSS default.
+- MemoryHigh 160 MiB
+- MemoryMax 320 MiB
+- cold file 96 MiB
+- read chunk 4 MiB
+- same hosted runner family and DONTNEED implementation
+- same Recorder density
 
-Full result:
+New hot-anon settings:
 
-`docs/STRATA-005-RESULT.md`
+- 56 MiB
+- 72 MiB
+
+Reuse STRATA-004 hot=64 MiB as anchor.
+
+Arms:
+
+- buffered
+- DONTNEED 64 / 72 / 80 / 88 / 96 MiB
+
+Budget:
+
+- 2 x 6 x 4 = 48 new hosted trials
+
+Primary discriminator:
+
+`K + hot_anon ~= constant`
+
+versus fixed raw `K`.
+
+Frozen design document:
+
+`docs/STRATA-006-LIVESET-HEADROOM-v1.md`
 
 ## Monte Carlo
 
-Deferred. Current interval-censored aggregate evidence does not justify inventing a threshold-jitter distribution.
-
-## Next fresh-bounce action
-
-Freeze the next hosted design:
-
-- hold MemoryHigh constant;
-- vary hot/live resident set;
-- preserve the same read/release mechanism;
-- test whether knee shifts inversely with live-set size;
-- reuse the 64 MiB hot-anon STRATA-004 anchor where valid;
-- keep timing secondary.
-
-Do not launch before design freeze and implementation validation.
+Deferred until STRATA-006 observations exist.
 
 ## Queued future studies
 
-- Naive-N0.5-Flash semantic reuse / reconstructible-state intake
-- LLM-jp-4.1 local worker + state-lifetime dogfood
+- Naive-N0.5-Flash semantic reuse / reconstructible-state study
+- LLM-jp-4.1 local-worker + state-lifetime dogfood
 
-These are proposals, not current execution authority.
+They are proposals and do not authorize local execution.
+
+## Next fresh-bounce action
+
+Implement STRATA-006:
+
+- machine-readable spec
+- deterministic schedule
+- trial wrapper using REC-001
+- aggregate validation
+- hosted workflow
+- regression tests
+
+Do not launch in the implementation bounce.
 
 ## Authority boundary
 
-Hosted research only.
+Hosted repository/research work only.
 No local-PC execution.
+No STRATA-006 launch.
 No memory-control policy authorized.
 Proposal != Decision.
 Expressibility != Executability.
-No blind retry after unknown delivery.
