@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B228
-> **Stage:** STRATA-005 / CI PASS / NAIVE-N0.5-FLASH INTAKE RECORDED
-> **Turn stop reason:** READY_FOR_EXPLICIT_HOSTED_LAUNCH
+> **Latest bounce:** B229
+> **Stage:** STRATA-005 / EXPLICIT HOSTED LAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
 ## REC-002
 
@@ -13,13 +13,7 @@ Canonical hosted PASS:
 - all 8 paired blocks: recorder-induced MemoryHigh-event delta = 0
 - Recorder accepted for STRATA-005 at the tested 26-record density
 
-## STRATA-005
-
-B226 implementation commit:
-
-`645c119257c53243bfa444962f96d4ea368ab9cb`
-
-Frozen execution contract:
+## STRATA-005 frozen contract
 
 - MemoryHigh: 144 / 176 MiB
 - arms: buffered / DONTNEED 48 / 64 / 80 / 96 MiB
@@ -28,44 +22,31 @@ Frozen execution contract:
 - 26 REC-001 records per trial
 - aggregate reports raw-MiB and release/high onset screens
 
-## Hosted validation
+Ordinary CI `36428893054`: completed / success.
 
-Ordinary CI run `36428893054` was read exactly once in B228:
+## Launch
 
-- status: completed
-- conclusion: success
-- validate job: success
+B229 creates `launch/STRATA-005-v1.txt`, the explicit path-gated trigger for the hosted workflow.
 
-Do not re-read it merely for reassurance.
+No study parameter changed at launch.
 
 ## Source intake
 
-`docs/NAIVE-N05-FLASH-INTAKE-v1.md` records the Naive-N0.5-Flash mechanism-transfer intake.
+Naive-N0.5-Flash intake remains recorded at `docs/NAIVE-N05-FLASH-INTAKE-v1.md`.
 
-Council result:
+It does not alter STRATA-005. Semantic reuse distance remains a future-study proposal.
 
-- evidence transfer to DONTNEED: NO
-- mechanism transfer: YES
-- measurement-design transfer: STRONG YES
-- STRATA-005 remains frozen and unchanged
-- semantic reuse distance is a later-study candidate, not an executable decision
+## Next action
 
-## Next fresh-bounce action
+Discover/read the STRATA-005 workflow run for this exact launch commit once.
 
-Create explicit `launch/STRATA-005-v1.txt`.
-
-That marker is the authorized hosted-study trigger already encoded in the workflow path filter.
-
-Then discover/read the resulting STRATA-005 external run once.
-
-- success -> collect and atomize evidence;
-- pending -> checkpoint EXTERNAL_WAIT and stop;
-- failure -> inspect the exposed invariant only; no blind rerun.
+- success -> collect and analyze evidence;
+- pending/in_progress -> checkpoint EXTERNAL_WAIT and stop;
+- failure -> inspect only the exposed invariant; no blind rerun.
 
 ## Operating policy
 
 Research remains mainline.
-Recorder repair remains sidecar work driven by concrete counterexamples.
 Monte Carlo remains deferred until cross-pressure observations exist.
 
 ## Authority boundary

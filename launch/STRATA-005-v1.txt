@@ -1,0 +1,20 @@
+STRATA-005 External Validity v1 — explicit hosted launch marker
+
+Authorized scope:
+- hosted GitHub Actions research only
+- frozen STRATA-005 design
+- MemoryHigh 144 / 176 MiB
+- buffered + DONTNEED 48 / 64 / 80 / 96 MiB
+- four blocks per pressure
+- 40 trials total
+- REC-001 density: 26 records/trial
+
+This marker does not authorize local-PC execution, policy deployment, retries after unknown delivery, or changes to the frozen design.
+
+Pre-launch validation:
+- ordinary CI run 36428893054: completed / success
+- REC-002 run 36427808785: canonical PASS
+- source-intake B228 does not modify STRATA-005
+
+Proposal != Decision.
+Expressibility != Executability.
