@@ -1,58 +1,57 @@
 # CURRENT
 
-> **Latest bounce:** B223
-> **Stage:** RESEARCH MAINLINE / REC-002 RELAUNCH + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B224
+> **Stage:** STRATA-005 / REC-002 PASS / IMPLEMENT NEXT
 
-## Operating policy
+## REC-002 canonical result
 
-Recorder is treated as research-ready / fail-visible for the current scope.
-
-Research experiments are the mainline again. Recorder hardening continues only when real runs expose defects or a meaningful Recorder change warrants bounded robustness validation.
-
-REC-003 100k Monte Carlo remains available but is not a prerequisite for research progress.
-
-## REC-002
-
-Relaunch commit:
-
-`15530bfa7e619e44e97302109422f7331d131dc5`
-
-Hosted REC-002 run:
+Hosted run:
 
 `36427808785`
 
-Last and only status read in B223:
+Result:
 
-`queued`
+`SUCCESS / 16 of 16 valid trials`
 
-Do not poll again in the same bounce.
+All 8 paired blocks had recorder_on minus recorder_off MemoryHigh-event delta = 0.
 
-## Next fresh-bounce action
+Paired medians:
 
-Read REC-002 run `36427808785` once.
+- max scan memory delta: -2,048 bytes
+- scan elapsed delta: +724,882.5 ns
+- scan elapsed ratio on/off: 1.0178166593
 
-- success -> inspect aggregate observer-effect evidence;
-- pending -> checkpoint EXTERNAL_WAIT;
-- failure -> inspect and repair only the exposed failure.
+The timing data are runner-noisy and are not promoted to a universal overhead estimate.
 
-If REC-002 supports Recorder use under the boundary workload, move directly back to STRATA-005 external-validity work.
+Decision: use REC-001 in STRATA-005 at the tested recording density.
 
-## STRATA-005
+See `docs/REC-002-RESULT.md`.
 
-Frozen design remains:
+## STRATA-005 frozen design
 
-- MemoryHigh 144 and 176 MiB;
-- five-arm panel: buffered, 48, 64, 80, 96 MiB;
-- four runner blocks per setting;
-- 40 new trials;
-- normalized headroom analysis.
+- MemoryHigh: 144 and 176 MiB
+- arms: buffered, 48, 64, 80, 96 MiB
+- 4 independent runner blocks per pressure setting
+- 40 total new trials
+- MemoryMax: 320 MiB
+- hot anonymous memory: 64 MiB
+- cold file: 96 MiB
+- read chunk: 4 MiB
 
-No launch yet.
+Primary question: does pressure-event onset track pressure headroom more consistently than a fixed release interval?
+
+## Next action
+
+Implement STRATA-005 runner, aggregation, tests, and hosted workflow.
+
+Do not launch until implementation CI passes.
+
+## Operating policy
+
+Research is the mainline. Recorder failures discovered by real experiments are repaired atomically and promoted to regressions.
 
 ## Authority boundary
 
 Hosted research only.
 No local-PC execution.
-No STRATA-005 launch inferred from this checkpoint.
 No memory-control policy authorized.
