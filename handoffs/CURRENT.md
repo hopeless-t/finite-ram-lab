@@ -1,57 +1,48 @@
 # CURRENT
 
-> **Latest bounce:** B224
-> **Stage:** STRATA-005 / REC-002 PASS / IMPLEMENT NEXT
+> **Latest bounce:** B225
+> **Stage:** STRATA-005 IMPLEMENTED / CI VALIDATION NEXT / NOT LAUNCHED
 
-## REC-002 canonical result
+## Canonical parent evidence
 
-Hosted run:
+REC-002 run `36427808785` passed 16/16 trials and found zero MemoryHigh-event regime changes across all 8 paired blocks. Recorder is accepted for STRATA-005 only at the tested density.
 
-`36427808785`
+## STRATA-005 implementation
 
-Result:
+Frozen design:
+- MemoryHigh 144 and 176 MiB
+- buffered + DONTNEED 48/64/80/96 MiB
+- 4 blocks per pressure
+- 40 hosted trials
+- MemoryMax 320 MiB
+- hot anon 64 MiB
+- cold file 96 MiB
 
-`SUCCESS / 16 of 16 valid trials`
+B225 added the machine-readable spec, deterministic scheduler/aggregator, unit tests, and a hosted workflow.
 
-All 8 paired blocks had recorder_on minus recorder_off MemoryHigh-event delta = 0.
+The workflow is `workflow_dispatch` only. This commit does not launch STRATA-005.
 
-Paired medians:
+## Pseudo-Council
 
-- max scan memory delta: -2,048 bytes
-- scan elapsed delta: +724,882.5 ns
-- scan elapsed ratio on/off: 1.0178166593
+Converged: vary one causal axis only. Do not add runner-substrate variation until cross-pressure evidence exists. Keep throughput descriptive. Do not infer a controller formula from two pressure settings.
 
-The timing data are runner-noisy and are not promoted to a universal overhead estimate.
+## Monte Carlo
 
-Decision: use REC-001 in STRATA-005 at the tested recording density.
-
-See `docs/REC-002-RESULT.md`.
-
-## STRATA-005 frozen design
-
-- MemoryHigh: 144 and 176 MiB
-- arms: buffered, 48, 64, 80, 96 MiB
-- 4 independent runner blocks per pressure setting
-- 40 total new trials
-- MemoryMax: 320 MiB
-- hot anonymous memory: 64 MiB
-- cold file: 96 MiB
-- read chunk: 4 MiB
-
-Primary question: does pressure-event onset track pressure headroom more consistently than a fixed release interval?
+Deferred until empirical cross-pressure observations exist.
 
 ## Next action
 
-Implement STRATA-005 runner, aggregation, tests, and hosted workflow.
+Read ordinary CI for the B225 exact head once.
 
-Do not launch until implementation CI passes.
-
-## Operating policy
-
-Research is the mainline. Recorder failures discovered by real experiments are repaired atomically and promoted to regressions.
+- success -> launch STRATA-005 in a separate explicit bounce;
+- pending -> checkpoint EXTERNAL_WAIT;
+- failure -> inspect only the exposed implementation failure and repair atomically.
 
 ## Authority boundary
 
 Hosted research only.
 No local-PC execution.
 No memory-control policy authorized.
+Proposal != Decision.
+Expressibility != Executability.
+No blind retry after unknown delivery.

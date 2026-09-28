@@ -1,0 +1,24 @@
+{
+  "experiment_id": "STRATA-005-EXTERNAL-VALIDITY-v1",
+  "runner": "ubuntu-24.04",
+  "runner_blocks_per_pressure": 4,
+  "base_schedule_seed": 2026092807,
+  "memory_high_mib": [144, 176],
+  "memory_max_mib": 320,
+  "hot_anon_mib": 64,
+  "cold_file_mib": 96,
+  "read_chunk_mib": 4,
+  "arms": ["buffered", "dontneed_48m", "dontneed_64m", "dontneed_80m", "dontneed_96m"],
+  "release_interval_mib": {
+    "buffered": null,
+    "dontneed_48m": 48,
+    "dontneed_64m": 64,
+    "dontneed_80m": 80,
+    "dontneed_96m": 96
+  },
+  "expected_trials": 40,
+  "file_prepare": {"fsync": true, "posix_fadvise_dontneed": true, "require_precache_fraction_le": 0.1},
+  "recorder": {"enabled": true, "checkpoint_metric": "memory.current", "records_per_trial": 26, "sqlite_inside_measured_interval": false},
+  "normalized_analysis": ["release_fraction_of_high", "peak_fraction_of_high", "headroom_over_hot_mib"],
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
