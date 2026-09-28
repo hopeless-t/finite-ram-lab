@@ -1,28 +1,33 @@
 # CURRENT
 
-> **Latest bounce:** B200
-> **Stage:** STRATA-003 / PILOT QUEUED
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B201
+> **Stage:** STRATA-003 / PILOT PASS
 
-## Pending hosted runs
+## Result
 
-- launch commit: `374f47f0cc510c109239bf3b644c60d21a346c0e`
-- STRATA-003 pilot run: `36361919521`
-- last observed pilot status: `queued`
-- ordinary CI run: `36361919522`
-- last observed CI status: `queued`
+56 / 56 trials valid.
 
-## Next fresh-turn action
+Pressure-event behavior:
 
-Read STRATA-003 pilot run `36361919521` exactly once.
+- DONTNEED 4 MiB: 0 median high events
+- 8 MiB: 0
+- 16 MiB: 0
+- 32 MiB: 0
+- 96 MiB / end-of-stream: 6
+- buffered: 6
+- direct: 0
 
-- SUCCESS → inspect aggregate artifact and release-cadence response surface.
-- pending → checkpoint EXTERNAL_WAIT.
-- failure → inspect failure only.
+Current pressure-avoidance knee bracket:
 
-## Research relay
+`32 MiB < knee <= 96 MiB`
 
-Future recurring runs should rehydrate this file and continue bounded multi-bounce research while preserving the current authority boundary.
+## Canonical result
+
+See `docs/STRATA-003-PILOT-RESULT.md`.
+
+## Next action
+
+Design a targeted knee-refinement study.
 
 ## Authority boundary
 
