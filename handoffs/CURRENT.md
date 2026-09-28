@@ -1,37 +1,68 @@
 # CURRENT
 
-> **Latest bounce:** B258
-> **Stage:** STRATA-009 / HOSTED RUN LAUNCHED + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B259
+> **Stage:** STRATA-009 PASS / DATASET CAPACITY DECOUPLED ACROSS MEMORYMAX
+> **Turn stop reason:** READY_FOR_OBSERVER_AUDIT_DESIGN
 
-Exact launch commit:
+## STRATA-009 PASS
 
-`01e73be662613d164f62287f126ef002c8ff234c`
+Run `36440093666`, 20/20 trials.
 
-Scientific run:
+Cold dataset:
 
-`36440093666`
+`384 MiB > MemoryMax 320 MiB`
 
-Single B258 read:
+Yet all bounded-policy arms completed without OOM.
 
-`in_progress`
+Onset:
 
-Do not poll again in this bounce.
+`80 < K <= 88 MiB`
 
-Frozen study:
+This matches the 96 MiB and 192 MiB capacity studies.
+
+Capacity series:
+
+- 96 MiB -> `80 < K <= 88`
+- 192 MiB -> `80 < K <= 88`
+- 384 MiB -> `80 < K <= 88`
+
+Leading mechanism:
+
+`instantaneous RAM demand ~= effective live set + unreleased streaming interval`
+
+for the tested one-shot streaming workload.
+
+## Fine-floor HOLD
+
+192->384 empirical bootstrap:
+
+- median shift +0.2421875 MiB
+- 95% interval approximately [+0.023438, +0.376953] MiB
+
+But `_file_residency()` mmaps the full target and calls `mincore` before post-scan memory.current is captured.
+
+The small floor shift may therefore include observer footprint.
+
+Do not claim a floor-growth law yet.
+
+## Next fresh-bounce action
+
+Freeze an observer-only residency-footprint design:
+
 - Ubuntu 26.04
-- MemoryHigh 160 MiB
-- MemoryMax 320 MiB
-- hot anon 64 MiB
-- cold file 384 MiB
-- DONTNEED 64 / 72 / 80 / 88 / 96 MiB
-- 4 blocks
-- 20 trials
-- REC-001 98 records/trial
-- buffered omitted
+- file sizes 96 / 192 / 384 MiB
+- no streaming workload
+- measure cgroup memory.current around `_file_residency()`
+- distinguish transient peak from retained post-call delta
+- repeat across independent blocks
+- preserve environment receipt
 
-Question: can bounded streaming preserve the same knee when total dataset capacity exceeds MemoryMax?
+No launch in the design bounce.
 
-Next fresh-bounce action: read run `36440093666` exactly once.
+## Authority boundary
 
-Hosted research only. No local-PC execution. No memory-control policy.
+Hosted research only.
+No local-PC execution.
+No memory-control policy.
+Proposal != Decision.
+Expressibility != Executability.

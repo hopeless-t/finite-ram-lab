@@ -1,0 +1,31 @@
+{
+  "analysis_id": "STRATA-009-EMPIRICAL-BOOTSTRAP-v1",
+  "source_runs": {
+    "cold_192_mib": "36437651740",
+    "cold_384_mib": "36440093666"
+  },
+  "sample": {
+    "metric": "post_scan_non_hot_floor_mib",
+    "arm_filter": "dontneed_*",
+    "n_192": 20,
+    "n_384": 20
+  },
+  "method": {
+    "kind": "independent_nonparametric_bootstrap",
+    "seed": 20260929,
+    "resamples": 200000
+  },
+  "observed": {
+    "median_192_mib": 13.0546875,
+    "median_384_mib": 13.296875,
+    "median_difference_384_minus_192_mib": 0.2421875,
+    "mean_192_mib": 13.055859375,
+    "mean_384_mib": 13.28203125,
+    "mean_difference_384_minus_192_mib": 0.226171875
+  },
+  "bootstrap_95_percent": {
+    "median_difference_mib": [0.0234375, 0.376953125],
+    "mean_difference_mib": [0.1103515625, 0.3421875]
+  },
+  "boundary": "Fine floor shifts may include residency-observer footprint; do not treat as workload law before observer-only measurement."
+}
