@@ -1,0 +1,6 @@
+MEMCG-003 explicit hosted launch
+B304
+Implementation: b64f32ad3b38d4a6ca8bdfda36e4c12fe62d5569
+CI: 36459629772 success
+Seven-slot eviction probe: 7 wash memcgs + target + distinct challengers; same-memcg/six-only/no-churn controls; K=1..10 inference.
+Hosted research only. No local execution.
