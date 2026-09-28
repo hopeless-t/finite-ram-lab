@@ -1,12 +1,23 @@
-REC-002-OVERHEAD-v1 launch marker
+REC-002-OVERHEAD-v1 relaunch marker
 
-B210 implementation commit:
-175d7a9232ead6f3ce39a5c0e57d7583d38ff1e0
+Parent failed hosted run:
+36419229167 = infrastructure failure before measurement
+
+Fix chain:
+c3dd1581a88bcdb8f93e14bbbb1c4ed7f406e590 = LF producer normalization
+366a1b990584984fdab36fc0e18d2d8e2dfd3a87 = CR/LF byte assertion correction
+8a5875790610eacc7b8cc7e72ef9184d3975b690 = lifecycle hardening
+707f0d59a4d0661f9801dc00699443b852a14e18 = atomic evidence-path ownership
+a2f49a1865655d7ec79d95525d58df7e3f06053c = REC-003 Monte Carlo corruption campaign
 
 Ordinary CI:
-36417680847 = success
+36425701676 = success
+36427033616 = success
 
 Purpose:
-Launch the frozen hosted recorder observer-effect screen only.
+Relaunch the frozen hosted REC-002 recorder observer-effect screen.
+
+Research policy:
+Recorder hardening is now sidecar work. After fail-visible readiness, the mainline returns to experiments and repairs Recorder issues when real runs expose them.
 
 This marker does not authorize STRATA-005 launch or any memory-control policy.

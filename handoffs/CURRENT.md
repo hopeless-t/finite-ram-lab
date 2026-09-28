@@ -1,55 +1,56 @@
 # CURRENT
 
-> **Latest bounce:** B221
-> **Stage:** REC-003 / MONTE CARLO CORRUPTION + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B222
+> **Stage:** RESEARCH MAINLINE RESUMED / REC-002 RELAUNCH REQUESTED
 
-## Hardening implemented
+## Recorder status
 
-- lifecycle fail-close: one file = one run, contiguous seq, terminal run_end;
-- clean incomplete crash logs remain forensic/incomplete;
-- malformed partial JSON rolls back;
-- raw evidence path ownership uses exclusive create;
-- incomplete projection can later be completed from a full raw stream.
+Recorder is now treated as **research-ready / fail-visible** for the current scope.
 
-## Monte Carlo campaign
+Accepted properties include:
 
-Commit:
+- malformed evidence fails visibly;
+- lifecycle corruption fails closed;
+- clean incomplete runs remain explicitly incomplete;
+- JSONL is canonical and SQLite is rebuildable;
+- duplicate conflicts are explicit;
+- evidence-path ownership is exclusive;
+- deterministic corruption regressions exist;
+- REC-003 Monte Carlo attack machinery exists.
 
-`a2f49a1865655d7ec79d95525d58df7e3f06053c`
+REC-003 remains a sidecar hardening tool. A 100,000-world campaign is not required before returning to the research mainline.
 
-12 corruption families are sampled in one-to-four mutation combinations, with valid controls and a relaxed negative-control validator.
+## Research policy
 
-Unit CI uses deterministic 5,000-world campaigns. A separate 100,000-world hosted campaign remains unlaunched.
+Run experiments first. Repair Recorder defects when real workloads expose them. Every real counterexample becomes a deterministic regression before reuse.
 
-## Hosted validation
+See `docs/RECORDER-RESEARCH-READY-POLICY.md`.
 
-Ordinary CI run:
+## REC-002
 
-`36427033616`
+A fresh REC-002 observer-effect relaunch has been requested by updating:
 
-Last and only read in B221:
+`launch/REC-002-v1.txt`
 
-`in_progress`
+The first run `36419229167` remains invalid with zero valid measurement trials.
 
-Do not poll again in the same bounce.
+## Next action
 
-## Next fresh-bounce action
+Read the fresh REC-002 hosted run exactly once.
 
-Read `36427033616` once.
-
-- success -> launch the dedicated 100,000-world REC-003 campaign in a separate commit;
+- success -> inspect aggregate artifact and canonicalize observer-effect findings;
 - pending -> checkpoint EXTERNAL_WAIT;
-- failure -> preserve and fix the discovered counterexample before any launch.
+- failure -> inspect failure only and repair the exposed issue.
 
-Then attack physical write/flush/partial-write corruption.
+If REC-002 supports use of Recorder in this workload, proceed to STRATA-005 implementation/launch.
 
-REC-002 remains un-relaunched.
-STRATA-005 remains frozen and unlaunched.
+## Parent research state
+
+STRATA-005 external-validity design remains frozen from B206.
 
 ## Authority boundary
 
-Repository/hosted synthetic validation only.
+Hosted research only.
 No local-PC execution.
-No STRATA-005 launch inferred.
+No STRATA-005 launch inferred from this checkpoint.
 No memory-control policy authorized.
