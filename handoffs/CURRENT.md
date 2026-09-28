@@ -1,62 +1,41 @@
 # CURRENT
 
-> **Latest bounce:** B293
-> **Stage:** MEMCG-002 CPU-STOCK CAUSAL DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B294
+> **Stage:** MEMCG-002 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## Accepted chain
+## MEMCG-002 implementation
 
-MEMCG-001:
-`SUPPORT_H64`
+Files:
+- `specs/MEMCG-002-CPU-STOCK-CAUSAL-v1.json`
+- `experiments/memcg002_worker.c`
+- `src/finite_ram_lab/memcg002_cpu_stock.py`
+- `.github/workflows/memcg-002-cpu-stock.yml`
+- `tests/test_memcg002_cpu_stock.py`
 
-MATH-001:
-`MODEL64_WINS`
-
-Q64:
-- exact reset-aware reconstruction
-- minimum MDL
-- held-out F1=1 in 4/4 folds
-
-## Kernel mechanism
-
-Upstream source:
-- MEMCG_CHARGE_BATCH=64
-- memcg_stock is per-CPU
-- consume/refill operate on this_cpu_ptr(memcg_stock)
-- one-page stock miss charges a 64-page batch and caches the remaining 63 pages locally
-
-## MEMCG-002 frozen design
-
-4 blocks x 4 arms = 16 trials:
+4 arms per block:
 - FIXED_TOUCH
 - MIGRATE_TOUCH
 - ROUNDTRIP_TOUCH
 - ROUNDTRIP_CONTROL
 
-Interventions:
-- A->B after step128
-- optional B->A after step192
+4 blocks / 16 trials.
 
-Primary causal predictions:
-- fresh B charge within 1-2 touches;
-- post-migration Q64 spacing;
-- old A phase restored on roundtrip;
-- no positive events in migration-only control.
+Key causal predictions:
+- migration to B produces first +64 within 1-2 touches;
+- B-side events retain Q64 spacing;
+- A roundtrip restores old A phase;
+- migration-only control has zero positive events.
 
-Design:
-`docs/MEMCG-002-CPU-STOCK-CAUSAL-v1.md`
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement:
-- dedicated C migration worker
-- schedule/spec
-- event/phase analyzer
-- causal verdict
-- workflow
-- tests
+Discover/read B294 ordinary CI exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-002 launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 

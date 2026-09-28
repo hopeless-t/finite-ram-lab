@@ -1,0 +1,29 @@
+{
+  "experiment_id": "MEMCG-002-CPU-STOCK-CAUSAL-v1",
+  "runner": "ubuntu-26.04",
+  "runner_blocks": 4,
+  "base_schedule_seed": 2026092911,
+  "required_page_size": 4096,
+  "steps": 256,
+  "migrate_after_step": 128,
+  "return_after_step": 192,
+  "arms": [
+    "fixed_touch",
+    "migrate_touch",
+    "roundtrip_touch",
+    "roundtrip_control"
+  ],
+  "expected_trials": 16,
+  "significant_jump_pages": 16,
+  "quantum_pages": 64,
+  "phase_tolerance_pages": 1,
+  "migration_first_delay_allowed": [1, 2],
+  "required_support_blocks": 3,
+  "source_mechanism": {
+    "linux_commit": "72d3fcf802c45d00b300f25b848a93c3a2bd7c7e",
+    "symbol": "MEMCG_CHARGE_BATCH",
+    "value_pages": 64,
+    "stock_scope": "per_cpu"
+  },
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
