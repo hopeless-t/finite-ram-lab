@@ -1,7 +1,7 @@
 # CURRENT
 
-> **Latest bounce:** B202
-> **Stage:** STRATA-004 / KNEE-REFINEMENT COUNCIL CONVERGED
+> **Latest bounce:** B203
+> **Stage:** STRATA-004 / KNEE REFINEMENT FROZEN
 
 ## Parent result
 
@@ -11,25 +11,32 @@ Observed pressure-avoidance bracket:
 
 `32 MiB < knee <= 96 MiB`
 
-## Converged next study
+## Frozen STRATA-004 contract
 
-STRATA-004 targeted hosted refinement:
+See:
 
-- buffered baseline;
-- DONTNEED 32 / 48 / 64 / 72 / 80 / 88 / 96 MiB;
-- 8 runner blocks;
-- 64 total trials;
-- workload shape unchanged from STRATA-003.
+- `docs/STRATA-004-KNEE-v1.md`
+- `specs/STRATA-004-KNEE-v1.json`
 
-Upper-range density is intentional. A simple fit to the 4 / 8 / 16 / 32 MiB pilot points predicts the 160 MiB transition region near ~82 MiB, but this is only a design heuristic, not a result.
+Arms:
+
+- buffered
+- DONTNEED 32 / 48 / 64 / 72 / 80 / 88 / 96 MiB
+
+Design:
+
+- 8 runner blocks
+- 64 total trials
+- workload shape unchanged from STRATA-003
+- runner/kernel/cgroup provenance captured for later external-validity work
 
 ## Monte Carlo
 
-Deferred until the empirical transition is localized more tightly.
+Deferred until empirical transition localization is tighter.
 
 ## Next action
 
-Freeze STRATA-004-KNEE-v1 contract, including runner/kernel/cgroup environment metadata for external-validity tracing.
+Implement the frozen hosted study without changing the historical STRATA-003 contract.
 
 ## Authority boundary
 
