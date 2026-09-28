@@ -1,59 +1,62 @@
 # CURRENT
 
-> **Latest bounce:** B292
-> **Stage:** MATH-001 PASS / MODEL64_WINS / READY FOR CAUSAL PERTURBATION DESIGN
-> **Turn stop reason:** READY_FOR_NEXT_DESIGN
+> **Latest bounce:** B293
+> **Stage:** MEMCG-002 CPU-STOCK CAUSAL DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## Accepted model result
+## Accepted chain
 
-MATH-001 run:
-`36453581737`
+MEMCG-001:
+`SUPPORT_H64`
 
-Decision:
+MATH-001:
 `MODEL64_WINS`
 
 Q64:
-- reset-aware SSE = 0
-- MDL = 30 bits, minimum of all candidates
-- trained Q = 64 in all 4 leave-one-block-out folds
-- held-out precision/recall/F1 = 1.0 in every fold
+- exact reset-aware reconstruction
+- minimum MDL
+- held-out F1=1 in 4/4 folds
 
-Controls:
-- zero positive events
+## Kernel mechanism
 
-Canonical result:
-`docs/MATH-001-RESULT.md`
+Upstream source:
+- MEMCG_CHARGE_BATCH=64
+- memcg_stock is per-CPU
+- consume/refill operate on this_cpu_ptr(memcg_stock)
+- one-page stock miss charges a 64-page batch and caches the remaining 63 pages locally
 
-## Current system-law candidate
+## MEMCG-002 frozen design
 
-On the tested Ubuntu 26.04 / kernel 7.0.0-1012-azure / cgroup-v2 substrate:
+4 blocks x 4 arms = 16 trials:
+- FIXED_TOUCH
+- MIGRATE_TOUCH
+- ROUNDTRIP_TOUCH
+- ROUNDTRIP_CONTROL
 
-**memory.current behaves as a resettable 64-page accounting staircase under one-page anonymous touches.**
+Interventions:
+- A->B after step128
+- optional B->A after step192
 
-This is a Linux accounting-system result, not a DRAM hardware law.
+Primary causal predictions:
+- fresh B charge within 1-2 touches;
+- post-migration Q64 spacing;
+- old A phase restored on roundtrip;
+- no positive events in migration-only control.
 
-## Kernel mechanism candidate
-
-Inspected upstream source:
-- `MEMCG_CHARGE_BATCH = 64U`
-- `memcg_stock` is `DEFINE_PER_CPU_ALIGNED`
-- accesses use `this_cpu_ptr(&memcg_stock)`
-
-Therefore CPU identity is a direct causal intervention target.
+Design:
+`docs/MEMCG-002-CPU-STOCK-CAUSAL-v1.md`
 
 ## Next fresh-bounce action
 
-Freeze MEMCG-002 causal design.
+Implement:
+- dedicated C migration worker
+- schedule/spec
+- event/phase analyzer
+- causal verdict
+- workflow
+- tests
 
-Core comparison:
-- fixed CPU throughout;
-- deliberate one-time CPU migration mid-trial;
-- migration without touches control.
-
-Primary question:
-does migration change staircase phase/reset state while preserving Q=64?
-
-Do not launch during design bounce.
+Do not launch during implementation.
 
 ## Authority boundary
 
