@@ -55,8 +55,8 @@ def collect(root: Path) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
     dirs = (
         sorted(root.glob("block-*"))
-        + sorted(root.glob("strata003-block-*"))
-        + sorted(root.glob("strata003-pilot-block-*"))
+        + sorted(root.glob("strata004-block-*"))
+        + sorted(root.glob("strata004-knee-block-*"))
     )
     for d in dirs:
         bm = BLOCK_RE.search(d.name)
@@ -225,8 +225,8 @@ def analyze(spec: dict[str, Any], root: str | Path) -> tuple[pd.DataFrame, pd.Da
         "total_trials": int(len(trials)),
         "cells": cells,
         "response_surface": response,
-        "selection": "NONE_PILOT_RESPONSE_SURFACE_ONLY",
-        "inference_boundary": "Pilot only; do not freeze an OSS default cadence from this result alone.",
+        "selection": "NONE_TARGETED_REFINEMENT_ONLY",
+        "inference_boundary": "Targeted refinement only; do not freeze an OSS default cadence from this result alone.",
     }
     return trials, pairs, summary
 
