@@ -1,43 +1,53 @@
 # CURRENT
 
-> **Latest bounce:** B307
-> **Stage:** MEMCG-003B IMPLEMENTED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B308
+> **Stage:** MEMCG-003B IMPLEMENTED + CI EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## MEMCG-003B implementation
+## Canonical MEMCG-003 lesson
 
-Files:
-- `specs/MEMCG-003B-NONCONSUMING-SEVEN-SLOT-v1.json`
-- `src/finite_ram_lab/memcg003b_nonconsuming.py`
-- `.github/workflows/memcg-003b-nonconsuming.yml`
-- `tests/test_memcg003b_nonconsuming.py`
+MEMCG-003 primary decision:
+`REJECT_K7_SLOT_MODEL`
 
-Worker:
-reuses `experiments/memcg003_holder.c`.
+But the repeated target probe itself consumed hidden stock and contaminated controls.
+
+This was preserved as a scientific result rather than repaired post hoc.
+
+## MEMCG-003B
+
+Implementation:
+`985d4efe4ebaa2eb877d2ad307bac630279d14d6`
 
 Repairs:
-- passive target observation only during churn;
-- no target touches during threshold estimation;
-- one final target touch;
-- control CPU and stock CPU separated.
+- passive target memory.current observations only;
+- zero target touches during challenger sequence;
+- one final touch for Q64 recharge confirmation;
+- two-CPU isolation: control plane vs stock plane.
 
-Primary threshold:
-`E_drop = first passive target memory.current drop >=16 pages`
+Ordinary CI:
+`36469054700`
 
-Candidate K:
-`1..10`
+Single B308 read:
+`in_progress`
+
+Do not poll again in this bounce.
 
 No launch marker exists.
 
 ## pmndrs/math
 
-MATH-002 remains frozen and waits for MEMCG-003B clean data.
+MATH-002 remains secondary:
+- QuickHull response/control geometry
+- seeded permutation null
+- cannot override primary threshold/Bayes/LOBO result
+
+Run it only after clean MEMCG-003B canonical evidence exists.
 
 ## Next fresh-bounce action
 
-Discover/read B307 ordinary CI exactly once.
+Read CI `36469054700` exactly once.
 
-- success -> explicit MEMCG-003B launch;
+- success -> explicit MEMCG-003B hosted launch;
 - pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
