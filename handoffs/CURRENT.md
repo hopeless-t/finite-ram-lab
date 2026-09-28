@@ -1,51 +1,53 @@
 # CURRENT
 
-> **Latest bounce:** B302
-> **Stage:** MEMCG-003 IMPLEMENTED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B303
+> **Stage:** MEMCG-003 IMPLEMENTED + CI EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## Accepted chain
 
 MEMCG-001: `SUPPORT_H64`
 MATH-001: `MODEL64_WINS`
-MEMCG-002: naive durable per-CPU model rejected; seven-slot shared cache candidate retained.
+MEMCG-002: naive durable per-CPU model rejected; source-corrected seven-slot shared-cache hypothesis retained.
 
-## MEMCG-003 implementation
+## MEMCG-003
 
-Files:
-- `specs/MEMCG-003-SEVEN-SLOT-EVICTION-v1.json`
-- `experiments/memcg003_holder.c`
-- `src/finite_ram_lab/memcg003_seven_slot.py`
-- `.github/workflows/memcg-003-seven-slot.yml`
-- `tests/test_memcg003_seven_slot.py`
+Implementation:
+`b64f32ad3b38d4a6ca8bdfda36e4c12fe62d5569`
 
-Intervention:
-- fill 7 persistent wash memcgs on one CPU;
-- insert persistent target;
-- add distinct challengers;
-- probe target after each insertion.
+Ordinary CI:
+`36459629772`
+
+Single B303 read:
+`in_progress`
+
+Do not poll again in this bounce.
+
+No launch marker exists.
+
+Experiment:
+- fill seven persistent wash memcgs on one CPU;
+- insert target;
+- add distinct challengers one by one;
+- probe target after each insertion;
+- infer first eviction threshold E.
 
 Controls:
 - same-memcg repeated activity
 - six-only challengers
 - no-churn
 
-Primary source prediction:
-target eviction/fresh recharge near challenger #7.
+Candidate K:
+`1..10`
 
-Math:
-- threshold E
-- candidate K=1..10
-- leave-one-block-out prediction
-- discrete posterior over K
-
-No launch marker exists.
+Source prediction:
+`K=7`
 
 ## Next fresh-bounce action
 
-Discover/read B302 ordinary CI exactly once.
+Read CI `36459629772` exactly once.
 
-- success -> explicit MEMCG-003 launch;
+- success -> explicit MEMCG-003 hosted launch;
 - pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
