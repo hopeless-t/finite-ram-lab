@@ -1,53 +1,59 @@
 # CURRENT
 
-> **Latest bounce:** B291
-> **Stage:** MATH-001 HOSTED RUN + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B292
+> **Stage:** MATH-001 PASS / MODEL64_WINS / READY FOR CAUSAL PERTURBATION DESIGN
+> **Turn stop reason:** READY_FOR_NEXT_DESIGN
 
-## MATH-001
+## Accepted model result
 
-Exact launch commit:
-
-`8ba7be304522c2a2653b99e858b5e7671281d071`
-
-Scientific run:
-
+MATH-001 run:
 `36453581737`
 
-Single B291 read:
+Decision:
+`MODEL64_WINS`
 
-`in_progress`
+Q64:
+- reset-aware SSE = 0
+- MDL = 30 bits, minimum of all candidates
+- trained Q = 64 in all 4 leave-one-block-out folds
+- held-out precision/recall/F1 = 1.0 in every fold
 
-Do not poll again in this bounce.
+Controls:
+- zero positive events
 
-## Scientific question
+Canonical result:
+`docs/MATH-001-RESULT.md`
 
-Does Q=64 dominate competing quantization models not only by fit, but by:
-- minimum description length;
-- held-out prediction;
-- reset-aware full-sequence residual?
+## Current system-law candidate
 
-Decision space:
-- MODEL64_WINS
-- OTHER_Q_WINS
-- MIXED_MODEL
+On the tested Ubuntu 26.04 / kernel 7.0.0-1012-azure / cgroup-v2 substrate:
 
-## Accepted input
+**memory.current behaves as a resettable 64-page accounting staircase under one-page anonymous touches.**
 
-MEMCG-001:
-- 4/4 touch blocks show +64-page charge jumps;
-- 0/4 controls show non-zero jumps;
-- block2 retains Q64 on both sides of one negative discontinuity with a phase reset.
+This is a Linux accounting-system result, not a DRAM hardware law.
+
+## Kernel mechanism candidate
+
+Inspected upstream source:
+- `MEMCG_CHARGE_BATCH = 64U`
+- `memcg_stock` is `DEFINE_PER_CPU_ALIGNED`
+- accesses use `this_cpu_ptr(&memcg_stock)`
+
+Therefore CPU identity is a direct causal intervention target.
 
 ## Next fresh-bounce action
 
-Read `36453581737` exactly once.
+Freeze MEMCG-002 causal design.
 
-- success -> fetch artifact once and canonicalize MATH-001;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only exposed invariant.
+Core comparison:
+- fixed CPU throughout;
+- deliberate one-time CPU migration mid-trial;
+- migration without touches control.
 
-If MODEL64_WINS, only then freeze the CPU-migration causal perturbation study.
+Primary question:
+does migration change staircase phase/reset state while preserving Q=64?
+
+Do not launch during design bounce.
 
 ## Authority boundary
 
