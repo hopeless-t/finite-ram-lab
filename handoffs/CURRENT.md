@@ -1,44 +1,63 @@
 # CURRENT
 
-> **Latest bounce:** B273
-> **Stage:** EVIDENCE-001 IMPLEMENTED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B274
+> **Stage:** EVIDENCE-001 IMPLEMENTED + CI EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## SQL corpus implementation
+## Scientific state
 
-Files:
+Accepted finite-RAM relation:
 
-- `evidence/EVIDENCE-001/seed-v1.json`
-- `sql/evidence001_schema.sql`
-- `src/finite_ram_lab/evidence001_sql_corpus.py`
-- `.github/workflows/evidence-001-sql-corpus.yml`
-- `tests/test_evidence001_sql_corpus.py`
+`instantaneous RAM demand ~= effective live set + unreleased streaming interval + bounded overhead`
 
-Seeded canonical experiments:
+for the tested one-shot Linux streaming workload.
+
+Capacity series 96 / 192 / 384 MiB shares:
+
+`80 < K <= 88 MiB`
+
+REC-004 adopts pre-observer workload-floor measurement prospectively.
+
+## EVIDENCE-001
+
+Exact implementation:
+
+`8397f32fb67325cc081783435088f5d60334c051`
+
+Corpus includes canonical:
 - STRATA-004..009
 - REC-003..004
 
-Semantic protection:
+SQLite semantics explicitly separate:
 - clean_pre_observer
 - legacy_post_observer
 - post_observer_diagnostic
 - not_applicable
 
-Discovery output tests:
-- fixed raw knee contradiction across pressure
-- live-set transformed interval intersection
-- cold-capacity knee invariance
-- clean-floor span
-- observer-effect rows
-- next untested-axis ranking
+Hosted build will emit:
+- corpus.sqlite
+- query-results.json
+- query-results.md
 
 No launch marker exists.
 
+## CI
+
+Run:
+
+`36445229520`
+
+Single B274 read:
+
+`queued`
+
+Do not poll again in this bounce.
+
 ## Next fresh-bounce action
 
-Discover/read B273 ordinary CI exactly once.
+Read `36445229520` exactly once.
 
-- success -> explicit EVIDENCE-001 hosted launch;
+- success -> explicit EVIDENCE-001 launch in a separate commit;
 - pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
