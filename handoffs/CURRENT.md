@@ -1,28 +1,37 @@
 # CURRENT
 
-> **Latest bounce:** B243
-> **Stage:** STRATA-007 IMPLEMENTED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B244
+> **Stage:** STRATA-007 IMPLEMENTED + CI EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## Canonical mechanism
 
 STRATA-006 run `36434232753`: PASS, 48/48.
 
-At MemoryHigh=160 MiB:
+Leading tested mechanism on Ubuntu 24.04:
+
+`K ~= MemoryHigh - effective_live_set`
+
+with hot-set replication:
 
 - hot56 -> `88 < K <= 96`
-- hot64 anchor -> `80 < K <= 88`
+- hot64 -> `80 < K <= 88`
 - hot72 -> `72 < K <= 80`
 
-All map to:
+all mapping to:
 
 `144 < K+hot <= 152 MiB`.
 
-## STRATA-007
+## STRATA-007 implementation
 
-Portability implementation now exists for:
+Exact B243 commit:
 
-- runner `ubuntu-26.04`
+`a1e3f4ab042d3272178c6f435b88f2d25a8c01de`
+
+Frozen portability screen:
+
+- new runner `ubuntu-26.04`
+- existing `ubuntu-24.04` STRATA-004 anchor
 - explicit Python 3.12
 - MemoryHigh 160 MiB
 - MemoryMax 320 MiB
@@ -31,38 +40,32 @@ Portability implementation now exists for:
 - buffered + DONTNEED 64 / 72 / 80 / 88 / 96 MiB
 - 4 blocks
 - 24 trials
-- same Recorder density
-
-Primary question:
-
-Does the Ubuntu 26.04 onset remain compatible with the Ubuntu 24.04 anchor:
-
-`80 < K <= 88`
-
-and:
-
-`144 < K+hot <= 152`?
-
-Files:
-
-- `docs/STRATA-007-CROSS-IMAGE-v1.md`
-- `specs/STRATA-007-CROSS-IMAGE-v1.json`
-- `src/finite_ram_lab/strata007_cross_image.py`
-- `.github/workflows/strata-007-cross-image.yml`
-- `tests/test_strata007_cross_image.py`
+- REC-001 density unchanged
 
 No launch marker exists.
 
+## CI
+
+Exact-head CI run:
+
+`36435391877`
+
+Single B244 read:
+
+`in_progress`
+
+Do not poll again in this bounce.
+
 ## Monte Carlo
 
-Deferred until STRATA-007 observations exist.
+Deferred until cross-image observations exist.
 
 ## Next fresh-bounce action
 
-Discover/read B243 ordinary CI exactly once.
+Read `36435391877` exactly once.
 
-- success -> explicit STRATA-007 launch in a new bounce;
-- pending/in_progress -> EXTERNAL_WAIT;
+- success -> explicit STRATA-007 launch in a separate commit;
+- pending/in_progress -> checkpoint EXTERNAL_WAIT;
 - failure -> inspect only the exposed invariant.
 
 ## Queued future studies
@@ -80,3 +83,4 @@ No STRATA-007 launch.
 No memory-control policy authorized.
 Proposal != Decision.
 Expressibility != Executability.
+No blind retry after unknown delivery.
