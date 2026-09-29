@@ -1,106 +1,129 @@
 # CURRENT
 
-> Latest bounce: B383
-> Stage: EVIDENCE RESIDENCY v1 COMPLETE / CI PASS
-> Stop: G0 IMPLEMENTATION PREP / SCIENTIFIC LAUNCH REQUIRES HUMAN APPROVAL
+> Latest bounce: B384
+> Stage: G0 STAGE A IMPLEMENTED / CI PASS / NOT LAUNCHED
+> Stop: HUMAN_SCIENTIFIC_LAUNCH_APPROVAL_FOR_G0_STAGE_A
 
-## Evidence residency
+## G0 Stage A
 
-Lifecycle:
+Frozen scale:
 
-`HOT -> WARM -> COLD -> RESTORE -> VERIFY`
+- 16 hosted blocks
+- 60 candidates/block
+- 960 total candidates
+- 160 raw candidates/arm
 
-Core rule:
+Arms:
 
-`location != evidence identity`
+- C8 = token 8 / capacity 8
+- P8 = token 08 / capacity 8
+- C9 = token 9 / capacity 9
+- P9 = token 09 / capacity 9
+- H10 = token 10 / capacity 10
+- H32 = token 32 / capacity 32
 
-Manifest identity:
-- relative path
-- byte size
-- SHA-256
-- stable content-set SHA-256
+Primary direct argv contrast:
 
-Implementation:
-`src/finite_ram_lab/evidence_residency.py`
+`P8+P9 vs C8+C9`
 
-Schema:
-`schemas/EVIDENCE-RESIDENCY-MANIFEST-v1.schema.json`
+Capacity-survival contrast:
 
-Contract:
-`docs/EVIDENCE-RESIDENCY-v1.md`
+`H10+H32 vs P8+P9`
 
-Commands:
-- `frl evidence-manifest`
-- `frl evidence-verify`
+Stage A role:
 
-## Storage policy
+`INSTRUMENT_AND_DIRECTION_PROBE`
 
-HOT / GitHub:
-- result
-- spec
-- aggregate
-- manifest
-- rare specimen receipts
-- short-lived raw block artifacts
+Do not interpret p>=.05 at Stage A as evidence against argv.
 
-WARM/COLD:
-- private Google Drive and/or local archive
+## Implementation
 
-Proposed new-run retention:
-- raw block artifacts: 7 days
-- aggregate artifact: 30 days
+Core:
+`src/finite_ram_lab/memcg005gg0_alias_breaker.py`
 
-Do not intentionally remove HOT raw evidence until at least one restored off-GitHub copy passes manifest verification.
+Spec:
+`specs/MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1.json`
 
-Prefer two verified COLD replicas for high-value runs:
-- local
-- Google Drive
+Tests:
+`tests/test_memcg005gg0_alias_breaker.py`
 
-No Drive credentials or private URLs in the public repo.
+Workflow:
+`.github/workflows/memcg-005g-g0-alias-breaker.yml`
 
-## G-F sizing anchor
+Design:
+`docs/MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1.md`
 
-Run `36577573774`:
-- 49 artifacts total
-- 48 blocks
-- total compressed size ~=1.395 MiB
-- block mean ~=29.0 KiB
-- aggregate = 37,159 bytes
+Unchanged worker:
+`experiments/memcg005d_worker.c`
 
-Current MEMCG artifact volume is small; residency is for durable integrity and future scaling.
+## PTE / stock receipts
+
+First touch records:
+
+- memory.current delta
+- VmPTE pre/post/delta
+- memory.stat:pagetables corroboration
+- CPU/touched/error receipts
+
+Exact-zero first specimens receive exactly one second adjacent touch.
+
+Candidate classifications:
+
+- R1_CANDIDATE
+- R2_CANDIDATE
+- PTE_BOUNDARY
+- OTHER
+- INVALID
+
+## Environment receipt
+
+Each block records:
+
+- kernel/platform
+- libc
+- page size
+- CPUs
+- worker SHA-256
+- THP global setting
+- all visible hugepages-*/enabled settings
+
+## Evidence Residency
+
+Raw blocks:
+`7 days`
+
+Aggregate:
+`30 days`
+
+Aggregate contains:
+- summary.json
+- full-raw-evidence-manifest.json
+
+The full raw tree is manifest-hashed and immediately verified before aggregate publication.
+
+After the run, raw evidence may be demoted to local/Google Drive only after restored-copy verification.
 
 ## Validation
 
-CI run:
-`36589409532 = success`
+CI:
+`36590212701 = success`
 
-Compile, unit tests, Monte Carlo smoke, and environment probe all PASS.
+The scientific G0 workflow did NOT run during implementation.
 
-## Research mechanism state
+## Research mechanism
 
-B382 remains valid:
+B382 remains active:
 
-PTE page charge reaches the same per-CPU memcg stock before anonymous data allocation.
+Linux v7.0 page-table charge reaches the same per-CPU memcg stock before anonymous data allocation.
 
-G0 minimal alias breaker:
-- C8=8
-- P8=08
-- C9=9
-- P9=09
-- H10=10
-- H32=32
+MATH-011 two-touch discriminator remains the prospective mechanism test.
 
-Primary:
-`P8+P9 vs C8+C9`
+## Authority
 
-Failure-only two-touch VmPTE/stock biopsy remains part of G0.
+No G0 launch marker exists.
 
-## Next
-
-Implement G0 Stage A workflow with Evidence Residency v1.
-
-Scientific hosted launch:
-NOT YET AUTHORIZED.
+No scientific hosted run launched.
 
 No local-PC execution.
+
 Large 5760-candidate G-G remains DEFERRED.
