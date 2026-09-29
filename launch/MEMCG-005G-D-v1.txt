@@ -1,0 +1,9 @@
+MEMCG-005G-D explicit hosted launch
+B369
+Implementation: 2ca3ed0443cf0655620138f8450a2b2611a47391
+CI: 36570918261 success
+Dose-response capacities: 8,32,63,64,65,70 pages.
+Scale: 16 independent blocks x72 candidates =1152.
+Primary: map valid REMOTE_LOW first-touch-zero capture probability vs mapping capacity.
+No biopsy in primary.
+Hosted research only. No local execution.
