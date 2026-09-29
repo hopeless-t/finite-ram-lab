@@ -1,6 +1,6 @@
 {
   "experiment_id": "TX-PERTURBATION-MATRIX-v1",
-  "status": "R2_INTERVENTION_FIX_AUTHORIZED",
+  "status": "R3_OWNERSHIP_AND_REALIZATION_PREFLIGHT",
   "chapter": "FINITE-RAM-LAB-II",
   "role": "CAUSAL_VALIDATION_OF_TRANSACTION_INVALIDATORS",
   "prerequisite": "B404 R2 physical transactional smoke PASS run 36642946787",
@@ -21,13 +21,16 @@
     "mechanism": "shared per-CPU LRU batch handoff using separate trigger cgroup",
     "trigger_prime_max_touches": 64,
     "order": [
-      "start trigger cgroup",
-      "prime trigger stock until refill_stock(63) is observed",
-      "scrub shared LRU batch after trigger priming",
-      "verify target direct Q64",
+      "start trigger and scrubber helper cgroups",
+      "prime trigger stock before target VERIFY",
+      "prime scrubber stock before target VERIFY",
+      "target NORMALIZE / VERIFY",
+      "post-VERIFY scrubber advances shared LRU batch to next flush inside OBSERVE_NEUTRAL",
+      "require OBSERVE_NEUTRAL to have no target drain/refill/release and no scrubber restock",
       "target consumes 17 pages and discards them",
-      "trigger performs 14 cached-stock touches inside OBSERVE"
-    ]
+      "trigger performs 14 cached-stock touches inside RELEASE_ONLY OBSERVE"
+    ],
+    "scrubber_prime_max_touches": 64
   },
   "arms": [
     {
@@ -73,21 +76,29 @@
     "terminal_state"
   ],
   "primary_acceptance": [
-    "CLEAN 4/4 reaches SUCCESS without challenge invalidation",
-    "RELEASE_ONLY 4/4 positively grounds owner release and preserves residual across OBSERVE",
-    "RELEASE_ONLY 4/4 subsequently reaches canonical b63 SUCCESS",
-    "UNEXPECTED_REFILL 4/4 invalidates challenge epoch and never commits it",
-    "PTE_GROWTH 4/4 invalidates challenge epoch and never commits it",
-    "all invalidating arms recover only through HARD_NEW_WORKER_CGROUP with fresh epoch-local direct Q64",
-    "no TARGET_FAIL in any complete challenge/recovery path",
+    "all 16 intended interventions are realized or explicitly classified as setup-not-realized",
+    "CLEAN challenge classification has no TARGET_FAIL",
+    "RELEASE_ONLY realized specimens preserve target residual across release observation",
+    "UNEXPECTED_REFILL challenge classification is 4/4 invalidation before commit",
+    "PTE_GROWTH challenge classification is 4/4 invalidation before commit",
+    "drain events are attributed by target memcg ownership rather than CPU/comm alone",
+    "recovery completion is reported separately from challenge classification",
     "no stale receipt authorizes post-reprime success"
   ],
   "claim_ceiling": "MECHANISM_AND_CLASSIFIER_CAUSAL_VALIDATION_ONLY",
   "authority": {
     "physical_run_authorized": true,
-    "authorization_basis": "user authorized continuation; R1 intervention confound diagnosed from run 36645745433",
+    "authorization_basis": "user authorized continuation; R1/R2 frozen and R3 adds ownership/realization resolution without weakening classifier",
     "paid_runner_authorized": false,
     "larger_runner_authorized": false,
     "local_pc_execution_authorized": false
-  }
+  },
+  "schema_version": "tx-perturbation-matrix-v2",
+  "measurement_layers": [
+    "INTERVENTION_REALIZATION",
+    "CHALLENGE_CLASSIFICATION",
+    "INCIDENTAL_INVALIDATION",
+    "RECOVERY_COMPLETION",
+    "OBSERVER_COVERAGE"
+  ]
 }
