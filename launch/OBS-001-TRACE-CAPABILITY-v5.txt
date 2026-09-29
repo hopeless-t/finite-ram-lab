@@ -16,3 +16,5 @@ No scientific worker trial.
 No reliability claim.
 No local-PC execution.
 No paid runner.
+
+Trigger revision: workflow now targets this marker.
