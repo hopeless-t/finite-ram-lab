@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "launch/OBS-002-LRU-BATCH-OCCUPANCY-v1.txt"
+      - "launch/OBS-002-LRU-BATCH-OCCUPANCY-v2.txt"
 
 permissions:
   contents: read
@@ -45,7 +45,7 @@ jobs:
 
       - name: Run LRU-batch diagnostic block
         env:
-          BLOCK: "\${{ matrix.block }}"
+          BLOCK: "${{ matrix.block }}"
         run: |
           set -euo pipefail
 
@@ -140,8 +140,8 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: obs002-block-\${{ matrix.block }}
-          path: evidence/OBS-002/block-\${{ matrix.block }}/
+          name: obs002-block-${{ matrix.block }}
+          path: evidence/OBS-002/block-${{ matrix.block }}/
           if-no-files-found: error
           retention-days: 7
 
@@ -200,7 +200,7 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: OBS-002-LRU-BATCH-OCCUPANCY-\${{ github.run_id }}
+          name: OBS-002-LRU-BATCH-OCCUPANCY-${{ github.run_id }}
           path: evidence/OBS-002/aggregate/
           if-no-files-found: error
           retention-days: 30
