@@ -1,14 +1,24 @@
 from __future__ import annotations
 
+import inspect
 import unittest
 
 from finite_ram_lab.obs001_uncharge_trace import (
+    _measured_touch,
     classify_touch,
     parse_trace_windows,
+    run_trial,
 )
 
 
 class OBS001Tests(unittest.TestCase):
+    def test_worker_uid_is_routed_at_trial_boundary(self) -> None:
+        self.assertIn("worker_uid", inspect.signature(run_trial).parameters)
+        self.assertNotIn(
+            "worker_uid",
+            inspect.signature(_measured_touch).parameters,
+        )
+
     def test_trace_window_stock_drain(self) -> None:
         text = """
 task-1 [001] 1.000: tracing_mark_write: FRL_OBS001 trial=0:2 touch=14 PRE
