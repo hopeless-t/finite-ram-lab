@@ -1,0 +1,28 @@
+OBS-002 LRU batch occupancy v2
+
+Human authorization:
+Continue finite-ram-lab research on 2026-09-30 JST.
+
+This is a fresh relaunch after fixing GitHub workflow expression escaping only.
+
+Frozen scientific scope remains unchanged:
+- 4 standard GitHub-hosted ubuntu-26.04 blocks
+- 12 identities/block
+- 24 measured touches/identity
+- 48 identities total
+- 1152 measured touches total
+- worker-only LRU add / LRU flush / folios_put_refs trace
+- worker page_counter_try_charge trace
+- worker page_counter_uncharge filtered to 17 pages
+- no b63 reliability claim
+- no natural-incidence claim
+- no dynamic sample expansion
+- no local-PC execution
+- no paid runner
+
+Primary prediction:
+exact -17 specimen:
+lru_add nr 30 -> lru_flush nr 31 -> folios_put_refs nr 31 -> page_counter_uncharge 17.
+
+Secondary prediction:
+canonical first measured touch has lru_add nr 17.
