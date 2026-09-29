@@ -40,6 +40,9 @@ class TxPerturbationMatrixTests(unittest.TestCase):
                     trial = {
                         "arm": arm,
                         "challenge_pass": True,
+                        "challenge_classification_pass": True,
+                        "recovery_pass": True,
+                        "completion_pass": True,
                         "final_state": "SUCCESS",
                         "reprimes": 1
                         if arm in {"UNEXPECTED_REFILL", "PTE_GROWTH"}
@@ -60,8 +63,10 @@ class TxPerturbationMatrixTests(unittest.TestCase):
 
         self.assertEqual(result["trial_count"], 16)
         self.assertEqual(result["challenge_pass_count"], 16)
+        self.assertEqual(result["completion_pass_count"], 16)
         self.assertEqual(result["target_fail"], 0)
         self.assertTrue(result["matrix_pass"])
+        self.assertTrue(result["end_to_end_pass"])
         for arm in ARM_ORDER:
             self.assertEqual(result["by_arm"][arm]["n"], 4)
             self.assertEqual(result["by_arm"][arm]["pass"], 4)
@@ -75,6 +80,9 @@ class TxPerturbationMatrixTests(unittest.TestCase):
                     trial = {
                         "arm": arm,
                         "challenge_pass": passed,
+                        "challenge_classification_pass": passed,
+                        "recovery_pass": passed,
+                        "completion_pass": passed,
                         "final_state": "SUCCESS" if passed else "INVALIDATED",
                         "reprimes": 0,
                         "epochs": [
@@ -97,6 +105,49 @@ class TxPerturbationMatrixTests(unittest.TestCase):
 
         self.assertEqual(result["challenge_pass_count"], 15)
         self.assertFalse(result["matrix_pass"])
+
+
+    def test_challenge_can_pass_while_recovery_completion_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            for block in range(4):
+                for identity, arm in enumerate(ARM_ORDER):
+                    recovery_ok = not (
+                        block == 3 and arm == "PTE_GROWTH"
+                    )
+                    trial = {
+                        "arm": arm,
+                        "challenge_pass": True,
+                        "challenge_classification_pass": True,
+                        "recovery_pass": recovery_ok,
+                        "completion_pass": recovery_ok,
+                        "final_state": (
+                            "SUCCESS" if recovery_ok else "INVALIDATED"
+                        ),
+                        "reprimes": (
+                            1
+                            if arm in {"UNEXPECTED_REFILL", "PTE_GROWTH"}
+                            else 0
+                        ),
+                        "epochs": [
+                            {"state_after": "SUCCESS"},
+                        ],
+                    }
+                    (root / f"trial-{block}-{identity}.json").write_text(
+                        json.dumps(trial),
+                        encoding="utf-8",
+                    )
+
+            result = aggregate(
+                {"experiment_id": "TX-PERTURBATION-MATRIX-v1"},
+                root,
+            )
+
+        self.assertEqual(result["challenge_pass_count"], 16)
+        self.assertEqual(result["completion_pass_count"], 15)
+        self.assertTrue(result["matrix_pass"])
+        self.assertFalse(result["end_to_end_pass"])
+
 
 
 if __name__ == "__main__":
