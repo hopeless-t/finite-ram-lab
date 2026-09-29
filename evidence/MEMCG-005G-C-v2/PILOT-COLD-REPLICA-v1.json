@@ -1,0 +1,59 @@
+{
+  "schema_version": "controlled-spawn-cold-replica-v1",
+  "experiment_id": "MEMCG-005G-C-PTE-PRECONDITIONED-SPAWN-v2",
+  "run_id": "36595481746",
+  "source_commit": "28ff2185934cfc2d350ef70f8256fd481fd75429",
+  "raw_content_set_sha256": "e65281ad34ac9f8c0eaf366d2b35ccb07404f8fdf246bfeea4cbcd4d1c0602fd",
+  "raw_file_count": 152,
+  "raw_total_bytes": 1705625,
+  "storage": {
+    "tier": "COLD",
+    "provider": "google-drive",
+    "locator": "Catfood Lab Evidence/finite-ram-lab/MEMCG-005G-C-v2/run-36595481746",
+    "visibility_at_verification": "private"
+  },
+  "verification": {
+    "method": "download Drive ZIPs and compare SHA-256 to GitHub Actions artifact digests",
+    "verified_archives": 9,
+    "mismatches": 0,
+    "status": "PASS"
+  },
+  "archives": [
+    {
+      "name": "MEMCG-005G-C-v2-PILOT-36595481746.zip",
+      "sha256": "812cd88b5c845c9a160ddb5de0d19d0ffa4c76fab181018e4a20365c29b31bad"
+    },
+    {
+      "name": "memcg005gc-v2-block-0.zip",
+      "sha256": "037f0a18c97ce982295884b696a84ffe541525bbb55c27217a34d12bb3f8b5b7"
+    },
+    {
+      "name": "memcg005gc-v2-block-1.zip",
+      "sha256": "7f414c6a0093624c988ae0608acc743c8f5797ef55177bc0a0e565146cbb6f70"
+    },
+    {
+      "name": "memcg005gc-v2-block-2.zip",
+      "sha256": "3d097370335e500c8fd03d85733e1ae8dd8007ae636e63b940e9219c7eb74837"
+    },
+    {
+      "name": "memcg005gc-v2-block-3.zip",
+      "sha256": "15e840145478f501386376a528a76d84f85b8badf556abad0305ddea578c0893"
+    },
+    {
+      "name": "memcg005gc-v2-block-4.zip",
+      "sha256": "be99c193bef1ea23555a213c7045533235f38d5bdb810eefb0fb5f9bcb839d6c"
+    },
+    {
+      "name": "memcg005gc-v2-block-5.zip",
+      "sha256": "02b6bff81fb964160beaf9bf4eaf9f8f25e7529f797db9fb542891f5d006403c"
+    },
+    {
+      "name": "memcg005gc-v2-block-6.zip",
+      "sha256": "12ff4acc3dbf1f3b4460c501b1d15ed9693592102d26424980f779e455ad816a"
+    },
+    {
+      "name": "memcg005gc-v2-block-7.zip",
+      "sha256": "35d6b6a2fed38797066478bb2e00a544bba96910a655d5085156b1987029d89a"
+    }
+  ]
+}
