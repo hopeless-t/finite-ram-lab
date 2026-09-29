@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "launch/OBS-001-TRACE-CAPABILITY-v2.txt"
+      - "launch/OBS-001-TRACE-CAPABILITY-v3.txt"
 
 permissions:
   contents: read
@@ -38,7 +38,7 @@ jobs:
             sudo mount -t tracefs nodev "$TRACE"
           fi
 
-          cleanup() {
+          cleanup() (
             set +e
             for ev in \
               frl_drain_stock frl_uncharge_batch frl_refill_stock \
@@ -48,7 +48,7 @@ jobs:
               fi
               printf '%s\n' "-:$ev" | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
             done
-          }
+          )
           trap cleanup EXIT
           cleanup
 
@@ -101,6 +101,25 @@ jobs:
             'p:frl_page_counter_uncharge page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64'
 
           cat capability.tsv
+
+          echo "=== FILTER/TRIGGER TEST ==="
+          echo 'nr_pages == 17'             | sudo tee "$TRACE/events/kprobes/frl_page_counter_uncharge/filter"
+          echo 'stacktrace'             | sudo tee "$TRACE/events/kprobes/frl_page_counter_uncharge/trigger"
+
+          echo "=== BUFFER/TRACE TEST ==="
+          echo 0 | sudo tee "$TRACE/tracing_on"
+          echo 4096 | sudo tee "$TRACE/buffer_size_kb"
+          echo | sudo tee "$TRACE/trace"
+          echo 1 | sudo tee "$TRACE/tracing_on"
+
+          echo "=== ROOT TRACE MARKER TEST ==="
+          PYTHON_BIN="$(command -v python)"
+          sudo -E "$PYTHON_BIN" - <<'PY'
+from pathlib import Path
+Path("/sys/kernel/tracing/trace_marker").write_text("FRL_OBS001_CAPABILITY_MARKER\n")
+PY
+          echo 0 | sudo tee "$TRACE/tracing_on"
+          sudo grep -F 'FRL_OBS001_CAPABILITY_MARKER' "$TRACE/trace"
 
           probeable_count="$(awk 'NR>1 && $3==1 {n++} END {print n+0}' capability.tsv)"
           if test "$probeable_count" -lt 2; then
