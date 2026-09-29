@@ -408,7 +408,7 @@ def classify_trial(trial: dict[str, Any], trace: dict[str, Any]) -> dict[str, An
 
     producer_flushes = []
     for (phase, touch), w in windows.items():
-        if phase == "PRODUCER":
+        if phase in {"PRODUCER", "UNMAP"}:
             producer_flushes.extend(
                 e for e in w["lru_flush"] if e.get("comm") == "frlprod"
             )
