@@ -10,7 +10,7 @@ from .transactional_reprime import State, Transaction
 TX_MARKER_RE = re.compile(
     r"FRL_TX trial=(?P<trial>\d+:\d+) "
     r"epoch=(?P<epoch>\d+) "
-    r"phase=(?P<phase>NORMALIZE|CONSUME|TARGET) "
+    r"phase=(?P<phase>NORMALIZE|CONSUME|TARGET|OBSERVE) "
     r"touch=(?P<touch>\d+) "
     r"(?P<edge>PRE|POST)"
 )
