@@ -1,6 +1,6 @@
 # MEMCG-005G-C Controlled Rare Induction v2 — PTE-Preconditioned Spawn
 
-> **Status:** FROZEN-CANDIDATE DESIGN / NOT IMPLEMENTED / NOT LAUNCHED
+> **Status:** IMPLEMENTED-CANDIDATE / CI PENDING / NOT LAUNCHED
 > **Primary arm:** b63
 > **Authority:** HOSTED_RESEARCH_ONLY
 > **Supersedes:** v1 for the next controlled-spawn pilot
@@ -98,16 +98,18 @@ All pages belong to the preconditioned PTE span.
 
 ## Pilot scale
 
-Preferred first physical pilot:
+Frozen first physical pilot design:
 
 - 8 hosted blocks
-- 9 primer-qualified scientific identities per block
+- 9 raw scientific identities per block
 - 3 identities/arm/block
-- target 72 valid primer-qualified trials total
-- target 24/arm
+- **72 raw candidates total**
+- **24 raw candidates/arm**
+- replacement trials: **false**
 
-Because primer discovery can fail, raw candidate ceiling must be specified separately before launch.
+Primer discovery failures, PTE contamination, CPU errors, and phase failures remain part of the 72 outcomes.
 
+Do not add replacement identities to reach a desired number of valid specimens.
 Do not dynamically increase the candidate ceiling after observing scientific outcomes.
 
 ## Primary decision
@@ -155,3 +157,22 @@ No larger GitHub runner.
 No paid resource.
 
 No physical launch without a new Human-scoped launch receipt.
+
+## Implementation
+
+Worker:
+`experiments/memcg005gc_spawn_worker.c`
+
+Controller:
+`src/finite_ram_lab/memcg005gc_controlled_spawn.py`
+
+Frozen spec:
+`specs/MEMCG-005G-C-PTE-PRECONDITIONED-SPAWN-v2.json`
+
+Tests:
+`tests/test_memcg005gc_controlled_spawn.py`
+
+Workflow:
+`.github/workflows/memcg-005g-c-v2-controlled-spawn.yml`
+
+No launch marker exists.
