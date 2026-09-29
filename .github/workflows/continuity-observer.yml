@@ -21,15 +21,13 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Write metadata-only observation
-        env:
-          OBSERVER_EVENT_PATH: ${{ github.event_path }}
         run: |
           python - <<'PY'
           import json
           import os
           from pathlib import Path
 
-          event = json.loads(Path(os.environ["OBSERVER_EVENT_PATH"]).read_text())
+          event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text())
           run = event["workflow_run"]
 
           observation = {
