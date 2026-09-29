@@ -250,7 +250,7 @@ def run_trial(
             )
             scrub_base = _event_count(
                 trace_path,
-                "frl_lru_flush:",
+                "frl_lru_scrub:",
                 "frlscrub",
             )
             for touch_no in range(1, scrub_max_touches + 1):
