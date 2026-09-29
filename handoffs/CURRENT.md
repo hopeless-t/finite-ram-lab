@@ -1,46 +1,39 @@
 # CURRENT
 
-> **Latest bounce:** B335
-> **Stage:** MEMCG-005C REPAIR CI + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B336
+> **Stage:** MEMCG-005C EXPLICIT HOSTED LAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
 ## MEMCG-005C
 
 Implementation:
 `82515df80b1cde1d9b9732510c3abf1454b2aa91`
 
-Initial CI:
-`36550320654 = failure`
-
-Exposed failure:
-synthetic support fixture created 91 failures instead of 1.
-
-Repair:
+Fixture repair:
 `57d1c0767f3fd3fbeef8902c78cf6a7bc80b3143`
 
 Repair CI:
-`36550984469`
+`36550984469 = success`
 
-Single B335 read:
-`in_progress`
+Launch:
+`d50af917577493dc457aa0439a192ab90e5f90a1`
 
-Do not poll again in this bounce.
-
-Scientific design unchanged:
-- TWO_STEP old path;
-- ATOMIC migrate + immediate measured touch before receipt I/O;
+Scientific A/B:
+- TWO_STEP = old MIGRATE receipt path;
+- ATOMIC = migrate + immediate measured page touch before receipt I/O;
 - 23 identities per arm per block;
 - 4 blocks;
-- 184 first-touch probes total.
+- 184 probes total.
 
-No launch marker exists.
+Primary question:
+does ATOMIC materially reduce non-Q64 first-touch failures relative to TWO_STEP?
 
 ## Next fresh-bounce action
 
-Read CI `36550984469` exactly once.
+Discover/read exact-head MEMCG-005C workflow once.
 
-- success -> explicit MEMCG-005C hosted launch;
-- pending/in_progress -> EXTERNAL_WAIT;
+- pending/in_progress -> record run id, EXTERNAL_WAIT;
+- success -> fetch aggregate once and canonicalize;
 - failure -> inspect only exposed invariant.
 
 ## Authority boundary
