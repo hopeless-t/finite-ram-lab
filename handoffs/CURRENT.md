@@ -1,67 +1,44 @@
 # CURRENT
 
-> **Latest bounce:** B331
-> **Stage:** MEMCG-005B INCONCLUSIVE / MEMCG-005C ATOMIC PATH DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B332
+> **Stage:** MEMCG-005C IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## MEMCG-005B canonical result
-
-Run:
-`36547649316`
+## MEMCG-005B accepted result
 
 Decision:
 `INCONCLUSIVE`
 
-Canonical result:
-`docs/MEMCG-005B-RESULT.md`
+Canonical:
+`c1a9533fe3d2e84d3982f2857f3fdd94b52f3399`
 
-Valid observations:
-- m0: PRESENT 2/2
-- m5: PRESENT 1/2, ABSENT 1/2
-- m6: ABSENT 3/3
-- m7: ABSENT 3/3
-- m8: ABSENT 4/4
+Control-path flaw:
+MIGRATE receipt executes on S before measured TOUCH_ONE.
 
-Only one complete-valid block existed; it showed a K6-like boundary.
+## MEMCG-005C implementation
 
-Do not promote K6 while insertion validity remains systematic.
-
-## Control-path invariant failure
-
-MEMCG-005B MIGRATE command:
-
-- moves worker to S;
-- then emits MIGRATE status I/O on S;
-- only later performs measured TOUCH_ONE.
-
-Therefore the measured touch was not guaranteed to be the worker's first S-side demand.
-
-All six insertion-invalid events were delta=0.
-
-## MEMCG-005C
-
-Frozen design:
-`docs/MEMCG-005C-ATOMIC-FIRST-TOUCH-v1.md`
+Files:
+- `specs/MEMCG-005C-ATOMIC-FIRST-TOUCH-v1.json`
+- `experiments/memcg005c_worker.c`
+- `src/finite_ram_lab/memcg005c_atomic_first_touch.py`
+- `.github/workflows/memcg-005c-atomic-first-touch.yml`
+- `tests/test_memcg005c_atomic_first_touch.py`
 
 A/B:
-- TWO_STEP = old migrate receipt then touch
-- ATOMIC = migrate then immediate measured touch before any receipt I/O
+- TWO_STEP old control path;
+- ATOMIC migrate + immediate page touch before any receipt I/O.
 
-23 fresh identities per arm per block.
-4 blocks.
+23 identities per arm per block, 4 blocks.
 
-Primary goal:
-validate the insertion primitive before another K7 capacity test.
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement MEMCG-005C only:
-- worker MIGRATE_TOUCH command;
-- paired A/B runner;
-- exact delta receipts;
-- analyzer/tests/workflow.
+Discover/read ordinary CI for B332 exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-005C launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 

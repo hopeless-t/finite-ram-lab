@@ -1,0 +1,15 @@
+{
+  "experiment_id": "MEMCG-005C-ATOMIC-FIRST-TOUCH-v1",
+  "required_page_size": 4096,
+  "runner_blocks": 4,
+  "identities_per_arm": 23,
+  "arms": ["two_step", "atomic"],
+  "expected_trials": 184,
+  "q64_min_pages": 60,
+  "q64_max_pages": 68,
+  "atomic_support_min_successes": 90,
+  "atomic_support_required_perfect_blocks": 3,
+  "atomic_reject_min_failures": 8,
+  "confidence_level": 0.95,
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
