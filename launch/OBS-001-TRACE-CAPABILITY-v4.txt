@@ -1,0 +1,17 @@
+OBS-001 execution capability gate v4
+
+Purpose:
+Re-run the atomic trace setup gate after fixing YAML heredoc indentation.
+
+Checks:
+- probe install/enable/remove
+- nr_pages==17 filter
+- stacktrace trigger
+- trace buffer operations
+- root Python trace_marker write/readback
+- fail-closed cleanup
+
+No scientific worker trial.
+No reliability claim.
+No local-PC execution.
+No paid runner.
