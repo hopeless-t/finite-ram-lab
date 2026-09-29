@@ -1,0 +1,35 @@
+{
+  "experiment_id": "OBS-005-CROSS-CGROUP-LRU-HANDOFF-v1",
+  "stage": "A",
+  "runner_blocks": 4,
+  "identities_per_block": 4,
+  "producer_pages": 17,
+  "trigger_pages": 14,
+  "scrub_max_touches": 64,
+  "required_page_size": 4096,
+  "primary_question": "Can task B trigger a shared per-CPU LRU-add batch flush that uncharges 17 dead folios owned by producer cgroup A?",
+  "primary_prediction": {
+    "producer_pages": 17,
+    "trigger_pages": 14,
+    "batch_capacity": 31,
+    "producer_flush_during_build": false,
+    "trigger_flush_nr": 31,
+    "trigger_folios_put_nr": 31,
+    "producer_counter_uncharge_pages": 17,
+    "uncharge_current_comm": "frltrig"
+  },
+  "classes": [
+    "CONTROLLED_HANDOFF_PASS",
+    "HANDOFF_NONCANONICAL_TIMING",
+    "PRODUCER_FLUSH_CONTAMINATED",
+    "SCRUB_NO_FLUSH",
+    "COUNTER_UNKNOWN",
+    "NO_HANDOFF_UNCHARGE"
+  ],
+  "raw_artifact_retention_days": 7,
+  "aggregate_artifact_retention_days": 30,
+  "authority": "HOSTED_RESEARCH_ONLY",
+  "local_pc_execution": false,
+  "paid_runner": false,
+  "reliability_claim_authorized": false
+}
