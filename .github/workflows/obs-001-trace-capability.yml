@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "launch/OBS-001-TRACE-CAPABILITY-v3.txt"
+      - "launch/OBS-001-TRACE-CAPABILITY-v4.txt"
 
 permissions:
   contents: read
@@ -72,7 +72,7 @@ jobs:
               probeable=1
               echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
               echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
-              cat "$TRACE/events/kprobes/$ev/format"
+              sudo cat "$TRACE/events/kprobes/$ev/format"
             else
               probeable=0
             fi
@@ -114,10 +114,7 @@ jobs:
 
           echo "=== ROOT TRACE MARKER TEST ==="
           PYTHON_BIN="$(command -v python)"
-          sudo -E "$PYTHON_BIN" - <<'PY'
-from pathlib import Path
-Path("/sys/kernel/tracing/trace_marker").write_text("FRL_OBS001_CAPABILITY_MARKER\n")
-PY
+          sudo -E "$PYTHON_BIN" -c 'from pathlib import Path; Path("/sys/kernel/tracing/trace_marker").write_text("FRL_OBS001_CAPABILITY_MARKER\\n")'
           echo 0 | sudo tee "$TRACE/tracing_on"
           sudo grep -F 'FRL_OBS001_CAPABILITY_MARKER' "$TRACE/trace"
 
