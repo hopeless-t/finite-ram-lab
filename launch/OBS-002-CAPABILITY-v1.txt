@@ -14,3 +14,8 @@ Explicitly out of scope:
 - no reinterpretation of frozen endpoints
 
 This marker authorizes only the capability smoke.
+Diagnostic v2 amendment:
+- inspect both /sys/kernel/tracing and /sys/kernel/debug/tracing
+- record mount failures instead of suppressing them
+- record kernel config, kallsyms, lockdown and security controls
+- still no scientific trial or rare-state measurement
