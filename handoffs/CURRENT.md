@@ -1,89 +1,84 @@
 # CURRENT
 
-> Latest bounce: B396
-> Stage: -17 DOMINANT MECHANISM = SHARED PER-CPU LRU-BATCH RELEASE
-> Stop: READY FOR OBS-005 CONTROLLED CROSS-CGROUP HANDOFF
+> Latest bounce: B397
+> Stage: -17 MECHANISM CONSTRUCTED / CROSS-CGROUP LRU HANDOFF PROVEN
+> Stop: READY FOR OBS-006 DECONTAMINATED CHARGE-SIDE Q64 OBSERVER
 
-## OBS-004
+## OBS-005
 
 Run:
-\`36621525773 = success\`
+\`36625036954 = success\`
 
-Scale:
-- 48 trials
-- 1152 touches
-
-Exact -17:
-12
-
-Frozen aggregate:
-- WORKER_LRU_BATCH 9
-- SAME_COUNTER_ASYNC 3
-- STOCK_DRAIN_SAME_COUNTER 0
-- EXTERNAL_COINCIDENCE 0
-- COUNTER_UNKNOWN 0
-- TRACE_MISS 0
-
-## Source-grounded reinterpretation
+Frozen classifier:
+- CONTROLLED_HANDOFF_PASS 10
+- HANDOFF_NONCANONICAL_TIMING 1
+- NO_HANDOFF_UNCHARGE 1
+- COUNTER_UNKNOWN 3
+- SCRUB_NO_FLUSH 1
 
 Derived:
-- SELF_TRIGGERED_WORKER_LRU_BATCH 9
-- CROSS_TASK_WORKER_OWNED_LRU_BATCH 3
-- STOCK_DRAIN_DIRECT 0
+- scrub precondition success 15/16
+- producer memory.current exact -17 during trigger phase 15/15
+- producer counter receipt retained 12
+- producer page-counter uncharge17 12/12
+- current task B/frltrig 11
+- current task third-party provjobd 1
 
-Why:
+Canonical:
+\`producer17 + trigger14 = batch31\`
 
-Linux lru_add folio batching is per-CPU shared state.
-
-At flush:
-- dead folios are filtered into a free batch
-- uncharge uses folio_objcg
-- the current task need not own the released folios
-
-Thus a .NET task can trigger a flush that lowers the worker cgroup's memory.current.
+At B touch14:
+\`flush31 -> folios_put31 -> producer counter uncharge17 -> producer current -17\`
 
 ## Mechanism
 
-logical folio owner
-!=
-physical batching location
-!=
-flush trigger task
+The recurrent -17 contaminant is:
 
-Recurrent -17 is observer contamination from deferred LRU release, not residual-stock consumption.
+deferred owner-A dead folios
++ shared per-CPU LRU-add batch
++ flush by any task on that CPU
+-> owner-A page-counter uncharge17
+
+Owner, staging scope, trigger actor, and accounting recipient are distinct.
+
+## Q64 implication
+
+memory.current is a net emission, not a direct stock-state read.
+
+A measured touch may combine:
+- data charge / stock refill
+- LRU release
+- stock drain
+- PTE charge
+- other asynchronous accounting
+
+The -17 lane is sufficiently closed.
 
 ## Evidence
 
-Doc:
-docs/OBS-004-PAGE-COUNTER-IDENTITY-RESULT.md
-
 Raw:
-- files 128
-- bytes 7,465,126
+- files 96
+- bytes 150,274,057
 - SHA:
-  81563042daa5459c32dbb9f77ffbc9395390cebae215ac47b80dcee0e6c4dfa5
+  \`dfbf406339e955779333346f935a6312f7e45a7d06c57ce14378bcd38ca355e0\`
 
 Drive:
-Catfood Lab Evidence/finite-ram-lab/OBS-004-PAGE-COUNTER-IDENTITY-v1/run-36621525773
+\`Catfood Lab Evidence/finite-ram-lab/OBS-005-CROSS-CGROUP-LRU-HANDOFF-v1/run-36625036954\`
 
 Verification:
-5/5 BYTE-IDENTICAL PASS.
+\`5/5 BYTE-IDENTICAL PASS\`
 
 ## Next
 
-OBS-005 controlled cross-cgroup LRU-batch handoff.
+OBS-006 decontaminated charge-side Q64 observer.
 
-Construct:
-- producer cgroup A
-- trigger cgroup B
-- same CPU
-- producer leaves a controlled dead-folio population in LRU-add batch
-- trigger fills remaining slots
-- observe producer page-counter drop while trigger is current
+Primary task:
+identify memcg batch refill/charge directly even when net memory.current delta is masked by an unrelated release.
+
+Do not restart b63 reliability scaling until OBS-006 is validated.
 
 ## Authority
 
 HOSTED_RESEARCH_ONLY.
 No local-PC execution.
 No paid runner.
-No b63 reliability scaling yet.
