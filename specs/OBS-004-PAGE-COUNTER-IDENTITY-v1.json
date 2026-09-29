@@ -1,0 +1,32 @@
+{
+  "experiment_id": "OBS-004-PAGE-COUNTER-IDENTITY-v1",
+  "stage": "A",
+  "runner_blocks": 4,
+  "identities_per_block": 12,
+  "touches_per_identity": 24,
+  "max_pages": 1024,
+  "safe_len": 192,
+  "required_page_size": 4096,
+  "primary_question": "Does every exact -17 worker memory.current event have a page_counter_uncharge(17) on the same page_counter pointer previously charged by that worker cgroup?",
+  "classes": [
+    "WORKER_LRU_BATCH",
+    "SAME_COUNTER_ASYNC",
+    "STOCK_DRAIN_SAME_COUNTER",
+    "EXTERNAL_COINCIDENCE",
+    "COUNTER_UNKNOWN",
+    "TRACE_MISS"
+  ],
+  "probes": [
+    "page_counter_try_charge worker-only",
+    "page_counter_uncharge[nr_pages==17] system-wide + stacktrace",
+    "drain_stock system-wide",
+    "folio_batch_move_lru worker-only",
+    "folios_put_refs worker-only"
+  ],
+  "raw_artifact_retention_days": 7,
+  "aggregate_artifact_retention_days": 30,
+  "authority": "HOSTED_RESEARCH_ONLY",
+  "local_pc_execution": false,
+  "paid_runner": false,
+  "reliability_claim_authorized": false
+}
