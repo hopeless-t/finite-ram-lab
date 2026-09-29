@@ -39,7 +39,6 @@ def _u32(mm: mmap.mmap, off: int) -> int:
 
 def _set_u32(mm: mmap.mmap, off: int, value: int) -> None:
     struct.pack_into("<I", mm, off, int(value))
-    mm.flush(off, 4)
 
 
 def _wait(pred, timeout: float = 10.0) -> None:
