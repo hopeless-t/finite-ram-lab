@@ -1,0 +1,12 @@
+TX-PERTURBATION-MATRIX-v1
+human_authorized_at=2026-09-30
+run_generation=R1
+purpose=Chapter-II causal validation of named state transitions
+blocks=4
+arms_per_block=CLEAN,RELEASE_ONLY,UNEXPECTED_REFILL,PTE_GROWTH
+scientific_identities=16
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+automatic_scale_expansion=false
+prerequisite_b404_run=36642946787
