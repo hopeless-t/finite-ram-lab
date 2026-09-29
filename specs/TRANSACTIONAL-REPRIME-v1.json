@@ -1,0 +1,40 @@
+{
+  "protocol_id": "TRANSACTIONAL-REPRIME-v1",
+  "status": "DESIGN_ONLY",
+  "initial_state": "INIT",
+  "verified_reset": {
+    "required_receipts": [
+      "page_counter_try_charge_64",
+      "refill_stock_63",
+      "pte_clean",
+      "cpu_match",
+      "trace_complete"
+    ],
+    "expected_residual_after_reset": 63
+  },
+  "invalidating_receipts": [
+    "unexpected_refill",
+    "drain_stock",
+    "pte_growth",
+    "cpu_mismatch",
+    "worker_error",
+    "trace_gap"
+  ],
+  "non_invalidating_observation_emissions": [
+    "classified_release_only"
+  ],
+  "terminal_states": [
+    "SUCCESS",
+    "TARGET_FAIL",
+    "ABORTED"
+  ],
+  "rules": {
+    "success_requires_complete_verified_epoch": true,
+    "valid_target_mismatch_is_retriable": false,
+    "invalidated_attempt_is_target_failure": false,
+    "memory_current_is_authoritative": false,
+    "reprime_opens_new_epoch": true,
+    "reprime_budget_is_bounded": true
+  },
+  "physical_run_authorized": false
+}
