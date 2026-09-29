@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "launch/OBS-006-MASKED-Q64-OBSERVER-v1.txt"
+      - "launch/OBS-006-MASKED-Q64-OBSERVER-v2.txt"
 
 permissions:
   contents: read
