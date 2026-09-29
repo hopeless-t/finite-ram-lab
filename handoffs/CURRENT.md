@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B328
-> **Stage:** MEMCG-005B IMPLEMENTED + CI EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B329
+> **Stage:** MEMCG-005B EXPLICIT HOSTED LAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
 ## MEMCG-005 canonical result
 
@@ -13,42 +13,35 @@ Canonical:
 
 ## MEMCG-005B
 
-Design:
-`docs/MEMCG-005B-THREE-CPU-STAGED-K7-v1.md`
-
 Implementation:
 `4d899453a4ffaf8aaaf68f285ede6ea1e9e1ae1b`
 
+Implementation CI:
+`36547079561 = success`
+
+Exact launch commit:
+`73baca88f9701c1d819cdb9a11da38d033669aff`
+
 CPU roles:
 - C controller
-- P prep/startup
+- P startup/prep
 - S stock-test
 
 No participant touches S before measured insertion.
 
 Prefill:
-14 distinct wash insertions before target.
+14 distinct verified wash insertions before target.
 
-Source signature:
+Source K7 signature:
 - m0/5/6 PRESENT
 - m7/8 ABSENT
 
-Ordinary CI:
-`36547079561`
-
-Single B328 read:
-`queued`
-
-Do not poll again in this bounce.
-
-No launch marker exists.
-
 ## Next fresh-bounce action
 
-Read CI `36547079561` exactly once.
+Discover/read exact-head MEMCG-005B workflow once.
 
-- success -> explicit MEMCG-005B hosted launch;
-- pending/in_progress -> EXTERNAL_WAIT;
+- pending/in_progress -> record run id, EXTERNAL_WAIT;
+- success -> fetch aggregate once and canonicalize;
 - failure -> inspect only exposed invariant.
 
 ## Authority boundary
