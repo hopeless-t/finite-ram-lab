@@ -559,3 +559,75 @@ Q64/memcg remains the deepest kernel-level case study.
 External AI-memory systems contribute reusable control dimensions, not evidence for the Q64 mechanism.
 
 The lab should expand by isolated, receipt-first experiments rather than by importing entire runtimes.
+
+
+# Addendum — repo news/source intakes incorporated
+
+The Council was re-opened after reviewing two pre-existing finite-ram-lab source intakes:
+
+- `AI-WORKER-FINITE-WORKING-SET-INTAKE-2026-09-29`
+- `NAIVE-N05-FLASH-INTAKE-v1`
+
+## New atoms
+
+### E-13 — Addressable universe and resident working set are distinct
+
+Tool search, capability catalogs, context offload and bounded evidence selection all demonstrate systems where a
+large universe remains addressable while only a small subset is resident.
+
+**ABSORB:** capacity/addressability and residency are separate state dimensions.
+
+### E-14 — Restore fidelity is independent of restore cost
+
+Exact pointer-backed retrieval, summary-with-source, summary-only and discard can have similar active footprints
+but different recoverability.
+
+**ABSORB:** add restore fidelity/source recoverability.
+
+### E-15 — Semantic reuse horizon is independent of recency
+
+Naive-N0.5 motivates retaining full state while sparsifying access and distinguishing reconstructible bulk from
+metadata worth keeping.
+
+**ABSORB:** add reuse horizon and reconstructibility classes.
+
+### E-16 — Resident footprint and traffic are distinct
+
+A state can stay resident while access/memory traffic drops substantially.
+
+**ABSORB:** future experiments must distinguish bytes resident, bytes touched, and bytes moved.
+
+### E-17 — AI summaries create an information-integrity dimension
+
+The AI-worker intake cites systems and evidence showing that lossy compaction can differ fundamentally from
+reference-backed offload.
+
+**HOLD in application lane:** do not claim physical RAM equivalence.
+
+### E-18 — Authority and residency are orthogonal
+
+A tool can be available, resident, selected, or authorized as separate states.
+
+**REJECT from finite-ram core:** authority remains MVCA/tool-surface semantics.
+
+## Addendum Council result
+
+The generic control state expands from:
+
+`tier / owner / hotness / next-use / transfer / restore-cost / interference / bottleneck`
+
+to:
+
+`tier / owner / hotness / next-use / transfer / restore-cost / restore-fidelity / reuse-horizon / access-intensity / interference / bottleneck`
+
+No previous Q64 conclusion changes.
+
+New isolated branch candidates:
+
+- REUSE-001
+- TRAFFIC-001
+- FIDELITY-001
+- AIWS-001/002/003/005 in the application lane
+
+**Convergence:** 7/7 roles after preserving the domain boundary between physical memory and semantic/context
+working sets.
