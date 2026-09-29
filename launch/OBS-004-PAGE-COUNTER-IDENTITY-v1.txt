@@ -1,0 +1,30 @@
+OBS-004 page counter identity v1
+
+Human authorization:
+Continue finite-ram-lab forensic research on 2026-09-30 JST.
+
+Frozen diagnostic scope:
+- 4 standard GitHub-hosted ubuntu-26.04 blocks
+- 12 identities/block
+- 24 measured touches/identity
+- 48 identities total
+- 1152 measured touches total
+- trial START/READY/END markers
+- worker-only page_counter_try_charge to capture worker memory counter pointer
+- system-wide page_counter_uncharge filtered to nr_pages==17 + stacktrace
+- system-wide drain_stock
+- worker-only folio_batch_move_lru / folios_put_refs
+- no high-frequency lru_add probe
+- no b63 reliability claim
+- no natural-incidence claim
+- no dynamic sample expansion
+- no local-PC execution
+- no paid runner
+
+Caller attribution requires page_counter pointer equality.
+
+Classes:
+WORKER_LRU_BATCH / SAME_COUNTER_ASYNC / STOCK_DRAIN_SAME_COUNTER /
+EXTERNAL_COINCIDENCE / COUNTER_UNKNOWN / TRACE_MISS.
+
+Stop after evidence analysis.
