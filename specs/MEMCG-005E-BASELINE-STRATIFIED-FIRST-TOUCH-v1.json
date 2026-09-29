@@ -1,0 +1,20 @@
+{
+  "experiment_id": "MEMCG-005E-BASELINE-STRATIFIED-FIRST-TOUCH-v1",
+  "required_page_size": 4096,
+  "runner_blocks": 4,
+  "identities_per_arm": 32,
+  "arms": ["local_p", "remote_s"],
+  "expected_trials": 256,
+  "low_threshold_pages": 110,
+  "q64_min_pages": 60,
+  "q64_max_pages": 68,
+  "support_min_low_n": 100,
+  "support_low_success_rate": 0.95,
+  "support_low_per_arm_success_rate": 0.90,
+  "support_high_max_success_rate": 0.75,
+  "support_fisher_p_max": 0.000001,
+  "reject_low_success_rate": 0.85,
+  "reject_min_each_stratum_n": 100,
+  "reject_max_rate_difference": 0.10,
+  "authority": "HOSTED_RESEARCH_ONLY"
+}

@@ -1,46 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B346
-> **Stage:** MEMCG-005D REJECTED / MEMCG-005E BASELINE DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B347
+> **Stage:** MEMCG-005E IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## MEMCG-005D canonical result
+## MEMCG-005D accepted result
 
-Run:
-`36553495930`
+Canonical:
+`8878b1dc047c9bac690c6cce7094ea6b6b44ee32`
 
 Decision:
 `REJECT_EXTERNAL_PATH`
 
-SELF_ATOMIC:
-- 68/92 Q64
-- 24 zero-delta failures
-
-EXTERNAL_ATOMIC:
-- 63/92 Q64
-- 29 zero-delta failures
-- migration delta = 0 for 92/92
-- CPU mismatch = 0
-
-Canonical result:
-`docs/MEMCG-005D-RESULT.md`
-
-## Prospective next hypothesis
-
-Post-hoc MEMCG-005D signal:
-
-`pre_current_pages <= 110`
-
-predicted:
-- SELF 46/46 Q64
-- EXTERNAL 38/39 Q64
-
-This threshold is now frozen prospectively.
-
 ## MEMCG-005E
 
-Design:
-`docs/MEMCG-005E-BASELINE-STRATIFIED-FIRST-TOUCH-v1.md`
+Prospective threshold:
+`LOW iff pre_current_pages <= 110`
+
+Implementation files:
+- `specs/MEMCG-005E-BASELINE-STRATIFIED-FIRST-TOUCH-v1.json`
+- `src/finite_ram_lab/memcg005e_baseline_stratified.py`
+- `.github/workflows/memcg-005e-baseline-stratified.yml`
+- `tests/test_memcg005e_baseline_stratified.py`
+
+Worker:
+reuses exact `experiments/memcg005d_worker.c`.
 
 Arms:
 - LOCAL_P
@@ -50,16 +34,15 @@ Arms:
 4 blocks.
 256 probes.
 
-Primary question:
-does LOW baseline prospectively achieve >=95% Q64 and outperform HIGH baseline?
-
-No K7 inference.
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement MEMCG-005E only.
+Discover/read ordinary CI for B347 exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-005E hosted launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 
