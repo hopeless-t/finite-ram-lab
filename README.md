@@ -51,7 +51,7 @@ predict
 Known state invalidators include:
 
 - unexpected refill;
-- memcg stock drain;
+- relevant stock-CPU memcg stock drain;
 - PTE growth;
 - CPU mismatch;
 - worker error;
@@ -81,18 +81,22 @@ meaning a complete verified epoch with no known invalidator and an observed boun
 
 ### Current experiment sequence
 
-The next physical program is intentionally staged:
+The physical program is intentionally staged:
 
-1. **B404 transactional smoke** — 12 normal identities (b62/b63/b64 balanced) plus one forced invalidation/re-prime sentinel;
-2. **B405 perturbation matrix** — CLEAN / RELEASE_ONLY / UNEXPECTED_REFILL / PTE_GROWTH causal controls;
+1. **B404 transactional smoke — COMPLETE / PASS** — R2 produced 12/12 normal SUCCESS, zero TARGET_FAIL, zero instrumentation holds, and a passing forced invalidation/re-prime sentinel;
+2. **B405 perturbation matrix — NEXT** — CLEAN / RELEASE_ONLY / UNEXPECTED_REFILL / PTE_GROWTH causal controls;
 3. **TX-AGE-DECOUPLING Stage A** — FAST x4 + HOLD32 x12, selected by Monte Carlo to discriminate touch-driven from wall-clock-driven hidden transitions;
 4. **adaptive Stage B only if triggered** — HOLD8 / HOLD32 / HOLD56 x4 each to turn a captured event into a position-dependent `Delta = T - 64` fingerprint;
 5. passive hazard mapping and reliability certification only after the mechanism boundary is understood.
+
+B404's passing run is protocol evidence, not a population-level 100% reliability claim.
 
 The repository now carries epoch-local owner identity, receipt packet v2, touch-age / wall-clock-age telemetry, hard re-prime isolation, stale-epoch rejection, and source-grounded release classification.
 
 See:
 
+- [B404 R2 — Transactional physical smoke PASS](docs/B404-R2-TRANSACTIONAL-SPAWN-PHYSICAL-PASS.md)
+- [B404 R1 — Observer falsification result](docs/B404-R1-TRANSACTIONAL-SPAWN-PHYSICAL-RESULT.md)
 - [MATH-022 — Boundary invariant and rare-transition capture](docs/MATH-022-BOUNDARY-INVARIANT-RARE-TRANSITION-CAPTURE.md)
 - [MATH-023 — Monte Carlo age-decoupling design](docs/MATH-023-AGE-DECOUPLING-DESIGN-MONTE-CARLO.md)
 - [OBS-007 — Epoch-local transaction observer](docs/OBS-007-EPOCH-LOCAL-TRANSACTION-OBSERVER.md)
