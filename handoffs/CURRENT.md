@@ -1,50 +1,35 @@
 # CURRENT
 
-> Latest bounce: B360
-> Stage: MEMCG-005G-A COMPLETE / MEMCG-005G-B DESIGN FROZEN
+> Latest bounce: B361
+> Stage: MATH-003 RARE-STATE MODEL COMPLETE / MEMCG-005G-B NEXT
 > Stop: READY_FOR_IMPLEMENTATION
 
-## MEMCG-005G-A
+## Mathematical result
 
-Run:
-`36563233676`
+`docs/MATH-003-RARE-STATE-HARVESTING-MODEL.md`
 
-Decision:
-`INCONCLUSIVE`
+Input:
+MEMCG-005G-A run `36563233676`.
 
-Canonical:
-`docs/MEMCG-005G-A-RESULT.md`
+Key findings:
+- fresh Q64 378/406
+- depth1 22/406
+- deep 6/406
+- conditional failure depth1 22/28
+- simple memoryless geometric depth model strongly inadequate
+- spike+tail descriptive model Delta AIC ~97.7
+- deep EARLY 4/102 vs STEADY 2/304
+- exploratory Fisher p=.0371, OR=6.16
+- posterior P(early deep rate > steady)~.987
+- but BF10 two-rate/shared with flat priors=.397; no confirmatory enrichment claim
 
-Primary:
-- EARLY 9/102 failure =8.82%
-- STEADY 19/304 =6.25%
-- Fisher one-sided p=.248
-- BF10 two-rate/shared=.113
+Controlled-state hypothesis:
+after directly verified fresh Q64, bait b pages predict target biopsy depth `64-b`.
 
-Biopsy:
-- 28 failures
-- 22 depth1
-- deep tail 14,34,45,45,47,48
-- all recovered Q64 by touch65
-- no censoring
+Draft:
+`docs/MEMCG-005G-C-CONTROLLED-RARE-INDUCTION-DRAFT-v0.md`
 
-Cross-experiment caution:
-005F failure 2/123=1.63%
-005G-A failure 28/406=6.90%
-
-Potential confounds:
-- max-pages 8 ->70
-- 4 hosted blocks ->24 independent hosted blocks
-
-## MEMCG-005G-B
-
-Design:
-`docs/MEMCG-005G-B-BIOPSY-FOOTPRINT-CONTROL-v1.md`
-
-CAP8 vs CAP70, identical first-touch path, alternating within runner.
-16 blocks x64 candidates.
-
-No launch marker exists.
+Do not freeze/launch 005G-C until 005G-B resolves the CAP8/CAP70 perturbation.
 
 ## Next fresh bounce
 
