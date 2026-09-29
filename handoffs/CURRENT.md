@@ -1,17 +1,17 @@
 # CURRENT
 
-> Latest bounce: B377
-> Stage: MEMCG-005G-F EXPLICIT HOSTED LAUNCH
-> Stop: RUN_DISCOVERY_PENDING
-
-Implementation:
-`b4583bba8ab8a25654560ec887526c678d15258a`
-
-CI:
-`36576017389 = success`
+> Latest bounce: B378
+> Stage: MEMCG-005G-F confirmatory threshold run
+> Stop: EXTERNAL_WAIT
 
 Launch:
 `77f0c6e160190a37f1fb07796e3f8fd6de178a66`
+
+Scientific run:
+`36577573774`
+
+Single B378 read:
+`queued`
 
 Frozen arms:
 `{8,9,10,11,12,32}`
@@ -24,8 +24,10 @@ Primary:
 confirmatory Bayesian localization T in {9,10,11,12}.
 Categorical AIC adequacy audit can force rejection.
 
+Do not poll again in this bounce.
+
 Next fresh bounce:
-discover/read exact-head MEMCG-005G-F scientific run once.
+read run `36577573774` exactly once.
 
 Hosted research only.
 No local-PC execution.
