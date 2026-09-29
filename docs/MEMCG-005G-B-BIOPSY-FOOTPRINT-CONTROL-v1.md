@@ -1,6 +1,6 @@
 # MEMCG-005G-B Biopsy-Footprint Control v1
 
-> **Status:** FROZEN DESIGN / NOT IMPLEMENTED / NOT LAUNCHED
+> **Status:** FROZEN DESIGN / IMPLEMENTED / NOT LAUNCHED
 
 ## Question
 

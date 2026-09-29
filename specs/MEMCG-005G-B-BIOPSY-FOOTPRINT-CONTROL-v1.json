@@ -1,0 +1,17 @@
+{
+  "experiment_id":"MEMCG-005G-B-BIOPSY-FOOTPRINT-CONTROL-v1",
+  "required_page_size":4096,
+  "runner_blocks":16,
+  "identities_per_block":64,
+  "low_threshold_pages":110,
+  "q64_min_pages":60,
+  "q64_max_pages":68,
+  "cap8_pages":8,
+  "cap70_pages":70,
+  "support_min_low_per_arm":180,
+  "support_min_abs_failure_rate_difference":0.03,
+  "support_fisher_p_max":0.01,
+  "reject_max_abs_failure_rate_difference":0.02,
+  "reject_fisher_p_min":0.10,
+  "authority":"HOSTED_RESEARCH_ONLY"
+}
