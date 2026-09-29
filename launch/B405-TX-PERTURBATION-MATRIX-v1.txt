@@ -1,6 +1,7 @@
 TX-PERTURBATION-MATRIX-v1
 human_authorized_at=2026-09-30
-run_generation=R1
+run_generation=R2
+reason=PRIME_TRIGGER_STOCK_BEFORE_TARGET_VERIFY
 purpose=Chapter-II causal validation of named state transitions
 blocks=4
 arms_per_block=CLEAN,RELEASE_ONLY,UNEXPECTED_REFILL,PTE_GROWTH
@@ -10,3 +11,4 @@ paid_larger_runner=false
 local_pc=false
 automatic_scale_expansion=false
 prerequisite_b404_run=36642946787
+r1_diagnostic_run=36645745433
