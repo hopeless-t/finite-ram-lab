@@ -1,0 +1,33 @@
+{
+  "experiment_id": "OBS-002-LRU-BATCH-OCCUPANCY-v1",
+  "stage": "A",
+  "runner_blocks": 4,
+  "identities_per_block": 12,
+  "touches_per_identity": 24,
+  "max_pages": 1024,
+  "safe_len": 192,
+  "required_page_size": 4096,
+  "primary_prediction": {
+    "negative_17_touch": 14,
+    "lru_add_nr_before_insert": 30,
+    "lru_flush_nr": 31,
+    "folios_put_nr": 31,
+    "page_counter_uncharge_pages": 17
+  },
+  "secondary_prediction": {
+    "first_touch_lru_add_nr": 17
+  },
+  "probes": [
+    "__folio_batch_add_and_move",
+    "folio_batch_move_lru",
+    "folios_put_refs",
+    "page_counter_try_charge",
+    "page_counter_uncharge"
+  ],
+  "raw_artifact_retention_days": 7,
+  "aggregate_artifact_retention_days": 30,
+  "authority": "HOSTED_RESEARCH_ONLY",
+  "local_pc_execution": false,
+  "paid_runner": false,
+  "reliability_claim_authorized": false
+}
