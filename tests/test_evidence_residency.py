@@ -165,5 +165,32 @@ class EvidenceResidencyTests(unittest.TestCase):
             parse_storage_ref("google-drive:missing-tier")
 
 
+    def test_manifest_sorts_normalized_paths_not_path_objects(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            bundle = Path(td) / "bundle"
+            (bundle / "trial-0-0").mkdir(parents=True)
+            (bundle / "trial-0-0.json").write_text(
+                "{}\n",
+                encoding="utf-8",
+            )
+            (bundle / "trial-0-0" / "epoch-0.json").write_text(
+                "{}\n",
+                encoding="utf-8",
+            )
+
+            manifest = build_manifest(
+                bundle,
+                experiment_id="EXP-SORT",
+                run_id="run-sort",
+                source_commit="deadbeef",
+                residency_tier="HOT",
+            )
+
+        self.assertEqual(
+            [row["path"] for row in manifest["files"]],
+            ["trial-0-0.json", "trial-0-0/epoch-0.json"],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
