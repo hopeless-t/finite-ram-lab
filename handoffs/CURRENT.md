@@ -1,45 +1,58 @@
 # CURRENT
 
-> **Latest bounce:** B337
-> **Stage:** MEMCG-005C HOSTED RUN + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B338
+> **Stage:** MEMCG-005C REJECTED / MEMCG-005D EXTERNAL-MIGRATION DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## MEMCG-005C
+## MEMCG-005C canonical result
 
-Implementation:
-`82515df80b1cde1d9b9732510c3abf1454b2aa91`
-
-Fixture repair:
-`57d1c0767f3fd3fbeef8902c78cf6a7bc80b3143`
-
-Repair CI:
-`36550984469 = success`
-
-Launch:
-`d50af917577493dc457aa0439a192ab90e5f90a1`
-
-Scientific run:
+Run:
 `36551226475`
 
-Single B337 read:
-`in_progress`
+Decision:
+`REJECT_ATOMIC_PATH`
 
-Do not poll again in this bounce.
+ATOMIC:
+- 69/92 Q64
+- 23/92 zero-delta failures
+- success rate 0.75
+- 0/4 perfect blocks
 
-Scientific A/B:
-- TWO_STEP old migrate-receipt path;
-- ATOMIC migrate + immediate measured touch before receipt I/O;
-- 23 identities per arm per block;
-- 4 blocks;
-- 184 first-touch probes.
+TWO_STEP:
+- 77/92 Q64
+- 15/92 zero-delta failures
+- success rate 0.8369565
+
+ATOMIC was worse in 4/4 blocks despite arm-order reversal across block parity.
+
+Therefore post-migration receipt I/O is not supported as the dominant failure mechanism.
+
+Canonical result:
+`docs/MEMCG-005C-RESULT.md`
+
+## MEMCG-005D
+
+Frozen design:
+`docs/MEMCG-005D-EXTERNAL-MIGRATION-FIRST-TOUCH-v1.md`
+
+A/B:
+- SELF_ATOMIC = worker self-migrates then immediate touch;
+- EXTERNAL_ATOMIC = controller externally migrates spinning worker, then shared-memory GO causes immediate touch.
+
+No worker control/status I/O is allowed between shared READY and measured touch.
+
+23 identities per arm per block, 4 blocks.
 
 ## Next fresh-bounce action
 
-Read run `36551226475` exactly once.
+Implement MEMCG-005D only:
+- shared-latch worker;
+- external PID affinity change;
+- SELF vs EXTERNAL arms;
+- exact delta/CPU receipts;
+- analyzer/tests/workflow.
 
-- success -> fetch aggregate once, compare atomic vs two-step failure rates, canonicalize;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only exposed invariant.
+Do not launch during implementation.
 
 ## Authority boundary
 
