@@ -260,5 +260,56 @@ class EpochArchiveTests(unittest.TestCase):
         self.assertEqual(archive.tx.invalidation_reason, "PTE_GROWTH")
 
 
+    def test_external_observe_release_only_does_not_consume_residual(self) -> None:
+        archive = EpochArchive.start()
+        normalize = one_window(
+            trial="0:3",
+            epoch=0,
+            phase="NORMALIZE",
+            touch_no=1,
+            start_s=50,
+            events=[
+                'frl_pc_try64: counter=0xaaa nr_pages=64 comm="frltx405"',
+                'frl_refill_stock: memcg=0x111 nr_pages=63 comm="frltx405"',
+            ],
+        )
+        archive.apply_touch(
+            epoch=0,
+            phase="NORMALIZE",
+            touch_number=1,
+            touch=touch(),
+            window=normalize,
+            stock_cpu=7,
+        )
+        self.assertEqual(archive.tx.expected_residual, 63)
+
+        release = one_window(
+            trial="0:3",
+            epoch=0,
+            phase="OBSERVE",
+            touch_no=1,
+            start_s=51,
+            events=[
+                'frl_pc_uncharge17: counter=0xaaa nr_pages=17 comm="frltrig"',
+                ' => page_counter_uncharge',
+                ' => folios_put_refs',
+                ' => folio_batch_move_lru',
+                ' => __folio_batch_add_and_move',
+            ],
+        )
+        event = archive.apply_release_only_window(
+            epoch=0,
+            touch_number=1,
+            window=release,
+            stock_cpu=7,
+        )
+        self.assertEqual(event["result"], "RELEASE_ONLY")
+        self.assertEqual(event["expected_residual_before"], 63)
+        self.assertEqual(event["expected_residual_after"], 63)
+        self.assertEqual(archive.tx.expected_residual, 63)
+        self.assertEqual(archive.tx.release_only_count, 1)
+
+
+
 if __name__ == "__main__":
     unittest.main()
