@@ -166,9 +166,11 @@ jobs:
           print(json.dumps({
               "matrix_pass": result["matrix_pass"],
               "challenge_pass_count": result["challenge_pass_count"],
+              "completion_pass_count": result["completion_pass_count"],
+              "end_to_end_pass": result["end_to_end_pass"],
               "target_fail": result["target_fail"],
               "by_arm": result["by_arm"],
           }, sort_keys=True))
           if not result["matrix_pass"]:
-              raise SystemExit("B405 causal matrix did not pass")
+              raise SystemExit("B405 causal classification matrix did not pass")
           PY
