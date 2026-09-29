@@ -48,6 +48,8 @@ class EpochArchive:
         receipt = observer_receipt_for_window(
             window,
             owner_counter=self.owner_counter,
+            stock_cpu=stock_cpu,
+            phase=phase,
         )
         packet = packet_from_touch(
             epoch=epoch,
@@ -108,6 +110,8 @@ class EpochArchive:
             observer_receipt_for_window(
                 window,
                 owner_counter=self.owner_counter,
+                stock_cpu=stock_cpu,
+                phase="TARGET",
             )
             for window in windows
         ]
