@@ -1,81 +1,109 @@
 # CURRENT
 
-> Latest bounce: B393
-> Stage: -17 CALLER IDENTIFIED AS LRU/FOLIO-BATCH UNCHARGE FAMILY
-> Stop: READY FOR OBS-002 LRU-BATCH-OCCUPANCY DISCRIMINATOR
+> Latest bounce: B394
+> Stage: DOMINANT -17 MECHANISM = LRU/FOLIO-BATCH RELEASE
+> Stop: READY FOR OBS-003 RESIDUAL-CALLER DISCRIMINATOR
 
 ## OBS-001
 
+Established:
+- page_counter_uncharge(17)
+- stack through anonymous-fault LRU/folio path
+- stock drain not required for -17
+
+## OBS-002
+
 Run:
-36615514509 = success
+\`36617444105 = success\`
 
 Scale:
-- 4 blocks
 - 48 trials
 - 1152 touches
 
 Exact -17:
-5
+11
 
-All five:
-- start 115/116 pages
-- touch 14
-- VmRSS +4 KiB
-- VmPTE delta 0
-- page_counter_uncharge(17)
-- stack through folios_put_refs / folio_batch_move_lru / __folio_batch_add_and_move / folio_add_lru / do_anonymous_page
+Full LRU-flush chain:
+9/11
 
-No observed drain_stock in those windows.
+Chain:
+\`LRU add -> flush31 -> folios_put31 -> page_counter_uncharge17\`
 
-Miss-free block 3 contributes 2/2 direct specimens with:
-- drain_stock misses 0
-- page_counter_uncharge misses 0
+Two unresolved:
+- trial 1:1 touch18 start117
+- trial 3:4 touch13 start180
 
-Therefore:
-Prep-CPU stock drain is not required for -17.
+LRU flush / folios_put probe misses:
+0 across all blocks.
+
+## Corrected occupancy analysis
+
+The direct pre-insert nr field was invalid:
+\`__folio_batch_add_and_move\` arg1 is a __percpu base pointer.
+
+Do not use the frozen aggregate's empty histograms as evidence.
+
+Corrected derived summary:
+\`analysis/inputs/OBS-002-DERIVED-SUMMARY-v1.json\`
+
+All 1152 touches:
+exactly one LRU-add event.
+
+Therefore for a first flush at touch T:
+\`inferred initial occupancy = 31 - T\`
+
+First flush observed:
+26/48 trials.
+
+Occupancy17/18:
+- 9 trials
+- 9/9 exact -17 at first flush
+
+Other occupancy:
+- 17 trials
+- 0/17 exact -17 at first flush
+
+Exploratory Fisher:
+~3.20e-7
 
 ## Leading mechanism
 
-Linux:
-FOLIO_BATCH_SIZE = 31
+FOLIO_BATCH_SIZE =31.
 
-Observation:
-17 latent pages + touch 14 = 31
+Dominant phenotype:
+17 pre-existing releasable entries +14 additions -> flush31 -> uncharge17.
 
-Hypothesis:
-17 dead/releasable folios are held until LRU-add batch fill;
-touch 14 fills the batch;
-flush drops refs;
-17 pages uncharge.
-
-Not yet directly proven:
-- pre-touch occupancy
-- origin/cgroup identity of the 17 folios
+One 18-entry case is compatible with:
+17 releasable +1 surviving entry.
 
 ## Evidence
 
-Doc:
-docs/OBS-001-17-PAGE-UNCHARGETRACE-RESULT.md
-
 Raw:
-- files 120
-- bytes 13,731,781
-- content-set SHA:
-  aeee124d149aab0fb66023ff527e4982027b523290d864f5bc4e00a33a216335
+- 128 files
+- 1,857,693 bytes
+- SHA:
+  \`c6ab5dbc6f218b4a992794e22df8baa6ef8ba5a8d219621ab2f1adcc1eb3abe8\`
 
 Drive:
-Catfood Lab Evidence/finite-ram-lab/OBS-001-17-PAGE-UNCHARGETRACE-v1/run-36615514509
+\`Catfood Lab Evidence/finite-ram-lab/OBS-002-LRU-BATCH-OCCUPANCY-v1/run-36617444105\`
 
 Verification:
 5/5 BYTE-IDENTICAL PASS
 
 ## Next
 
-OBS-002:
-trace LRU-batch occupancy and page-counter identity.
+OBS-003 residual-caller discriminator.
 
-Primary prediction:
-pre-touch14 occupancy 30 -> fill 31 -> flush -> uncharge17.
+Question:
+what causes the exact -17 specimens without a worker LRU flush?
+
+Trace:
+- page_counter_uncharge17 + stacktrace
+- drain_stock
+- worker LRU flush
+- worker folios_put
+
+No high-frequency lru_add probe.
 
 ## Authority
 
