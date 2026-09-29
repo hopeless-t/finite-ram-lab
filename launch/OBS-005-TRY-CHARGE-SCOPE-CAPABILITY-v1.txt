@@ -1,0 +1,18 @@
+OBS-005 scoped try_charge_memcg capability v1
+
+Human authorization:
+Continue finite-ram-lab forensic research on 2026-09-30 JST.
+
+Purpose:
+Verify that the hosted cgroup-v2 kernel can delimit try_charge_memcg with entry/return kprobes and observe page_counter_try_charge inside that dynamic scope.
+
+Authorized:
+- one standard GitHub-hosted ubuntu-26.04 capability run
+- try_charge_memcg entry probe
+- try_charge_memcg return probe
+- page_counter_try_charge probe
+- no scientific endpoint
+- no local-PC execution
+- no paid runner
+
+Stop on capability failure.
