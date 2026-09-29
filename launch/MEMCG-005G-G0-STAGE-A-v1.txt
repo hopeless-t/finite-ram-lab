@@ -1,0 +1,27 @@
+MEMCG-005G-G0 Stage A explicit scientific launch
+
+Human authorization:
+User explicitly continued from the B384 launch boundary in chat on 2026-09-30 JST.
+
+Scope frozen by B384:
+- 16 independent GitHub-hosted ubuntu-26.04 blocks
+- 60 candidates per block
+- 960 total candidates
+- unchanged experiments/memcg005d_worker.c
+- six arms: C8=8, P8=08, C9=9, P9=09, H10=10, H32=32
+- primary: P8+P9 vs C8+C9
+- secondary: H10+H32 vs P8+P9
+- VmPTE first-fault receipt
+- failure-only one-step second-touch biopsy
+- raw artifact retention 7 days
+- aggregate retention 30 days
+- full raw evidence manifest + immediate verification
+
+Resource boundary:
+- standard GitHub-hosted runner only
+- no larger runner
+- no local-PC execution
+- no 5760-candidate G-G replication
+- no post-hoc scale expansion
+
+This marker authorizes only MEMCG-005G-G0 Stage A v1.
