@@ -1,59 +1,69 @@
 # CURRENT
 
-> **Latest bounce:** B318
-> **Stage:** MEMCG-004 PASS / CALIBRATED STOCK ESTABLISHED
-> **Turn stop reason:** READY_FOR_NEXT_DESIGN
+> **Latest bounce:** B319
+> **Stage:** MEMCG-005 CALIBRATED SEVEN-SLOT DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## MEMCG-004 canonical result
+## MEMCG-004 accepted result
 
-Run:
-`36541998246`
+Canonical commit:
+`acdcb6e28baa448cd5f38d7ef960b6bbf321ac80`
 
 Decision:
 `SUPPORT_CALIBRATED_STOCK`
 
-CALIBRATED:
-- fresh +64 calibration observed in 4/4 blocks;
-- calibration touch indices [2,5,5,4];
-- passive hold stable in 4/4;
-- next +64 charge at validation touch 64 in 4/4.
+Exact calibrated phase:
+`R=[64,64,64,64]`
 
-NO_HOLD:
-- R=64 in 4/4.
+This supplies a validated state primitive.
 
-CONTROL_NO_PRIME:
-- R=[5,5,3,4].
+## MEMCG-005 frozen design
 
-Model:
-- unique best R=64;
-- absolute error 0;
-- 21-bit description advantage over arbitrary event locations.
+`docs/MEMCG-005-CALIBRATED-K7-v1.md`
 
-Canonical result:
-`docs/MEMCG-004-RESULT.md`
+Key improvement:
+do not infer a stock slot from worker existence.
 
-## Accepted mechanism-level advance
+All worker identities are prestarted first.
 
-Worker existence is not a known stock state.
+Every worker is normalized to EMPTY:
+1. find fresh +64;
+2. consume exactly 63 pages;
+3. stop before next miss.
 
-An observed fresh +64 batch followed by immediate stop **is** a reproducible calibration point.
+Every measured insertion is then required to produce a fresh +64 charge.
 
-The subsequent 63 no-charge touches plus fresh charge on touch64 are exactly source-consistent with 63 cached pages.
+Independent one-shot replicas test:
+`m={0,5,6,7,8}`
+
+Primary K7 signature:
+- 0 -> PRESENT
+- 5 -> PRESENT
+- 6 -> PRESENT
+- 7 -> ABSENT
+- 8 -> ABSENT
+
+4 blocks × 5 replicas.
+
+Target is probed exactly once per replica.
 
 ## MATH-002
 
-Prior pmndrs/math sidecar remains:
-`INFRA_FAILURE / NO_SCIENTIFIC_RESULT`
-
-It does not affect MEMCG-004.
+pmndrs/math sidecar remains infrastructure-failed with no scientific result.
+It is secondary and does not block MEMCG-005.
 
 ## Next fresh-bounce action
 
-Freeze MEMCG-005 as a calibrated seven-slot capacity experiment.
+Implement MEMCG-005 only:
+- extend interactive worker with bounded multi-touch command if needed;
+- prestart/normalize orchestration;
+- verified insertion receipts;
+- one-shot target probe;
+- sparse-boundary model analyzer with equivalence-class reporting;
+- synthetic tests;
+- hosted workflow.
 
-Prefer a one-shot replica design if testing target state after each challenger would mutate the state being measured.
-
-Do not launch during design.
+Do not launch during implementation.
 
 ## Authority boundary
 
