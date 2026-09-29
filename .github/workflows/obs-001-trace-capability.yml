@@ -1,0 +1,89 @@
+name: OBS-001 memcg trace capability gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "launch/OBS-001-TRACE-CAPABILITY-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  trace-capability:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Kernel receipt
+        run: |
+          set -euo pipefail
+          uname -a
+          getconf PAGESIZE
+          test -d /sys/kernel/tracing || true
+          grep -w 'memcg_uncharge' /proc/kallsyms | head || true
+          grep -w 'refill_stock' /proc/kallsyms | head || true
+
+      - name: Kprobe capability gate
+        run: |
+          set -euo pipefail
+
+          TRACE=/sys/kernel/tracing
+          if ! mountpoint -q "$TRACE"; then
+            sudo mount -t tracefs nodev "$TRACE"
+          fi
+
+          cleanup() {
+            set +e
+            echo 0 | sudo tee "$TRACE/events/kprobes/frl_memcg_uncharge/enable" >/dev/null 2>&1
+            echo 0 | sudo tee "$TRACE/events/kprobes/frl_refill_stock/enable" >/dev/null 2>&1
+            printf '%s\n' '-:frl_memcg_uncharge' | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            printf '%s\n' '-:frl_refill_stock' | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+          }
+          trap cleanup EXIT
+          cleanup
+
+          test -w "$TRACE/kprobe_events" || {
+            echo "TRACE_CAPABILITY_HOLD: kprobe_events not writable"
+            exit 20
+          }
+
+          printf '%s\n' \
+            'p:frl_memcg_uncharge memcg_uncharge memcg=$arg1:x64 nr_pages=$arg2:u32' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          printf '%s\n' \
+            'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          test -f "$TRACE/events/kprobes/frl_memcg_uncharge/format"
+          test -f "$TRACE/events/kprobes/frl_refill_stock/format"
+
+          cat "$TRACE/events/kprobes/frl_memcg_uncharge/format"
+          cat "$TRACE/events/kprobes/frl_refill_stock/format"
+
+          echo 1 | sudo tee "$TRACE/events/kprobes/frl_memcg_uncharge/enable" >/dev/null
+          echo 1 | sudo tee "$TRACE/events/kprobes/frl_refill_stock/enable" >/dev/null
+
+          test "$(cat "$TRACE/events/kprobes/frl_memcg_uncharge/enable")" = "1"
+          test "$(cat "$TRACE/events/kprobes/frl_refill_stock/enable")" = "1"
+
+          echo "TRACE_CAPABILITY_PASS"
+
+      - name: Cleanup readback
+        if: always()
+        run: |
+          TRACE=/sys/kernel/tracing
+          if mountpoint -q "$TRACE"; then
+            if test -e "$TRACE/events/kprobes/frl_memcg_uncharge/enable"; then
+              echo "cleanup_fail: frl_memcg_uncharge still exists"
+              exit 30
+            fi
+            if test -e "$TRACE/events/kprobes/frl_refill_stock/enable"; then
+              echo "cleanup_fail: frl_refill_stock still exists"
+              exit 31
+            fi
+          fi
+          echo "TRACE_CLEANUP_PASS"
