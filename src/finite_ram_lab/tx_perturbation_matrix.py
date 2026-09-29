@@ -935,32 +935,40 @@ def run_trial(
     )
 
     if arm == "CLEAN":
-        challenge_pass = (
+        challenge_classification_pass = (
             challenge.get("result") == "CLEAN_COMMIT"
-            and archive.tx.state is State.SUCCESS
-            and archive.tx.reprimes == 0
         )
     elif arm == "RELEASE_ONLY":
-        challenge_pass = (
+        challenge_classification_pass = (
             challenge.get("result") == "RELEASE_PRESERVED_AND_COMMITTED"
             and archive.tx.release_only_count >= 1
-            and archive.tx.state is State.SUCCESS
-            and archive.tx.reprimes == 0
         )
     elif arm == "UNEXPECTED_REFILL":
-        challenge_pass = (
+        challenge_classification_pass = (
             challenge.get("result") == "UNEXPECTED_REFILL_INVALIDATED"
-            and fresh_recovery_q64
-            and archive.tx.state is State.SUCCESS
-            and archive.tx.reprimes == 1
         )
     else:
-        challenge_pass = (
+        challenge_classification_pass = (
             challenge.get("result") == "PTE_GROWTH_INVALIDATED"
-            and fresh_recovery_q64
+        )
+
+    recovery_pass = (
+        not recovery_required
+        or (
+            fresh_recovery_q64
             and archive.tx.state is State.SUCCESS
             and archive.tx.reprimes == 1
         )
+    )
+    completion_pass = (
+        challenge_classification_pass
+        and recovery_pass
+        and (
+            recovery_required
+            or archive.tx.state is State.SUCCESS
+        )
+    )
+    challenge_pass = challenge_classification_pass
 
     return {
         "experiment_id": spec["experiment_id"],
@@ -978,6 +986,9 @@ def run_trial(
         "archive": archive.as_dict(),
         "final_state": archive.tx.state.value,
         "reprimes": archive.tx.reprimes,
+        "challenge_classification_pass": challenge_classification_pass,
+        "recovery_pass": recovery_pass,
+        "completion_pass": completion_pass,
         "challenge_pass": challenge_pass,
     }
 
@@ -1035,10 +1046,15 @@ def run_block(
         "experiment_id": spec["experiment_id"],
         "block": block,
         "trial_count": len(trials),
-        "challenge_pass": sum(bool(t["challenge_pass"]) for t in trials),
+        "challenge_pass": sum(
+            bool(t["challenge_classification_pass"]) for t in trials
+        ),
+        "completion_pass": sum(bool(t["completion_pass"]) for t in trials),
         "by_arm": {
             t["arm"]: {
-                "pass": bool(t["challenge_pass"]),
+                "pass": bool(t["challenge_classification_pass"]),
+                "completion_pass": bool(t["completion_pass"]),
+                "recovery_pass": bool(t["recovery_pass"]),
                 "final_state": t["final_state"],
                 "reprimes": t["reprimes"],
                 "result": t["challenge"].get("result"),
@@ -1058,7 +1074,15 @@ def aggregate(spec: dict[str, Any], input_root: Path) -> dict[str, Any]:
         rows = [t for t in trials if t["arm"] == arm]
         by_arm[arm] = {
             "n": len(rows),
-            "pass": sum(bool(t["challenge_pass"]) for t in rows),
+            "pass": sum(
+                bool(t["challenge_classification_pass"]) for t in rows
+            ),
+            "completion_pass": sum(
+                bool(t["completion_pass"]) for t in rows
+            ),
+            "recovery_pass": sum(
+                bool(t["recovery_pass"]) for t in rows
+            ),
             "success": sum(t["final_state"] == "SUCCESS" for t in rows),
             "target_fail": sum(
                 any(
@@ -1077,12 +1101,16 @@ def aggregate(spec: dict[str, Any], input_root: Path) -> dict[str, Any]:
         )
         for trial in trials
     )
-    challenge_pass = sum(bool(t["challenge_pass"]) for t in trials)
+    challenge_pass = sum(
+        bool(t["challenge_classification_pass"]) for t in trials
+    )
+    completion_pass = sum(bool(t["completion_pass"]) for t in trials)
 
     return {
         "experiment_id": spec["experiment_id"],
         "trial_count": len(trials),
         "challenge_pass_count": challenge_pass,
+        "completion_pass_count": completion_pass,
         "target_fail": target_fail,
         "by_arm": by_arm,
         "matrix_pass": (
@@ -1093,6 +1121,11 @@ def aggregate(spec: dict[str, Any], input_root: Path) -> dict[str, Any]:
                 by_arm[arm]["n"] == 4 and by_arm[arm]["pass"] == 4
                 for arm in ARM_ORDER
             )
+        ),
+        "end_to_end_pass": (
+            len(trials) == 16
+            and completion_pass == 16
+            and target_fail == 0
         ),
         "trials": trials,
     }
@@ -1146,6 +1179,8 @@ def main() -> None:
             {
                 "matrix_pass": result["matrix_pass"],
                 "challenge_pass_count": result["challenge_pass_count"],
+                "completion_pass_count": result["completion_pass_count"],
+                "end_to_end_pass": result["end_to_end_pass"],
                 "target_fail": result["target_fail"],
                 "by_arm": result["by_arm"],
             },
