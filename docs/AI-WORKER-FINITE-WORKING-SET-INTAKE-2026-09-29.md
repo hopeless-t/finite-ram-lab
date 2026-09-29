@@ -18,6 +18,13 @@
    https://arxiv.org/abs/2609.28820
 6. Tabelog Tech Blog — AI requirements-definition workflow using staged/priority-tagged questions  
    https://tech-blog.tabelog.com/entry/ai-requirements-definition-with-questions
+7. Cloudflare — *Introducing cf: the agentic CLI for the entire Cloudflare API*  
+   https://blog.cloudflare.com/cloudflare-cf-cli-launch/
+8. GPT Researcher — commit-pinned Jev context-filter implementation and evals  
+   https://github.com/assafelovic/gpt-researcher/blob/0957c301ed06c2a5857b834358c7227c739041d4/gpt_researcher/context/jev_filter.py  
+   https://github.com/assafelovic/gpt-researcher/blob/0957c301ed06c2a5857b834358c7227c739041d4/evals/context_filter/README.md
+9. Claude / claude.dev — *Automating eval design and hillclimbing with Claude*  
+   https://claude.dev/blog/automating-eval-design-and-hillclimbing/
 
 ## Source observations
 
@@ -74,6 +81,40 @@ The deferred questions were not equivalent to deleted questions.
 ### S5 — Tool definitions themselves can become a finite working-set problem
 
 OpenAI Tool Search defers tool definitions and loads only the subset needed by the current request. This is not a RAM mechanism, but it supplies a concrete AI-runtime example where total available capacity and active resident description are intentionally separated.
+
+### S6 — A 3,000-operation capability universe can stay addressable without being resident
+
+Cloudflare's `cf` CLI is generated across more than 3,000 API operations, but the agent-facing discovery path uses `cf cli search` over a small search index. Cloudflare also makes JSON the default interface and explicitly frames compact machine-readable output as a context-saving measure.
+
+**Observed system property:**
+
+```text
+addressable capability universe
+!=
+resident command description set
+```
+
+This is structurally analogous to virtual addressability versus physical residency, without implying the same mechanism.
+
+### S7 — Evidence selection can be treated as a working-set problem
+
+GPT Researcher's commit-pinned Jev path scores scraped chunks by question usefulness and keeps a bounded subset for context. Its evaluation harness compares Jev against embeddings and no filtering on recorded pages.
+
+**Observed system property:**
+
+```text
+retrieved corpus
+!=
+resident evidence context
+```
+
+This creates a second AI-worker working-set domain beside tool schemas: evidence passages.
+
+### S8 — Optimization needs held-out validation, not only lower footprint
+
+Claude's eval/hillclimb guidance keeps one change only when both train and held-out test improve; regressions and train-only improvements are reverted. It also recommends against merging gains that remain within eval noise.
+
+**Research consequence:** a smaller active working set is not a success criterion by itself. Any future AI-worker controller must measure task quality and held-out regressions alongside token or latency reduction.
 
 ## Atomic decomposition
 
@@ -140,7 +181,26 @@ A governed AI worker should be able to distinguish:
 - content represented only by a lossy summary;
 - content discarded.
 
-### A5 — Prefetch depth is an optimization variable
+### A5 — Selection policy and authority policy are different variables
+
+The same item can be:
+
+- available but not resident;
+- resident but not selected;
+- selected but not authorized;
+- authorized but not yet used.
+
+This matters when the working-set object is a tool rather than passive evidence.
+
+```text
+residency decision
+!=
+execution authority
+```
+
+Finite RAM Lab should model this only as a cross-domain control distinction; authority semantics belong to MVCA / tool-surface research.
+
+### A6 — Prefetch depth is an optimization variable
 
 The finite-working-set model predicts a tradeoff:
 
@@ -206,6 +266,37 @@ Test prefetch depth (d in {0,1,2,4,...}) under fixed context pressure.
 
 Measure hit rate, wasted prefetched bytes/tokens, latency, and active-footprint pressure.
 
+### AIWS-004 — unified finite-working-set benchmark
+
+Run matched tasks while independently varying:
+
+- total universe size;
+- resident subset size;
+- selection quality;
+- restore/retrieval fidelity;
+- pressure threshold.
+
+Apply the same accounting vocabulary to tool schemas and evidence passages, while keeping domain-specific mechanisms separate.
+
+Primary endpoints:
+
+- task success;
+- active tokens;
+- total tokens;
+- retrieval/page-in count;
+- stale or missing critical-state rate.
+
+### AIWS-005 — usefulness selection vs similarity selection
+
+Using a frozen corpus and fixed context budget, compare:
+
+1. no filtering;
+2. similarity-based top-k;
+3. usefulness-scored top-k;
+4. keyword/BM25 fallback.
+
+Measure answer fidelity, source coverage, active tokens, selection latency, and repeated retrieval. This is motivated by GPT Researcher's public Jev evaluation design; it is not a claim that Jev is universally optimal.
+
 ## Relationship to current Finite RAM Lab
 
 This intake does not alter the physical-RAM experimental program.
@@ -226,7 +317,7 @@ Physical results must not be presented as direct evidence for AI-worker behavior
 
 Allowed:
 
-- primary sources demonstrate real systems using offload, summarization, deferred loading, and staged active subsets;
+- primary sources demonstrate real systems using offload, summarization, deferred loading, staged active subsets, searchable capability catalogs, and bounded evidence selection;
 - these systems motivate a cross-domain finite-working-set hypothesis;
 - reversible retrieval and lossy compaction are experimentally separable.
 
