@@ -1,17 +1,17 @@
 # CURRENT
 
-> Latest bounce: B373
-> Stage: MEMCG-005G-E EXPLICIT HOSTED LAUNCH
-> Stop: RUN_DISCOVERY_PENDING
-
-Implementation:
-`2c61ba703230bb062b822fdab541c5359f7f1d48`
-
-CI:
-`36572718726 = success`
+> Latest bounce: B374
+> Stage: MEMCG-005G-E hosted adaptive refinement
+> Stop: EXTERNAL_WAIT
 
 Launch:
 `272c75dc49fad06d1489d20489332c982fd08c03`
+
+Scientific run:
+`36574778995`
+
+Single B374 read:
+`in_progress`
 
 Frozen panel:
 `{8,12,16,19,22,26,32,70}`
@@ -22,8 +22,10 @@ Scale:
 Models:
 CONSTANT / HARD_STEP / SMOOTH_SIGMOID / CATEGORICAL.
 
+Do not poll again in this bounce.
+
 Next fresh bounce:
-discover/read exact-head MEMCG-005G-E scientific run once.
+read run `36574778995` exactly once.
 
 Hosted research only.
 No local-PC execution.
