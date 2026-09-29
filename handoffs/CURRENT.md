@@ -1,105 +1,134 @@
 # CURRENT
 
-> Latest bounce: B401
-> Stage: HISTORICAL TRANSACTIONAL REPLAY COMPLETE
+> Latest bounce: B402
+> Stage: ASSUMPTION DEPENDENCY AUDIT COMPLETE
 > Stop: PHYSICAL PAUSE / READY FOR NATIVE CONTROLLED-SPAWN TRANSACTION BRIDGE
 
-## Success semantics
+## Core result
 
-SUCCESS is no longer first-touch luck or net memory.current.
+The transactional reclassification does **not** require finite-ram-lab to restart from zero.
 
-Canonical path:
+Separate three layers:
 
-predict -> normalize -> verify -> execute -> commit
+1. raw observations;
+2. hidden-state interpretation;
+3. transactional certification.
 
-Verified Q64 token requires:
+Most historical mathematics was fitted to immutable raw morphology such as:
 
-- page_counter_try_charge(64)
-- refill_stock(63)
-- PTE clean
-- CPU match
-- trace complete
+`first_touch_delta_pages == 0`
 
-## Outcomes
+Therefore many numerical results survive while their estimand names and causal claim ceilings change.
 
-SUCCESS:
-complete verified epoch + target match + commit.
+## MATH audit
 
-TARGET_FAIL:
-verified uninterrupted epoch + genuine target mismatch.
+No MATH-001..018 result requires a mandatory numerical refit solely because B400 changed SUCCESS/FAIL semantics.
 
-NO_RESULT:
-state invalidation -> REPRIME, bounded-budget ABORT, or legacy receipt gap in historical replay.
+### KEEP
 
-Do not retry TARGET_FAIL away.
+- MATH-001
+- MATH-002
+- MATH-008
+- MATH-009
+- MATH-010
+- MATH-016
+- MATH-017
+- MATH-018
 
-## B401 historical replay
+### REINTERPRET
 
-Frozen historical endpoints remain unchanged.
+- MATH-003
+- MATH-004
+- MATH-005
+- MATH-006
+- MATH-007
+- MATH-011
+- MATH-012
+- MATH-014
 
-Controlled-spawn v2 remains:
+These remain numerically usable for natural exact-zero / hidden-state / normalization phenomena.
 
-- strict 49/72
-- primer found 55/72
-- primer-qualified terminal match 55/55
+### SUPERSEDED
 
-B400 replay of that historical target run:
+MATH-013:
+- b62/b63/b64 stock arithmetic survives;
+- its legacy net-delta certification boundary is superseded by B400 direct receipts.
 
-- TX_SUCCESS = 0
-- TX_TARGET_FAIL = 0
-- TX_NO_RESULT_RECEIPT_GAP = 72
+MATH-015:
+- descriptive +17/-17 statistics survive;
+- H17-STOCK/drain origin is superseded by OBS-005/MATH-016 shared-LRU handoff evidence.
 
-Reason:
-the run predates the required direct charge64 + refill63 receipt pair.
+## Experiment audit
 
-This is a certification gap, not a performance estimate.
+Do not recollect the natural-state corpus.
 
-OBS-006 corrected:
+MEMCG-005C/D/E/F and G-A/B/D/E/F/G0 are reinterpreted as first-touch state-acquisition / natural hidden-state datasets.
 
-- 14/16 -> TX_NONTERMINAL_VERIFIED
-- 2/16 -> TX_NO_RESULT_INVALIDATED / unexpected refill
-- 0 -> TX_TARGET_FAIL
+Controlled-spawn v2 requires a **successor** for B400 correctness, not a literal repeat.
 
-G0 LOW PTE-growth subset:
+Historical:
 
-- historical net-Q64 5/5
-- B400 -> 5/5 TX_NO_RESULT_INVALIDATED / PTE_GROWTH
+- strict 49/72 remains frozen;
+- primer-qualified terminal pattern 55/55 remains frozen.
 
-MEMCG-005F first-touch zeros and G-A biopsies are now explicitly pre-transaction initial-state / normalization observations, not target failures.
+B400 accepted-result correctness is historically non-identifiable because the required direct charge64 + refill63 receipt pair was not collected.
 
-No historical observation currently demonstrates a genuine target mismatch after a B400-complete verified uninterrupted epoch.
+Important:
 
-That is not a zero-failure probability claim.
+`certified historical accepts = 0`
 
-## Replay artifacts
+must not be interpreted as:
 
-- analysis/inputs/HISTORICAL-TRANSACTION-REPLAY-v1.json
-- docs/RETROSPECTIVE-TRANSACTIONAL-RECLASSIFICATION-v1.md
-- handoffs/B401-HISTORICAL-TRANSACTION-REPLAY.md
+`physical success probability = 0`.
 
-## Existing implementation
+The replay JSON was updated to schema v1.1 to make that distinction machine-readable.
 
-- src/finite_ram_lab/transactional_reprime.py
-- src/finite_ram_lab/transactional_receipt_adapter.py
-- specs/TRANSACTIONAL-REPRIME-v1.json
-- schemas/TRANSACTION-RECEIPT-PACKET-v1.schema.json
-- docs/MATH-018-TRANSACTIONAL-REPRIME-RELIABILITY.md
-- docs/COUNCIL-2026-09-30-TRANSACTIONAL-SUCCESS-v1.md
-- docs/TRANSACTIONAL-REPRIME-RECEIPT-ADAPTER-v1.md
+## Research topology
+
+### Track N — Natural Hidden-State Ecology
+
+Reuse historical samples to study:
+
+- CAP10-neighborhood association;
+- initial residual phase;
+- depth1/deep tail;
+- PTE perturbation;
+- normalization burden predictors.
+
+### Track T — Transactional Correctness
+
+Acquire new B400-native samples only for:
+
+- verified-reset acquisition;
+- invalidation causes;
+- re-prime burden;
+- genuine TARGET_FAIL;
+- accepted-result correctness;
+- abort/abstention.
+
+### Bridge
+
+`X -> normalization burden -> verified reset -> target transition`
+
+replaces the old one-step:
+
+`X -> SUCCESS/FAIL`.
+
+## New artifacts
+
+- analysis/inputs/ASSUMPTION-DEPENDENCY-AUDIT-v1.json
+- docs/MATH-019-SEMANTIC-DEPENDENCY-AUDIT.md
+- handoffs/B402-ASSUMPTION-DEPENDENCY-AUDIT.md
+
+Updated:
+
+- analysis/inputs/HISTORICAL-TRANSACTION-REPLAY-v1.json -> schema v1.1
 
 ## Next
 
 Build the native controlled-spawn -> TRANSACTION-RECEIPT-PACKET bridge.
 
-The next small physical pilot must emit the complete B400 chain from the start:
-
-- NORMALIZE direct charge/refill receipts
-- classified release-only emissions
-- PTE/CPU/worker/trace guards
-- CONSUME packets
-- TARGET packet
-- COMMIT
-- bounded REPRIME
+Then design the smallest information-maximizing transactional pilot.
 
 Do not launch a large b63 reliability certification yet.
 
