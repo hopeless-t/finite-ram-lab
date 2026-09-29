@@ -1,0 +1,8 @@
+MEMCG-005E explicit hosted launch
+B349
+Implementation: 4931eea15e96b3d9ba2e961ae5e9a887921a4ad5
+CI: 36555769313 success
+Prospective threshold frozen before launch: LOW iff pre_current_pages <= 110.
+Arms: LOCAL_P and REMOTE_S.
+32 identities per arm per block; 4 blocks; 256 probes.
+Hosted research only. No local execution.
