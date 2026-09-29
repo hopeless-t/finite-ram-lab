@@ -1,215 +1,203 @@
 # CURRENT
 
-> Latest bounce: B410
-> Stage: MONTE CARLO AGE-DECOUPLING EXPERIMENT SELECTED
-> Stop: PHYSICAL PAUSE / READY FOR SUCCESSOR TRANSACTIONAL-SPAWN RUNNER
+> Latest bounce: B412
+> Stage: B404 PHYSICAL PROTOCOL SMOKE PASS
+> Stop: B404 COMPLETE / READY TO IMPLEMENT B405 PERTURBATION MATRIX
 
 ## Chapter II objective
 
-Capture an unexplained verified-epoch boundary shift and discriminate whether its hazard is driven primarily by:
+Capture an unexplained verified-epoch boundary shift and distinguish real state mutation from observer contamination before reliability scaling.
 
-- measured touch activity;
-- wall-clock exposure;
-- boundary-local finite-state transitions;
-- or a still-unobserved mechanism.
+## Clean boundary invariant
 
-## Boundary invariant
+After a verified direct Q64:
 
-After verified direct Q64:
+`R_0 = 63`
 
-R_0 = 63
+and, under a complete uninterrupted clean epoch:
 
-and, under a clean uninterrupted epoch:
+`R_t = 63 - t`.
 
-R_t = 63 - t.
+The canonical next direct-Q64 boundary is:
 
-Therefore the canonical next direct-Q64 boundary is:
-
-T_0 = 64.
+`T_0 = 64`.
 
 Define:
 
-Delta = T - 64.
+`Delta = T - 64`.
 
-Any complete unexplained Delta != 0 is frozen as an evidence specimen.
+A complete unexplained `Delta != 0` remains the Chapter-II rare specimen.
 
-## B406-B408 observer stack
+## B404 R1 — observer falsification
 
-Implemented:
+Run:
 
-- TRANSACTION-RECEIPT-PACKET-v2
-- epoch-local owner_counter
-- touch-age and wall-clock-age telemetry
-- source-grounded RELEASE_ONLY classification
-- transaction_epoch_archive
-- re-prime clears observer authority
-- native FRL_TX marker wrapper around the frozen Chapter-I _touch()
-
-Synthetic replay/observer CI passed.
-
-## B409 rare-transition capture
-
-Frozen:
-
-- specs/TX-BOUNDARY-DEVIATION-HUNT-v1.json
-- docs/MATH-022-BOUNDARY-INVARIANT-RARE-TRANSITION-CAPTURE.md
-
-Rare specimen:
-
-UNEXPLAINED_BOUNDARY_DEVIATION
-
-requires:
-
-- verified Q64 start
-- complete trace
-- CPU/worker clean
-- no PTE growth
-- no drain
-- no known state-changing antecedent
-- owner releases absent or positively classified
-- T != 64
-
-## B410 Monte Carlo experiment selection
-
-Reproducible MC:
-
-- src/finite_ram_lab/tx_age_decoupling_mc.py
-- tests/test_tx_age_decoupling_mc.py
+- 36642120375
+- launch commit `0d2a3286f3e0346e101285c52670e0ab817e427c`
 
 Frozen result:
 
-- analysis/inputs/TX-AGE-DECOUPLING-DESIGN-MC-v1.json
+- normal SUCCESS 10/12
+- TARGET_FAIL 0
+- instrumentation hold 1
+- ABORTED 1
+- sentinel PASS
+- protocol smoke FAIL under observer v1
+
+R1 exposed two observer defects:
+
+1. all observed `drain_stock` events were being treated as target-state mutation without CPU/context attribution;
+2. an owner `page_counter_uncharge(...,17)` could fail attribution when its known LRU stack was not captured inside the narrow same-window flush/put envelope.
+
+Raw forensics:
+
+- 12 v1 drain invalidations
+- 9/12 off target stock CPU
+- 3/12 same stock CPU during direct-Q64 NORMALIZE refill/slot replacement
+- zero observed same-stock-CPU post-verification drains
+
+R1 remains frozen and is not rewritten as success.
+
+Artifacts:
+
+- `analysis/inputs/B404-R1-OBSERVER-RECLASSIFICATION-v1.json`
+- `docs/B404-R1-TRANSACTIONAL-SPAWN-PHYSICAL-RESULT.md`
+
+## Observer R2 correction
+
+Implemented and CI-tested:
+
+- trace CPU attribution
+- off-stock-CPU drain ignored as target-stock mutation
+- direct-Q64 NORMALIZE slot eviction distinguished from destruction of the newly established residual
+- same-stock-CPU post-verification drain remains invalidating
+- owner uncharge17 may be positively grounded by the known LRU/folio stack
+- unknown owner uncharge remains fail-closed
+- evidence-manifest records sorted by normalized relative path
+
+The target arithmetic and transaction semantics were not changed.
+
+## B404 R2 — physical PASS
+
+Valid run:
+
+- **36642946787**
+- launch commit `c6c0feb8db7d6314dddddf9b15d2c7ab5f1d19aa`
+
+Normal lane:
+
+- **12/12 SUCCESS**
+- b62 = 4/4
+- b63 = 4/4
+- b64 = 4/4
+- TARGET_FAIL = 0
+- instrumentation hold = 0
+- normal-lane re-prime = 0
+
+Sentinel:
+
+- forced epoch0 UNEXPECTED_REFILL detected
+- invalidated epoch could not commit
+- hard re-prime opened epoch1
+- epoch1 required a fresh direct Q64
+- final SUCCESS
+- sentinel PASS
+
+Aggregate:
+
+- `protocol_smoke_pass = true`
+- `reprimes_total = 1`
+- `invalidation_counts = {UNEXPECTED_REFILL: 1}`
+
+The one invalidation/re-prime is intentional sentinel behavior.
+
+Observer telemetry in the normal lane:
+
+- classified release-only = 0
+- unknown emission = 0
+- off-stock-CPU drain observations safely ignored = 4
+- NORMALIZE internal slot-drain observations safely ignored = 4
+
+## Evidence
+
+Machine result:
+
+- `analysis/inputs/B404-R2-PHYSICAL-RESULT-v1.json`
 
 Narrative:
 
-- docs/MATH-023-AGE-DECOUPLING-DESIGN-MONTE-CARLO.md
+- `docs/B404-R2-TRANSACTIONAL-SPAWN-PHYSICAL-PASS.md`
 
 Handoff:
 
-- handoffs/B410-MONTE-CARLO-AGE-DECOUPLING-DESIGN.md
+- `handoffs/B412-B404-PHYSICAL-PASS.md`
 
-The MC is design sensitivity only.
+Raw manifest:
 
-It does not estimate the real unexplained-deviation rate from historical 49/72 or 55/55 data.
+- files = 63
+- content-set SHA-256 = `d5c819b4b7d413faa6f635fc9062f0941ee570afebbb149d5d8c1f33d05127cf`
 
-Planning ranges:
+Aggregate artifact:
 
-- LOW: 0.1%..1%
-- CENTRAL: 0.2%..5%
-- HIGH: 1%..10%
+- ID = 11067486294
+- digest = `sha256:2a6b9d5fd0af968e89d8ceaca90b468ebd745641b40178ac9f50d09e73ce4e37`
 
-## Selected Stage A
+## Claim boundary
 
-Spec:
+B404 proves protocol-smoke behavior for this 13-identity physical panel.
 
-- specs/TX-AGE-DECOUPLING-v1.json
+It does **not** prove:
 
-Use b63 only.
+- population-level 100% reliability;
+- zero TARGET_FAIL probability;
+- absence of unknown state-changing mechanisms.
 
-16 identities:
+## Monte Carlo-selected discovery design
 
+B410 remains frozen for the later discovery stage:
+
+Stage A:
+
+- b63 only
 - FAST x4
 - HOLD32 x12
+- target wall-clock exposure ratio F ~= 16
 
-Four randomized blocks:
-
-- 1 FAST
-- 3 HOLD32
-
-Target wall-clock exposure ratio:
-
-F = 16
-
-while measured-touch count is unchanged.
-
-After B404/B405 provide physical FAST timing:
-
-tau_fast = median VERIFIED -> canonical boundary duration
-
-then:
-
-dwell ~= 15 * tau_fast
-
-after post-primer touch 32.
-
-## Monte Carlo result
-
-Central sensitivity:
-
-FAST4 + HOLD12, F=16:
-
-- balanced TOUCH/TIME discrimination ~= 81.1%
-- P(any deviation | TIME) ~= 77.6%
-- P(any deviation | TOUCH) ~= 19.8%
-
-20 identities raises balanced discrimination only to about 82.2%.
-
-24 raises it only to about 82.5%.
-
-Therefore start with 16.
-
-## Adaptive Stage B
-
-Open only if Stage-A HOLD32 captures at least one complete unexplained boundary deviation.
-
-Then run:
+Stage B only if triggered:
 
 - HOLD8 x4
 - HOLD32 x4
 - HOLD56 x4
 
-using the same dwell duration.
+Do not run age decoupling before B405.
 
-Central MC:
+## Next physical stage
 
-if TOUCH true:
-- Stage-A trigger ~= 15.5%
-- expected total identities ~= 17.9
-- >=2 Stage-B positions with events conditional on opening ~= 2.9%
+B405 causal perturbation matrix:
 
-if TIME true:
-- Stage-A trigger ~= 77.2%
-- expected total identities ~= 25.3
-- >=2 Stage-B positions with events conditional on opening ~= 59.0%
+- CLEAN x4
+- RELEASE_ONLY x4
+- UNEXPECTED_REFILL x4
+- PTE_GROWTH x4
 
-## Delta fingerprint
+Goal:
 
-If a full-drain-like event occurs during the dwell:
+prove that the physical classifier responds asymmetrically:
 
-- HOLD8 -> Delta about -55
-- HOLD32 -> Delta about -31
-- HOLD56 -> Delta about -7
-
-If a hidden one-page consumption occurs instead:
-
-- Delta about -1 independent of hold position.
-
-Therefore Stage B converts a rare event into a position-dependent geometric fingerprint.
-
-## Decision
-
-Do not use the first discovery run as a passive fixed-tempo hunt.
-
-After validation, use randomized age decoupling:
-
-FAST x4 + HOLD32 x12.
-
-Physical order:
-
-1. implement successor transactional-spawn runner
-2. B404 protocol smoke
-3. B405 perturbation matrix
-4. TX-AGE-DECOUPLING Stage A
-5. Stage B only if triggered
-6. passive hazard mapping later
-7. reliability certification last
+- RELEASE_ONLY preserves the verified state;
+- UNEXPECTED_REFILL invalidates;
+- PTE_GROWTH invalidates;
+- CLEAN commits normally.
 
 ## Authority
 
-PAUSE.
-No local-PC execution.
+B404 physical experiment: COMPLETE / AUTHORIZED.
+
+Next:
+B405 implementation and preflight are authorized as continuation of the user-requested experiment program.
+
 No paid runner.
-No physical pilot.
-No perturbation matrix.
-No age-decoupling run.
+No larger runner.
+No local-PC execution.
+No age-decoupling launch until B405 passes.
 No reliability certification.
