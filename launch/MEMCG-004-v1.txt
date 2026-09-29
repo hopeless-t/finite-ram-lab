@@ -1,0 +1,5 @@
+MEMCG-004-CALIBRATED-STOCK-v1
+launch_authority=HOSTED_RESEARCH_ONLY
+prereg=docs/MEMCG-004-CALIBRATED-STOCK-v1.md
+ci_run=36541829267
+ci_conclusion=success
