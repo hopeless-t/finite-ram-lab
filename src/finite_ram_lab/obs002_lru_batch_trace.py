@@ -15,7 +15,6 @@ MARKER_RE = re.compile(
     r"FRL_OBS001 trial=(?P<trial>\d+:\d+) touch=(?P<touch>\d+) (?P<edge>PRE|POST)"
 )
 NR_RE = re.compile(r"\bnr=(?P<nr>\d+)")
-MOVE_RE = re.compile(r"\bmove=(?P<move>\S+)")
 COUNTER_RE = re.compile(r"\bcounter=(?P<counter>0x[0-9a-fA-F]+)")
 NR_PAGES_RE = re.compile(r"\bnr_pages=(?P<nr_pages>\d+)")
 
@@ -24,8 +23,6 @@ def _event_row(line: str) -> dict[str, Any]:
     out: dict[str, Any] = {"line": line.strip()}
     if (m := NR_RE.search(line)):
         out["nr"] = int(m.group("nr"))
-    if (m := MOVE_RE.search(line)):
-        out["move"] = m.group("move")
     if (m := COUNTER_RE.search(line)):
         out["counter"] = m.group("counter")
     if (m := NR_PAGES_RE.search(line)):
@@ -82,21 +79,24 @@ def _trial_files(root: Path) -> list[Path]:
 
 def aggregate(input_root: Path, trace_text: str) -> dict[str, Any]:
     windows = parse_trace_windows(trace_text)
-    trials = [json.loads(p.read_text(encoding="utf-8")) for p in _trial_files(input_root)]
+    trials = [
+        json.loads(path.read_text(encoding="utf-8"))
+        for path in _trial_files(input_root)
+    ]
 
-    specimens: list[dict[str, Any]] = []
-    first_touch_nr: list[int] = []
-    neg_touch_nr: list[int] = []
-    flush_nr: list[int] = []
+    negative_17: list[dict[str, Any]] = []
+    other_negative: list[dict[str, Any]] = []
+    first_flush_rows: list[dict[str, Any]] = []
+    all_add_counts: list[int] = []
 
     for trial in trials:
         trial_id = f"{trial['block']}:{trial['identity']}"
-        per_touch: list[dict[str, Any]] = []
+        first_flush_touch: int | None = None
 
         for touch in trial["touches"]:
-            key = (trial_id, int(touch["touch_number"]))
+            touch_number = int(touch["touch_number"])
             trace = windows.get(
-                key,
+                (trial_id, touch_number),
                 {
                     "lru_add": [],
                     "lru_flush": [],
@@ -105,76 +105,165 @@ def aggregate(input_root: Path, trace_text: str) -> dict[str, Any]:
                     "pc_uncharge_17": [],
                 },
             )
-
-            add_nrs = [
-                int(e["nr"])
-                for e in trace["lru_add"]
-                if "nr" in e and str(e.get("move", "")).startswith("lru_add")
-            ]
+            add_count = len(trace["lru_add"])
+            all_add_counts.append(add_count)
             flush_nrs = [
-                int(e["nr"])
-                for e in trace["lru_flush"]
-                if "nr" in e and str(e.get("move", "")).startswith("lru_add")
+                int(event["nr"])
+                for event in trace["lru_flush"]
+                if "nr" in event
             ]
-            put_nrs = [int(e["nr"]) for e in trace["folios_put"] if "nr" in e]
+            put_nrs = [
+                int(event["nr"])
+                for event in trace["folios_put"]
+                if "nr" in event
+            ]
 
-            if int(touch["touch_number"]) == 1 and add_nrs:
-                first_touch_nr.extend(add_nrs)
+            if first_flush_touch is None and 31 in flush_nrs:
+                first_flush_touch = touch_number
 
-            if float(touch["delta_pages"]) == -17.0:
-                neg_touch_nr.extend(add_nrs)
-                flush_nr.extend(flush_nrs)
-                specimens.append(
-                    {
-                        "trial": trial_id,
-                        "block": trial["block"],
-                        "identity": trial["identity"],
-                        "start_pages": trial["post_migration_current_pages"],
-                        "touch_number": touch["touch_number"],
-                        "delta_pages": touch["delta_pages"],
-                        "rss_delta_kib": (
-                            None
-                            if touch["vmrss_kib_pre"] is None
-                            or touch["vmrss_kib_post"] is None
-                            else touch["vmrss_kib_post"] - touch["vmrss_kib_pre"]
-                        ),
-                        "lru_add_nrs": add_nrs,
-                        "lru_flush_nrs": flush_nrs,
-                        "folios_put_nrs": put_nrs,
-                        "pc_uncharge_17": trace["pc_uncharge_17"],
-                        "pc_try": trace["pc_try"],
-                    }
-                )
-
-            per_touch.append(
-                {
-                    "touch_number": touch["touch_number"],
-                    "delta_pages": touch["delta_pages"],
-                    "lru_add_nrs": add_nrs,
+            delta_pages = float(touch["delta_pages"])
+            if delta_pages < 0:
+                row = {
+                    "trial": trial_id,
+                    "block": trial["block"],
+                    "identity": trial["identity"],
+                    "start_pages": trial["post_migration_current_pages"],
+                    "touch_number": touch_number,
+                    "delta_pages": delta_pages,
+                    "lru_add_count": add_count,
                     "lru_flush_nrs": flush_nrs,
                     "folios_put_nrs": put_nrs,
+                    "page_counter_uncharge_17_count": len(
+                        trace["pc_uncharge_17"]
+                    ),
+                    "rss_delta_kib": (
+                        None
+                        if touch["vmrss_kib_pre"] is None
+                        or touch["vmrss_kib_post"] is None
+                        else touch["vmrss_kib_post"]
+                        - touch["vmrss_kib_pre"]
+                    ),
+                    "vmpte_delta_kib": (
+                        None
+                        if touch["vmpte_kib_pre"] is None
+                        or touch["vmpte_kib_post"] is None
+                        else touch["vmpte_kib_post"]
+                        - touch["vmpte_kib_pre"]
+                    ),
+                }
+                if delta_pages == -17.0:
+                    negative_17.append(row)
+                else:
+                    other_negative.append(row)
+
+        if first_flush_touch is not None:
+            first_flush_delta = next(
+                float(t["delta_pages"])
+                for t in trial["touches"]
+                if int(t["touch_number"]) == first_flush_touch
+            )
+            first_flush_rows.append(
+                {
+                    "trial": trial_id,
+                    "start_pages": trial["post_migration_current_pages"],
+                    "first_flush_touch": first_flush_touch,
+                    "inferred_initial_lru_add_occupancy": 31
+                    - first_flush_touch,
+                    "exact_minus17_at_first_flush": (
+                        first_flush_delta == -17.0
+                    ),
                 }
             )
 
-    exact_chain = 0
-    for row in specimens:
-        if (
-            30 in row["lru_add_nrs"]
-            and 31 in row["lru_flush_nrs"]
-            and 31 in row["folios_put_nrs"]
-            and len(row["pc_uncharge_17"]) >= 1
-        ):
-            exact_chain += 1
+    occupancy_hist = Counter(
+        row["inferred_initial_lru_add_occupancy"]
+        for row in first_flush_rows
+    )
+    target = [
+        row
+        for row in first_flush_rows
+        if row["inferred_initial_lru_add_occupancy"] in (17, 18)
+    ]
+    other = [
+        row
+        for row in first_flush_rows
+        if row["inferred_initial_lru_add_occupancy"] not in (17, 18)
+    ]
+
+    full_chain_count = sum(
+        31 in row["lru_flush_nrs"]
+        and 31 in row["folios_put_nrs"]
+        and row["page_counter_uncharge_17_count"] >= 1
+        for row in negative_17
+    )
 
     return {
         "experiment_id": "OBS-002-LRU-BATCH-OCCUPANCY-v1",
         "trial_count": len(trials),
-        "negative_17_count": len(specimens),
-        "negative_17_exact_30_to_31_chain": exact_chain,
-        "first_touch_lru_add_nr_histogram": dict(Counter(first_touch_nr)),
-        "negative_touch_lru_add_nr_histogram": dict(Counter(neg_touch_nr)),
-        "negative_touch_lru_flush_nr_histogram": dict(Counter(flush_nr)),
-        "negative_17_specimens": specimens,
+        "measured_touch_count": sum(
+            len(trial["touches"]) for trial in trials
+        ),
+        "instrumentation_correction": {
+            "invalid_field": (
+                "__folio_batch_add_and_move arg1 dereference as folio_batch.nr"
+            ),
+            "reason": (
+                "arg1 is a __percpu pointer base; the function applies "
+                "this_cpu_ptr() before dereferencing"
+            ),
+            "valid_substitute": (
+                "one lru_add event per measured touch plus first "
+                "folio_batch_move_lru(nr=31) timing"
+            ),
+            "all_measured_touches_lru_add_count_exactly_one": all(
+                count == 1 for count in all_add_counts
+            ),
+        },
+        "negative_events": {
+            "exact_minus17_count": len(negative_17),
+            "other_negative_count": len(other_negative),
+            "exact_minus17_with_full_lru_chain": full_chain_count,
+            "exact_minus17_without_lru_flush": sum(
+                31 not in row["lru_flush_nrs"] for row in negative_17
+            ),
+            "touch_histogram": dict(
+                Counter(
+                    str(row["touch_number"])
+                    for row in negative_17
+                )
+            ),
+            "start_histogram": dict(
+                Counter(
+                    str(row["start_pages"])
+                    for row in negative_17
+                )
+            ),
+            "exact_minus17_specimens": negative_17,
+            "other_negative_specimens": other_negative,
+        },
+        "first_flush_analysis": {
+            "trials_with_first_lru_flush_within_window": len(
+                first_flush_rows
+            ),
+            "inferred_initial_occupancy_histogram": dict(
+                sorted(occupancy_hist.items())
+            ),
+            "occupancy_17_or_18": {
+                "n": len(target),
+                "minus17_at_first_flush": sum(
+                    row["exact_minus17_at_first_flush"]
+                    for row in target
+                ),
+            },
+            "other_occupancies": {
+                "n": len(other),
+                "minus17_at_first_flush": sum(
+                    row["exact_minus17_at_first_flush"]
+                    for row in other
+                ),
+            },
+            "rows": first_flush_rows,
+        },
     }
 
 
@@ -192,7 +281,12 @@ def run_block(args: argparse.Namespace) -> None:
     marker = Path(args.trace_marker) if args.trace_marker else None
 
     (root / "environment.json").write_text(
-        json.dumps(environment_receipt(worker, cpus), indent=2, sort_keys=True) + "\n",
+        json.dumps(
+            environment_receipt(worker, cpus),
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -247,27 +341,35 @@ def main() -> None:
 
     result = aggregate(
         Path(args.input_root),
-        Path(args.trace_log).read_text(encoding="utf-8", errors="replace"),
+        Path(args.trace_log).read_text(
+            encoding="utf-8",
+            errors="replace",
+        ),
     )
     out = Path(args.json_out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    out.write_text(
+        json.dumps(result, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     print(
         json.dumps(
             {
                 "trial_count": result["trial_count"],
-                "negative_17_count": result["negative_17_count"],
-                "negative_17_exact_30_to_31_chain": result[
-                    "negative_17_exact_30_to_31_chain"
-                ],
-                "first_touch_lru_add_nr_histogram": result[
-                    "first_touch_lru_add_nr_histogram"
-                ],
-                "negative_touch_lru_add_nr_histogram": result[
-                    "negative_touch_lru_add_nr_histogram"
-                ],
-                "negative_touch_lru_flush_nr_histogram": result[
-                    "negative_touch_lru_flush_nr_histogram"
+                "measured_touch_count": result["measured_touch_count"],
+                "negative_events": {
+                    "exact_minus17_count": result[
+                        "negative_events"
+                    ]["exact_minus17_count"],
+                    "exact_minus17_with_full_lru_chain": result[
+                        "negative_events"
+                    ]["exact_minus17_with_full_lru_chain"],
+                    "exact_minus17_without_lru_flush": result[
+                        "negative_events"
+                    ]["exact_minus17_without_lru_flush"],
+                },
+                "first_flush_analysis": result[
+                    "first_flush_analysis"
                 ],
             },
             sort_keys=True,
