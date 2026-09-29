@@ -1,103 +1,77 @@
 # CURRENT
 
-> Latest bounce: B390
-> Stage: EXTERNAL-TO-FRL TRANSFER COUNCIL CONVERGED
+> Latest bounce: B391
+> Stage: NEWS/SOURCE INTAKES INTEGRATED INTO FRL STATE MODEL
 > Stop: RESEARCH PAUSE / NO NEW PHYSICAL RUN
 
-## Rare-state evidence
+## Canonical rare-state evidence
 
-B389 remains canonical for existing-evidence modeling.
+B389 remains canonical:
+- 4,680 trial census
+- CAP10+ step best block-held-out natural-incidence baseline
+- Q64/reset stock transition mechanism separate from natural incidence
+- controlled-spawn frozen endpoint 49/72
+- direct-primer terminal phase 55/55
+- -17 observation contamination unresolved
 
-Natural LOW incidence:
-- CAP10+ step remains best block-held-out baseline
-- richer interaction/hierarchical/mixture models not promoted
+## B390 architecture
 
-Mechanism:
-- Q64/reset stock arithmetic remains supported
-- controlled-spawn direct-primer terminal phase 55/55
-- frozen strict endpoint remains 49/72
-- negative -17 accounting signature unresolved
-- PTE deterministic veto rejected
-- pre_current is context, not a stock read
-
-## Council architecture
-
-Four lanes:
+Four lanes remain:
 
 1. natural incidence
 2. kernel mechanism / observation
 3. generic finite-memory control
 4. application adapters
 
-Do not silently pool their likelihoods or semantics.
+## B391 source-intake additions
 
-## Kernel semantics correction
+Reviewed:
+- AI-WORKER-FINITE-WORKING-SET-INTAKE-2026-09-29
+- NAIVE-N05-FLASH-INTAKE-v1
 
-Latest reviewed page_counter-stock v6/resend:
-- abstraction relocation only
-- seven-slot per-CPU policy retained
-- drain policy retained
+Generic control state now tracks:
 
-Therefore kernel receipt separates:
-- implementation owner
-- stock policy/topology
-- MEMCG_CHARGE_BATCH
-- drain policy
-- tiered-memcg state
-
-Schema:
-schemas/KERNEL-MEMORY-SEMANTICS-RECEIPT-v1.schema.json
-
-## Generic state model
-
-Doc:
-docs/FRL-STATE-TRANSITION-MODEL-v0.md
-
-Control dimensions:
 - tier
 - owner / lease
 - hotness
 - predicted next use
 - transfer cost
 - restore cost
+- restore fidelity
+- reuse horizon
+- access / movement intensity
 - interference
 - bottleneck regime
 
-External AI-memory work enters here, not into the Q64 mechanism model.
+Key distinctions:
 
-## Council
+- addressable != resident
+- resident != accessed
+- accessed != transferred
+- cheap restore != faithful restore
+- recency != reuse horizon
+- compacted working state != canonical source state
 
-Doc:
-docs/COUNCIL-2026-09-30-FRL-TRANSFER-v1.md
+## New candidate branches
 
-Immediate absorbs:
-- dual-model contract
-- observation contamination labels
-- kernel semantics receipts
-- topology-before-size
-- restoration cost
-- phase leasing
-- bounded staging
-- bottleneck migration
-- explicit promotion rule
+Generic:
+- REUSE-001
+- TRAFFIC-001
+- FIDELITY-001
 
-Borrow-only branches:
-- LEASE-001
-- RESTORE-001
-- STAGING-001
-- PREDICT-001
-- ACTIVE-COLD-001
-- KERNEL-TIER-001
+AI-worker/application:
+- AIWS-001
+- AIWS-002
+- AIWS-003
+- AIWS-005
 
-Hold:
-- demand shaping in application lane
-- Strata hardware/model constants
-- richer latent incidence model until held-out improvement
+No execution authorized.
 
-## Core next question
+## Core next priority
 
-Resolve charge-vs-uncharge observation cleanliness, especially -17,
-before fixed-N b63 reliability scaling.
+Q64 lane:
+resolve charge-vs-uncharge observation cleanliness, especially -17,
+before b63 reliability scaling.
 
 ## Authority
 
