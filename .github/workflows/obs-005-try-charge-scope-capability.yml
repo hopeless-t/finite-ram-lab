@@ -1,0 +1,82 @@
+name: OBS-005 try-charge scope capability
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "launch/OBS-005-TRY-CHARGE-SCOPE-CAPABILITY-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  capability:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Verify scoped memcg charge tracing
+        run: |
+          set -euo pipefail
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+
+          TRACE=/sys/kernel/tracing
+          if ! mountpoint -q "$TRACE"; then
+            sudo mount -t tracefs nodev "$TRACE"
+          fi
+
+          cleanup() (
+            set +e
+            for ev in frl_try_enter frl_try_ret frl_pc_try; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
+              fi
+              printf '%s\n' "-:$ev" | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            done
+            true
+          )
+          trap cleanup EXIT
+          cleanup
+
+          printf '%s\n' \
+            'p:frl_try_enter try_charge_memcg memcg=$arg1:x64 nr_pages=$arg3:u32 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          printf '%s\n' \
+            'r:frl_try_ret try_charge_memcg ret=$retval:s32 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          printf '%s\n' \
+            'p:frl_pc_try page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          echo 'comm == "memcg005gc_spaw"' \
+            | sudo tee "$TRACE/events/kprobes/frl_try_enter/filter" >/dev/null
+          echo 'comm == "memcg005gc_spaw"' \
+            | sudo tee "$TRACE/events/kprobes/frl_try_ret/filter" >/dev/null
+          echo 'comm == "memcg005gc_spaw"' \
+            | sudo tee "$TRACE/events/kprobes/frl_pc_try/filter" >/dev/null
+
+          for ev in frl_try_enter frl_try_ret frl_pc_try; do
+            echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
+            sudo cat "$TRACE/events/kprobes/$ev/format"
+            echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
+          done
+
+          echo "OBS005_SCOPE_CAPABILITY_PASS"
+
+      - name: Cleanup readback
+        if: always()
+        run: |
+          set -euo pipefail
+          TRACE=/sys/kernel/tracing
+          if mountpoint -q "$TRACE"; then
+            for ev in frl_try_enter frl_try_ret frl_pc_try; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo "cleanup_fail: $ev still exists"
+                exit 30
+              fi
+            done
+          fi
+          echo "OBS005_CLEANUP_PASS"
