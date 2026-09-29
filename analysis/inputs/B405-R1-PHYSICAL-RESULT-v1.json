@@ -1,0 +1,70 @@
+{
+  "schema_version": "b405-r1-physical-result-v1",
+  "run_id": "36645745433",
+  "launch_commit": "a0f4710b7c77c513e4e45540d439ce247c3479b0",
+  "frozen_result": {
+    "trial_count": 16,
+    "challenge_pass_count": 14,
+    "target_fail": 0,
+    "matrix_pass": false,
+    "by_arm": {
+      "CLEAN": {
+        "n": 4,
+        "pass": 4,
+        "success": 4,
+        "reprimes": 0,
+        "target_fail": 0
+      },
+      "RELEASE_ONLY": {
+        "n": 4,
+        "pass": 2,
+        "success": 2,
+        "reprimes": 0,
+        "target_fail": 0
+      },
+      "UNEXPECTED_REFILL": {
+        "n": 4,
+        "pass": 4,
+        "success": 4,
+        "reprimes": 4,
+        "target_fail": 0
+      },
+      "PTE_GROWTH": {
+        "n": 4,
+        "pass": 4,
+        "success": 4,
+        "reprimes": 4,
+        "target_fail": 0
+      }
+    }
+  },
+  "release_only_forensics": {
+    "passing_trials": [
+      "0:1",
+      "3:1"
+    ],
+    "confounded_trials": [
+      "1:1",
+      "2:1"
+    ],
+    "common_failure_signature": [
+      "OBSERVE window positively grounded one owner page_counter_uncharge(...,17) through the LRU/folio stack",
+      "expected_residual_before == expected_residual_after == 46 at the release event",
+      "the separate frltrig cgroup performed its first stock refill inside OBSERVE",
+      "that refill called drain_stock on the target stock CPU before the intended release",
+      "classifier correctly invalidated the non-pure intervention as DRAIN_STOCK"
+    ],
+    "interpretation": "INTERVENTION_GENERATOR_CONFOUND_NOT_CLASSIFIER_FALSE_NEGATIVE",
+    "prospective_fix": "prime frltrig memcg stock before target VERIFY, then scrub shared LRU batch, then run the 14-touch release trigger"
+  },
+  "raw_manifest": {
+    "file_count": 84,
+    "total_bytes": 36356857,
+    "content_set_sha256": "e6ccab36d5a99cbc2086635853f74a9cdbd6db338ea9a73beadcc032920e60ec"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11067993127,
+    "digest": "sha256:f8f3127511257426a15a1dba0484ec6917e92e0ea5c72cda3b8ccbfb73fdce1a"
+  },
+  "claim_ceiling": "CAUSAL_MATRIX_R1_INTERVENTION_GENERATOR_DIAGNOSTIC"
+}
