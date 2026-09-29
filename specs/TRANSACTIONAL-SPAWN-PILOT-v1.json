@@ -1,0 +1,58 @@
+{
+  "experiment_id": "TRANSACTIONAL-SPAWN-PILOT-v1",
+  "status": "FROZEN_DESIGN_NOT_AUTHORIZED",
+  "role": "PROTOCOL_INTEGRITY_AND_END_TO_END_RECEIPT_SMOKE",
+  "normal_lane": {
+    "raw_identities": 12,
+    "arms": {
+      "b62": 4,
+      "b63": 4,
+      "b64": 4
+    },
+    "replacement_trials": false
+  },
+  "sentinel_lane": {
+    "raw_identities": 1,
+    "kind": "FORCED_UNEXPECTED_REFILL_THEN_HARD_REPRIME",
+    "scientific_endpoint_member": false,
+    "purpose": "prove invalidation cannot commit and a new epoch requires a fresh direct Q64"
+  },
+  "transaction": {
+    "max_reprimes": 2,
+    "reprime_mode": "HARD_NEW_WORKER_CGROUP",
+    "calibration_max_touches_per_epoch": 64,
+    "safe_len_pages": 192,
+    "direct_q64_required": true,
+    "target_bundle_required": true,
+    "net_memory_current_authoritative": false
+  },
+  "normal_lane_stop_rules": {
+    "verified_target_mismatch": "SCIENTIFIC_STOP_TARGET_FAIL",
+    "trace_gap": "INSTRUMENTATION_HOLD",
+    "worker_or_cpu_error": "INSTRUMENTATION_HOLD",
+    "pte_growth": "INVALIDATE_AND_HOLD_FOR_ROOT_CAUSE_IF_RECURRENT",
+    "reprime_budget_exhausted": "ABORTED_NO_RESULT",
+    "automatic_scale_expansion": false
+  },
+  "sentinel_acceptance": {
+    "epoch0_must_end": "INVALIDATED_UNEXPECTED_REFILL",
+    "epoch0_must_not_commit": true,
+    "epoch1_must_require_fresh_direct_q64": true,
+    "stale_epoch_receipt_must_be_rejected": true
+  },
+  "reported_metrics": [
+    "accepted_success_count",
+    "target_fail_count",
+    "invalidation_count_by_reason",
+    "reprimes_per_identity",
+    "attempts_to_valid_terminal",
+    "abort_count",
+    "normalization_depth_per_epoch"
+  ],
+  "claim_ceiling": "PREFLIGHT_ONLY_NO_RELIABILITY_CERTIFICATION",
+  "authority": {
+    "physical_run_authorized": false,
+    "paid_runner_authorized": false,
+    "local_pc_execution_authorized": false
+  }
+}
