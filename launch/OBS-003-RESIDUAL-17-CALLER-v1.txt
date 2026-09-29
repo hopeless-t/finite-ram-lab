@@ -1,0 +1,27 @@
+OBS-003 residual 17 caller v1
+
+Human authorization:
+Continue finite-ram-lab research and forensic investigation on 2026-09-30 JST.
+
+Frozen diagnostic scope:
+- 4 standard GitHub-hosted ubuntu-26.04 blocks
+- 12 identities/block
+- 24 measured touches/identity
+- 48 identities total
+- 1152 measured touches total
+- system-wide page_counter_uncharge filtered to nr_pages==17 + stacktrace
+- system-wide drain_stock
+- worker-only folio_batch_move_lru
+- worker-only folios_put_refs
+- no high-frequency lru_add probe
+- no b63 reliability claim
+- no natural-incidence claim
+- no dynamic sample expansion
+- no local-PC execution
+- no paid runner
+
+Primary question:
+For exact -17 memory.current events without an observed worker LRU flush, classify the caller as:
+LRU_BATCH / STOCK_DRAIN / OTHER_STACK / TRACE_MISS.
+
+Stop after evidence analysis.
