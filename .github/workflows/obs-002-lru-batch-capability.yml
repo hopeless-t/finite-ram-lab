@@ -1,0 +1,116 @@
+name: OBS-002 LRU batch capability gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "launch/OBS-002-LRU-BATCH-CAPABILITY-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  capability:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Probe LRU-batch observability
+        run: |
+          set -euo pipefail
+          TRACE=/sys/kernel/tracing
+          if ! mountpoint -q "$TRACE"; then
+            sudo mount -t tracefs nodev "$TRACE"
+          fi
+
+          cleanup() (
+            set +e
+            echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
+            for ev in \
+              frl_lru_add frl_lru_flush frl_pc_try frl_pc_uncharge frl_folios_put; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
+              fi
+              printf '%s\n' "-:$ev" | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            done
+            true
+          )
+          trap cleanup EXIT
+          cleanup
+
+          : > capability.tsv
+          printf 'symbol\tvisible\tprobeable\n' >> capability.tsv
+
+          try_probe() {
+            sym="$1"
+            ev="$2"
+            spec="$3"
+            if grep -qw "$sym" /proc/kallsyms; then
+              visible=1
+            else
+              visible=0
+            fi
+            if printf '%s\n' "$spec" | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1; then
+              probeable=1
+              echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
+              echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
+              sudo cat "$TRACE/events/kprobes/$ev/format"
+            else
+              probeable=0
+            fi
+            printf '%s\t%s\t%s\n' "$sym" "$visible" "$probeable" >> capability.tsv
+          }
+
+          try_probe \
+            __folio_batch_add_and_move frl_lru_add \
+            'p:frl_lru_add __folio_batch_add_and_move fbatch=$arg1:x64 nr=+0($arg1):u8 folio=$arg2:x64'
+
+          try_probe \
+            folio_batch_move_lru frl_lru_flush \
+            'p:frl_lru_flush folio_batch_move_lru fbatch=$arg1:x64 nr=+0($arg1):u8'
+
+          try_probe \
+            page_counter_try_charge frl_pc_try \
+            'p:frl_pc_try page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64'
+
+          try_probe \
+            page_counter_uncharge frl_pc_uncharge \
+            'p:frl_pc_uncharge page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64'
+
+          try_probe \
+            folios_put_refs frl_folios_put \
+            'p:frl_folios_put folios_put_refs fbatch=$arg1:x64 nr=+0($arg1):u8'
+
+          cat capability.tsv
+
+          required=(
+            __folio_batch_add_and_move
+            folio_batch_move_lru
+            page_counter_uncharge
+          )
+          for sym in "\${required[@]}"; do
+            awk -v s="$sym" '$1==s && $3==1 {ok=1} END {exit !ok}' capability.tsv || {
+              echo "OBS002_CAPABILITY_HOLD: missing $sym"
+              exit 20
+            }
+          done
+
+          echo "OBS002_CAPABILITY_PASS"
+
+      - name: Cleanup readback
+        if: always()
+        run: |
+          set -euo pipefail
+          TRACE=/sys/kernel/tracing
+          if mountpoint -q "$TRACE"; then
+            for ev in \
+              frl_lru_add frl_lru_flush frl_pc_try frl_pc_uncharge frl_folios_put; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo "cleanup_fail: $ev still exists"
+                exit 30
+              fi
+            done
+          fi
+          echo "OBS002_CLEANUP_PASS"
