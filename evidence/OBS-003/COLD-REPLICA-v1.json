@@ -1,0 +1,43 @@
+{
+  "schema_version": "obs003-cold-replica-v1",
+  "experiment_id": "OBS-003-RESIDUAL-17-CALLER-v1",
+  "run_id": "36620215583",
+  "source_commit": "c0dfd89465eba54f9c435c6dd776e72d63cf4a48",
+  "raw_content_set_sha256": "a0b5e7aa538778f5ac295e22b475ebf8fcfbe5f959f830af51b57f7cc2b4f67a",
+  "raw_file_count": 124,
+  "raw_total_bytes": 7480253,
+  "storage": {
+    "tier": "COLD",
+    "provider": "google-drive",
+    "locator": "Catfood Lab Evidence/finite-ram-lab/OBS-003-RESIDUAL-17-CALLER-v1/run-36620215583",
+    "visibility_at_verification": "private"
+  },
+  "verification": {
+    "method": "download Drive ZIPs and compare SHA-256 to GitHub Actions artifact digests",
+    "verified_archives": 5,
+    "mismatches": 0,
+    "status": "PASS"
+  },
+  "archives": [
+    {
+      "name": "obs003-block-0.zip",
+      "sha256": "47878c2e53837656ae140422a25a394540b37141cd8fc4bebc4f076ed60aae4e"
+    },
+    {
+      "name": "obs003-block-1.zip",
+      "sha256": "f5d99c4b04cc6a598c80c34fcf799a608481fa86a9d380d68b11b5982c458e27"
+    },
+    {
+      "name": "obs003-block-2.zip",
+      "sha256": "44a68d2171389c5c5a8d2ec74ae7d7900f46355d2e9aeb8248892759b2668f14"
+    },
+    {
+      "name": "obs003-block-3.zip",
+      "sha256": "549c147c34145303c4025335ad6829959b890f9411f6373e8961ec38629fdaae"
+    },
+    {
+      "name": "OBS-003-RESIDUAL-17-CALLER-36620215583.zip",
+      "sha256": "c6899ea11bb590937d33fd542490bda19752ba0dc4303620b6538d4e0904d04f"
+    }
+  ]
+}
