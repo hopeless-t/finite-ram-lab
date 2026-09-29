@@ -1,15 +1,12 @@
 # CURRENT
 
-> **Latest bounce:** B321
-> **Stage:** MEMCG-005 IMPLEMENTED + CI EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B322
+> **Stage:** MEMCG-005 EXPLICIT HOSTED LAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
-## MEMCG-004 accepted primitive
+## Accepted primitive
 
-Canonical commit:
-`acdcb6e28baa448cd5f38d7ef960b6bbf321ac80`
-
-Decision:
+MEMCG-004:
 `SUPPORT_CALIBRATED_STOCK`
 
 Exact calibrated phase:
@@ -17,21 +14,20 @@ Exact calibrated phase:
 
 ## MEMCG-005
 
-Design:
-`docs/MEMCG-005-CALIBRATED-K7-v1.md`
-
 Implementation:
 `81118055839291dc3f939c0b7ff01ca7080cf343`
 
+Implementation CI:
+`36544481855 = success`
+
+Exact launch commit:
+`b8c1cfbf4e54fef37a314fbe629fceef4734ff0b`
+
 Per replica:
 - prestart W0..W6 + T + C1..C8;
-- normalize every identity to EMPTY using observed +64 then exactly 63 consumptions;
-- require each measured insertion touch to be +64;
-- insert 7 washes;
-- insert target;
-- insert m challengers;
-- one-shot target state probe;
-- terminate.
+- normalize each identity to EMPTY using observed +64 then 63 consumptions;
+- require measured insertion +64 for washes, target, and challengers;
+- one-shot target probe.
 
 Independent m:
 `{0,5,6,7,8}`
@@ -45,27 +41,12 @@ Candidate K:
 
 Sparse observational equivalence classes are reported explicitly.
 
-Ordinary CI:
-`36544481855`
-
-Single B321 read:
-`queued`
-
-Do not poll again in this bounce.
-
-No launch marker exists.
-
-## MATH-002
-
-Still infrastructure-failed / no scientific result.
-Secondary only.
-
 ## Next fresh-bounce action
 
-Read CI `36544481855` exactly once.
+Discover/read exact-head MEMCG-005 workflow once.
 
-- success -> explicit MEMCG-005 hosted launch in a separate bounce;
-- pending/in_progress -> EXTERNAL_WAIT;
+- pending/in_progress -> record run id, EXTERNAL_WAIT;
+- success -> fetch aggregate once and canonicalize;
 - failure -> inspect only exposed invariant.
 
 ## Authority boundary
