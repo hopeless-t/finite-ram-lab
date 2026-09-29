@@ -1,6 +1,6 @@
 # MEMCG-005G-G0 Minimal Argv/PTE Alias Breaker v1
 
-> **Status:** FROZEN-CANDIDATE DRAFT / NOT IMPLEMENTED / NOT LAUNCHED
+> **Status:** IMPLEMENTED / CI PASS / NOT LAUNCHED
 > **Authority:** HOSTED_RESEARCH_ONLY
 > **Supersedes:** G0 Draft v0 for the first alias-breaking experiment
 
@@ -222,9 +222,41 @@ then and only then create an instrumented G0-B worker that publishes:
 
 That second experiment addresses exact virtual-layout geometry.
 
+## Implementation
+
+Core:
+`src/finite_ram_lab/memcg005gg0_alias_breaker.py`
+
+Frozen Stage A spec:
+`specs/MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1.json`
+
+Tests:
+`tests/test_memcg005gg0_alias_breaker.py`
+
+Workflow:
+`.github/workflows/memcg-005g-g0-alias-breaker.yml`
+
+The workflow:
+- uses the unchanged MEMCG-005D C worker;
+- records VmPTE and memory.stat:pagetables receipts;
+- performs one second touch only after an exact-zero first specimen;
+- records THP/mTHP environment settings and worker SHA-256 per block;
+- retains raw block artifacts for 7 days;
+- retains aggregate summary + full raw content manifest for 30 days;
+- verifies the downloaded raw evidence against the generated manifest before publishing aggregate output.
+
+No launch marker exists at implementation freeze time.
+
+CI validation run:
+`36590212701 = success`
+
 ## Compute authority
 
-No implementation or hosted launch from this document alone.
+Implementation is complete.
+
+Scientific hosted launch is NOT authorized by this document.
+
+Launch requires an explicit Human approval and a separate launch checkpoint/marker.
 
 Planning calibration:
 `docs/MATH-010-G0-MONTE-CARLO-CALIBRATION.md`
