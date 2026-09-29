@@ -1,59 +1,40 @@
 # CURRENT
 
-> Latest bounce: B366
-> Stage: MEMCG-005G-B COMPLETE / RARE-STATE ENRICHMENT CONFIRMED
-> Stop: CHAPTER_CHECKPOINT
+> Latest bounce: B367
+> Stage: MEMCG-005G-D DOSE-RESPONSE IMPLEMENTED / CI PENDING
+> Stop: CI_DISCOVERY_PENDING
 
-## MEMCG-005G-B
-
-Run:
-`36568284433`
-
-Decision:
-`SUPPORT_FOOTPRINT_EFFECT`
-
-Canonical:
-`docs/MEMCG-005G-B-RESULT.md`
-
-Artifact:
-`11032159838`
-
-Digest:
-`sha256:ad9f759cf3d8760fd5b46fb0e01fe237934ec90a159250fca3db78dffbfa5119`
-
-Primary:
-- CAP8: 3/240 failure =1.25%
-- CAP70: 26/249 =10.44%
-- difference = +9.19 points
-- Fisher OR=9.21
-- p=9.612e-06
-- MH OR=9.16
-- heterogeneity p=.9966
-- CPU mismatch=0
-- non-{0,Q64} failure=0
-
-Accepted:
-CAP70 is a reproducible rare-state enrichment intervention in this hosted setup.
-
-## MATH-004
-
-`docs/MATH-004-RARE-STATE-CAPTURE-RATE.md`
-
-Posterior-predictive valid LOW probes for >=1 specimen:
-- 95%: CAP8 ~267, CAP70 ~28
-- 99%: CAP8 ~518, CAP70 ~45
-
-Unknown:
-which biopsy-depth species CAP70 enriches and what kernel path creates the effect.
-
-## Next research question
-
-Map:
+Question:
 `p_capture = f(mapping_capacity)`
 
-Then redesign post-failure biopsy to preserve the chosen pre-first-touch footprint.
+Frozen capacities:
+`{8,32,63,64,65,70}`
 
-No successor experiment launched.
+Scale:
+16 independent blocks x72 candidates =1152.
+12 candidates/arm/block.
+
+Primary path:
+unchanged REMOTE_LOW first-touch.
+No biopsy.
+
+Analysis:
+- per-cap Beta posterior
+- adjacent Fisher contrasts
+- CONSTANT / LOGISTIC_LINEAR / STEP64 / CATEGORICAL AIC comparison
+- discovery label only; no threshold causal claim
+
+Implementation:
+- `docs/MEMCG-005G-D-FOOTPRINT-DOSE-RESPONSE-v1.md`
+- `specs/MEMCG-005G-D-FOOTPRINT-DOSE-RESPONSE-v1.json`
+- `src/finite_ram_lab/memcg005gd_dose_response.py`
+- `.github/workflows/memcg-005g-d-dose-response.yml`
+- `tests/test_memcg005gd_dose_response.py`
+
+No launch marker exists.
+
+Next fresh bounce:
+discover/read ordinary CI exactly once.
 
 Hosted research only.
 No local-PC execution.

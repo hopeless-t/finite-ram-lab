@@ -1,0 +1,11 @@
+{
+  "experiment_id":"MEMCG-005G-D-FOOTPRINT-DOSE-RESPONSE-v1",
+  "required_page_size":4096,
+  "runner_blocks":16,
+  "identities_per_block":72,
+  "capacities":[8,32,63,64,65,70],
+  "low_threshold_pages":110,
+  "q64_min_pages":60,
+  "q64_max_pages":68,
+  "authority":"HOSTED_RESEARCH_ONLY"
+}
