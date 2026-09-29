@@ -1,130 +1,115 @@
 # CURRENT
 
-> Latest bounce: B386
-> Stage: PTE-PRECONDITIONED CONTROLLED SPAWN IMPLEMENTED / CI PASS / NOT LAUNCHED
-> Stop: HUMAN_SCIENTIFIC_LAUNCH_APPROVAL_FOR_CONTROLLED_SPAWN_V2_PILOT
-
-## Previous result: G0 Stage A
-
-Run:
-`36591417373 = success`
-
-Key findings:
-
-- argv-width explanation not supported;
-- capacity signal survives width control;
-- H32 uniquely produced first-fault VmPTE +4 KiB;
-- LOW PTE-growth was 5/5 Q64;
-- 12/19 LOW exact-zero specimens were R1 candidates;
-- small mTHP disabled;
-- Drive COLD replica 17/17 byte-identical.
-
-Docs:
-- `docs/MEMCG-005G-G0-STAGE-A-RESULT.md`
-- `docs/MATH-012-G0-SENSITIVITY-AND-PTE.md`
+> Latest bounce: B387
+> Stage: CONTROLLED SPAWN RESULT / RESEARCH PAUSE / RETROSPECTIVE
+> Stop: HUMAN REVIEW BEFORE ANY NEW PHYSICAL RUN
 
 ## Controlled-spawn v2
 
-Goal:
+Run:
+`36595481746 = success`
 
-convert rare LOW exact-zero/depth1 from natural capture into constructed state.
-
-CPU roles:
-
-- C controller
-- P preparation
-- S stock/measured
-
-On P:
-
-`mmap -> choose same-PTE safe span -> touch guard -> PTE precondition`
-
-Then migrate to S.
-
-On S:
-
-`find fresh Q64 -> consume exact stock count -> target/follow-up pattern`
-
-All measured touches must have:
-
-`VmPTE_delta = 0`
-
-## Arms
-
-b62:
-
-`ZERO -> ZERO -> Q64`
-
-b63:
-
-`ZERO -> Q64`
-
-b64:
-
-`Q64`
-
-b63 is primary spawn arm.
-
-## Pilot freeze
-
+Frozen:
 - 8 blocks
-- 9 raw identities/block
-- 72 raw total
-- 24 raw/arm
-- no replacement trials
+- 72 raw identities
+- 24/arm
+- no replacements
 
-## Implementation
+Engineering integrity:
+- CPU mismatches 0
+- worker errors 0
+- geometry violations 0
+- VmPTE growth 0 across 4,164 measured touches
 
-Math:
-`docs/MATH-013-PTE-PRECONDITIONED-SPAWN.md`
+## Frozen primary
 
-Protocol:
-`docs/MEMCG-005G-C-CONTROLLED-RARE-INDUCTION-v2.md`
+- b62 exact: 22/24
+- b63 exact: 11/24
+- b64 exact: 16/24
+- total exact: 49/72
 
-Worker:
-`experiments/memcg005gc_spawn_worker.c`
+Keep this result unchanged.
 
-Controller:
-`src/finite_ram_lab/memcg005gc_controlled_spawn.py`
+## Direct-primer mechanistic result
 
-Spec:
-`specs/MEMCG-005G-C-PTE-PRECONDITIONED-SPAWN-v2.json`
+Q64 primer found:
+55/72
 
-Workflow:
-`.github/workflows/memcg-005g-c-v2-controlled-spawn.yml`
+Among primer-found trials, terminal pattern:
 
-## Validation
+- b62 23/23 = ZERO -> ZERO -> Q64
+- b63 14/14 = ZERO -> Q64
+- b64 18/18 = Q64
 
-CI:
-`36594688827 = success`
+Total:
+`55/55 pattern match`
 
-Scientific spawn workflow has NOT run.
+This is secondary mechanistic evidence, not a rewrite of the primary endpoint.
 
-No launch marker exists.
+## Negative accounting signature
 
-## Evidence policy
+Calibration OTHER:
+17/17 = `-17 pages`
 
-- raw HOT 7 days
-- aggregate HOT 30 days
-- full raw manifest + verify
-- COLD Google Drive/local after run
+BAIT_NONZERO:
+6 negative events only.
 
-## Reliability interpretation
+All six BAIT_NONZERO trials still ended in the exact predicted terminal pattern.
 
-Pilot tests mechanism only.
+Linux v7.0 stock drain can uncharge exact cached stock page counts.
 
-All-success b63 reliability ladder:
+Exact source of -17:
+UNRESOLVED.
 
-- 24 -> lower95 ~88.3%
-- 59 -> >95%
-- 96 -> ~96.9%
-- 299 -> >99%
+## Evidence residency
 
-Do not claim literal 100%.
+Raw manifest:
+- files 152
+- bytes 1,705,625
+- SHA:
+  `e65281ad34ac9f8c0eaf366d2b35ccb07404f8fdf246bfeea4cbcd4d1c0602fd`
+
+COLD:
+`Catfood Lab Evidence/finite-ram-lab/MEMCG-005G-C-v2/run-36595481746`
+
+Drive verification:
+`9/9 BYTE-IDENTICAL PASS`
+
+## Retrospective
+
+`docs/RETROSPECTIVE-001-Q64-TO-SPAWN.md`
+
+Research arc:
+
+`777 hypothesis rejected`
+-> `Q64 source-grounded`
+-> `natural residual-depth biopsy`
+-> `T10 signal`
+-> `argv alias attacked and rejected`
+-> `PTE suppressor observed`
+-> `PTE-preconditioned stock construction`
+-> `55/55 post-primer phase match`
+
+## Strata
+
+External intake:
+`docs/STRATA-001-EXTERNAL-INTAKE.md`
+
+Observed repo head:
+`Niko1221/Strata @ 3ce2523c2823687de5372be3af58534f56cbf286`
+
+High-interest patterns:
+- HOT/WARM/COLD residency across VRAM/RAM/SSD
+- phase-based lease of scarce VRAM
+- hot-expert profile + adaptive swaps
+- bounded pinned staging
+- SSD physical-read reorder/dedup
+- cache saturation -> bottleneck shift
+- extra slow device can hurt despite added capacity
 
 ## Authority
 
-No physical controlled-spawn run authorized yet.
+PAUSE.
+
+No new physical experiment until Human review completes.
 No local-PC execution.
-No larger runner.
-No paid resource.
