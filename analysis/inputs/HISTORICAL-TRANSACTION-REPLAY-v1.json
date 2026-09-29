@@ -1,7 +1,8 @@
 {
-  "schema_version": "historical-transaction-replay-v1",
+  "schema_version": "historical-transaction-replay-v1.1",
   "generated_from": "B400 transactional validator",
   "frozen_endpoint_policy": "preserve_original_labels_and_counts",
+  "interpretation_guard": "zero certified accepts under missing receipts is not an empirical zero success probability",
   "transactional_classes": {
     "TX_SUCCESS": "complete verified epoch + target match + commit",
     "TX_TARGET_FAIL": "target mismatch after a verified uninterrupted epoch",
@@ -18,7 +19,7 @@
       "transactional": {
         "TX_PRETRANSACTION_predictor_hit": 121,
         "TX_PRETRANSACTION_normalize_needed": 2,
-        "TX_TARGET_FAIL": 0
+        "TX_TARGET_FAIL_observed": 0
       },
       "note": "REMOTE_LOW is an admission predictor, not proof of verified state."
     },
@@ -27,7 +28,7 @@
       "historical": {"remote_low_n": 406, "first_touch_zero": 28, "later_q64_by_touch65": 28},
       "transactional": {
         "TX_PRETRANSACTION_recovery_observed": 28,
-        "TX_TARGET_FAIL": 0
+        "TX_TARGET_FAIL_observed": 0
       },
       "note": "The 28 old first-touch failures are initial-phase misses with observed later reset recovery, not target failures."
     },
@@ -36,7 +37,7 @@
       "historical": {"support_blocks": 4, "calibrated_q64_net_delta_blocks": 4, "residual_sequence_exact_blocks": 4},
       "transactional": {
         "TX_NO_RESULT_RECEIPT_GAP": 4,
-        "TX_TARGET_FAIL": 0
+        "TX_TARGET_FAIL_observed": 0
       },
       "note": "Strong legacy reset/phase evidence, but it predates the direct charge64+refill63 receipt token."
     },
@@ -51,8 +52,10 @@
         "bait_nonzero": 6
       },
       "transactional": {
-        "TX_SUCCESS": 0,
-        "TX_TARGET_FAIL": 0,
+        "certified_TX_SUCCESS_count": 0,
+        "latent_true_TX_SUCCESS_count": "UNIDENTIFIABLE_FROM_HISTORICAL_RECEIPTS",
+        "TX_TARGET_FAIL_observed_after_B400_complete_verified_epoch": 0,
+        "TX_TARGET_FAIL_probability": "UNIDENTIFIABLE_FROM_HISTORICAL_RECEIPTS",
         "TX_NO_RESULT_RECEIPT_GAP": 72
       },
       "subclasses": {
@@ -60,7 +63,7 @@
         "legacy_bait_nonzero_with_terminal_match_but_release_receipt_missing": 6,
         "legacy_calibration_stop_before_verified_reset": 17
       },
-      "note": "The frozen 49/72 and conditional 55/55 remain unchanged. B400 cannot retroactively accept any target result because the direct page_counter_try_charge(64)+refill_stock(63) receipt pair was not recorded in this run."
+      "note": "The frozen 49/72 and conditional 55/55 remain unchanged. Zero certified accepts is a fail-closed certification result caused by missing direct receipts; it must not be interpreted as 0% physical or mechanistic success."
     },
     {
       "source": "OBS-005",
@@ -84,7 +87,7 @@
       "transactional": {
         "TX_NONTERMINAL_VERIFIED": 14,
         "TX_NO_RESULT_INVALIDATED_unexpected_refill": 2,
-        "TX_TARGET_FAIL": 0
+        "TX_TARGET_FAIL_observed": 0
       },
       "note": "The 14 state-preserved trials satisfy the new direct Q64 token and demonstrate +64 charge -17 release = +47 net. The two state-loss trials are abstentions, not target failures."
     },
@@ -105,9 +108,11 @@
     }
   ],
   "headline": {
-    "historical_controlled_spawn_valid_verified_epoch_target_fail_count": 0,
-    "historical_b400_accepted_target_success_count": 0,
-    "reason_no_b400_accepted_success": "historical target runs predate the required direct charge/refill receipt pair",
+    "historical_controlled_spawn_observed_target_mismatch_after_B400_complete_verified_epoch": 0,
+    "historical_controlled_spawn_certified_accept_count": 0,
+    "historical_controlled_spawn_true_B400_success_count": "UNIDENTIFIABLE",
+    "historical_controlled_spawn_true_TARGET_FAIL_probability": "UNIDENTIFIABLE",
+    "reason": "historical target runs predate the required direct charge/refill receipt pair",
     "observer_direct_verified_reset_count": 14,
     "observer_detected_state_loss_count": 2
   }
