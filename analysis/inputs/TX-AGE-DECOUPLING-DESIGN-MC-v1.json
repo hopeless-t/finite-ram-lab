@@ -1,0 +1,95 @@
+{
+  "schema_version": "tx-age-decoupling-design-mc-v1-frozen-summary",
+  "draws_per_candidate": 100000,
+  "model_prior": {
+    "TOUCH": 0.5,
+    "TIME": 0.5
+  },
+  "baseline_probability_prior": {
+    "kind": "log_uniform_sensitivity_not_posterior",
+    "low": [
+      0.001,
+      0.01
+    ],
+    "central": [
+      0.002,
+      0.05
+    ],
+    "high": [
+      0.01,
+      0.1
+    ]
+  },
+  "model_definition": {
+    "TOUCH": "same measured-touch count => p_hold = p_fast",
+    "TIME": "p_hold = 1 - (1 - p_fast)^F"
+  },
+  "central_candidate_comparison": {
+    "EQ16_F8": {
+      "balanced_accuracy": 0.6989,
+      "time_any_detection": 0.5359,
+      "touch_any_detection": 0.1974
+    },
+    "EQ16_F16": {
+      "balanced_accuracy": 0.7858,
+      "time_any_detection": 0.6964,
+      "touch_any_detection": 0.1983
+    },
+    "HOLDHEAVY16_F8": {
+      "balanced_accuracy": 0.7281,
+      "time_any_detection": 0.6217,
+      "touch_any_detection": 0.1976
+    },
+    "HOLDHEAVY16_F16": {
+      "balanced_accuracy": 0.8105,
+      "time_any_detection": 0.776,
+      "touch_any_detection": 0.1984
+    },
+    "HOLDHEAVY20_F16": {
+      "balanced_accuracy": 0.8221,
+      "time_any_detection": 0.8334,
+      "touch_any_detection": 0.2354
+    },
+    "HOLDHEAVY24_F16": {
+      "balanced_accuracy": 0.8253,
+      "time_any_detection": 0.8344,
+      "touch_any_detection": 0.2717
+    }
+  },
+  "chosen_stage_a": {
+    "design": "FAST x4 + HOLD32 x12",
+    "exposure_factor_F": 16,
+    "identities": 16,
+    "sensitivity": {
+      "low": {
+        "balanced_accuracy": 0.717925,
+        "time_any_detection": 0.48577,
+        "touch_any_detection": 0.05817
+      },
+      "central": {
+        "balanced_accuracy": 0.81052,
+        "time_any_detection": 0.77599,
+        "touch_any_detection": 0.19845
+      },
+      "high": {
+        "balanced_accuracy": 0.911345,
+        "time_any_detection": 0.97791,
+        "touch_any_detection": 0.4328
+      }
+    }
+  },
+  "adaptive_stage_b": {
+    "trigger": "at least one UNEXPLAINED_BOUNDARY_DEVIATION in HOLD32 during Stage A",
+    "design": "HOLD8 x4 + HOLD32 x4 + HOLD56 x4",
+    "central": {
+      "trigger_probability_if_TOUCH": 0.15514,
+      "trigger_probability_if_TIME": 0.77227,
+      "expected_total_identities_if_TOUCH": 17.86168,
+      "expected_total_identities_if_TIME": 25.26724,
+      "probability_two_or_more_hold_positions_with_events_given_stage_b_if_TOUCH": 0.0294573,
+      "probability_two_or_more_hold_positions_with_events_given_stage_b_if_TIME": 0.590493
+    }
+  },
+  "decision": "Use an adaptive age-decoupling experiment after B404/B405 validation rather than a passive fixed-tempo hunt.",
+  "caveat": "This is design sensitivity, not inference about the true B400 unexplained-deviation rate. Historical data cannot identify that rate."
+}
