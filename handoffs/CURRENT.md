@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B333
-> **Stage:** MEMCG-005C IMPLEMENTED + CI EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B334
+> **Stage:** MEMCG-005C CI FIXTURE REPAIRED
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
 ## MEMCG-005B accepted result
 
@@ -12,34 +12,33 @@ Canonical:
 Decision:
 `INCONCLUSIVE`
 
-Critical flaw:
-MIGRATE receipt executed on S before measured TOUCH_ONE.
-
 ## MEMCG-005C
 
 Implementation:
 `82515df80b1cde1d9b9732510c3abf1454b2aa91`
 
-A/B:
-- TWO_STEP old path;
-- ATOMIC migrate + immediate measured touch before receipt I/O.
-
-23 identities per arm per block.
-4 blocks.
-
-Ordinary CI:
+Failed CI:
 `36550320654`
 
-Single B333 read:
-`in_progress`
+Failure:
+synthetic support fixture generated 91 failures instead of 1.
 
-Do not poll again in this bounce.
+Repair:
+`57d1c0767f3fd3fbeef8902c78cf6a7bc80b3143`
+
+Only test fixture logic changed.
+
+Scientific code unchanged:
+- TWO_STEP old migrate-receipt path
+- ATOMIC migrate + immediate first touch
+- 23 identities per arm per block
+- 4 blocks
 
 No launch marker exists.
 
 ## Next fresh-bounce action
 
-Read CI `36550320654` exactly once.
+Discover/read ordinary CI for repair commit exactly once.
 
 - success -> explicit MEMCG-005C hosted launch;
 - pending/in_progress -> EXTERNAL_WAIT;
