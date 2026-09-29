@@ -91,7 +91,7 @@ jobs:
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_lru_flush/filter" >/dev/null
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_folios_put/filter" >/dev/null
 
-          for ev in             frl_refill_stock frl_trigger_refill frl_pc_try64 frl_pc_uncharge17             frl_lru_flush frl_folios_put frl_drain_stock; do
+          for ev in             frl_refill_stock frl_trigger_refill frl_scrubber_refill frl_memcg_uncharge frl_pc_try64 frl_pc_uncharge17             frl_lru_flush frl_folios_put frl_drain_stock; do
             echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
             sudo cat "$TRACE/events/kprobes/$ev/format" > "$OUT/$ev.format"
           done
