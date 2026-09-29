@@ -1,29 +1,25 @@
 # CURRENT
 
-> Latest bounce: B362
-> Stage: MEMCG-005G-B IMPLEMENTED / CI PENDING
-> Stop: CI_DISCOVERY_PENDING
-
-Design:
-`docs/MEMCG-005G-B-BIOPSY-FOOTPRINT-CONTROL-v1.md`
+> Latest bounce: B363
+> Stage: MEMCG-005G-B IMPLEMENTED / CI
+> Stop: EXTERNAL_WAIT
 
 Implementation:
-- `specs/MEMCG-005G-B-BIOPSY-FOOTPRINT-CONTROL-v1.json`
-- `src/finite_ram_lab/memcg005gb_footprint_control.py`
-- `.github/workflows/memcg-005g-b-footprint-control.yml`
-- `tests/test_memcg005gb_footprint_control.py`
+`ba4d5a072aceca463f23cfea7c00964b14b3b8b1`
 
-Primary:
-CAP70 vs CAP8 first-touch failure among valid REMOTE_LOW.
+Ordinary CI:
+`36567606866`
 
-Scale:
-16 independent blocks x64 candidates =1024.
+Single B363 read:
+`in_progress`
 
-No biopsy in primary A/B.
 No launch marker exists.
 
+Do not poll again in this bounce.
+
 Next fresh bounce:
-discover/read ordinary CI exactly once.
+read CI `36567606866` exactly once.
+If success, explicitly launch MEMCG-005G-B.
 
 Hosted research only.
 No local-PC execution.
