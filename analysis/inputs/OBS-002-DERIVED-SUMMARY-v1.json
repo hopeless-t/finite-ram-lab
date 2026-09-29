@@ -1,0 +1,435 @@
+{
+  "schema_version": "obs002-derived-summary-v1",
+  "experiment_id": "OBS-002-LRU-BATCH-OCCUPANCY-v1",
+  "run_id": "36617444105",
+  "source_launch_commit": "f480da31742595b83ce0d06b31f1ed43ec3a4de8",
+  "provenance": {
+    "source": "raw block artifacts from GitHub Actions run 36617444105",
+    "method": "reparse all trace windows and trial JSON after correcting an invalid __percpu nr dereference",
+    "frozen_aggregate_preserved": true
+  },
+  "trial_count": 48,
+  "measured_touch_count": 1152,
+  "instrumentation_correction": {
+    "invalid_field": "__folio_batch_add_and_move arg1 dereference as folio_batch.nr",
+    "reason": "arg1 is a __percpu pointer base; __folio_batch_add_and_move applies this_cpu_ptr() before accessing the batch",
+    "valid_substitute": "all measured touches emit exactly one lru_add event; infer initial occupancy from first valid folio_batch_move_lru(nr=31) touch",
+    "all_measured_touches_lru_add_count_exactly_one": true
+  },
+  "negative_events": {
+    "exact_minus17_count": 11,
+    "other_negative_events": [
+      {
+        "trial": "1:1",
+        "touch_number": 24,
+        "delta_pages": -1
+      }
+    ],
+    "exact_minus17_touch_histogram": {
+      "13": 2,
+      "14": 8,
+      "18": 1
+    },
+    "exact_minus17_start_histogram": {
+      "114.0": 3,
+      "115.0": 2,
+      "116.0": 1,
+      "117.0": 1,
+      "178.0": 1,
+      "179.0": 1,
+      "180.0": 1,
+      "184.0": 1
+    },
+    "exact_minus17_with_full_lru_chain": 9,
+    "exact_minus17_without_lru_flush": 2,
+    "exact_minus17_specimens": [
+      {
+        "trial": "0:1",
+        "start_pages": 114,
+        "touch_number": 14,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [
+          31
+        ],
+        "folios_put_nrs": [
+          31
+        ],
+        "page_counter_uncharge_17_count": 1,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "0:2",
+        "start_pages": 114,
+        "touch_number": 14,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [
+          31
+        ],
+        "folios_put_nrs": [
+          31
+        ],
+        "page_counter_uncharge_17_count": 1,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "0:3",
+        "start_pages": 179,
+        "touch_number": 14,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [
+          31
+        ],
+        "folios_put_nrs": [
+          31
+        ],
+        "page_counter_uncharge_17_count": 1,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "1:1",
+        "start_pages": 117,
+        "touch_number": 18,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [],
+        "folios_put_nrs": [],
+        "page_counter_uncharge_17_count": 0,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "1:2",
+        "start_pages": 184,
+        "touch_number": 14,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [
+          31
+        ],
+        "folios_put_nrs": [
+          31
+        ],
+        "page_counter_uncharge_17_count": 1,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "1:3",
+        "start_pages": 115,
+        "touch_number": 14,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [
+          31
+        ],
+        "folios_put_nrs": [
+          31
+        ],
+        "page_counter_uncharge_17_count": 1,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "2:0",
+        "start_pages": 115,
+        "touch_number": 14,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [
+          31
+        ],
+        "folios_put_nrs": [
+          31
+        ],
+        "page_counter_uncharge_17_count": 1,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "2:1",
+        "start_pages": 116,
+        "touch_number": 14,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [
+          31
+        ],
+        "folios_put_nrs": [
+          31
+        ],
+        "page_counter_uncharge_17_count": 1,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "2:3",
+        "start_pages": 178,
+        "touch_number": 13,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [
+          31
+        ],
+        "folios_put_nrs": [
+          31
+        ],
+        "page_counter_uncharge_17_count": 1,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "2:10",
+        "start_pages": 114,
+        "touch_number": 14,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [
+          31
+        ],
+        "folios_put_nrs": [
+          31
+        ],
+        "page_counter_uncharge_17_count": 1,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      },
+      {
+        "trial": "3:4",
+        "start_pages": 180,
+        "touch_number": 13,
+        "delta_pages": -17,
+        "lru_add_count": 1,
+        "lru_flush_nrs": [],
+        "folios_put_nrs": [],
+        "page_counter_uncharge_17_count": 0,
+        "rss_delta_kib": 4,
+        "vmpte_delta_kib": 0
+      }
+    ]
+  },
+  "first_flush_analysis": {
+    "trials_with_first_lru_flush_within_24_touches": 26,
+    "inferred_initial_occupancy_histogram": {
+      "7": 1,
+      "9": 1,
+      "12": 2,
+      "14": 1,
+      "15": 1,
+      "17": 8,
+      "18": 1,
+      "19": 2,
+      "20": 1,
+      "25": 4,
+      "26": 2,
+      "27": 1,
+      "30": 1
+    },
+    "occupancy_17_or_18": {
+      "n": 9,
+      "minus17_at_first_flush": 9
+    },
+    "other_occupancies": {
+      "n": 17,
+      "minus17_at_first_flush": 0
+    },
+    "one_sided_fisher_p_exploratory": 3.200460866364757e-7,
+    "rows": [
+      {
+        "trial": "0:1",
+        "start_pages": 114,
+        "first_flush_touch": 14,
+        "inferred_initial_lru_add_occupancy": 17,
+        "exact_minus17_at_first_flush": true
+      },
+      {
+        "trial": "0:2",
+        "start_pages": 114,
+        "first_flush_touch": 14,
+        "inferred_initial_lru_add_occupancy": 17,
+        "exact_minus17_at_first_flush": true
+      },
+      {
+        "trial": "0:3",
+        "start_pages": 179,
+        "first_flush_touch": 14,
+        "inferred_initial_lru_add_occupancy": 17,
+        "exact_minus17_at_first_flush": true
+      },
+      {
+        "trial": "0:4",
+        "start_pages": 99,
+        "first_flush_touch": 17,
+        "inferred_initial_lru_add_occupancy": 14,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "0:6",
+        "start_pages": 99,
+        "first_flush_touch": 5,
+        "inferred_initial_lru_add_occupancy": 26,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "0:10",
+        "start_pages": 99,
+        "first_flush_touch": 6,
+        "inferred_initial_lru_add_occupancy": 25,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "0:11",
+        "start_pages": 98,
+        "first_flush_touch": 12,
+        "inferred_initial_lru_add_occupancy": 19,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "1:0",
+        "start_pages": 98,
+        "first_flush_touch": 24,
+        "inferred_initial_lru_add_occupancy": 7,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "1:2",
+        "start_pages": 184,
+        "first_flush_touch": 14,
+        "inferred_initial_lru_add_occupancy": 17,
+        "exact_minus17_at_first_flush": true
+      },
+      {
+        "trial": "1:3",
+        "start_pages": 115,
+        "first_flush_touch": 14,
+        "inferred_initial_lru_add_occupancy": 17,
+        "exact_minus17_at_first_flush": true
+      },
+      {
+        "trial": "1:5",
+        "start_pages": 99,
+        "first_flush_touch": 6,
+        "inferred_initial_lru_add_occupancy": 25,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "1:6",
+        "start_pages": 99,
+        "first_flush_touch": 11,
+        "inferred_initial_lru_add_occupancy": 20,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "1:7",
+        "start_pages": 98,
+        "first_flush_touch": 16,
+        "inferred_initial_lru_add_occupancy": 15,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "1:8",
+        "start_pages": 98,
+        "first_flush_touch": 22,
+        "inferred_initial_lru_add_occupancy": 9,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "1:10",
+        "start_pages": 98,
+        "first_flush_touch": 1,
+        "inferred_initial_lru_add_occupancy": 30,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "2:0",
+        "start_pages": 115,
+        "first_flush_touch": 14,
+        "inferred_initial_lru_add_occupancy": 17,
+        "exact_minus17_at_first_flush": true
+      },
+      {
+        "trial": "2:1",
+        "start_pages": 116,
+        "first_flush_touch": 14,
+        "inferred_initial_lru_add_occupancy": 17,
+        "exact_minus17_at_first_flush": true
+      },
+      {
+        "trial": "2:3",
+        "start_pages": 178,
+        "first_flush_touch": 13,
+        "inferred_initial_lru_add_occupancy": 18,
+        "exact_minus17_at_first_flush": true
+      },
+      {
+        "trial": "2:4",
+        "start_pages": 98,
+        "first_flush_touch": 19,
+        "inferred_initial_lru_add_occupancy": 12,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "2:7",
+        "start_pages": 98,
+        "first_flush_touch": 4,
+        "inferred_initial_lru_add_occupancy": 27,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "2:10",
+        "start_pages": 114,
+        "first_flush_touch": 14,
+        "inferred_initial_lru_add_occupancy": 17,
+        "exact_minus17_at_first_flush": true
+      },
+      {
+        "trial": "2:11",
+        "start_pages": 180,
+        "first_flush_touch": 19,
+        "inferred_initial_lru_add_occupancy": 12,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "3:3",
+        "start_pages": 97,
+        "first_flush_touch": 6,
+        "inferred_initial_lru_add_occupancy": 25,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "3:6",
+        "start_pages": 99,
+        "first_flush_touch": 5,
+        "inferred_initial_lru_add_occupancy": 26,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "3:10",
+        "start_pages": 162,
+        "first_flush_touch": 6,
+        "inferred_initial_lru_add_occupancy": 25,
+        "exact_minus17_at_first_flush": false
+      },
+      {
+        "trial": "3:11",
+        "start_pages": 115,
+        "first_flush_touch": 12,
+        "inferred_initial_lru_add_occupancy": 19,
+        "exact_minus17_at_first_flush": false
+      }
+    ]
+  },
+  "interpretation": {
+    "supported": "A 31-slot LRU-add batch flush is a dominant source of the recurrent -17 accounting emission. In trials with an observed first flush, inferred initial occupancy 17 or 18 perfectly separated -17-at-first-flush from all other observed occupancies.",
+    "not_yet_closed": [
+      "two exact -17 events occurred without an observed worker LRU flush",
+      "origin and memcg identity of the dead/releasable folios",
+      "direct initial batch occupancy was not measured because the pre-insert probe dereferenced a __percpu base pointer"
+    ]
+  }
+}
