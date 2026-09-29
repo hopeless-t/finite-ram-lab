@@ -1,0 +1,190 @@
+name: OBS-001 17-page uncharge trace
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "launch/OBS-001-17-PAGE-UNCHARGETRACE-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Compile spawn worker
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11 \
+            experiments/memcg005gc_spawn_worker.c \
+            -o build/memcg005gc_spawn_worker
+
+      - name: Environment gate
+        run: |
+          set -euo pipefail
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+          uname -a
+
+      - name: Run traced diagnostic block
+        env:
+          BLOCK: "\${{ matrix.block }}"
+        run: |
+          set -euo pipefail
+
+          TRACE=/sys/kernel/tracing
+          OUT="$GITHUB_WORKSPACE/evidence/OBS-001/block-$BLOCK"
+          mkdir -p "$OUT"
+
+          if ! mountpoint -q "$TRACE"; then
+            sudo mount -t tracefs nodev "$TRACE"
+          fi
+
+          cleanup() {
+            set +e
+            echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
+            for ev in frl_drain_stock frl_refill_stock frl_page_counter_uncharge; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
+              fi
+              printf '%s\n' "-:$ev" | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            done
+          }
+          trap cleanup EXIT
+          cleanup
+
+          printf '%s\n' \
+            'p:frl_drain_stock drain_stock stock=$arg1:x64 slot=$arg2:u32' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          printf '%s\n' \
+            'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          printf '%s\n' \
+            'p:frl_page_counter_uncharge page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          echo 'nr_pages == 17' \
+            | sudo tee "$TRACE/events/kprobes/frl_page_counter_uncharge/filter" >/dev/null
+
+          echo 'stacktrace' \
+            | sudo tee "$TRACE/events/kprobes/frl_page_counter_uncharge/trigger" >/dev/null
+
+          for ev in frl_drain_stock frl_refill_stock frl_page_counter_uncharge; do
+            echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
+            sudo cat "$TRACE/events/kprobes/$ev/format" > "$OUT/$ev.format"
+          done
+
+          sudo chmod a+w "$TRACE/trace_marker"
+          echo 16384 | sudo tee "$TRACE/buffer_size_kb" >/dev/null
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          echo | sudo tee "$TRACE/trace" >/dev/null
+          echo 1 | sudo tee "$TRACE/tracing_on" >/dev/null
+
+          python -m finite_ram_lab.obs001_uncharge_trace run-block \
+            --block "$BLOCK" \
+            --worker "$GITHUB_WORKSPACE/build/memcg005gc_spawn_worker" \
+            --out-root "$OUT" \
+            --identities 12 \
+            --touches 24 \
+            --max-pages 1024 \
+            --safe-len 192 \
+            --trace-marker "$TRACE/trace_marker"
+
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          sudo cat "$TRACE/trace" > "$OUT/trace.log"
+
+          {
+            echo "=== KPROBE PROFILE ==="
+            sudo cat "$TRACE/kprobe_profile" || true
+            echo "=== CPU TRACE STATS ==="
+            for s in "$TRACE"/per_cpu/cpu*/stats; do
+              echo "--- $s"
+              sudo cat "$s" || true
+            done
+          } > "$OUT/trace-stats.txt"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: obs001-block-\${{ matrix.block }}
+          path: evidence/OBS-001/block-\${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 7
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: obs001-block-*
+          path: evidence/OBS-001/input
+
+      - name: Combine traces
+        run: |
+          mkdir -p evidence/OBS-001/aggregate
+          find evidence/OBS-001/input -name trace.log -print0 \
+            | sort -z \
+            | xargs -0 cat \
+            > evidence/OBS-001/aggregate/combined-trace.log
+
+      - name: Aggregate classifications
+        run: |
+          python -m finite_ram_lab.obs001_uncharge_trace aggregate \
+            --input-root evidence/OBS-001/input \
+            --trace-log evidence/OBS-001/aggregate/combined-trace.log \
+            --json-out evidence/OBS-001/aggregate/summary.json
+
+      - name: Freeze raw evidence manifest
+        run: |
+          frl evidence-manifest \
+            evidence/OBS-001/input \
+            --out evidence/OBS-001/aggregate/full-raw-evidence-manifest.json \
+            --experiment-id OBS-001-17-PAGE-UNCHARGETRACE-v1 \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-commit "$GITHUB_SHA" \
+            --tier HOT \
+            --origin-provider github-actions \
+            --origin-ref "run:$GITHUB_RUN_ID"
+
+      - name: Verify raw evidence
+        run: |
+          frl evidence-verify \
+            evidence/OBS-001/input \
+            --manifest evidence/OBS-001/aggregate/full-raw-evidence-manifest.json
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: OBS-001-17-PAGE-UNCHARGETRACE-\${{ github.run_id }}
+          path: evidence/OBS-001/aggregate/
+          if-no-files-found: error
+          retention-days: 30
