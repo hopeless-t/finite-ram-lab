@@ -1,82 +1,106 @@
 # CURRENT
 
-> Latest bounce: B391
-> Stage: NEWS/SOURCE INTAKES INTEGRATED INTO FRL STATE MODEL
-> Stop: RESEARCH PAUSE / NO NEW PHYSICAL RUN
+> Latest bounce: B392
+> Stage: 17-PAGE LATENT COMPONENT / OBS-001 TRACE GATE PASS
+> Stop: READY FOR FRESH OBS-001 DIAGNOSTIC RELAUNCH
 
-## Canonical rare-state evidence
+## Existing-evidence discovery
 
-B389 remains canonical:
-- 4,680 trial census
-- CAP10+ step best block-held-out natural-incidence baseline
-- Q64/reset stock transition mechanism separate from natural incidence
-- controlled-spawn frozen endpoint 49/72
-- direct-primer terminal phase 55/55
-- -17 observation contamination unresolved
+MATH-015:
+docs/MATH-015-17-PAGE-LATENT-COMPONENT.md
 
-## B390 architecture
+Controlled-spawn v2 raw:
+- exact -17 events: 20
+- other negatives: -13, -3, -2
 
-Four lanes remain:
+Start-state modes:
+- 98..100
+- 114..117
+- 161..163
+- 179..180
 
-1. natural incidence
-2. kernel mechanism / observation
-3. generic finite-memory control
-4. application adapters
+Descriptive additive lattice:
+baseline + optional 17 + optional ~63
 
-## B391 source-intake additions
+Fit:
+- exact 68/72
+- within 1 page 69/72
 
-Reviewed:
-- AI-WORKER-FINITE-WORKING-SET-INTAKE-2026-09-29
-- NAIVE-N05-FLASH-INTAKE-v1
+Exact -17 shifted by -17:
+- exact clean-support landing 17/20
+- within 1 page 19/20
 
-Generic control state now tracks:
+Near-lattice association:
+- no-17 component: 0/42 exact -17
+- 17-component: 19/27 exact -17
+- one-sided Fisher ~4.8e-11
+- post-hoc descriptive only
 
-- tier
-- owner / lease
-- hotness
-- predicted next use
-- transfer cost
-- restore cost
-- restore fidelity
-- reuse horizon
-- access / movement intensity
-- interference
-- bottleneck regime
+Working hypothesis:
+a transient 17-page accounted component can disappear asynchronously.
 
-Key distinctions:
+Identity unresolved:
+- Prep-CPU stock drain is a strong candidate
+- ordinary/other uncharge remains possible
 
-- addressable != resident
-- resident != accessed
-- accessed != transferred
-- cheap restore != faithful restore
-- recency != reuse horizon
-- compacted working state != canonical source state
+## OBS-001
 
-## New candidate branches
+Design:
+docs/OBS-001-CHARGE-UNCHARGE-DISCRIMINATOR.md
 
-Generic:
-- REUSE-001
-- TRAFFIC-001
-- FIDELITY-001
+Frozen diagnostic scale:
+- 4 blocks
+- 12 identities/block
+- 24 touches/identity
+- 48 identities
+- 1152 touches
+- no b63 reliability claim
 
-AI-worker/application:
-- AIWS-001
-- AIWS-002
-- AIWS-003
-- AIWS-005
+## Trace capability
 
-No execution authorized.
+Final gate:
+run 36614225845 = PASS
 
-## Core next priority
+Probeable:
+- drain_stock
+- refill_stock
+- try_charge_memcg
+- page_counter_uncharge
 
-Q64 lane:
-resolve charge-vs-uncharge observation cleanliness, especially -17,
-before b63 reliability scaling.
+Not directly probeable:
+- uncharge_batch
+
+Also PASS:
+- page_counter_uncharge nr_pages==17 filter
+- stacktrace trigger
+- trace buffer control
+- root trace_marker write/readback
+- cleanup readback
+
+## Infrastructure findings
+
+OBS-001 development exposed and repaired:
+- runner-user vs sudo tracefs capability confusion
+- escaped GitHub workflow expressions
+- trace_marker permission mismatch
+- cleanup set +e false-success bug
+- cleanup return-code false-failure bug
+- root observer / runner-UID worker separation
+
+No prior OBS-001 scientific attempt is valid.
+Do not interpret their job labels as data.
+
+## Next action
+
+Fresh OBS-001 diagnostic relaunch only.
+
+Goal:
+directly classify the caller of -17.
+
+No reliability scaling before observer cleanliness is resolved.
 
 ## Authority
 
-PAUSE.
-
-No new physical experiment.
+HOSTED_RESEARCH_ONLY.
 No local-PC execution.
-No paid resource.
+No paid runner.
