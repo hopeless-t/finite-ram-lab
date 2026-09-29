@@ -123,7 +123,7 @@ External AI-memory work should not be injected into the Q64 mechanism state.
 
 Represent the generic resource-control layer separately:
 
-C_t = (T_t, O_t, H_t, N_t, X_t, Z_t, I_t, B_t)
+C_t = (T_t, O_t, H_t, N_t, X_t, Z_t, F_t, J_t, A_t, I_t, B_t)
 
 where:
 
@@ -133,6 +133,9 @@ where:
 - N_t: predicted next-use demand;
 - X_t: transfer cost;
 - Z_t: restoration/reconstruction cost;
+- F_t: restore fidelity / canonical-source recoverability;
+- J_t: reuse horizon / expected distance to next meaningful use;
+- A_t: access or movement intensity, distinct from bytes merely resident;
 - I_t: interference / pressure cost;
 - B_t: active bottleneck regime.
 
@@ -262,3 +265,114 @@ experiment demonstrating:
 5. a falsifiable counter-condition.
 
 Until then it remains a research branch.
+
+
+## 12. Working-set semantics from added news/source intakes
+
+Two existing finite-ram-lab source intakes materially refine the generic control state:
+
+- `docs/AI-WORKER-FINITE-WORKING-SET-INTAKE-2026-09-29.md`
+- `docs/NAIVE-N05-FLASH-INTAKE-v1.md`
+
+### 12.1 Capacity, residency, and addressability are separate
+
+The AI-worker intake documents real systems where:
+
+- the total capability/evidence/context universe remains addressable;
+- only a bounded subset is resident;
+- evicted content may remain exactly recoverable by pointer.
+
+Therefore generic experiments should distinguish:
+
+`available universe != resident working set != currently accessed subset`
+
+This is compatible with physical-memory research but is not evidence for an identical physical mechanism.
+
+### 12.2 Restore fidelity is separate from restore cost
+
+A cheap lossy summary and an exact page-in may have similar active footprint but are not equivalent states.
+
+Add the state dimension:
+
+`F_t = restore fidelity / canonical-source recoverability`
+
+Suggested qualitative classes:
+
+- EXACT_RESIDENT
+- EXACT_REFERENCED
+- LOSSY_WITH_SOURCE
+- LOSSY_ONLY
+- DISCARDED
+
+This dimension is required whenever compaction/offload may alter information content.
+
+### 12.3 Reuse horizon is separate from age
+
+Naive-N0.5-Flash intake distinguishes retention from sparse access and motivates semantic reuse distance.
+
+Add:
+
+`J_t = expected reuse horizon`
+
+Candidate lifecycle classes:
+
+- HOT
+- REUSABLE
+- RECONSTRUCTIBLE
+- DEAD
+
+Do not equate recency with reuse probability.
+
+### 12.4 Resident bytes and traffic are separate measurements
+
+Naive-N0.5 retains full KV while reducing the subset actually accessed by sparse attention.
+
+Therefore:
+
+`resident footprint != bytes touched != bytes transferred`
+
+Add:
+
+`A_t = access / movement intensity`
+
+Future experiments should record both residency and traffic whenever a policy can reduce access without evicting state.
+
+### 12.5 Canonical source and compacted working copy are different objects
+
+For AI-worker experiments:
+
+`Compacted Working State != Canonical Source State`
+
+A reversible reference-backed offload is not equivalent to lossy truncation.
+
+This belongs in the AI-worker/application lane, while the generic control layer only retains the abstract
+`F_t` recoverability dimension.
+
+### 12.6 Authority is not residency
+
+The AI-worker intake also distinguishes available/resident/selected/authorized tool states.
+
+This is **not** absorbed into finite-ram core.
+
+Authority remains an MVCA/tool-surface concern.
+
+Only the generic lesson is retained:
+
+`selection state != execution authority`
+
+## 13. Additional branch candidates
+
+Application/AI-worker branch only:
+
+- AIWS-001: reversible offload vs lossy summary
+- AIWS-002: semantic hotness vs recency eviction
+- AIWS-003: adaptive prefetch depth
+- AIWS-005: usefulness selection vs similarity selection
+
+Generic finite-memory branch:
+
+- REUSE-001: reuse-horizon-aware retention vs byte/age-only retention
+- TRAFFIC-001: equal-residency policies with different bytes-touched/moved
+- FIDELITY-001: equal-footprint states with different restoration fidelity
+
+No experiment is authorized by this section.
