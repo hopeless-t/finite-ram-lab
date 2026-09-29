@@ -1,49 +1,74 @@
 # CURRENT
 
-> **Latest bounce:** B311
-> **Stage:** MEMCG-003B PRIMARY CANONICALIZED / MATH-002 READY
-> **Turn stop reason:** READY_FOR_SECONDARY_ANALYSIS
+> **Latest bounce:** B313
+> **Stage:** MATH-002 RUNNING / MEMCG-004 CALIBRATION DESIGN FROZEN
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## MEMCG-003B
+## MEMCG-003B primary
 
-Run:
-`36527502073`
+Canonical commit:
+`99c084a95fc39c6c4b3ae2081d74117f4355debc`
 
 Decision:
 `REJECT_K7_SLOT_MODEL_B`
 
-Passive DISTINCT_CHURN thresholds:
-`[null,null,null,null]`
-
-No >=16-page passive target-current drop occurred through m=8.
-
-Analyzer best-K=9 is a right-censor tie-break:
-- K9 and K10 have identical error/MDL/posterior.
-- do not interpret as observed K=9 capacity.
-
-DISTINCT final recharge:
-`[0,64,64,64]` pages.
-
-Canonical result:
-`docs/MEMCG-003B-RESULT.md`
-
-Canonical derived sidecar input:
-`evidence/MEMCG-003B/canonical/summary.json`
-
-## New mechanism question
-
-How can target stock be absent at final demand while no large passive target memory.current drop is observed?
-
-Also, SAME_MEMCG_ACTIVITY creates one distinct competitor before repeated activity; its m=1 drop in 3/4 blocks may reflect that insertion/startup, not repeated same-memcg touches.
+Accepted interpretation:
+- thresholds [null,null,null,null] are right-censored beyond m=8;
+- analyzer K9 is not an observed capacity;
+- K9 and K10 tie;
+- final distinct recharge [0,64,64,64] means stock can be absent without a prior large passive target-current drop.
 
 ## MATH-002
 
-Primary evidence is now frozen.
+Launch:
+`15ccd7d06e4786a566c56e3491f07024be6d4424`
 
-Next fresh-bounce action:
-launch MATH-002 geometric sidecar against the canonical summary.
+Run:
+`36529563011`
 
-Secondary analysis cannot change the MEMCG-003B primary decision.
+Single B312 status:
+`in_progress`
+
+Do not poll again in this bounce.
+
+## New source-level lesson
+
+A created worker is not a calibrated stock entry.
+
+Source behavior:
+- consume-to-zero removes cached pointer;
+- refill can modify an existing entry;
+- refill beyond batch drains the entry;
+- kmem/socket uncharges can refill the same per-CPU memcg stock.
+
+Therefore seven worker identities are not enough to assert seven stable stocked slots.
+
+## MEMCG-004
+
+Frozen design:
+`docs/MEMCG-004-CALIBRATED-STOCK-v1.md`
+
+Atomic question:
+can a known 63-page stock state be created and verified?
+
+Protocol:
+1. one-page touches until an observed +64 charge;
+2. stop immediately;
+3. passive hold;
+4. resume one-page touches;
+5. predicted next +64 is validation touch 64.
+
+Only after this calibration passes should seven-slot capacity be retested.
+
+## Next fresh-bounce action
+
+Read MATH-002 run `36529563011` exactly once.
+
+- success -> canonicalize secondary result;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
+
+Then implement MEMCG-004. Do not launch MEMCG-004 during its implementation bounce.
 
 ## Authority boundary
 
