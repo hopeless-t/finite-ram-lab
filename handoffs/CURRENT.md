@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B405
-> Stage: CHAPTER II TRANSACTION PERTURBATION MATRIX FROZEN
-> Stop: PHYSICAL PAUSE / READY FOR NATIVE TRACE-OBSERVER WIRING
+> Latest bounce: B408
+> Stage: CHAPTER II NATIVE TRANSACTION OBSERVER PREFLIGHT
+> Stop: PHYSICAL PAUSE / READY FOR SUCCESSOR RUNNER ORCHESTRATION
 
 ## Chapter II question
 
@@ -14,9 +14,7 @@ Once a Q64 reset is directly verified:
 
 Verified stock arithmetic remains deterministic until a discrete observer-visible state-changing event occurs.
 
-Do not model all historical failure as one Bernoulli error process.
-
-Current candidate invalidators:
+Candidate invalidators:
 
 - unexpected refill
 - drain
@@ -25,174 +23,160 @@ Current candidate invalidators:
 - worker error
 - trace gap
 
-Positively classified LRU release is state-preserving.
+Positively classified shared-LRU release is state-preserving.
 
-## Why this hypothesis has traction
-
-Historical controlled-spawn:
-
-- strict endpoint 49/72 remains frozen
-- primer-qualified terminal pattern 55/55 remains frozen
-- negative bait events retained the predicted terminal phase
-
-OBS-005 / MATH-016:
-
-- recurrent -17 was causally grounded as shared per-CPU LRU release
-
-Controlled-spawn v2:
-
-- target PTE preconditioning removed measured PTE growth from the controlled sequence
-
-OBS-006:
-
-- direct Q64 observer recognized masked Q64
-- state-loss cases were rejected as unexpected refill rather than accepted as success
-
-The remaining high-value question is therefore release-only contamination vs true state mutation.
-
-## B402 assumption audit
+## Historical boundary
 
 Do not recollect the natural-state corpus.
 
-Most MATH-001..018 numerical results survive with new estimands.
+Do not reinterpret historical controlled-spawn as B400 certification.
 
-Artifacts:
+Frozen historical endpoints remain:
 
-- analysis/inputs/ASSUMPTION-DEPENDENCY-AUDIT-v1.json
-- docs/MATH-019-SEMANTIC-DEPENDENCY-AUDIT.md
-- handoffs/B402-ASSUMPTION-DEPENDENCY-AUDIT.md
+- strict controlled-spawn: 49/72
+- primer-qualified terminal pattern match: 55/55
 
-## B403 controlled-spawn transaction bridge
-
-Implemented:
-
-- src/finite_ram_lab/controlled_spawn_transaction_bridge.py
-- tests/test_controlled_spawn_transaction_bridge.py
-- docs/CONTROLLED-SPAWN-TRANSACTION-BRIDGE-v1.md
-
-Core semantics:
-
-- ZERO/Q64 derive from direct observer receipts, not net memory.current
-- release-only may coexist
-- bait Q64 -> INVALIDATED
-- wrong valid terminal phase -> TARGET_FAIL
-- partial Q64 pair -> TRACE_GAP
-- terminal b62/b63/b64 sequence -> one TARGET bundle
-
-CI passed for bridge source and tests.
-
-## B404 first physical smoke design
-
-Frozen:
-
-- specs/TRANSACTIONAL-SPAWN-PILOT-v1.json
-- docs/MATH-020-TRANSACTIONAL-SPAWN-PILOT-DESIGN.md
-
-Normal lane:
-
-- b62 x4
-- b63 x4
-- b64 x4
-
-Sentinel:
-
-- one FORCED_UNEXPECTED_REFILL_THEN_HARD_REPRIME
-
-Re-prime:
-
-- HARD_NEW_WORKER_CGROUP
-- max_reprimes=2
-
-This is protocol smoke only, not reliability certification.
-
-B404 must pass before Chapter II perturbation experiments launch.
+B400 accepted correctness remains historically non-identifiable.
 
 ## B405 Chapter II perturbation matrix
 
 Frozen:
 
+- CLEAN x4
+- RELEASE_ONLY x4
+- UNEXPECTED_REFILL x4
+- PTE_GROWTH x4
+
+Artifacts:
+
 - specs/TX-PERTURBATION-MATRIX-v1.json
 - docs/MATH-021-CHAPTER-II-TRANSACTION-PERTURBATION-MATRIX.md
 - handoffs/B405-CHAPTER-II-PERTURBATION-MATRIX.md
 
-Four causal arms:
+B405 launches only after B404 protocol smoke passes.
 
-### CLEAN x4
+## B406 epoch-local transaction observer
 
-Prediction:
+Implemented:
 
-VERIFIED -> TARGET_MATCH -> COMMIT.
+- schemas/TRANSACTION-RECEIPT-PACKET-v2.schema.json
+- src/finite_ram_lab/transaction_trace_observer.py
+- tests/test_transaction_trace_observer.py
+- docs/OBS-007-EPOCH-LOCAL-TRANSACTION-OBSERVER.md
+- handoffs/B406-EPOCH-LOCAL-TRANSACTION-OBSERVER.md
 
-### RELEASE_ONLY x4
+### Epoch owner identity
 
-Inject one source-grounded shared-LRU release after VERIFIED.
+A verified direct-Q64 NORMALIZE window discovers:
 
-Prediction:
+`owner_counter(epoch)`
 
-- release recorded
-- expected residual unchanged
-- canonical b63 phase preserved
-- no INVALIDATE solely because net memory.current falls
+The counter is carried only within that epoch.
 
-### UNEXPECTED_REFILL x4
+A release-only ZERO touch can therefore be attributed to the target cgroup even when the release is triggered by another task.
 
-Force a direct Q64/refill before the frozen target boundary.
+Positive RELEASE_ONLY requires:
 
-Prediction:
+- page_counter_uncharge(...,17) on owner_counter
+- LRU flush nr=31
+- folios_put nr=31
+- complete marker window
 
-INVALIDATED / UNEXPECTED_REFILL.
+Owner uncharge without the complete LRU signature is UNKNOWN and fails closed.
 
-No TARGET_FAIL.
-No COMMIT in the invalidated epoch.
+### Hazard coordinates
 
-### PTE_GROWTH x4
-
-Deliberately fault an untouched PTE-table region during the verified measured phase.
-
-Prediction:
-
-INVALIDATED / PTE_GROWTH.
-
-Guard precedence overrides an apparent target match.
-
-## Epoch-hazard telemetry
-
-Add to every packet:
+Packet v2 adds:
 
 - touch_index_since_verified
 - elapsed_ns_since_verified
 - expected_residual_before
 - expected_residual_after
-- invalidator type
+- owner_counter
+- marker timestamps
+- unknown_emission_count
 
-This creates the first epoch-hazard atlas.
+The verified Q64 touch is hazard age zero.
 
-Working model:
+## B407 epoch archive
 
-hazard is likely event-driven by finite shared structures rather than one homogeneous memoryless failure process.
+Implemented:
 
-This is a hypothesis, not yet a result.
+- src/finite_ram_lab/transaction_epoch_archive.py
+- tests/test_transaction_epoch_archive.py
+- docs/TX-ARCHIVE-001-EPOCH-LOCAL-REPLAY.md
+- handoffs/B407-EPOCH-LOCAL-ARCHIVE-REPLAY.md
 
-## Falsifiers
+### Re-prime invariant
 
-Chapter II working theory is weakened if complete receipts show:
+REPRIME destroys both transaction and observer authority:
 
-1. RELEASE_ONLY changes residual phase.
-2. CLEAN produces genuine TARGET_FAIL.
-3. UNEXPECTED_REFILL can COMMIT in the same epoch.
-4. PTE_GROWTH can COMMIT in the contaminated epoch.
-5. hard re-prime can use stale receipts.
-6. canonical phase changes with no observer-visible invalidator.
+- old owner_counter cleared
+- verified_at_ns cleared
+- touch-age clock cleared
+- old epoch packets rejected
 
-Case 6 would imply a missing observer mechanism and is especially important.
+Synthetic sentinel replay:
 
-## Required order
+epoch0:
+direct Q64 owner 0xaaa -> VERIFIED -> unexpected refill -> INVALIDATED
 
-1. implement native trace/observer wiring
-2. run B404 protocol smoke after authorization
-3. only if B404 passes, run TX-PERTURBATION-MATRIX-v1
-4. then design larger natural epoch-hazard mapping
-5. reliability certification remains deferred
+hard re-prime:
+epoch -> 1, owner -> NULL
+
+epoch1:
+fresh direct Q64 owner 0xbbb -> valid target -> COMMIT -> SUCCESS
+
+The invalidating Q64 cannot become the next epoch primer.
+
+Synthetic archive replay passed CI.
+
+## B408 native marker wrapper
+
+Implemented:
+
+- src/finite_ram_lab/transactional_spawn_native.py
+- tests/test_transactional_spawn_native.py
+- handoffs/B408-NATIVE-TRANSACTION-MARKER-WRAPPER.md
+
+The frozen Chapter-I _touch() primitive remains unchanged.
+
+Chapter-II successor wraps it as:
+
+FRL_TX PRE
+-> historical _touch()
+-> FRL_TX POST
+
+POST is emitted from a finally block.
+
+A missing readback window fails closed.
+
+No physical workflow or launch marker was created.
+
+## Current capture model
+
+The highest-value candidate rare event is now:
+
+> canonical stock phase changes while the observer reports no invalidator.
+
+If this occurs with complete receipts, it becomes evidence for a missing state-changing mechanism.
+
+That is the Chapter-II rare-pokemon target.
+
+## Next
+
+Implement the successor transactional-spawn runner orchestration:
+
+1. hard-new-worker epoch lifecycle
+2. P-side PTE precondition
+3. migrate to stock CPU
+4. bounded NORMALIZE using direct trace receipts
+5. CONSUME packets
+6. TARGET bundle
+7. archive packets per epoch
+8. no automatic physical launch
+
+Then run B404 only after authorization.
 
 ## Authority
 
@@ -200,5 +184,5 @@ PAUSE.
 No local-PC execution.
 No paid runner.
 No physical pilot.
-No perturbation matrix run.
+No B405 perturbation matrix.
 No large reliability certification.
