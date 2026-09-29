@@ -1,61 +1,49 @@
 # CURRENT
 
-> **Latest bounce:** B326
-> **Stage:** MEMCG-005B THREE-CPU STAGED DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B327
+> **Stage:** MEMCG-005B IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## MEMCG-005 accepted result
+## MEMCG-005
 
-Canonical commit:
+Canonical:
 `95191357ac80b9157c2f9f05df86672abb661983`
 
 Decision:
 `INCONCLUSIVE`
 
-Reason:
-many-worker same-CPU pre-normalization perturbed the shared stock state.
+## MEMCG-005B implementation
 
-## MEMCG-005B
-
-Frozen design:
-`docs/MEMCG-005B-THREE-CPU-STAGED-K7-v1.md`
+Files:
+- `specs/MEMCG-005B-THREE-CPU-STAGED-K7-v1.json`
+- `experiments/memcg005b_worker.c`
+- `src/finite_ram_lab/memcg005b_staged_k7.py`
+- `src/finite_ram_lab/memcg005b_runner.py`
+- `.github/workflows/memcg-005b-staged-k7.yml`
+- `tests/test_memcg005b_staged_k7.py`
 
 CPU roles:
 - C controller
-- P prep/startup
+- P prep
 - S stock-test
 
-Workers start zero-touch on P.
+No participant touches S before measured insertion.
 
-Measured insertion:
-- migrate P -> S;
-- first S touch must be +64-like.
+Prefill:
+14 distinct verified wash insertions before target.
 
-No future identity may touch S before its insertion.
+Source signature:
+0/5/6 PRESENT; 7/8 ABSENT.
 
-Robust prefill:
-- 14 distinct verified wash insertions before target.
-
-Reason:
-after at most 7 inserts the cache is full; seven more distinct replacements sweep all seven slots, washing out unknown initial occupancy/drain_idx under the source model.
-
-Independent m:
-`{0,5,6,7,8}`
-
-Source K7 signature:
-- 0/5/6 PRESENT
-- 7/8 ABSENT
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement MEMCG-005B:
-- zero-touch worker with MIGRATE command;
-- three-CPU runner;
-- 14-wash staged insertion;
-- one-shot target probe;
-- analyzer/tests/workflow.
+Discover/read ordinary CI for B327 exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-005B launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 
