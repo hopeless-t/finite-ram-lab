@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B342
-> **Stage:** MEMCG-005D RUNTIME REPAIR CI + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B343
+> **Stage:** MEMCG-005D EXPLICIT RELAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
 ## MEMCG-005C accepted result
 
@@ -17,42 +17,32 @@ Decision:
 Implementation:
 `bac7f0babe87a7350f81ea37113b3798b512ca7d`
 
-Initial launch:
-`f4ca08442547142f1aaf0d0113f0653da3d7ee09`
-
-Initial run:
-`36552551097 = infrastructure failure`
-
-Failure:
-unaligned `mmap.flush(offset,4)` caused Linux `EINVAL`.
-
-Repair:
+Runtime repair:
 `c89fec2940537f610ee517885c1d9e813d79f3c6`
 
 Repair CI:
-`36552762177`
+`36552762177 = success`
 
-Single B342 read:
-`in_progress`
+Previous scientific run:
+`36552551097 = infrastructure failure only`
 
-Do not poll again in this bounce.
+Exact relaunch:
+`098607e7b8f76377841a718799d896f50a0bef12`
 
-Scientific design remains:
+A/B unchanged:
 - SELF_ATOMIC worker self-migration;
-- EXTERNAL_ATOMIC controller external migration;
-- external pre/mid/post current decomposition;
-- shared latch with no measured-path status I/O;
-- 23 identities per arm per block;
-- 4 blocks.
+- EXTERNAL_ATOMIC controller external migration + mid current + shared GO.
 
-No post-repair scientific launch exists yet.
+23 identities per arm per block.
+4 blocks.
+184 probes.
 
 ## Next fresh-bounce action
 
-Read CI `36552762177` exactly once.
+Discover/read exact-head MEMCG-005D workflow once.
 
-- success -> create a fresh explicit MEMCG-005D launch;
-- pending/in_progress -> EXTERNAL_WAIT;
+- pending/in_progress -> record run id, EXTERNAL_WAIT;
+- success -> fetch aggregate once and canonicalize;
 - failure -> inspect only exposed invariant.
 
 ## Authority boundary
