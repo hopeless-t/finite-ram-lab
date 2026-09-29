@@ -81,6 +81,7 @@ jobs:
           echo 'comm == "memcg005gc_spaw" && nr_pages == 63'             | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
           echo 'comm == "memcg005gc_spaw" && nr_pages == 64'             | sudo tee "$TRACE/events/kprobes/frl_pc_try64/filter" >/dev/null
           echo 'nr_pages == 17'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge17/filter" >/dev/null
+          echo 'stacktrace'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge17/trigger" >/dev/null
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_lru_flush/filter" >/dev/null
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_folios_put/filter" >/dev/null
 
