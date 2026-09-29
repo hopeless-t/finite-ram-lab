@@ -1,115 +1,61 @@
 # CURRENT
 
-> Latest bounce: B387
-> Stage: CONTROLLED SPAWN RESULT / RESEARCH PAUSE / RETROSPECTIVE
-> Stop: HUMAN REVIEW BEFORE ANY NEW PHYSICAL RUN
+> Latest bounce: B388
+> Stage: EXTERNAL MEMORY-SYSTEMS RECONNAISSANCE COMPLETE
+> Stop: RESEARCH PAUSE / RARE-SPECIMEN MODEL REVIEW
 
-## Controlled-spawn v2
+## Physical research
 
-Run:
-`36595481746 = success`
+No new physical run after B387.
 
-Frozen:
-- 8 blocks
-- 72 raw identities
-- 24/arm
-- no replacements
+Controlled-spawn result remains canonical:
+- frozen primary: 49/72
+- direct-primer terminal phase: 55/55
+- b63 direct-primer phase: 14/14
+- measured VmPTE growth: 0/4164
+- negative -17 accounting signature unresolved
 
-Engineering integrity:
-- CPU mismatches 0
-- worker errors 0
-- geometry violations 0
-- VmPTE growth 0 across 4,164 measured touches
+## External reconnaissance
 
-## Frozen primary
+Doc:
+`docs/EXT-2026-09-30-MEMORY-SYSTEMS-RECON.md`
 
-- b62 exact: 22/24
-- b63 exact: 11/24
-- b64 exact: 16/24
-- total exact: 49/72
+### Linux stock architecture
 
-Keep this result unchanged.
+Current upstream at reconnaissance cut:
+- `NR_MEMCG_STOCK = 7`
+- `MEMCG_CHARGE_BATCH = 64`
+- existing per-CPU shared memcg stock
 
-## Direct-primer mechanistic result
+Active v5 proposal:
+`memcg -> page_counter_stock`
 
-Q64 primer found:
-55/72
+If merged, it changes:
+- ownership topology
+- cross-memcg victim eviction
+- drain behavior
+- precharged-memory scaling
 
-Among primer-found trials, terminal pattern:
+Future Q64 comparisons must record stock architecture, not kernel version alone.
 
-- b62 23/23 = ZERO -> ZERO -> Q64
-- b63 14/14 = ZERO -> Q64
-- b64 18/18 = Q64
+### External AI-memory convergence
 
-Total:
-`55/55 pattern match`
+Reviewed:
+- mzCache
+- vLLM tiered KV
+- TierKV
+- KV Cache memory-wall survey
+- SSD-LLaMA
+- cache-aware MoE router adaptation
+- Strata (B387)
 
-This is secondary mechanistic evidence, not a rewrite of the primary endpoint.
+Shared pattern:
 
-## Negative accounting signature
-
-Calibration OTHER:
-17/17 = `-17 pages`
-
-BAIT_NONZERO:
-6 negative events only.
-
-All six BAIT_NONZERO trials still ended in the exact predicted terminal pattern.
-
-Linux v7.0 stock drain can uncharge exact cached stock page counts.
-
-Exact source of -17:
-UNRESOLVED.
-
-## Evidence residency
-
-Raw manifest:
-- files 152
-- bytes 1,705,625
-- SHA:
-  `e65281ad34ac9f8c0eaf366d2b35ccb07404f8fdf246bfeea4cbcd4d1c0602fd`
-
-COLD:
-`Catfood Lab Evidence/finite-ram-lab/MEMCG-005G-C-v2/run-36595481746`
-
-Drive verification:
-`9/9 BYTE-IDENTICAL PASS`
-
-## Retrospective
-
-`docs/RETROSPECTIVE-001-Q64-TO-SPAWN.md`
-
-Research arc:
-
-`777 hypothesis rejected`
--> `Q64 source-grounded`
--> `natural residual-depth biopsy`
--> `T10 signal`
--> `argv alias attacked and rejected`
--> `PTE suppressor observed`
--> `PTE-preconditioned stock construction`
--> `55/55 post-primer phase match`
-
-## Strata
-
-External intake:
-`docs/STRATA-001-EXTERNAL-INTAKE.md`
-
-Observed repo head:
-`Niko1221/Strata @ 3ce2523c2823687de5372be3af58534f56cbf286`
-
-High-interest patterns:
-- HOT/WARM/COLD residency across VRAM/RAM/SSD
-- phase-based lease of scarce VRAM
-- hot-expert profile + adaptive swaps
-- bounded pinned staging
-- SSD physical-read reorder/dedup
-- cache saturation -> bottleneck shift
-- extra slow device can hurt despite added capacity
+`classify state -> estimate future demand / transfer / restore cost -> control residency transition`
 
 ## Authority
 
 PAUSE.
 
-No new physical experiment until Human review completes.
-No local-PC execution.
+No new physical experiment.
+Codex rare-specimen census / mathematical generative-model work may continue from existing evidence.
