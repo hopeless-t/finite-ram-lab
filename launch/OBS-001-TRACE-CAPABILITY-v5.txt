@@ -1,0 +1,18 @@
+OBS-001 execution capability gate v5
+
+Purpose:
+Verify trace setup after fixing cleanup return semantics.
+
+Checks:
+- idempotent cleanup returns success even when probes are absent
+- probe install/enable/remove
+- nr_pages==17 filter
+- stacktrace trigger
+- trace buffer operations
+- root Python trace_marker write/readback
+- fail-closed behavior preserved
+
+No scientific worker trial.
+No reliability claim.
+No local-PC execution.
+No paid runner.
