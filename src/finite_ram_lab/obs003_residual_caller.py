@@ -79,6 +79,8 @@ def parse_trace_windows(text: str) -> dict[tuple[str, int], dict[str, Any]]:
             if stripped:
                 active_stack.append(stripped)
 
+    return windows
+
 
 def classify_negative(
     trace: dict[str, Any],
