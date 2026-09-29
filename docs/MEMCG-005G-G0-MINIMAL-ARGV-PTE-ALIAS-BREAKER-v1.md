@@ -120,7 +120,33 @@ exact-zero capture should be enriched when no new page-table footprint is requir
 
 This is exploratory in G0 and must not override the argv-width primary result.
 
-## 8. Existing gate retained
+## 8. Failure-only one-step biopsy
+
+After the frozen first-touch endpoint, only when the first touch is exact-zero:
+
+1. record `VmPTE_post1_kib`;
+2. issue exactly one additional adjacent worker touch;
+3. record `second_touch_delta_pages`;
+4. record `VmPTE_post2_kib`.
+
+Define:
+
+`NEXT_Q64 := second_touch_delta_pages in [60,68]`
+
+Mechanism classifications from MATH-011:
+
+- first VmPTE delta = 0 + ZERO + NEXT_Q64 + second VmPTE delta = 0 -> candidate pre-target R=1;
+- first VmPTE delta >0 + ZERO + NEXT_Q64 + second VmPTE delta = 0 -> candidate pre-target R=2 under the one-new-PTE-page model;
+- second VmPTE delta >0 -> boundary phenotype; exclude from the simple R inference.
+
+This biopsy occurs strictly after the primary first-touch endpoint.
+
+It must not change whether the first specimen is counted as ZERO_CAPTURE.
+
+Reference:
+`docs/MATH-011-TWO-TOUCH-PTE-STOCK-DISCRIMINATOR.md`
+
+## 9. Existing gate retained
 
 - page size = 4096;
 - startup CPU P;
@@ -131,7 +157,7 @@ This is exploratory in G0 and must not override the argv-width primary result.
 - worker_error == 0;
 - first touch is exactly one worker touch.
 
-## 9. Blocking and schedule
+## 10. Blocking and schedule
 
 Within each independent hosted block:
 
@@ -149,7 +175,7 @@ Staged ceiling:
 
 This keeps the terminal ceiling equal to the completed G-F scale while allowing short resource-gated bounces.
 
-## 10. Staged compute interpretation
+## 11. Staged compute interpretation
 
 MATH-010 calibrated the direct padded-vs-canonical contrast using the G-F planning rates.
 
@@ -167,7 +193,7 @@ Ordinary p-values must not be repeatedly inspected and then presented as fixed-N
 
 Each hosted stage requires Human compute approval.
 
-## 11. Why this is higher information-per-candidate than v0
+## 12. Why this is higher information-per-candidate than v0
 
 G0 v0 removed capacity from argv by changing the control protocol.
 
@@ -183,7 +209,7 @@ Therefore it can distinguish:
 
 with less mechanism perturbation.
 
-## 12. Follow-up only if signal survives
+## 13. Follow-up only if signal survives
 
 If numeric capacity remains predictive after zero-padding:
 
