@@ -1,0 +1,15 @@
+{
+  "experiment_id":"MEMCG-005G-F-CONFIRMATORY-THRESHOLD-LOCALIZATION-v1",
+  "required_page_size":4096,
+  "runner_blocks":48,
+  "identities_per_block":60,
+  "capacities":[8,9,10,11,12,32],
+  "candidate_thresholds":[9,10,11,12],
+  "low_threshold_pages":110,
+  "q64_min_pages":60,
+  "q64_max_pages":68,
+  "posterior_support_min":0.90,
+  "posterior_odds_min":10.0,
+  "categorical_aic_reject_margin":6.0,
+  "authority":"HOSTED_RESEARCH_ONLY"
+}
