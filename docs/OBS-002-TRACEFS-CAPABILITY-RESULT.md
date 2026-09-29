@@ -1,3 +1,5 @@
+> **SUPERSEDED NOTE (2026-09-30):** This file records an early capability attempt. Later corrected tracefs/kprobe capability gates succeeded and OBS-001..005 used the hosted substrate successfully. Preserve this document as historical failure evidence; do not treat TRACEFS_HOLD as the current substrate verdict.
+
 # OBS-002 — Tracefs capability result
 
 > **Status:** TRACEFS_HOLD
