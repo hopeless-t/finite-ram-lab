@@ -1,0 +1,32 @@
+name: OBS-002 memcg tracefs capability smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "launch/OBS-002-CAPABILITY-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  capability:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Tracefs / kprobe capability smoke
+        run: |
+          chmod +x tools/memcg_tracefs_capability.sh
+          tools/memcg_tracefs_capability.sh \
+            memcg-tracefs-capability.json
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: OBS-002-CAPABILITY-${{ github.run_id }}
+          path: memcg-tracefs-capability.json
+          if-no-files-found: error
+          retention-days: 30
