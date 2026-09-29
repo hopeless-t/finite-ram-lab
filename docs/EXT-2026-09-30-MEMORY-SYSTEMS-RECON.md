@@ -4,10 +4,20 @@
 > **Cut:** 2026-09-30 JST
 > **Purpose:** compare finite-ram-lab findings against current Linux-mm and AI-memory systems work.
 
-## 1. Linux memcg stock is actively being redesigned upstream
+## 1. Linux memcg stock abstraction is actively being moved upstream — policy change was pulled back
 
-A v5 patch series posted 2026-08-31 proposes moving stock from the shared per-CPU
-`memcg_stock` structure into a per-`page_counter` per-CPU stock.
+A v5 patch series posted 2026-08-31 proposed both:
+- moving stock from `mem_cgroup` into `page_counter`;
+- changing the allocation/draining topology.
+
+**Correction / update at the 2026-09-30 cut:** v6 and the 2026-09-28 v6 RESEND
+explicitly narrow the series to the abstraction move. v6 retains the existing seven-slot
+per-CPU design and drain policy.
+
+Therefore:
+- implementation ownership may move `memcg -> page_counter`;
+- current stock semantics must not be assumed to change merely because that move lands;
+- a receipt must distinguish implementation location from runtime stock policy.
 
 Relevant series:
 
@@ -37,22 +47,18 @@ and directly exploited/observed the current design:
 - stock drain/refill behavior;
 - PTE charge consuming the same stock.
 
-The proposed page-counter design removes the seven-memcg shared-slot topology and gives
-each non-root memcg/page-counter its own per-CPU stock.
+v5 would have removed the seven-memcg shared-slot topology, but v6 deliberately does not.
 
-If merged, several natural-rare-state behaviors may change:
+The correct compatibility boundary is therefore multi-axis rather than a single
+`OLD_MEMCG_STOCK vs PAGE_COUNTER_STOCK` bit:
 
-1. random victim eviction between >7 active memcgs disappears;
-2. stock ownership topology changes;
-3. drain scheduling changes;
-4. cross-memcg interference changes;
-5. total system-wide precharged unused memory can grow with memcg count.
+- stock implementation owner: memcg vs page_counter;
+- stock policy: seven-slot shared per-CPU topology vs any future policy;
+- charge batch size;
+- drain policy;
+- tier-aware counters/limits enabled or disabled.
 
-This creates an explicit kernel-generation boundary:
-
-`OLD_MEMCG_STOCK` vs `PAGE_COUNTER_STOCK`.
-
-Any future cross-kernel reproduction must record which stock architecture is active.
+Any future cross-kernel reproduction must record these semantics separately.
 
 ## 2. The patch discussion independently confirms stock-drain observability matters
 
@@ -217,10 +223,14 @@ The Q64 work remains Linux-specific evidence.
 
 ## 9. New hypotheses worth retaining after the current research pause
 
-### EXT-H1 — Kernel-generation transition
+### EXT-H1 — Kernel-semantics transition
 
-The natural rare-state distribution should differ materially between the current seven-slot memcg stock design
-and a future per-page-counter stock implementation.
+A source-code relocation of stock into page_counter is **not** sufficient to predict a changed rare-state
+distribution if the seven-slot/drain policy is preserved.
+
+The natural rare-state distribution should be expected to change only when a behaviorally relevant stock or
+tier-accounting semantic changes. This must be established from receipts/source audit, not kernel version or
+struct ownership alone.
 
 ### EXT-H2 — Restoration cost is a state variable
 
@@ -252,3 +262,23 @@ When physical work resumes, kernel architecture must become an explicit receipt:
 - number/topology of stock slots if applicable.
 
 This protects the Q64/rare-state model from silently crossing a kernel semantic boundary.
+
+
+## 11. Tiered memcg limits — a direct bridge to finite-ram-lab's general tier work
+
+A separate RFC v3 series, `Introduce tiered memcg limits`, proposes per-tier page counters and
+tier-proportional memcg limits for systems with HBM/DRAM/CXL/PMEM-style memory tiers.
+
+The RFC explicitly argues that total-footprint limits do not provide performance isolation when workloads can
+occupy different fractions of fast memory. It adds tier-aware accounting/enforcement, tier-targeted reclaim,
+allocation steering, migration accounting, and promotion gating.
+
+This is **not mainline behavior at this cut**.
+
+The important research connection is structural:
+
+`total capacity != placement entitlement != performance isolation`
+
+This is a kernel-level analogue of the same distinction seen in Strata, TierKV and vLLM tiering.
+
+It should enter finite-ram-lab as an external semantics branch, not be mixed into the existing Q64 evidence.
