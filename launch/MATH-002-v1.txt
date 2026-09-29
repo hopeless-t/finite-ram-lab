@@ -1,0 +1,7 @@
+MATH-002 explicit secondary launch
+B312
+Primary MEMCG-003B canonical commit: 99c084a95fc39c6c4b3ae2081d74117f4355debc
+Input: evidence/MEMCG-003B/canonical/summary.json
+Pinned pmndrs/math: 98762395c1f34d7d594d31165e8005fd6915c431
+QuickHull2 + mulberry32 seed 20260929 + 100000 permutations.
+Secondary only; cannot alter primary verdict.
