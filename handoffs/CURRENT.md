@@ -1,30 +1,64 @@
 # CURRENT
 
-> Latest bounce: B355
-> Stage: MEMCG-005F confirmatory hosted run
-> Stop: EXTERNAL_WAIT
+> **Latest bounce:** B356
+> **Stage:** MEMCG-005F CONFIRMED / RETROSPECTIVE COMPLETE
+> **Turn stop reason:** CHAPTER_CHECKPOINT
 
-Launch:
-`15c0ac94f0bd5707cec327eaa6f44a6fdb2c8520`
+## MEMCG-005F
 
-Scientific run:
+Run:
 `36558350433`
 
-Single B355 read:
-`in_progress`
+Decision:
+`SUPPORT_REMOTE_LOW_GATE`
 
-Primary gate:
+Canonical result:
+`docs/MEMCG-005F-RESULT.md`
+
+Confirmed primary gate:
+
 `REMOTE_LOW := startup P, measured S!=P, pre_current_pages<=110`
 
-Do not poll again in this bounce.
+Confirmatory result:
+- LOW: 121/123 Q64 = 98.374%
+- HIGH: 65/133 Q64 = 48.872%
+- Fisher p: 5.932e-22
+- LOW blocks: 31/31, 31/32, 39/40, 20/20
+- CPU mismatch: 0
+- migration delta: 0 in 256/256
+- non-{0,+64} failure: 0
 
-After this experiment completes:
-1. fetch aggregate once;
-2. canonicalize result;
-3. review and retrospect all finite-ram-lab findings to date.
+## Retrospective
 
-Next fresh bounce:
-read run `36558350433` exactly once.
+`docs/RETROSPECTIVE-THROUGH-MEMCG-005F.md`
+
+The current measurement-calibration chapter is complete.
+
+## Accepted current chain
+
+- finite-RAM pressure knee survives;
+- effective-live-set interval survives;
+- observer contamination identified;
+- Q64 / 256 KiB memcg accounting mechanism supported;
+- calibrated R64 stock phase supported;
+- naive durable/perfect seven-slot observation schemes rejected or rendered inconclusive;
+- CPU locality is essential;
+- REMOTE_LOW admission gate independently confirmed.
+
+## Next chapter
+
+Return to hosted capacity/eviction testing using:
+- candidates created on P;
+- only LOW candidates admitted;
+- measured insertion on remote S;
+- direct Q64 verification of every insertion;
+- no K inference from invalid identities.
+
+No successor experiment has been launched yet.
+
+## Authority boundary
 
 Hosted research only.
 No local-PC execution.
+No memory-control policy.
+No Remote Desktop Commander.
