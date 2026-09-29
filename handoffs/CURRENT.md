@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B322
-> **Stage:** MEMCG-005 EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B323
+> **Stage:** MEMCG-005 HOSTED RUN + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## Accepted primitive
 
@@ -20,17 +20,23 @@ Implementation:
 Implementation CI:
 `36544481855 = success`
 
-Exact launch commit:
+Launch:
 `b8c1cfbf4e54fef37a314fbe629fceef4734ff0b`
 
-Per replica:
-- prestart W0..W6 + T + C1..C8;
-- normalize each identity to EMPTY using observed +64 then 63 consumptions;
-- require measured insertion +64 for washes, target, and challengers;
-- one-shot target probe.
+Scientific run:
+`36545631176`
 
-Independent m:
-`{0,5,6,7,8}`
+Single B323 read:
+`queued`
+
+Do not poll again in this bounce.
+
+Design:
+- prestart 16 worker identities;
+- normalize each to EMPTY via observed +64 then 63 consumptions;
+- require +64 verified insertions for washes/target/challengers;
+- independent m={0,5,6,7,8};
+- one-shot target probe.
 
 Source K7 signature:
 - m0/5/6 PRESENT
@@ -43,10 +49,10 @@ Sparse observational equivalence classes are reported explicitly.
 
 ## Next fresh-bounce action
 
-Discover/read exact-head MEMCG-005 workflow once.
+Read run `36545631176` exactly once.
 
-- pending/in_progress -> record run id, EXTERNAL_WAIT;
-- success -> fetch aggregate once and canonicalize;
+- success -> fetch aggregate once, inspect validity matrix and boundary signature, canonicalize;
+- pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
 ## Authority boundary
