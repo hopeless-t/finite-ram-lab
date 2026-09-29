@@ -39,6 +39,7 @@ COUNTER_RE = re.compile(r"\bcounter=(?P<counter>0x[0-9a-fA-F]+)")
 NR_RE = re.compile(r"\bnr=(?P<nr>\d+)")
 NR_PAGES_RE = re.compile(r"\bnr_pages=(?P<nr_pages>\d+)")
 COMM_RE = re.compile(r'\bcomm="(?P<comm>[^"]+)"')
+PID_RE = re.compile(r"-(?P<pid>\d+)\s+\[\d+\]")
 
 
 def _u32(mm: mmap.mmap, off: int) -> int:
@@ -316,6 +317,8 @@ def _event_row(line: str) -> dict[str, Any]:
         row["nr_pages"] = int(m.group("nr_pages"))
     if (m := COMM_RE.search(line)):
         row["comm"] = m.group("comm")
+    if (m := PID_RE.search(line)):
+        row["pid"] = int(m.group("pid"))
     return row
 
 
@@ -330,7 +333,7 @@ def parse_trace(text: str) -> dict[str, Any]:
             trial_id = m.group("trial")
             trials.setdefault(
                 trial_id,
-                {"producer_counters": [], "windows": {}},
+                {"pc_try": [], "windows": {}},
             )
             if m.group("edge") == "START":
                 current_trial = trial_id
@@ -345,7 +348,7 @@ def parse_trace(text: str) -> dict[str, Any]:
             key = (m.group("phase"), int(m.group("touch")))
             item = trials.setdefault(
                 trial_id,
-                {"producer_counters": [], "windows": {}},
+                {"pc_try": [], "windows": {}},
             )
             if m.group("edge") == "PRE":
                 current_trial = trial_id
@@ -366,11 +369,7 @@ def parse_trace(text: str) -> dict[str, Any]:
             continue
 
         if current_trial is not None and "frl_pc_try:" in line:
-            row = _event_row(line)
-            if row.get("comm") == "frlprod" and row.get("counter"):
-                counters = trials[current_trial]["producer_counters"]
-                if row["counter"] not in counters:
-                    counters.append(row["counter"])
+            trials[current_trial]["pc_try"].append(_event_row(line))
             active_stack = None
             continue
 
@@ -403,7 +402,14 @@ def parse_trace(text: str) -> dict[str, Any]:
 
 
 def classify_trial(trial: dict[str, Any], trace: dict[str, Any]) -> dict[str, Any]:
-    counters = list(trace.get("producer_counters", []))
+    producer_pid = int(trial.get("producer_pid", -1))
+    counters: list[str] = []
+    for event in trace.get("pc_try", []):
+        if event.get("pid") != producer_pid:
+            continue
+        counter = event.get("counter")
+        if counter and counter not in counters:
+            counters.append(counter)
     windows = trace.get("windows", {})
 
     producer_flushes = []
@@ -475,7 +481,7 @@ def aggregate(input_root: Path, trace_text: str) -> dict[str, Any]:
         trial_id = f"{trial['block']}:{trial['identity']}"
         derived = classify_trial(
             trial,
-            traces.get(trial_id, {"producer_counters": [], "windows": {}}),
+            traces.get(trial_id, {"pc_try": [], "windows": {}}),
         )
         rows.append({**trial, **derived})
 
