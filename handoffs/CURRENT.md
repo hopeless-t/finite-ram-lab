@@ -1,123 +1,106 @@
 # CURRENT
 
-> Latest bounce: B382
-> Stage: TWO-TOUCH PTE/STOCK DISCRIMINATOR COMPLETE
-> Stop: HUMAN_COMPUTE_APPROVAL_FOR_G0_STAGE_A
+> Latest bounce: B383
+> Stage: EVIDENCE RESIDENCY v1 COMPLETE / CI PASS
+> Stop: G0 IMPLEMENTATION PREP / SCIENTIFIC LAUNCH REQUIRES HUMAN APPROVAL
 
-## Source-grounded mechanism
+## Evidence residency
 
-Linux v7.0:
+Lifecycle:
 
-`GFP_PGTABLE_USER (__GFP_ACCOUNT)`
--> `__memcg_kmem_charge_page()`
--> `obj_cgroup_charge_pages()`
--> `try_charge_memcg()`
--> `consume_stock()`
+`HOT -> WARM -> COLD -> RESTORE -> VERIFY`
 
-Anonymous first write:
+Core rule:
 
-`pte_alloc()`
-then
-`alloc_anon_folio()`
+`location != evidence identity`
 
-Thus page-table allocation can consume the same per-CPU memcg stock before the measured data-page charge.
+Manifest identity:
+- relative path
+- byte size
+- SHA-256
+- stable content-set SHA-256
 
-Reference:
-`docs/MATH-009-LINUX7-FAULT-PATH-AUDIT.md`
+Implementation:
+`src/finite_ram_lab/evidence_residency.py`
 
-## G0 direct alias breaker
+Schema:
+`schemas/EVIDENCE-RESIDENCY-MANIFEST-v1.schema.json`
 
-Use unchanged C worker.
+Contract:
+`docs/EVIDENCE-RESIDENCY-v1.md`
 
-Arms:
-- C8 token 8
-- P8 token 08
-- C9 token 9
-- P9 token 09
-- H10 token 10
-- H32 token 32
+Commands:
+- `frl evidence-manifest`
+- `frl evidence-verify`
+
+## Storage policy
+
+HOT / GitHub:
+- result
+- spec
+- aggregate
+- manifest
+- rare specimen receipts
+- short-lived raw block artifacts
+
+WARM/COLD:
+- private Google Drive and/or local archive
+
+Proposed new-run retention:
+- raw block artifacts: 7 days
+- aggregate artifact: 30 days
+
+Do not intentionally remove HOT raw evidence until at least one restored off-GitHub copy passes manifest verification.
+
+Prefer two verified COLD replicas for high-value runs:
+- local
+- Google Drive
+
+No Drive credentials or private URLs in the public repo.
+
+## G-F sizing anchor
+
+Run `36577573774`:
+- 49 artifacts total
+- 48 blocks
+- total compressed size ~=1.395 MiB
+- block mean ~=29.0 KiB
+- aggregate = 37,159 bytes
+
+Current MEMCG artifact volume is small; residency is for durable integrity and future scaling.
+
+## Validation
+
+CI run:
+`36589409532 = success`
+
+Compile, unit tests, Monte Carlo smoke, and environment probe all PASS.
+
+## Research mechanism state
+
+B382 remains valid:
+
+PTE page charge reaches the same per-CPU memcg stock before anonymous data allocation.
+
+G0 minimal alias breaker:
+- C8=8
+- P8=08
+- C9=9
+- P9=09
+- H10=10
+- H32=32
 
 Primary:
 `P8+P9 vs C8+C9`
 
-Capacity-survival:
-`P8+P9 vs H10+H32`
+Failure-only two-touch VmPTE/stock biopsy remains part of G0.
 
-Reference:
-`docs/MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1.md`
+## Next
 
-## PTE receipt
+Implement G0 Stage A workflow with Evidence Residency v1.
 
-Primary:
-`VmPTE_pre -> VmPTE_post1`
+Scientific hosted launch:
+NOT YET AUTHORIZED.
 
-Corroboration:
-`memory.stat:pagetables`
-
-VmPTE is preferred because it reads atomic per-mm page-table bytes while memcg rstat can defer small updates.
-
-## New two-touch discriminator
-
-For first-touch exact-zero specimens only, perform one additional adjacent touch.
-
-Record:
-- first VmPTE delta
-- second touch memory.current delta
-- second VmPTE delta
-
-Ideal candidate states:
-
-- VmPTE1 delta=0 + ZERO + second Q64 + VmPTE2 delta=0 -> R=1 candidate
-- VmPTE1 delta>0 + ZERO + second Q64 + VmPTE2 delta=0 -> R=2 candidate
-- VmPTE2 delta>0 -> boundary phenotype
-
-Reference:
-`docs/MATH-011-TWO-TOUCH-PTE-STOCK-DISCRIMINATOR.md`
-
-## Quantitative constraint
-
-Ideal one-PTE mediation:
-
-`Delta ZERO = Delta P(existing PTE) * P(R=1)`
-
-G-F observed difference:
-`+5.1413 percentage points`
-
-Therefore pure one-PTE mediation requires:
-`P(R=1) >= 5.1413%`
-
-## Historical biopsy
-
-G-A:
-- exact-zero specimens: 28
-- depth1: 22/28 = 78.57%
-
-Historical specimens lacked VmPTE, so existing-PTE/R1 and new-PTE/R2 depth1 cases could not be separated.
-
-## Monte Carlo ladder
-
-Reference:
-`docs/MATH-010-G0-MONTE-CARLO-CALIBRATION.md`
-
-- 16 blocks / 960: direction ~97.22%, Fisher-significant+direction ~42.66%
-- 32 / 1920: ~99.76%, ~75.83%
-- 48 / 2880: ~99.96%, ~90.69%
-
-Recommended:
-`16 -> 32 -> 48 only as needed`
-
-Each hosted stage requires explicit Human compute approval.
-
-## Rare-Pokemon construction
-
-Controlled b63 route remains alive:
-
-verified Q64 primer -> construct one residual stock page -> target -> predicted next Q64/depth1.
-
-Do not merge natural-cause and constructed-state claims yet.
-
-## Authority
-
-No new scientific hosted run launched.
 No local-PC execution.
-MEMCG-005G-G 5760 replication remains DEFERRED.
+Large 5760-candidate G-G remains DEFERRED.
