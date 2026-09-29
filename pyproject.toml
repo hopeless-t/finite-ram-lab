@@ -13,7 +13,8 @@ dependencies = []
 analysis = [
   "numpy>=2.0",
   "scipy>=1.14",
-  "pandas>=2.2"
+  "pandas>=2.2",
+  "statsmodels>=0.14"
 ]
 
 [project.scripts]

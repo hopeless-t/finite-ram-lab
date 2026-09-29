@@ -1,0 +1,308 @@
+{
+  "checks": {
+    "block_conditioned": {
+      "cmh_or": 3.2237348866606146,
+      "cmh_p": 2.7252365598640083e-06,
+      "permutation_p_two_sided": 4.999750012499375e-05
+    },
+    "depth": {
+      "g0_depth1": 12,
+      "g0_total": 19,
+      "ga_depth1": 22,
+      "ga_total": 28,
+      "ga_vs_g0_fisher_p": 0.3244264164962684
+    },
+    "depth_model": {
+      "deep_shifted_geometric_p": 0.026431718061674006,
+      "geometric_aic": 178.5136475244291,
+      "geometric_bic": 179.84585203460432,
+      "geometric_p": 0.10980392156862745,
+      "geometric_ppc_p_ge_22_depth1": 1.5158552842190805e-16,
+      "spike_tail_aic": 88.53475122628228,
+      "spike_tail_bic": 91.19916024663269,
+      "spike_weight": 0.7857142857142857,
+      "spike_weight_beta95": [
+        0.6027530507727604,
+        0.8970164492273827
+      ]
+    },
+    "g0_arm_incidence": {
+      "C8": {
+        "events": 1,
+        "trials": 75
+      },
+      "C9": {
+        "events": 2,
+        "trials": 80
+      },
+      "H10": {
+        "events": 11,
+        "trials": 89
+      },
+      "H32": {
+        "events": 3,
+        "trials": 73
+      },
+      "P8": {
+        "events": 2,
+        "trials": 90
+      },
+      "P9": {
+        "events": 0,
+        "trials": 89
+      }
+    },
+    "g0_core": {
+      "by_step": {
+        "False": [
+          5,
+          327
+        ],
+        "True": [
+          14,
+          159
+        ]
+      },
+      "events": 19,
+      "trials": 486
+    },
+    "g0_core_precurrent_adjusted": {
+      "beta_per_4_pages": 0.9995663065972632,
+      "or_ci95": [
+        0.20519589504092334,
+        35.97854482666101
+      ],
+      "range": [
+        97.0,
+        100.0
+      ],
+      "wald_p": 0.4482355566265146
+    },
+    "g0_precurrent_adjusted": {
+      "beta_per_4_pages": 0.1977453739624439,
+      "or_ci95": [
+        0.2719453933608516,
+        5.461069995716719
+      ],
+      "range": [
+        46.0,
+        106.0
+      ],
+      "wald_p": 0.7960983118967112
+    },
+    "g0_pte": {
+      "fisher_p": 1.0,
+      "posterior_p_pte_lt_no_pte": 0.218395,
+      "table": [
+        [
+          0,
+          5
+        ],
+        [
+          19,
+          472
+        ]
+      ]
+    },
+    "g0_step_fisher": {
+      "block_bootstrap_rd_ci95": [
+        0.034853005504929944,
+        0.11249462438349574
+      ],
+      "or": 6.224324324324324,
+      "p": 0.00022806834365572838,
+      "table": [
+        [
+          14,
+          148
+        ],
+        [
+          5,
+          329
+        ]
+      ]
+    },
+    "g0_width_controlled": {
+      "counts": [
+        [
+          2,
+          179
+        ],
+        [
+          14,
+          162
+        ]
+      ],
+      "fisher_p": 0.0012785066745676665
+    },
+    "gf_9_to_10": {
+      "counts": [
+        [
+          7,
+          226
+        ],
+        [
+          21,
+          243
+        ]
+      ],
+      "fisher_p": 0.011539226943280856
+    },
+    "gf_arm_incidence": {
+      "CAP10": {
+        "events": 21,
+        "trials": 243
+      },
+      "CAP11": {
+        "events": 23,
+        "trials": 231
+      },
+      "CAP12": {
+        "events": 17,
+        "trials": 225
+      },
+      "CAP32": {
+        "events": 16,
+        "trials": 223
+      },
+      "CAP8": {
+        "events": 7,
+        "trials": 226
+      },
+      "CAP9": {
+        "events": 7,
+        "trials": 226
+      }
+    },
+    "gf_core_block_fixed_precurrent": {
+      "or_ci95": [
+        1.1097538118015033,
+        2.189602299589575
+      ],
+      "or_per_page": 1.5588199056654584,
+      "p": 0.010447699359532247
+    },
+    "gf_core_precurrent_adjusted": {
+      "beta_per_4_pages": 2.2757533077012297,
+      "or_ci95": [
+        2.8734246537326285,
+        32.98332193686875
+      ],
+      "range": [
+        97.0,
+        100.0
+      ],
+      "wald_p": 0.0002568655382638221
+    },
+    "gf_precurrent_adjusted": {
+      "beta_per_4_pages": 1.3399376696511376,
+      "or_ci95": [
+        1.742456662870484,
+        8.369376141196858
+      ],
+      "range": [
+        51.0,
+        110.0
+      ],
+      "wald_p": 0.0008167848636101616
+    },
+    "gf_step_fisher": {
+      "block_bootstrap_rd_ci95": [
+        0.029043586732557566,
+        0.07516764090366243
+      ],
+      "or": 2.850887573964497,
+      "p": 0.00012427186321661813,
+      "table": [
+        [
+          77,
+          845
+        ],
+        [
+          14,
+          438
+        ]
+      ]
+    },
+    "ppc_block_count_variance": {
+      "observed": 2.3583984375,
+      "sim_median": 1.80859375,
+      "two_sided_tail": 0.1904
+    },
+    "spawn": {
+      "all": 72,
+      "conditional_95pct_lower": 0.9479104727912205,
+      "conditional_pattern_match": 55,
+      "negative_sequence_events": 23,
+      "qualified": 55,
+      "strict_success": 49
+    }
+  },
+  "events": 110,
+  "models": {
+    "constant": {
+      "aic": 838.705604486218,
+      "bic": 844.2392981960667,
+      "block_heldout_log_loss_per_trial": 0.2240293592148229,
+      "log_likelihood": -418.352802243109,
+      "parameters": [
+        -2.7725887222397834
+      ]
+    },
+    "hierarchical": {
+      "aic": 810.6924946064096,
+      "bic": 838.3609631556527,
+      "block_heldout_log_loss_per_trial": 0.2170778254199291,
+      "log_likelihood": -400.3462473032048,
+      "parameters": [
+        -3.4973968611862714,
+        1.0446863427111752,
+        -0.7340144890531823,
+        0.7823223780484088,
+        -1.0666754423959743
+      ],
+      "sigma_block": 0.34415076667819083
+    },
+    "interaction": {
+      "aic": 803.0575463598907,
+      "bic": 836.2597086189825,
+      "block_heldout_log_loss_per_trial": 0.23097621787592162,
+      "log_likelihood": -395.52877317994535,
+      "parameters": [
+        -3.397941848884904,
+        1.0635538316138515,
+        -0.48947950724290124,
+        0.4871124030670256,
+        1.0981878627973964,
+        -0.5098742159829471
+      ]
+    },
+    "mixture": {
+      "aic": 811.5781924373181,
+      "bic": 844.7803546964099,
+      "block_heldout_log_loss_per_trial": 0.21718225748573083,
+      "log_likelihood": -399.78909621865904,
+      "parameters": [
+        -13.192152753081507,
+        1.0362597188441027,
+        -0.7545904829796757,
+        0.7827037494672033,
+        2.289426398057131,
+        2.2583413977424605
+      ],
+      "rich_block_weight": 0.9053676223449025,
+      "rich_log_odds_shift": 9.86927502194498
+    },
+    "step": {
+      "aic": 808.0448927883517,
+      "bic": 819.112280208049,
+      "block_heldout_log_loss_per_trial": 0.21545048626622512,
+      "log_likelihood": -402.02244639417586,
+      "parameters": [
+        -3.698047822200818,
+        1.3081766646724926
+      ]
+    }
+  },
+  "n_natural_low": 1870
+}

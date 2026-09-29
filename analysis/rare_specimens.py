@@ -13,6 +13,8 @@ from collections import Counter
 from pathlib import Path
 
 RUNS = {"ga": "36563233676", "gf": "36577573774", "g0": "36591417373", "spawn": "36595481746"}
+EXPECTED_TRIALS = {"ga": 768, "gf": 2880, "g0": 960, "spawn": 72}
+MANIFESTS = {"g0": "MEMCG-005G-G0-STAGE-A-36591417373", "spawn": "MEMCG-005G-C-v2-PILOT-36595481746"}
 FIELDS = [
     "specimen_id", "experiment", "run", "block", "identity", "arm", "capacity_pages",
     "argv_token_width", "stratum", "phase", "valid", "pre_current_pages",
@@ -27,6 +29,19 @@ FIELDS = [
 
 def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def verify_manifest(root: Path, family: str) -> None:
+    if family not in MANIFESTS:
+        return
+    manifest = root / family / MANIFESTS[family] / "full-raw-evidence-manifest.json"
+    data = json.loads(manifest.read_text())
+    if data["run_id"] != RUNS[family] or len(data["files"]) != data["file_count"]:
+        raise ValueError(f"manifest identity/count mismatch: {family}")
+    for item in data["files"]:
+        source = root / family / item["path"]
+        if not source.is_file() or source.stat().st_size != item["size_bytes"] or sha(source) != item["sha256"]:
+            raise ValueError(f"manifest file mismatch: {source}")
 
 
 def row_for(family: str, path: Path, raw_root: Path) -> dict:
@@ -80,16 +95,19 @@ def row_for(family: str, path: Path, raw_root: Path) -> dict:
                  PTE_growth=x.get("first_vmpte_delta_kib", 0) > 0 if family == "g0" else None,
                  cpu_match=x.get("cpu_match"),
                  negative_accounting_delta=(any(v < 0 for v in x["biopsy_delta_sequence"] if isinstance(v, (int,float)))
-                                            if family == "ga" and x.get("biopsy_delta_sequence") else None))
+                                            if family == "ga" and x.get("biopsy_delta_sequence") else None),
+                 negative_delta_min_pages=(min((v for v in x["biopsy_delta_sequence"] if isinstance(v,(int,float)) and v < 0),default=None)
+                                           if family == "ga" and x.get("biopsy_delta_sequence") else None))
     return r
 
 
 def build(raw_root: Path, output: Path) -> list[dict]:
     rows = []
     for family in RUNS:
+        verify_manifest(raw_root, family)
         files = sorted((raw_root / family).glob("*/trial-*.json"))
-        if not files:
-            raise FileNotFoundError(f"no trial JSON for {family}")
+        if len(files) != EXPECTED_TRIALS[family]:
+            raise ValueError(f"trial count mismatch for {family}: {len(files)}")
         for p in files:
             row = row_for(family, p, raw_root)
             env_path = p.parent / "environment.json"
@@ -104,7 +122,7 @@ def build(raw_root: Path, output: Path) -> list[dict]:
         raise ValueError("duplicate specimen identity")
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDS)
+        writer = csv.DictWriter(f, fieldnames=FIELDS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     return rows
