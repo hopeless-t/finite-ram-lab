@@ -1,0 +1,47 @@
+{
+  "schema_version": "b404-r1-observer-reclassification-v1",
+  "run_id": "36642120375",
+  "launch_commit": "0d2a3286f3e0346e101285c52670e0ab817e427c",
+  "frozen_aggregate_v1": {
+    "normal_count": 12,
+    "normal_success": 10,
+    "target_fail": 0,
+    "instrumentation_hold": 1,
+    "sentinel_pass": true,
+    "reprimes_total": 12,
+    "invalidation_counts": {
+      "DRAIN_STOCK": 12,
+      "TRACE_GAP": 1,
+      "UNEXPECTED_REFILL": 1
+    },
+    "protocol_smoke_pass": false
+  },
+  "drain_forensics": {
+    "total_v1_drain_invalidations": 12,
+    "off_target_stock_cpu": 9,
+    "same_stock_cpu_normalize_internal_slot_eviction_candidates": 3,
+    "remaining_same_stock_cpu_post_verify_drains": 0,
+    "stock_cpu": 3,
+    "note": "Do not rewrite R1 outcomes. The corrected observer changes prospective classification only."
+  },
+  "trace_gap_forensics": {
+    "count": 1,
+    "trial": "0:0",
+    "arm": "b62",
+    "epoch": 0,
+    "phase": "CONSUME",
+    "touch": 12,
+    "owner_counter": "0xffff8dc9c787b040",
+    "emission": "page_counter_uncharge(...,17)",
+    "emitter_comm": ".NET TP Worker",
+    "emitter_cpu": 2,
+    "r1_limitation": "No uncharge17 stacktrace trigger was enabled, so release attribution was incomplete."
+  },
+  "postprocessing_failure": {
+    "stage": "Freeze raw evidence manifest",
+    "error": "EvidenceResidencyError: files must be sorted by path",
+    "science_summary_generated_before_failure": true,
+    "four_block_artifacts_preserved": true
+  },
+  "claim_ceiling": "OBSERVER_FALSIFICATION_AND_PREFLIGHT_ONLY"
+}
