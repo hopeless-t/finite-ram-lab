@@ -1,0 +1,35 @@
+OBS-006 masked Q64 observer v2
+
+Human authorization:
+Continue finite-ram-lab research on 2026-09-30 JST.
+
+This is the fresh scientific relaunch after correcting only the live scrubber event key.
+Run v1 is instrumentation-invalid and must not be used as a scientific endpoint.
+
+Frozen scientific scope remains:
+- 4 standard GitHub-hosted ubuntu-26.04 blocks
+- 4 identities/block
+- 16 total trials
+- direct Q64 primer = refill_stock(...,63)
+- consume exactly 33 pages after primer
+- establish a recent shared LRU-add flush with scrubber
+- Q touches 17 producer pages and discards them
+- Q touches 14 collision pages
+- direct charge/refill and release probes
+- no replacement trials
+- no b63 reliability claim
+- no natural-incidence claim
+- no local-PC execution
+- no paid runner
+
+Primary MASKED_Q64_PASS:
+collision touch14 directly contains:
+- Q page_counter_try_charge64
+- Q refill_stock63
+- same-counter page_counter_uncharge17
+- Q LRU flush31
+- Q folios_put31
+- no VmPTE growth
+
+Secondary prediction:
+net memory.current delta = +47 pages.
