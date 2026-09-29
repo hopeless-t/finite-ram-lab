@@ -1,146 +1,130 @@
 # CURRENT
 
-> Latest bounce: B385
-> Stage: G0 STAGE A COMPLETE / CAPACITY SIGNAL SURVIVES / PTE SUPPRESSOR EXPOSED
-> Stop: NEXT PHYSICAL RUN REQUIRES NEW HUMAN LAUNCH SCOPE
+> Latest bounce: B386
+> Stage: PTE-PRECONDITIONED CONTROLLED SPAWN IMPLEMENTED / CI PASS / NOT LAUNCHED
+> Stop: HUMAN_SCIENTIFIC_LAUNCH_APPROVAL_FOR_CONTROLLED_SPAWN_V2_PILOT
 
-## G0 Stage A
+## Previous result: G0 Stage A
 
 Run:
 `36591417373 = success`
 
-All:
-- 16/16 blocks PASS
-- 960/960 trials valid
-- CPU mismatches 0
-- LOW 496
-- HIGH 464
-- LOW morphology only Q64 or exact-zero
+Key findings:
 
-## Argv alias
+- argv-width explanation not supported;
+- capacity signal survives width control;
+- H32 uniquely produced first-fault VmPTE +4 KiB;
+- LOW PTE-growth was 5/5 Q64;
+- 12/19 LOW exact-zero specimens were R1 candidates;
+- small mTHP disabled;
+- Drive COLD replica 17/17 byte-identical.
 
-Canonical 8/9:
-3/155 = 1.94%
+Docs:
+- `docs/MEMCG-005G-G0-STAGE-A-RESULT.md`
+- `docs/MATH-012-G0-SENSITIVITY-AND-PTE.md`
 
-Padded 08/09:
-2/179 = 1.12%
+## Controlled-spawn v2
 
-Fisher:
-`p=0.666`
+Goal:
 
-Block CMH:
-`p=0.503`
+convert rare LOW exact-zero/depth1 from natural capture into constructed state.
 
-1M block permutation:
-`p~=0.655`
+CPU roles:
 
-Verdict:
-`ARGV_WIDTH_EFFECT_NOT_SUPPORTED`
+- C controller
+- P preparation
+- S stock/measured
 
-## Capacity after width control
+On P:
 
-Padded 08/09:
-2/179 = 1.12%
+`mmap -> choose same-PTE safe span -> touch guard -> PTE precondition`
 
-10/32:
-14/162 = 8.64%
+Then migrate to S.
 
-RD:
-`+7.52pp`
+On S:
 
-OR:
-`8.37`
+`find fresh Q64 -> consume exact stock count -> target/follow-up pattern`
 
-Fisher:
-`p=0.00128`
+All measured touches must have:
 
-Block CMH:
-`p~=0.00204`
+`VmPTE_delta = 0`
 
-1M block permutation:
-`p~=0.00177`
+## Arms
 
-Core LOW pre_current 97..100 sensitivity remains essentially identical.
+b62:
 
-Verdict:
-`CAPACITY_SIGNAL_SURVIVES_ARGV_WIDTH_CONTROL`
+`ZERO -> ZERO -> Q64`
 
-## H10 vs H32
+b63:
 
-- H10 11/89 = 12.36%
-- H32 3/73 = 4.11%
+`ZERO -> Q64`
 
-Suggestive heterogeneity only.
+b64:
 
-Do not assume monotonicity.
+`Q64`
 
-## PTE
+b63 is primary spawn arm.
 
-VmPTE +4KiB:
+## Pilot freeze
 
-- H32 8/160
-- all other arms 0/800
-- Fisher p ~=5.13e-7
+- 8 blocks
+- 9 raw identities/block
+- 72 raw total
+- 24 raw/arm
+- no replacement trials
 
-LOW PTE-growth specimens:
-5/5 Q64.
+## Implementation
 
-No LOW PTE-growth specimen was exact-zero.
+Math:
+`docs/MATH-013-PTE-PRECONDITIONED-SPAWN.md`
 
-This is compatible with page-table charge consuming the same near-exhausted memcg stock.
+Protocol:
+`docs/MEMCG-005G-C-CONTROLLED-RARE-INDUCTION-v2.md`
 
-## Two-touch
+Worker:
+`experiments/memcg005gc_spawn_worker.c`
 
-LOW exact-zero:
-19
+Controller:
+`src/finite_ram_lab/memcg005gc_controlled_spawn.py`
 
-- R1_CANDIDATE 12
-- OTHER/second-zero 7
-- R2 0
-- PTE_BOUNDARY 0
+Spec:
+`specs/MEMCG-005G-C-PTE-PRECONDITIONED-SPAWN-v2.json`
 
-R1 fraction:
-63.16%
+Workflow:
+`.github/workflows/memcg-005g-c-v2-controlled-spawn.yml`
 
-## mTHP
+## Validation
 
-All small exposed mTHP orders:
-`[never]`
+CI:
+`36594688827 = success`
 
-2MiB:
-`[inherit]`
+Scientific spawn workflow has NOT run.
 
-global:
-`[madvise]`
+No launch marker exists.
 
-Small mTHP explanation is closed for this run.
+## Evidence policy
 
-## Evidence residency
+- raw HOT 7 days
+- aggregate HOT 30 days
+- full raw manifest + verify
+- COLD Google Drive/local after run
 
-Raw set:
-- 1936 files
-- 4,854,520 bytes
-- content SHA:
-  `dd80fb2551833bd001cc27680c6ef3bf3053f7360421667b256b94851ab8798e`
+## Reliability interpretation
 
-Drive COLD:
-`Catfood Lab Evidence/finite-ram-lab/MEMCG-005G-G0/run-36591417373`
+Pilot tests mechanism only.
 
-17/17 Drive archives:
-`BYTE-IDENTICAL PASS`
+All-success b63 reliability ladder:
 
-## Next design
+- 24 -> lower95 ~88.3%
+- 59 -> >95%
+- 96 -> ~96.9%
+- 299 -> >99%
 
-Track A:
-fixed-width dense onset around
-`08,09,10,11,12`
+Do not claim literal 100%.
 
-Track B:
-PTE-preconditioned controlled spawn:
+## Authority
 
-`preallocate target PTE -> verified Q64 primer -> consume to residual1 -> target zero -> next Q64`
-
-Track B is the direct route toward intentional rare-state generation.
-
-No new physical launch is authorized yet.
+No physical controlled-spawn run authorized yet.
 No local-PC execution.
+No larger runner.
+No paid resource.
