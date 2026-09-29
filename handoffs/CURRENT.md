@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B316
-> **Stage:** MEMCG-004 CI PASS / LAUNCH ELIGIBLE
-> **Turn stop reason:** CHECKPOINT
+> **Latest bounce:** B317
+> **Stage:** MEMCG-004 LAUNCH DELIVERED / EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## Prior canonical result
 MEMCG-003B canonical commit: `99c084a95fc39c6c4b3ae2081d74117f4355debc`
@@ -60,10 +60,20 @@ Converged:
 - hosted MEMCG-004 is eligible for a separate explicit launch bounce;
 - Proposal != Decision and Expressibility != Executability remain intact.
 
+## MEMCG-004 launch B317
+Explicit hosted launch marker created exactly once:
+`bb36429bfdbd172fede04b66dbabf633e9b1ab4a`
+at `launch/MEMCG-004-v1.txt`.
+
+A single immediate run lookup by launch head returned no run yet.
+Delivery of the launch commit is confirmed; do not recreate or retry the marker.
+Treat scheduler visibility as external wait, not delivery failure.
+
 ## Next fresh-bounce action
-Make the explicit hosted MEMCG-004 launch decision against the frozen design.
-If launched, create exactly one launch marker, identify the resulting external run once,
-checkpoint EXTERNAL_WAIT, and stop without polling.
+Look up Actions for launch head `bb36429bfdbd172fede04b66dbabf633e9b1ab4a` exactly once.
+- if a MEMCG-004 run is pending/in_progress: record its run id, checkpoint EXTERNAL_WAIT, stop;
+- if completed: inspect the exposed result once and canonicalize;
+- if still absent: checkpoint EXTERNAL_WAIT and do not retry launch.
 
 ## Authority boundary
 Hosted research only.
