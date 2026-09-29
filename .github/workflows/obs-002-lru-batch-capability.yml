@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "launch/OBS-002-LRU-BATCH-CAPABILITY-v1.txt"
+      - "launch/OBS-002-LRU-BATCH-CAPABILITY-v2.txt"
 
 permissions:
   contents: read
@@ -90,7 +90,7 @@ jobs:
             folio_batch_move_lru
             page_counter_uncharge
           )
-          for sym in "\${required[@]}"; do
+          for sym in "${required[@]}"; do
             awk -v s="$sym" '$1==s && $3==1 {ok=1} END {exit !ok}' capability.tsv || {
               echo "OBS002_CAPABILITY_HOLD: missing $sym"
               exit 20
