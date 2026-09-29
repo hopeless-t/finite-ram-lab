@@ -1,0 +1,69 @@
+{
+  "experiment_id": "TX-PERTURBATION-MATRIX-v1",
+  "status": "FROZEN_DESIGN_NOT_AUTHORIZED",
+  "chapter": "FINITE-RAM-LAB-II",
+  "role": "CAUSAL_VALIDATION_OF_TRANSACTION_INVALIDATORS",
+  "prerequisite": "B404 transactional spawn pilot passes native observer/epoch wiring",
+  "arms": [
+    {
+      "id": "CLEAN",
+      "n": 4,
+      "intervention": "none",
+      "prediction": "verified epoch reaches canonical b63 TARGET_MATCH and COMMIT"
+    },
+    {
+      "id": "RELEASE_ONLY",
+      "n": 4,
+      "intervention": "source-grounded shared-LRU release during verified execution",
+      "prediction": "release is recorded but expected_residual is unchanged; canonical b63 terminal pattern remains"
+    },
+    {
+      "id": "UNEXPECTED_REFILL",
+      "n": 4,
+      "intervention": "one extra stock-consuming step chosen to force a direct Q64/refill before TARGET",
+      "prediction": "epoch INVALIDATED with UNEXPECTED_REFILL; no TARGET_FAIL and no COMMIT"
+    },
+    {
+      "id": "PTE_GROWTH",
+      "n": 4,
+      "intervention": "deliberately use an untouched PTE-table region during the verified measured phase",
+      "prediction": "VmPTE growth INVALIDATES before any apparent target match can commit"
+    }
+  ],
+  "reprime": {
+    "mode": "HARD_NEW_WORKER_CGROUP",
+    "max_reprimes": 1,
+    "post_invalidation_requirement": "fresh epoch-local direct Q64 pair"
+  },
+  "required_telemetry": [
+    "epoch",
+    "phase",
+    "touch_index_since_verified",
+    "elapsed_ns_since_verified",
+    "expected_residual_before",
+    "expected_residual_after",
+    "page_counter_try_charge_64_count",
+    "refill_stock_63_count",
+    "drain_stock_count",
+    "classified_release_only_count",
+    "vmpte_delta_kib",
+    "cpu_match",
+    "worker_ok",
+    "trace_complete",
+    "terminal_state"
+  ],
+  "primary_acceptance": [
+    "CLEAN does not require contamination to succeed",
+    "RELEASE_ONLY never changes expected residual solely because of release",
+    "UNEXPECTED_REFILL never commits the invalidated epoch",
+    "PTE_GROWTH never commits the contaminated epoch",
+    "reprime requires a fresh direct Q64 in a new epoch",
+    "no stale receipt can authorize post-reprime success"
+  ],
+  "claim_ceiling": "MECHANISM_AND_CLASSIFIER_CAUSAL_VALIDATION_ONLY",
+  "authority": {
+    "physical_run_authorized": false,
+    "paid_runner_authorized": false,
+    "local_pc_execution_authorized": false
+  }
+}
