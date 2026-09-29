@@ -1,0 +1,13 @@
+{
+  "experiment_id":"MEMCG-005G-E-ADAPTIVE-CAPACITY-REFINEMENT-v1",
+  "required_page_size":4096,
+  "runner_blocks":16,
+  "identities_per_block":80,
+  "capacities":[8,12,16,19,22,26,32,70],
+  "low_threshold_pages":110,
+  "q64_min_pages":60,
+  "q64_max_pages":68,
+  "step_t_min":9,
+  "step_t_max":32,
+  "authority":"HOSTED_RESEARCH_ONLY"
+}

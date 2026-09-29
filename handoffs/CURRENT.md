@@ -1,31 +1,32 @@
 # CURRENT
 
-> Latest bounce: B370
-> Stage: MEMCG-005G-D hosted dose-response
-> Stop: EXTERNAL_WAIT
+> Latest bounce: B371
+> Stage: MEMCG-005G-E ADAPTIVE REFINEMENT IMPLEMENTED / CI PENDING
+> Stop: CI_DISCOVERY_PENDING
 
-Launch:
-`0fbe92a6a3309092f58c56d4d657be91616d2c0a`
+005G-D:
+`docs/MEMCG-005G-D-RESULT.md`
 
-Scientific run:
-`36571375684`
+MATH-005:
+`docs/MATH-005-ADAPTIVE-CAPACITY-REFINEMENT.md`
 
-Single B370 read:
-`queued`
+Current model-conditional clue:
+- CAP8 1.98%
+- CAP32+ pooled 10.65%
+- best post-hoc simple split: CAP8 vs CAP32+
+- step-family posterior P(T in 9..32) ~98.1%
+- max one-probe expected information gain at CAP19
 
-Frozen capacities:
-`{8,32,63,64,65,70}`
+005G-E frozen panel:
+`{8,12,16,19,22,26,32,70}`
 
 Scale:
-16 independent blocks x72 candidates =1152.
+16 independent blocks x80 candidates =1280.
 
-Analysis:
-CONSTANT / LOGISTIC_LINEAR / STEP64 / CATEGORICAL by AIC.
-
-Do not poll again in this bounce.
+No launch marker exists.
 
 Next fresh bounce:
-read run `36571375684` exactly once.
+discover/read ordinary CI exactly once.
 
 Hosted research only.
 No local-PC execution.
