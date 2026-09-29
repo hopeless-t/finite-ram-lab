@@ -1,66 +1,61 @@
 # CURRENT
 
-> **Latest bounce:** B325
-> **Stage:** MEMCG-005 INCONCLUSIVE / NORMALIZATION INTERFERENCE IDENTIFIED
-> **Turn stop reason:** READY_FOR_REPAIR_DESIGN
+> **Latest bounce:** B326
+> **Stage:** MEMCG-005B THREE-CPU STAGED DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## MEMCG-004 accepted primitive
+## MEMCG-005 accepted result
 
-`SUPPORT_CALIBRATED_STOCK`
-
-Single-worker calibrated phase:
-`R=[64,64,64,64]`
-
-## MEMCG-005 canonical result
-
-Run:
-`36545631176`
+Canonical commit:
+`95191357ac80b9157c2f9f05df86672abb661983`
 
 Decision:
 `INCONCLUSIVE`
 
-20 replicas:
-- 11 nominally valid
-- 9 invalid
-- 0 complete-valid blocks
-- systematic invalid-state pattern
+Reason:
+many-worker same-CPU pre-normalization perturbed the shared stock state.
 
-Source K7 complete signature was not observed in any block.
+## MEMCG-005B
 
-Critical diagnostic:
-- all 9 INSERT_NOT_Q64 failures had same-identity consume63_delta=+64 during normalization;
-- insertion delta then equaled 0;
-- every replica had at least one used identity with a +64 normalization-window anomaly.
+Frozen design:
+`docs/MEMCG-005B-THREE-CPU-STAGED-K7-v1.md`
 
-Therefore preparing 16 identities on the same stock CPU perturbed the shared cache before the measured sequence.
-
-Canonical result:
-`docs/MEMCG-005-RESULT.md`
-
-## Accepted interpretation
-
-Do not infer K={1..5} from the nominally valid subset.
-
-The calibration precondition was compositionally unstable.
-
-Q64 and MEMCG-004 remain accepted.
-
-## Next repair
-
-Use three CPU roles:
+CPU roles:
 - C controller
-- P preparation/startup
+- P prep/startup
 - S stock-test
 
-Future identities must not execute on S before their measured insertion.
+Workers start zero-touch on P.
 
-Use enough verified distinct wash insertions on S to wash out unknown initial cache occupancy before target insertion.
+Measured insertion:
+- migrate P -> S;
+- first S touch must be +64-like.
+
+No future identity may touch S before its insertion.
+
+Robust prefill:
+- 14 distinct verified wash insertions before target.
+
+Reason:
+after at most 7 inserts the cache is full; seven more distinct replacements sweep all seven slots, washing out unknown initial occupancy/drain_idx under the source model.
+
+Independent m:
+`{0,5,6,7,8}`
+
+Source K7 signature:
+- 0/5/6 PRESENT
+- 7/8 ABSENT
 
 ## Next fresh-bounce action
 
-Freeze MEMCG-005B staged-CPU repair design.
+Implement MEMCG-005B:
+- zero-touch worker with MIGRATE command;
+- three-CPU runner;
+- 14-wash staged insertion;
+- one-shot target probe;
+- analyzer/tests/workflow.
 
-Do not launch during design.
+Do not launch during implementation.
 
 ## Authority boundary
 
