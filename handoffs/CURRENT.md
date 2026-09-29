@@ -1,186 +1,198 @@
 # CURRENT
 
-> Latest bounce: B404
-> Stage: MINIMAL TRANSACTIONAL SPAWN PILOT DESIGN FROZEN
+> Latest bounce: B405
+> Stage: CHAPTER II TRANSACTION PERTURBATION MATRIX FROZEN
 > Stop: PHYSICAL PAUSE / READY FOR NATIVE TRACE-OBSERVER WIRING
 
-## Core research split
+## Chapter II question
 
-finite-ram-lab now has two linked but distinct research tracks.
+Once a Q64 reset is directly verified:
 
-### Track N — Natural Hidden-State Ecology
+> which events preserve the epoch, which events destroy it, and can the protocol prove the difference before COMMIT?
 
-Historical natural panels remain reusable for:
+## Leading hypothesis
 
-- CAP10-neighborhood association;
-- initial residual phase;
-- depth1/deep tail;
-- PTE perturbation;
-- normalization burden prediction.
+Verified stock arithmetic remains deterministic until a discrete observer-visible state-changing event occurs.
 
-These are not target correctness measurements.
+Do not model all historical failure as one Bernoulli error process.
 
-### Track T — Transactional Correctness
+Current candidate invalidators:
 
-New B400-native receipts are required for:
+- unexpected refill
+- drain
+- PTE growth
+- CPU mismatch
+- worker error
+- trace gap
 
-- verified reset acquisition;
-- invalidation causes;
-- re-prime burden;
-- genuine TARGET_FAIL;
-- accepted-result correctness;
-- abort/abstention.
+Positively classified LRU release is state-preserving.
 
-Bridge:
+## Why this hypothesis has traction
 
-X -> normalization burden -> verified reset -> target transition
+Historical controlled-spawn:
 
-replaces the old:
+- strict endpoint 49/72 remains frozen
+- primer-qualified terminal pattern 55/55 remains frozen
+- negative bait events retained the predicted terminal phase
 
-X -> SUCCESS/FAIL
+OBS-005 / MATH-016:
 
-## Historical-data decision
+- recurrent -17 was causally grounded as shared per-CPU LRU release
+
+Controlled-spawn v2:
+
+- target PTE preconditioning removed measured PTE growth from the controlled sequence
+
+OBS-006:
+
+- direct Q64 observer recognized masked Q64
+- state-loss cases were rejected as unexpected refill rather than accepted as success
+
+The remaining high-value question is therefore release-only contamination vs true state mutation.
+
+## B402 assumption audit
 
 Do not recollect the natural-state corpus.
 
-Do not globally refit MATH-001..018 solely because semantics changed.
+Most MATH-001..018 numerical results survive with new estimands.
 
-Controlled-spawn v2 remains frozen:
-
-- strict 49/72;
-- primer-qualified terminal pattern 55/55.
-
-B400 true accepted correctness is historically non-identifiable.
-
-The historical replay ledger explicitly distinguishes zero certified accepts from an empirical 0% success rate.
-
-## B402 assumption audit
+Artifacts:
 
 - analysis/inputs/ASSUMPTION-DEPENDENCY-AUDIT-v1.json
 - docs/MATH-019-SEMANTIC-DEPENDENCY-AUDIT.md
 - handoffs/B402-ASSUMPTION-DEPENDENCY-AUDIT.md
 
-Key result:
-
-most natural-state mathematics survives numerically with changed estimands.
-
-MATH-015 H17-STOCK/drain origin is superseded by OBS-005/MATH-016 shared-LRU handoff evidence.
-
-## B403 bridge
+## B403 controlled-spawn transaction bridge
 
 Implemented:
 
 - src/finite_ram_lab/controlled_spawn_transaction_bridge.py
 - tests/test_controlled_spawn_transaction_bridge.py
 - docs/CONTROLLED-SPAWN-TRANSACTION-BRIDGE-v1.md
-- handoffs/B403-CONTROLLED-SPAWN-TRANSACTION-BRIDGE.md
 
-Bridge semantics:
+Core semantics:
 
-- direct ZERO/Q64 tokens ignore net memory.current;
-- release-only may coexist;
-- bait Q64 -> INVALIDATED;
-- wrong valid terminal phase -> TARGET_FAIL;
-- partial Q64 pair -> TRACE_GAP;
-- terminal b62/b63/b64 pattern -> TARGET bundle.
+- ZERO/Q64 derive from direct observer receipts, not net memory.current
+- release-only may coexist
+- bait Q64 -> INVALIDATED
+- wrong valid terminal phase -> TARGET_FAIL
+- partial Q64 pair -> TRACE_GAP
+- terminal b62/b63/b64 sequence -> one TARGET bundle
 
-Bridge source and synthetic tests passed CI.
+CI passed for bridge source and tests.
 
-## B404 minimal pilot
+## B404 first physical smoke design
 
-Frozen design:
+Frozen:
 
 - specs/TRANSACTIONAL-SPAWN-PILOT-v1.json
 - docs/MATH-020-TRANSACTIONAL-SPAWN-PILOT-DESIGN.md
-- handoffs/B404-MINIMAL-TRANSACTIONAL-PILOT-DESIGN.md
 
-### Normal lane
+Normal lane:
 
-12 scientific identities:
+- b62 x4
+- b63 x4
+- b64 x4
 
-- b62 = 4
-- b63 = 4
-- b64 = 4
+Sentinel:
 
-No replacement identities.
+- one FORCED_UNEXPECTED_REFILL_THEN_HARD_REPRIME
 
-This is protocol smoke only.
+Re-prime:
 
-Even 12/12 correct accepted results imply only about a 77.9% one-sided 95% all-success correctness floor.
+- HARD_NEW_WORKER_CGROUP
+- max_reprimes=2
 
-No reliability claim is permitted.
+This is protocol smoke only, not reliability certification.
 
-### Sentinel lane
+B404 must pass before Chapter II perturbation experiments launch.
 
-One non-scientific:
+## B405 Chapter II perturbation matrix
 
-FORCED_UNEXPECTED_REFILL_THEN_HARD_REPRIME
+Frozen:
 
-Purpose:
+- specs/TX-PERTURBATION-MATRIX-v1.json
+- docs/MATH-021-CHAPTER-II-TRANSACTION-PERTURBATION-MATRIX.md
+- handoffs/B405-CHAPTER-II-PERTURBATION-MATRIX.md
 
-- prove invalidated epoch cannot commit;
-- prove stale epoch receipts cannot authorize a new epoch;
-- prove fresh direct Q64 is required after re-prime.
+Four causal arms:
 
-### Re-prime baseline
+### CLEAN x4
 
-- max_reprimes = 2
-- mode = HARD_NEW_WORKER_CGROUP
-- maximum 3 epochs per identity
+Prediction:
 
-Hard re-prime is the first baseline because it gives:
+VERIFIED -> TARGET_MATCH -> COMMIT.
 
-- stronger epoch isolation;
-- clean receipt boundaries;
-- fresh safe-span budget;
-- less direct carry-over from an invalidated worker.
+### RELEASE_ONLY x4
 
-Soft same-worker re-prime is deferred as an optimization study.
+Inject one source-grounded shared-LRU release after VERIFIED.
 
-### Stop rules
+Prediction:
 
-Immediate scientific stop:
+- release recorded
+- expected residual unchanged
+- canonical b63 phase preserved
+- no INVALIDATE solely because net memory.current falls
 
-- any TARGET_FAIL from a complete uninterrupted verified normal-lane epoch.
+### UNEXPECTED_REFILL x4
 
-Instrumentation hold:
+Force a direct Q64/refill before the frozen target boundary.
 
-- trace gap;
-- CPU mismatch;
-- worker error.
+Prediction:
 
-State invalidation:
+INVALIDATED / UNEXPECTED_REFILL.
 
-- unexpected refill;
-- drain;
-- PTE growth.
+No TARGET_FAIL.
+No COMMIT in the invalidated epoch.
 
-These may hard re-prime while budget remains.
+### PTE_GROWTH x4
 
-Budget exhaustion:
+Deliberately fault an untouched PTE-table region during the verified measured phase.
 
-ABORTED / NO_RESULT.
+Prediction:
 
-No automatic scale expansion.
+INVALIDATED / PTE_GROWTH.
 
-## Remaining integration gap
+Guard precedence overrides an apparent target match.
 
-Before any physical pilot, wire:
+## Epoch-hazard telemetry
 
-- per-touch transaction markers;
-- page_counter_try_charge(64);
-- refill_stock(63);
-- drain_stock;
-- positive release-only classification;
-- trace completeness;
-- per-epoch packet archive;
-- hard re-prime orchestration.
+Add to every packet:
 
-## Next
+- touch_index_since_verified
+- elapsed_ns_since_verified
+- expected_residual_before
+- expected_residual_after
+- invalidator type
 
-Implement native trace/observer wiring and synthetic end-to-end epoch archive replay.
+This creates the first epoch-hazard atlas.
 
-Do not launch the physical pilot until wiring, CI, and Human authorization boundaries are satisfied.
+Working model:
+
+hazard is likely event-driven by finite shared structures rather than one homogeneous memoryless failure process.
+
+This is a hypothesis, not yet a result.
+
+## Falsifiers
+
+Chapter II working theory is weakened if complete receipts show:
+
+1. RELEASE_ONLY changes residual phase.
+2. CLEAN produces genuine TARGET_FAIL.
+3. UNEXPECTED_REFILL can COMMIT in the same epoch.
+4. PTE_GROWTH can COMMIT in the contaminated epoch.
+5. hard re-prime can use stale receipts.
+6. canonical phase changes with no observer-visible invalidator.
+
+Case 6 would imply a missing observer mechanism and is especially important.
+
+## Required order
+
+1. implement native trace/observer wiring
+2. run B404 protocol smoke after authorization
+3. only if B404 passes, run TX-PERTURBATION-MATRIX-v1
+4. then design larger natural epoch-hazard mapping
+5. reliability certification remains deferred
 
 ## Authority
 
@@ -188,4 +200,5 @@ PAUSE.
 No local-PC execution.
 No paid runner.
 No physical pilot.
-No large b63 reliability certification.
+No perturbation matrix run.
+No large reliability certification.
