@@ -1,0 +1,17 @@
+{
+  "experiment_id": "MEMCG-004-CALIBRATED-STOCK-v1",
+  "required_page_size": 4096,
+  "runner_blocks": 4,
+  "arms": ["calibrated", "no_hold", "control_no_prime"],
+  "calibration_min_pages": 60,
+  "calibration_max_pages": 68,
+  "hold_samples": 64,
+  "significant_passive_drop_pages": 16,
+  "validation_touches": 64,
+  "validation_event_min_pages": 60,
+  "validation_event_max_pages": 68,
+  "predicted_r": 64,
+  "r_tolerance": 1,
+  "required_support_blocks": 3,
+  "max_prime_touches": 192
+}
