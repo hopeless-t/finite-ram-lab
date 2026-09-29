@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "KERNEL-MEMORY-SEMANTICS-RECEIPT-v1.schema.json",
+  "title": "Finite RAM Lab kernel memory semantics receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kernel_release",
+    "page_size_bytes",
+    "memcg_charge_batch_pages",
+    "stock_implementation_owner",
+    "stock_policy",
+    "stock_policy_evidence",
+    "tiered_memcg_limits"
+  ],
+  "properties": {
+    "schema_version": {"const": "kernel-memory-semantics-receipt-v1"},
+    "kernel_release": {"type": "string", "minLength": 1},
+    "kernel_build": {"type": ["string", "null"]},
+    "page_size_bytes": {"type": "integer", "minimum": 1},
+    "memcg_charge_batch_pages": {"type": ["integer", "null"], "minimum": 1},
+    "stock_implementation_owner": {
+      "enum": ["memcg_stock", "page_counter_stock", "other", "unknown"]
+    },
+    "stock_policy": {
+      "enum": ["seven_slot_shared_percpu", "per_counter_percpu", "other", "unknown"]
+    },
+    "nr_memcg_stock": {"type": ["integer", "null"], "minimum": 1},
+    "drain_policy": {"type": ["string", "null"]},
+    "stock_policy_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method"],
+      "properties": {
+        "method": {"enum": ["source_audit", "symbol_probe", "runtime_probe", "manual", "unknown"]},
+        "reference": {"type": ["string", "null"]},
+        "notes": {"type": ["string", "null"]}
+      }
+    },
+    "tiered_memcg_limits": {
+      "enum": ["enabled", "disabled", "unsupported", "unknown"]
+    },
+    "thp_global": {"type": ["string", "null"]},
+    "mthp_receipt": {
+      "type": ["object", "null"],
+      "additionalProperties": {"type": "string"}
+    },
+    "source_commit_or_build": {"type": ["string", "null"]}
+  }
+}
