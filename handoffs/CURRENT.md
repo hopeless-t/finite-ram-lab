@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B343
-> **Stage:** MEMCG-005D EXPLICIT RELAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B344
+> **Stage:** MEMCG-005D REPAIRED HOSTED RUN + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## MEMCG-005C accepted result
 
@@ -11,6 +11,16 @@ Canonical:
 
 Decision:
 `REJECT_ATOMIC_PATH`
+
+ATOMIC:
+- 69/92 Q64
+- 23 zero-delta failures
+
+TWO_STEP:
+- 77/92 Q64
+- 15 zero-delta failures
+
+Receipt-I/O hypothesis rejected.
 
 ## MEMCG-005D
 
@@ -23,15 +33,20 @@ Runtime repair:
 Repair CI:
 `36552762177 = success`
 
-Previous scientific run:
-`36552551097 = infrastructure failure only`
-
 Exact relaunch:
 `098607e7b8f76377841a718799d896f50a0bef12`
 
-A/B unchanged:
-- SELF_ATOMIC worker self-migration;
-- EXTERNAL_ATOMIC controller external migration + mid current + shared GO.
+Scientific run:
+`36553495930`
+
+Single B344 read:
+`in_progress`
+
+Do not poll again in this bounce.
+
+A/B:
+- SELF_ATOMIC = worker self-migration;
+- EXTERNAL_ATOMIC = controller-driven migration + pre/mid/post memory.current decomposition + shared GO.
 
 23 identities per arm per block.
 4 blocks.
@@ -39,10 +54,10 @@ A/B unchanged:
 
 ## Next fresh-bounce action
 
-Discover/read exact-head MEMCG-005D workflow once.
+Read run `36553495930` exactly once.
 
-- pending/in_progress -> record run id, EXTERNAL_WAIT;
-- success -> fetch aggregate once and canonicalize;
+- success -> fetch aggregate once, compare external vs self first-touch failure rates and migration/touch deltas, canonicalize;
+- pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
 ## Authority boundary
