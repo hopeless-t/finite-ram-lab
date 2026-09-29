@@ -1,0 +1,26 @@
+OBS-001 17-page uncharge trace v2
+
+Human scope:
+Continue finite-ram-lab research on 2026-09-30 JST.
+
+Reason:
+v1 launch failed before runner allocation because workflow expressions were escaped incorrectly.
+No scientific candidate executed in v1.
+
+Frozen scope unchanged:
+- 4 standard GitHub-hosted ubuntu-26.04 blocks
+- 12 identities/block
+- 24 measured touches/identity
+- 48 identities total
+- 1152 measured touches total
+- same PTE-preconditioned worker substrate
+- trace drain_stock
+- trace refill_stock
+- trace page_counter_uncharge filtered to nr_pages==17
+- trace markers around each measured touch
+- process RSS/VmPTE corroboration
+- no b63 reliability claim
+- no natural-incidence claim
+- no dynamic sample expansion
+- no local-PC execution
+- no paid runner
