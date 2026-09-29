@@ -1,0 +1,114 @@
+{
+  "schema_version": "historical-transaction-replay-v1",
+  "generated_from": "B400 transactional validator",
+  "frozen_endpoint_policy": "preserve_original_labels_and_counts",
+  "transactional_classes": {
+    "TX_SUCCESS": "complete verified epoch + target match + commit",
+    "TX_TARGET_FAIL": "target mismatch after a verified uninterrupted epoch",
+    "TX_NO_RESULT_INVALIDATED": "state invalidator fired; no scientific target conclusion",
+    "TX_NO_RESULT_RECEIPT_GAP": "legacy evidence cannot satisfy the B400 receipt token; fail closed",
+    "TX_NONTERMINAL_VERIFIED": "verified reset acquired but no target/commit exists in this evidence object",
+    "TX_PRETRANSACTION": "admission or natural initial-state observation; not a target result",
+    "TX_OBSERVER_SUPPORT": "supports receipt interpretation but is not itself a target transaction"
+  },
+  "replay": [
+    {
+      "source": "MEMCG-005F",
+      "historical": {"remote_low_n": 123, "first_touch_q64": 121, "first_touch_zero": 2},
+      "transactional": {
+        "TX_PRETRANSACTION_predictor_hit": 121,
+        "TX_PRETRANSACTION_normalize_needed": 2,
+        "TX_TARGET_FAIL": 0
+      },
+      "note": "REMOTE_LOW is an admission predictor, not proof of verified state."
+    },
+    {
+      "source": "MEMCG-005G-A",
+      "historical": {"remote_low_n": 406, "first_touch_zero": 28, "later_q64_by_touch65": 28},
+      "transactional": {
+        "TX_PRETRANSACTION_recovery_observed": 28,
+        "TX_TARGET_FAIL": 0
+      },
+      "note": "The 28 old first-touch failures are initial-phase misses with observed later reset recovery, not target failures."
+    },
+    {
+      "source": "MEMCG-004",
+      "historical": {"support_blocks": 4, "calibrated_q64_net_delta_blocks": 4, "residual_sequence_exact_blocks": 4},
+      "transactional": {
+        "TX_NO_RESULT_RECEIPT_GAP": 4,
+        "TX_TARGET_FAIL": 0
+      },
+      "note": "Strong legacy reset/phase evidence, but it predates the direct charge64+refill63 receipt token."
+    },
+    {
+      "source": "MEMCG-005G-C-v2 controlled-spawn",
+      "historical": {
+        "n": 72,
+        "strict_exact_recovery": 49,
+        "direct_net_q64_primer_found": 55,
+        "primer_qualified_terminal_match": 55,
+        "calibration_other_delta": 17,
+        "bait_nonzero": 6
+      },
+      "transactional": {
+        "TX_SUCCESS": 0,
+        "TX_TARGET_FAIL": 0,
+        "TX_NO_RESULT_RECEIPT_GAP": 72
+      },
+      "subclasses": {
+        "legacy_strict_success_but_missing_direct_q64_pair": 49,
+        "legacy_bait_nonzero_with_terminal_match_but_release_receipt_missing": 6,
+        "legacy_calibration_stop_before_verified_reset": 17
+      },
+      "note": "The frozen 49/72 and conditional 55/55 remain unchanged. B400 cannot retroactively accept any target result because the direct page_counter_try_charge(64)+refill_stock(63) receipt pair was not recorded in this run."
+    },
+    {
+      "source": "OBS-005",
+      "historical": {
+        "n": 16,
+        "scrub_success": 15,
+        "counter_grounded_uncharge17": 12,
+        "counter_unknown": 3,
+        "scrub_no_flush": 1
+      },
+      "transactional": {
+        "TX_OBSERVER_SUPPORT_release_only_grounded": 12,
+        "TX_NO_RESULT_RECEIPT_GAP_if_used_transactionally": 3,
+        "TX_PRETRANSACTION_setup_failure": 1
+      },
+      "note": "Grounds the recurrent -17 lane as a release emission class; it is not a target transaction."
+    },
+    {
+      "source": "OBS-006 corrected",
+      "historical": {"n": 16, "masked_q64_pass": 14, "stock_state_lost": 2},
+      "transactional": {
+        "TX_NONTERMINAL_VERIFIED": 14,
+        "TX_NO_RESULT_INVALIDATED_unexpected_refill": 2,
+        "TX_TARGET_FAIL": 0
+      },
+      "note": "The 14 state-preserved trials satisfy the new direct Q64 token and demonstrate +64 charge -17 release = +47 net. The two state-loss trials are abstentions, not target failures."
+    },
+    {
+      "source": "MEMCG-005G-G0 PTE-growth subset",
+      "historical": {"low_pte_growth_q64": 5},
+      "transactional": {
+        "TX_NO_RESULT_INVALIDATED_PTE_GROWTH": 5
+      },
+      "note": "A visible Q64-like net outcome cannot authorize VERIFIED when VmPTE grows."
+    },
+    {
+      "source": "G-B/G-F/G0 natural exact-zero cohorts",
+      "transactional": {
+        "TX_PRETRANSACTION": "all natural first-touch exact-zero observations"
+      },
+      "note": "These remain population/initial-state measurements and must not be interpreted as TARGET_FAIL."
+    }
+  ],
+  "headline": {
+    "historical_controlled_spawn_valid_verified_epoch_target_fail_count": 0,
+    "historical_b400_accepted_target_success_count": 0,
+    "reason_no_b400_accepted_success": "historical target runs predate the required direct charge/refill receipt pair",
+    "observer_direct_verified_reset_count": 14,
+    "observer_detected_state_loss_count": 2
+  }
+}
