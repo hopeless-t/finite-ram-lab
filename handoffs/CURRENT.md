@@ -1,10 +1,10 @@
 # CURRENT
 
-> **Latest bounce:** B341
-> **Stage:** MEMCG-005D RUNTIME REPAIR / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B342
+> **Stage:** MEMCG-005D RUNTIME REPAIR CI + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
-## MEMCG-005C
+## MEMCG-005C accepted result
 
 Canonical:
 `909b554048e4e269ebb644c8533857468cae8296`
@@ -17,31 +17,41 @@ Decision:
 Implementation:
 `bac7f0babe87a7350f81ea37113b3798b512ca7d`
 
-Initial scientific launch:
+Initial launch:
 `f4ca08442547142f1aaf0d0113f0653da3d7ee09`
 
-Failed run:
-`36552551097`
+Initial run:
+`36552551097 = infrastructure failure`
 
 Failure:
-unaligned `mmap.flush(offset,4)` in Python latch helper caused `EINVAL`.
+unaligned `mmap.flush(offset,4)` caused Linux `EINVAL`.
 
 Repair:
 `c89fec2940537f610ee517885c1d9e813d79f3c6`
 
-Scientific design unchanged:
-- SELF_ATOMIC worker self-migration;
-- EXTERNAL_ATOMIC controller-driven migration;
-- external pre/mid/post current decomposition;
-- shared latch, no measured-path status I/O.
+Repair CI:
+`36552762177`
 
-No new scientific launch marker has been created after the repair.
+Single B342 read:
+`in_progress`
+
+Do not poll again in this bounce.
+
+Scientific design remains:
+- SELF_ATOMIC worker self-migration;
+- EXTERNAL_ATOMIC controller external migration;
+- external pre/mid/post current decomposition;
+- shared latch with no measured-path status I/O;
+- 23 identities per arm per block;
+- 4 blocks.
+
+No post-repair scientific launch exists yet.
 
 ## Next fresh-bounce action
 
-Discover/read ordinary CI for repair commit exactly once.
+Read CI `36552762177` exactly once.
 
-- success -> create a new explicit MEMCG-005D repair launch marker/path or otherwise explicit new launch;
+- success -> create a fresh explicit MEMCG-005D launch;
 - pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
