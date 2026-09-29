@@ -41,6 +41,8 @@ def _event_row(line: str) -> dict[str, Any]:
         row["cpu"] = int(m.group("cpu"))
     if (m := COUNTER_RE.search(line)):
         row["counter"] = m.group("counter").lower()
+    if (m := MEMCG_RE.search(line)):
+        row["memcg"] = m.group("memcg").lower()
     if (m := NR_RE.search(line)):
         row["nr"] = int(m.group("nr"))
     if (m := NR_PAGES_RE.search(line)):
@@ -61,6 +63,7 @@ def _empty_window() -> dict[str, Any]:
         "refill63": [],
         "pc_uncharge17": [],
         "pc_uncharge17_stacks": [],
+        "memcg_uncharge": [],
         "lru_flush": [],
         "folios_put": [],
         "drain_stock": [],
@@ -136,6 +139,9 @@ def parse_transaction_trace(
                 stack: list[str] = []
                 item["pc_uncharge17_stacks"].append(stack)
                 active_stack = stack
+        elif "frl_memcg_uncharge:" in line:
+            item["memcg_uncharge"].append(row)
+            active_stack = None
         elif "frl_lru_flush:" in line:
             item["lru_flush"].append(row)
             active_stack = None
@@ -177,6 +183,16 @@ def direct_q64_owner_counter(window: dict[str, Any]) -> str | None:
     return str(counter).lower() if counter else None
 
 
+def direct_q64_owner_memcg(window: dict[str, Any]) -> str | None:
+    """Return the memcg identity carried by an exact direct Q64 restock."""
+    if len(window.get("pc_try64", [])) != 1:
+        return None
+    if len(window.get("refill63", [])) != 1:
+        return None
+    memcg = window["refill63"][0].get("memcg")
+    return str(memcg).lower() if memcg else None
+
+
 def _lru_release_stack(stack: list[str]) -> bool:
     text = "\n".join(stack)
     return (
@@ -192,6 +208,7 @@ def observer_receipt_for_window(
     window: dict[str, Any],
     *,
     owner_counter: str | None,
+    owner_memcg: str | None = None,
     stock_cpu: int | None = None,
     phase: str | None = None,
 ) -> dict[str, Any]:
@@ -211,9 +228,13 @@ def observer_receipt_for_window(
     Net memory.current is never authoritative.
     """
     candidate_owner = direct_q64_owner_counter(window)
+    candidate_memcg = direct_q64_owner_memcg(window)
     effective_owner = owner_counter or candidate_owner
+    effective_memcg = owner_memcg or candidate_memcg
     if effective_owner is not None:
         effective_owner = effective_owner.lower()
+    if effective_memcg is not None:
+        effective_memcg = effective_memcg.lower()
 
     uncharges = list(window.get("pc_uncharge17", []))
     stacks = list(window.get("pc_uncharge17_stacks", []))
@@ -257,22 +278,49 @@ def observer_receipt_for_window(
             if int(event.get("cpu", -1)) != int(stock_cpu)
         ]
 
-    q64_comm: str | None = None
-    if candidate_owner and len(window.get("pc_try64", [])) == 1:
-        q64_comm = window["pc_try64"][0].get("comm")
+    memcg_uncharges = list(window.get("memcg_uncharge", []))
+    target_drains: list[dict[str, Any]] = []
+    other_memcg_drains: list[dict[str, Any]] = []
+    unresolved_drains: list[dict[str, Any]] = []
 
-    normalization_internal_drains: list[dict[str, Any]] = []
-    invalidating_drains: list[dict[str, Any]] = []
-    for event in same_cpu_drains:
-        if (
-            phase == "NORMALIZE"
-            and candidate_owner is not None
-            and q64_comm is not None
-            and event.get("comm") == q64_comm
-        ):
-            normalization_internal_drains.append(event)
+    for drain in same_cpu_drains:
+        drain_ts = drain.get("timestamp_ns")
+        drain_cpu = int(drain.get("cpu", -1))
+        candidates = []
+        if drain_ts is not None:
+            candidates = [
+                event
+                for event in memcg_uncharges
+                if int(event.get("cpu", -2)) == drain_cpu
+                and event.get("timestamp_ns") is not None
+                and 0 <= int(event["timestamp_ns"]) - int(drain_ts) <= 100_000
+            ]
+
+        if effective_memcg is None:
+            unresolved_drains.append(drain)
+            continue
+
+        target_matches = [
+            event
+            for event in candidates
+            if str(event.get("memcg", "")).lower() == effective_memcg
+        ]
+        if target_matches:
+            target_drains.append(
+                {
+                    **drain,
+                    "paired_memcg_uncharge": target_matches[0],
+                }
+            )
+        elif candidates:
+            other_memcg_drains.append(
+                {
+                    **drain,
+                    "paired_memcg_uncharge": candidates[0],
+                }
+            )
         else:
-            invalidating_drains.append(event)
+            unresolved_drains.append(drain)
 
     notes: list[str] = []
     if candidate_owner and owner_counter and candidate_owner != owner_counter.lower():
@@ -284,27 +332,34 @@ def observer_receipt_for_window(
         notes.append("owner_uncharge17_without_grounded_lru_path")
     if off_cpu_drains:
         notes.append(f"off_cpu_drain_ignored={len(off_cpu_drains)}")
-    if normalization_internal_drains:
+    if other_memcg_drains:
         notes.append(
-            "normalize_internal_slot_drain_ignored="
-            f"{len(normalization_internal_drains)}"
+            "other_memcg_drain_ignored="
+            f"{len(other_memcg_drains)}"
         )
+    if unresolved_drains:
+        notes.append(
+            "drain_ownership_unresolved="
+            f"{len(unresolved_drains)}"
+        )
+        unknown_release += len(unresolved_drains)
 
     return {
         "trace_complete": window_trace_complete(window),
         "page_counter_try_charge_64_count": len(window.get("pc_try64", [])),
         "refill_stock_63_count": len(window.get("refill63", [])),
-        "drain_stock_count": len(invalidating_drains),
+        "drain_stock_count": len(target_drains),
         "classified_release_only_count": grounded_release,
         "unknown_emission_count": unknown_release,
         "owner_counter": effective_owner,
+        "owner_memcg": effective_memcg,
         "discovered_owner_counter": candidate_owner,
+        "discovered_owner_memcg": candidate_memcg,
         "marker_pre_ns": window.get("pre_ns"),
         "marker_post_ns": window.get("post_ns"),
         "off_cpu_drain_stock_count": len(off_cpu_drains),
-        "normalization_internal_drain_count": len(
-            normalization_internal_drains
-        ),
+        "other_memcg_drain_count": len(other_memcg_drains),
+        "unresolved_drain_count": len(unresolved_drains),
         "notes": ";".join(notes) or None,
     }
 
