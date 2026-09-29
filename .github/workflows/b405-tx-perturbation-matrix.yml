@@ -61,7 +61,7 @@ jobs:
           cleanup() (
             set +e
             echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
-            for ev in               frl_refill_stock frl_trigger_refill frl_pc_try64 frl_pc_uncharge17               frl_lru_flush frl_folios_put frl_drain_stock; do
+            for ev in               frl_refill_stock frl_trigger_refill frl_scrubber_refill frl_memcg_uncharge frl_pc_try64 frl_pc_uncharge17               frl_lru_flush frl_folios_put frl_drain_stock; do
               if test -e "$TRACE/events/kprobes/$ev/enable"; then
                 echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
               fi
@@ -74,6 +74,8 @@ jobs:
 
           printf '%s\n'             'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_trigger_refill refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n'             'p:frl_scrubber_refill refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n'             'p:frl_memcg_uncharge memcg_uncharge memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_pc_try64 page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_pc_uncharge17 page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_lru_flush folio_batch_move_lru fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
@@ -82,6 +84,7 @@ jobs:
 
           echo 'comm == "frltx405" && nr_pages == 63'             | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
           echo 'comm == "frltrig" && nr_pages == 63'             | sudo tee "$TRACE/events/kprobes/frl_trigger_refill/filter" >/dev/null
+          echo 'comm == "frlscrub" && nr_pages == 63'             | sudo tee "$TRACE/events/kprobes/frl_scrubber_refill/filter" >/dev/null
           echo 'comm == "frltx405" && nr_pages == 64'             | sudo tee "$TRACE/events/kprobes/frl_pc_try64/filter" >/dev/null
           echo 'nr_pages == 17'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge17/filter" >/dev/null
           echo 'stacktrace'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge17/trigger" >/dev/null
