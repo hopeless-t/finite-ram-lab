@@ -1,0 +1,113 @@
+name: OBS-003 Idle Accounting Drop Pilot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "launch/OBS-003-PILOT-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Compile unchanged spawn worker
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11 \
+            experiments/memcg005gc_spawn_worker.c \
+            -o build/memcg005gc_spawn_worker
+
+      - name: Environment gate
+        run: |
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+
+      - name: Run idle accounting block
+        env:
+          BLOCK: "${{ matrix.block }}"
+        run: |
+          python -m finite_ram_lab.obs003_idle_accounting run-block \
+            --spec specs/OBS-003-IDLE-ACCOUNTING-DROP-v1.json \
+            --block "$BLOCK" \
+            --worker "$GITHUB_WORKSPACE/build/memcg005gc_spawn_worker" \
+            --out-root "$GITHUB_WORKSPACE/evidence/OBS-003/block-$BLOCK"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: obs003-block-${{ matrix.block }}
+          path: evidence/OBS-003/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 7
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: obs003-block-*
+          path: evidence/OBS-003/input
+
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/OBS-003/aggregate
+          python -m finite_ram_lab.obs003_idle_accounting aggregate \
+            --spec specs/OBS-003-IDLE-ACCOUNTING-DROP-v1.json \
+            --input-root evidence/OBS-003/input \
+            --json-out evidence/OBS-003/aggregate/summary.json
+
+      - name: Manifest raw evidence
+        run: |
+          frl evidence-manifest \
+            evidence/OBS-003/input \
+            --out evidence/OBS-003/aggregate/full-raw-evidence-manifest.json \
+            --experiment-id OBS-003-IDLE-ACCOUNTING-DROP-v1 \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-commit "$GITHUB_SHA" \
+            --tier HOT \
+            --origin-provider github-actions \
+            --origin-ref "run:$GITHUB_RUN_ID"
+
+      - name: Verify raw evidence
+        run: |
+          frl evidence-verify \
+            evidence/OBS-003/input \
+            --manifest evidence/OBS-003/aggregate/full-raw-evidence-manifest.json
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: OBS-003-IDLE-ACCOUNTING-${{ github.run_id }}
+          path: evidence/OBS-003/aggregate/
+          if-no-files-found: error
+          retention-days: 30
