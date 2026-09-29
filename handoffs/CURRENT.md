@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B315
-> **Stage:** MEMCG-004 IMPLEMENTED / CI EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B316
+> **Stage:** MEMCG-004 CI PASS / LAUNCH ELIGIBLE
+> **Turn stop reason:** CHECKPOINT
 
 ## Prior canonical result
 MEMCG-003B canonical commit: `99c084a95fc39c6c4b3ae2081d74117f4355debc`
@@ -52,9 +52,18 @@ Converged:
 - Proposal != Decision;
 - Expressibility != Executability.
 
+## Pseudo-Council B316
+Converged:
+- implementation gate PASS;
+- frozen preregistration remains unchanged;
+- launch is now expressible but is not implied by CI PASS;
+- hosted MEMCG-004 is eligible for a separate explicit launch bounce;
+- Proposal != Decision and Expressibility != Executability remain intact.
+
 ## Next fresh-bounce action
-Implement MEMCG-004 hosted controller + workflow, add contract/synthetic tests,
-then checkpoint. **Do not launch MEMCG-004 in that implementation bounce.**
+Make the explicit hosted MEMCG-004 launch decision against the frozen design.
+If launched, create exactly one launch marker, identify the resulting external run once,
+checkpoint EXTERNAL_WAIT, and stop without polling.
 
 ## Authority boundary
 Hosted research only.
