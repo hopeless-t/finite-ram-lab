@@ -1,0 +1,6 @@
+MEMCG-005D explicit hosted launch
+B340
+Implementation: bac7f0babe87a7350f81ea37113b3798b512ca7d
+CI: 36552457074 success
+A/B: SELF_ATOMIC worker self-migration vs EXTERNAL_ATOMIC controller sched_setaffinity(pid,S) + mid memory.current + shared GO + immediate touch; 23 identities per arm per block; 4 blocks; 184 probes.
+Hosted research only. No local execution.
