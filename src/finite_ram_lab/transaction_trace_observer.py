@@ -15,6 +15,7 @@ TX_MARKER_RE = re.compile(
     r"(?P<edge>PRE|POST)"
 )
 TRACE_TS_RE = re.compile(r"(?P<seconds>\d+\.\d+):")
+CPU_RE = re.compile(r"\[(?P<cpu>\d+)\]")
 COUNTER_RE = re.compile(r"\bcounter=(?P<counter>0x[0-9a-fA-F]+)")
 NR_RE = re.compile(r"\bnr=(?P<nr>\d+)")
 NR_PAGES_RE = re.compile(r"\bnr_pages=(?P<nr_pages>\d+)")
@@ -36,6 +37,8 @@ def _event_row(line: str) -> dict[str, Any]:
         "line": line.strip(),
         "timestamp_ns": _timestamp_ns(line),
     }
+    if (m := CPU_RE.search(line)):
+        row["cpu"] = int(m.group("cpu"))
     if (m := COUNTER_RE.search(line)):
         row["counter"] = m.group("counter").lower()
     if (m := NR_RE.search(line)):
@@ -57,6 +60,7 @@ def _empty_window() -> dict[str, Any]:
         "pc_try64": [],
         "refill63": [],
         "pc_uncharge17": [],
+        "pc_uncharge17_stacks": [],
         "lru_flush": [],
         "folios_put": [],
         "drain_stock": [],
@@ -66,14 +70,15 @@ def _empty_window() -> dict[str, Any]:
 def parse_transaction_trace(
     text: str,
 ) -> dict[tuple[str, int, str, int], dict[str, Any]]:
-    """Parse FRL_TX marker windows and the source-grounded events inside them.
+    """Parse FRL_TX windows and source-grounded events inside them.
 
-    The parser is intentionally fail-closed about marker structure. Nested PRE
-    markers, unmatched POST markers, or duplicate boundaries increment
-    marker_error_count for the affected windows.
+    Marker structure is fail-closed. page_counter_uncharge(17) stack lines
+    are retained so release attribution need not require a flush event to fall
+    inside the exact same PRE/POST window.
     """
     windows: dict[tuple[str, int, str, int], dict[str, Any]] = {}
     active: tuple[str, int, str, int] | None = None
+    active_stack: list[str] | None = None
 
     for line in text.splitlines():
         marker = TX_MARKER_RE.search(line)
@@ -97,6 +102,7 @@ def parse_transaction_trace(
                 item["pre_count"] += 1
                 item["pre_ns"] = ts
                 active = key
+                active_stack = None
             else:
                 item["post_count"] += 1
                 item["post_ns"] = ts
@@ -107,6 +113,7 @@ def parse_transaction_trace(
                             "marker_error_count"
                         ] += 1
                 active = None
+                active_stack = None
             continue
 
         if active is None:
@@ -118,18 +125,30 @@ def parse_transaction_trace(
         if "frl_pc_try64:" in line:
             if int(row.get("nr_pages", 0)) == 64:
                 item["pc_try64"].append(row)
+            active_stack = None
         elif "frl_refill_stock:" in line:
             if int(row.get("nr_pages", 0)) == 63:
                 item["refill63"].append(row)
+            active_stack = None
         elif "frl_pc_uncharge17:" in line:
             if int(row.get("nr_pages", 0)) == 17:
                 item["pc_uncharge17"].append(row)
+                stack: list[str] = []
+                item["pc_uncharge17_stacks"].append(stack)
+                active_stack = stack
         elif "frl_lru_flush:" in line:
             item["lru_flush"].append(row)
+            active_stack = None
         elif "frl_folios_put:" in line:
             item["folios_put"].append(row)
+            active_stack = None
         elif "frl_drain_stock:" in line:
             item["drain_stock"].append(row)
+            active_stack = None
+        elif active_stack is not None:
+            stripped = line.strip()
+            if stripped:
+                active_stack.append(stripped)
 
     if active is not None:
         windows.setdefault(active, _empty_window())["marker_error_count"] += 1
@@ -158,28 +177,49 @@ def direct_q64_owner_counter(window: dict[str, Any]) -> str | None:
     return str(counter).lower() if counter else None
 
 
+def _lru_release_stack(stack: list[str]) -> bool:
+    text = "\n".join(stack)
+    return (
+        "folios_put_refs" in text
+        and (
+            "folio_batch_move_lru" in text
+            or "__folio_batch_add_and_move" in text
+        )
+    )
+
+
 def observer_receipt_for_window(
     window: dict[str, Any],
     *,
     owner_counter: str | None,
+    stock_cpu: int | None = None,
+    phase: str | None = None,
 ) -> dict[str, Any]:
-    """Create a B403-compatible observer receipt from one transaction window.
+    """Create a source-grounded B403-compatible observer receipt.
 
-    RELEASE_ONLY is positively classified only when a page_counter_uncharge(17)
-    hits the epoch-local owner counter and the same window also contains the
-    shared-LRU flush/put signature. Net memory.current is never used.
+    Release attribution:
+      - owner page_counter_uncharge(17), plus either
+        a direct LRU stack signature or the legacy same-window 31/31
+        flush/put signature.
 
-    An owner-counter uncharge without the LRU signature is UNKNOWN and makes
-    the receipt fail closed.
+    Drain attribution:
+      - a drain on another CPU cannot mutate the target per-CPU stock;
+      - a worker-local drain inside a NORMALIZE direct-Q64 refill is treated
+        as slot eviction before the newly verified residual is installed;
+      - remaining stock-CPU drains are state invalidators.
+
+    Net memory.current is never authoritative.
     """
     candidate_owner = direct_q64_owner_counter(window)
     effective_owner = owner_counter or candidate_owner
     if effective_owner is not None:
         effective_owner = effective_owner.lower()
 
-    owner_uncharge = [
-        event
-        for event in window.get("pc_uncharge17", [])
+    uncharges = list(window.get("pc_uncharge17", []))
+    stacks = list(window.get("pc_uncharge17_stacks", []))
+    owner_indices = [
+        i
+        for i, event in enumerate(uncharges)
         if str(event.get("counter", "")).lower() == effective_owner
     ]
 
@@ -192,8 +232,47 @@ def observer_receipt_for_window(
         for event in window.get("folios_put", [])
     )
 
-    grounded_release = len(owner_uncharge) if flush31 and put31 else 0
-    unknown_release = len(owner_uncharge) - grounded_release
+    grounded_owner_indices: list[int] = []
+    for i in owner_indices:
+        stack = stacks[i] if i < len(stacks) else []
+        if _lru_release_stack(stack) or (flush31 and put31):
+            grounded_owner_indices.append(i)
+
+    grounded_release = len(grounded_owner_indices)
+    unknown_release = len(owner_indices) - grounded_release
+
+    all_drains = list(window.get("drain_stock", []))
+    if stock_cpu is None:
+        same_cpu_drains = list(all_drains)
+        off_cpu_drains: list[dict[str, Any]] = []
+    else:
+        same_cpu_drains = [
+            event
+            for event in all_drains
+            if int(event.get("cpu", -1)) == int(stock_cpu)
+        ]
+        off_cpu_drains = [
+            event
+            for event in all_drains
+            if int(event.get("cpu", -1)) != int(stock_cpu)
+        ]
+
+    q64_comm: str | None = None
+    if candidate_owner and len(window.get("pc_try64", [])) == 1:
+        q64_comm = window["pc_try64"][0].get("comm")
+
+    normalization_internal_drains: list[dict[str, Any]] = []
+    invalidating_drains: list[dict[str, Any]] = []
+    for event in same_cpu_drains:
+        if (
+            phase == "NORMALIZE"
+            and candidate_owner is not None
+            and q64_comm is not None
+            and event.get("comm") == q64_comm
+        ):
+            normalization_internal_drains.append(event)
+        else:
+            invalidating_drains.append(event)
 
     notes: list[str] = []
     if candidate_owner and owner_counter and candidate_owner != owner_counter.lower():
@@ -201,20 +280,31 @@ def observer_receipt_for_window(
             f"owner_counter_changed:{owner_counter.lower()}->{candidate_owner}"
         )
         unknown_release += 1
-    if owner_uncharge and not (flush31 and put31):
-        notes.append("owner_uncharge17_without_complete_lru_signature")
+    if owner_indices and unknown_release:
+        notes.append("owner_uncharge17_without_grounded_lru_path")
+    if off_cpu_drains:
+        notes.append(f"off_cpu_drain_ignored={len(off_cpu_drains)}")
+    if normalization_internal_drains:
+        notes.append(
+            "normalize_internal_slot_drain_ignored="
+            f"{len(normalization_internal_drains)}"
+        )
 
     return {
         "trace_complete": window_trace_complete(window),
         "page_counter_try_charge_64_count": len(window.get("pc_try64", [])),
         "refill_stock_63_count": len(window.get("refill63", [])),
-        "drain_stock_count": len(window.get("drain_stock", [])),
+        "drain_stock_count": len(invalidating_drains),
         "classified_release_only_count": grounded_release,
         "unknown_emission_count": unknown_release,
         "owner_counter": effective_owner,
         "discovered_owner_counter": candidate_owner,
         "marker_pre_ns": window.get("pre_ns"),
         "marker_post_ns": window.get("post_ns"),
+        "off_cpu_drain_stock_count": len(off_cpu_drains),
+        "normalization_internal_drain_count": len(
+            normalization_internal_drains
+        ),
         "notes": ";".join(notes) or None,
     }
 
@@ -263,14 +353,7 @@ def apply_and_enrich_v2(
     touch_index_since_verified: int | None,
     unknown_emission_count: int = 0,
 ) -> tuple[Transaction, dict[str, Any], int | None, int | None]:
-    """Apply one v1-compatible packet and attach Chapter-II hazard telemetry.
-
-    Returns:
-      tx_after,
-      packet_v2,
-      verified_at_ns_after,
-      next_touch_index_since_verified
-    """
+    """Apply one v1-compatible packet and attach Chapter-II hazard telemetry."""
     tx_after = apply_packet(tx, packet_v1)
 
     became_verified = (
@@ -305,7 +388,12 @@ def apply_and_enrich_v2(
     ):
         next_index = current_index + 1
 
-    if tx_after.state in {State.INVALIDATED, State.TARGET_FAIL, State.SUCCESS, State.ABORTED}:
+    if tx_after.state in {
+        State.INVALIDATED,
+        State.TARGET_FAIL,
+        State.SUCCESS,
+        State.ABORTED,
+    }:
         next_index = None
 
     return tx_after, packet_v2, current_verified_at, next_index
