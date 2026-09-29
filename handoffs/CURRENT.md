@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B347
-> **Stage:** MEMCG-005E IMPLEMENTED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B348
+> **Stage:** MEMCG-005E IMPLEMENTED + CI EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## MEMCG-005D accepted result
 
@@ -12,19 +12,19 @@ Canonical:
 Decision:
 `REJECT_EXTERNAL_PATH`
 
+Key result:
+- SELF 68/92 Q64
+- EXTERNAL 63/92 Q64
+- EXTERNAL migration delta 0 in 92/92
+- all failures zero-delta
+
+Post-hoc predictor now frozen prospectively:
+`pre_current_pages <= 110`
+
 ## MEMCG-005E
 
-Prospective threshold:
-`LOW iff pre_current_pages <= 110`
-
-Implementation files:
-- `specs/MEMCG-005E-BASELINE-STRATIFIED-FIRST-TOUCH-v1.json`
-- `src/finite_ram_lab/memcg005e_baseline_stratified.py`
-- `.github/workflows/memcg-005e-baseline-stratified.yml`
-- `tests/test_memcg005e_baseline_stratified.py`
-
-Worker:
-reuses exact `experiments/memcg005d_worker.c`.
+Implementation:
+`4931eea15e96b3d9ba2e961ae5e9a887921a4ad5`
 
 Arms:
 - LOCAL_P
@@ -34,11 +34,19 @@ Arms:
 4 blocks.
 256 probes.
 
+Ordinary CI:
+`36555769313`
+
+Single B348 read:
+`in_progress`
+
+Do not poll again in this bounce.
+
 No launch marker exists.
 
 ## Next fresh-bounce action
 
-Discover/read ordinary CI for B347 exactly once.
+Read CI `36555769313` exactly once.
 
 - success -> explicit MEMCG-005E hosted launch;
 - pending/in_progress -> EXTERNAL_WAIT;
