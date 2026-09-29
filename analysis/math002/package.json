@@ -1,0 +1,8 @@
+{
+  "name": "finite-ram-lab-math002",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "math": "github:pmndrs/math#98762395c1f34d7d594d31165e8005fd6915c431"
+  }
+}

@@ -1,0 +1,38 @@
+name: MATH-002 pmndrs Geometry Lens v1
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - name: Install pinned pmndrs/math
+        working-directory: analysis/math002
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Synthetic sidecar test
+        working-directory: analysis/math002
+        run: node test.mjs
+      - name: Require prepared canonical input
+        run: test -f evidence/MEMCG-003B/canonical/summary.json
+      - name: Run geometric lens
+        working-directory: analysis/math002
+        run: |
+          mkdir -p ../../evidence/MATH-002/output
+          node math002.mjs \
+            --input ../../evidence/MEMCG-003B/canonical/summary.json \
+            --output ../../evidence/MATH-002/output/geometric-lens.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: MATH-002-GEOMETRIC-${{ github.run_id }}
+          path: evidence/MATH-002/output/
+          if-no-files-found: error
+          retention-days: 90

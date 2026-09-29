@@ -1,31 +1,48 @@
 # CURRENT
 
-> **Latest bounce:** B309
-> **Stage:** MEMCG-003B EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B310
+> **Stage:** MEMCG-003B HOSTED RUN + MATH-002 SIDECAR IMPLEMENTED
+> **Turn stop reason:** EXTERNAL_WAIT
 
-Implementation:
-`985d4efe4ebaa2eb877d2ad307bac630279d14d6`
+## MEMCG-003B
 
-Implementation CI:
-`36469054700 = success`
-
-Exact launch commit:
+Exact launch:
 `5987143f7aaced18165289c76969b6ff386895db`
 
-Question:
-does the source-level seven-slot structure become observable once destructive target probing and control-plane CPU interference are removed?
+Scientific run:
+`36527502073`
 
-Primary passive threshold:
-`E_drop = first target memory.current drop >=16 pages`
+Single B309 discovery:
+`in_progress`
 
-Candidate K:
-`1..10`
+Do not read again in this bounce.
 
-MATH-002 pmndrs/math remains secondary and waits for canonical clean evidence.
+## MATH-002
 
-Next fresh-bounce action:
-discover/read exact-head MEMCG-003B workflow once.
+Pinned:
+`pmndrs/math@98762395c1f34d7d594d31165e8005fd6915c431`
+
+Implemented but not launched:
+- QuickHull2 distinct/control envelopes
+- per-block hulls
+- fixed-seed mulberry32
+- 100,000 permutation null
+
+The workflow requires:
+`evidence/MEMCG-003B/canonical/summary.json`
+
+Therefore MATH-002 cannot run before the primary canonical result is committed.
+
+## Next fresh-bounce action
+
+Read run `36527502073` exactly once.
+
+- success -> fetch aggregate once, canonicalize MEMCG-003B primary result, prepare canonical summary, then launch MATH-002;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
+
+## Authority boundary
 
 Hosted research only.
 No local-PC execution.
+No memory-control policy.
