@@ -1,0 +1,68 @@
+name: MEMCG-005G-A Early Transient Biopsy v1
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["launch/MEMCG-005G-A-v1.txt"]
+permissions:
+  contents: read
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with: {python-version: "3.12"}
+      - run: python -m pip install -e ".[analysis]"
+      - name: Compile unchanged worker
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11 experiments/memcg005d_worker.c -o build/memcg005g_worker
+      - name: Environment
+        run: |
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+      - name: Run independent block
+        env: {BLOCK: "${{ matrix.block }}"}
+        run: |
+          python -m finite_ram_lab.memcg005g_early_biopsy run-block \
+            --spec specs/MEMCG-005G-A-EARLY-TRANSIENT-BIOPSY-v1.json \
+            --block "$BLOCK" \
+            --worker "$GITHUB_WORKSPACE/build/memcg005g_worker" \
+            --out-root "$GITHUB_WORKSPACE/evidence/MEMCG-005G-A/block-$BLOCK"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: memcg005ga-block-${{ matrix.block }}
+          path: evidence/MEMCG-005G-A/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with: {python-version: "3.12"}
+      - run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: memcg005ga-block-*
+          path: evidence/MEMCG-005G-A/input
+      - run: |
+          mkdir -p evidence/MEMCG-005G-A/aggregate
+          python -m finite_ram_lab.memcg005g_early_biopsy aggregate \
+            --spec specs/MEMCG-005G-A-EARLY-TRANSIENT-BIOPSY-v1.json \
+            --input-root evidence/MEMCG-005G-A/input \
+            --json-out evidence/MEMCG-005G-A/aggregate/summary.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: MEMCG-005G-A-EARLY-BIOPSY-${{ github.run_id }}
+          path: evidence/MEMCG-005G-A/aggregate/
+          if-no-files-found: error
+          retention-days: 90

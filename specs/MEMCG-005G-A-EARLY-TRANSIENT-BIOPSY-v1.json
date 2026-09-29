@@ -1,0 +1,19 @@
+{
+  "experiment_id":"MEMCG-005G-A-EARLY-TRANSIENT-BIOPSY-v1",
+  "required_page_size":4096,
+  "runner_blocks":24,
+  "identities_per_block":32,
+  "early_end_identity":7,
+  "low_threshold_pages":110,
+  "q64_min_pages":60,
+  "q64_max_pages":68,
+  "biopsy_max_total_touches":65,
+  "support_min_early_low_n":70,
+  "support_min_steady_low_n":200,
+  "support_min_early_failure_rate":0.05,
+  "support_max_steady_failure_rate":0.02,
+  "support_fisher_p_max":0.01,
+  "reject_max_early_failure_rate":0.02,
+  "reject_min_rate_difference":0.02,
+  "authority":"HOSTED_RESEARCH_ONLY"
+}

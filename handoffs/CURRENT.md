@@ -1,64 +1,31 @@
 # CURRENT
 
-> **Latest bounce:** B356
-> **Stage:** MEMCG-005F CONFIRMED / RETROSPECTIVE COMPLETE
-> **Turn stop reason:** CHAPTER_CHECKPOINT
+> Latest bounce: B357
+> Stage: MEMCG-005G-A IMPLEMENTED / CI PENDING
+> Stop: CI_DISCOVERY_PENDING
 
-## MEMCG-005F
+Design:
+`docs/MEMCG-005G-A-EARLY-TRANSIENT-BIOPSY-v1.md`
 
-Run:
-`36558350433`
+Implementation:
+- `specs/MEMCG-005G-A-EARLY-TRANSIENT-BIOPSY-v1.json`
+- `src/finite_ram_lab/memcg005g_early_biopsy.py`
+- `.github/workflows/memcg-005g-a-early-biopsy.yml`
+- `tests/test_memcg005g_early_biopsy.py`
 
-Decision:
-`SUPPORT_REMOTE_LOW_GATE`
+Primary fixed boundary:
+EARLY identity 0..7
+STEADY identity 8..31
 
-Canonical result:
-`docs/MEMCG-005F-RESULT.md`
+24 independent blocks x32 candidates =768.
 
-Confirmed primary gate:
+Failure biopsy:
+valid REMOTE_LOW first-touch zero -> continue fresh touches through total touch65, recording first next Q64 as residual_depth_candidate.
 
-`REMOTE_LOW := startup P, measured S!=P, pre_current_pages<=110`
+No launch marker exists.
 
-Confirmatory result:
-- LOW: 121/123 Q64 = 98.374%
-- HIGH: 65/133 Q64 = 48.872%
-- Fisher p: 5.932e-22
-- LOW blocks: 31/31, 31/32, 39/40, 20/20
-- CPU mismatch: 0
-- migration delta: 0 in 256/256
-- non-{0,+64} failure: 0
-
-## Retrospective
-
-`docs/RETROSPECTIVE-THROUGH-MEMCG-005F.md`
-
-The current measurement-calibration chapter is complete.
-
-## Accepted current chain
-
-- finite-RAM pressure knee survives;
-- effective-live-set interval survives;
-- observer contamination identified;
-- Q64 / 256 KiB memcg accounting mechanism supported;
-- calibrated R64 stock phase supported;
-- naive durable/perfect seven-slot observation schemes rejected or rendered inconclusive;
-- CPU locality is essential;
-- REMOTE_LOW admission gate independently confirmed.
-
-## Next chapter
-
-Return to hosted capacity/eviction testing using:
-- candidates created on P;
-- only LOW candidates admitted;
-- measured insertion on remote S;
-- direct Q64 verification of every insertion;
-- no K inference from invalid identities.
-
-No successor experiment has been launched yet.
-
-## Authority boundary
+Next fresh bounce:
+discover/read ordinary CI exactly once.
 
 Hosted research only.
 No local-PC execution.
-No memory-control policy.
-No Remote Desktop Commander.
