@@ -40,6 +40,7 @@ from .obs005_cross_cgroup_lru import (
 OFF_DISCARD_START = 72
 OFF_DISCARD_LEN = 76
 MODE_DISCARD = 3
+SCRUB_EVENT = "frl_lru_scrub:"
 
 MARKER_RE = re.compile(
     r"FRL_OBS006 trial=(?P<trial>\d+:\d+) "
@@ -250,7 +251,7 @@ def run_trial(
             )
             scrub_base = _event_count(
                 trace_path,
-                "frl_lru_scrub:",
+                SCRUB_EVENT,
                 "frlscrub",
             )
             for touch_no in range(1, scrub_max_touches + 1):
