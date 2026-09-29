@@ -1,19 +1,19 @@
 # CURRENT
 
-> Latest bounce: B375
-> Stage: MEMCG-005G-F CONFIRMATORY THRESHOLD IMPLEMENTED / CI PENDING
-> Stop: CI_DISCOVERY_PENDING
+> Latest bounce: B376
+> Stage: MEMCG-005G-F CONFIRMATORY THRESHOLD IMPLEMENTED / CI
+> Stop: EXTERNAL_WAIT
 
-005G-E:
-`docs/MEMCG-005G-E-RESULT.md`
+Implementation:
+`b4583bba8ab8a25654560ec887526c678d15258a`
 
-MATH-006:
-`docs/MATH-006-MONTE-CARLO-CAPTURE-REGION.md`
+Ordinary CI:
+`36576017389`
 
-Model-conditional localization:
-`P(T in {9,10,11,12}) ~= 99.96%`
+Single B376 read:
+`in_progress`
 
-005G-F frozen arms:
+Frozen arms:
 `{8,9,10,11,12,32}`
 
 Scale:
@@ -26,9 +26,11 @@ Monte Carlo design calibration:
 - P(true T posterior mass >=.90) ~=97.3%
 
 No launch marker exists.
+Do not poll again in this bounce.
 
 Next fresh bounce:
-discover/read ordinary CI exactly once.
+read CI `36576017389` exactly once.
+If success, explicitly launch MEMCG-005G-F.
 
 Hosted research only.
 No local-PC execution.
