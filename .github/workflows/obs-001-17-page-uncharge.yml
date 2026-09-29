@@ -66,6 +66,7 @@ jobs:
               fi
               printf '%s\n' "-:$ev" | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
             done
+            true
           )
           trap cleanup EXIT
           cleanup
