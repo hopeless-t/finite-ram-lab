@@ -1,0 +1,18 @@
+OBS-001 execution capability gate v3
+
+Purpose:
+Atomically test the trace setup operations used by OBS-001 before another scientific launch.
+
+Checks:
+- useful kprobes install/enable/remove
+- page_counter_uncharge nr_pages==17 filter
+- stacktrace trigger
+- trace buffer resize/clear/start/stop
+- root Python write to trace_marker
+- trace readback contains the marker
+- cleanup is fail-closed and isolated
+
+No scientific worker trial.
+No reliability claim.
+No local-PC execution.
+No paid runner.
