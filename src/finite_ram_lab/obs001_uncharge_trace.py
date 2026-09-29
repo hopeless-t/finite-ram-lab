@@ -132,10 +132,12 @@ def run_trial(
     trace_marker: Path | None,
     worker_uid: int | None,
 ) -> dict[str, Any]:
+    trial_id = f"{block}:{identity}"
     name = (
         f"fr-obs001-{os.getenv('GITHUB_RUN_ID', 'local')}"
         f"-{block}-{identity}"
     )
+    _marker(trace_marker, f"FRL_TRIAL trial={trial_id} START")
     unit = _start(
         worker,
         root,
@@ -145,7 +147,10 @@ def run_trial(
         safe_len,
         worker_uid=worker_uid,
     )
-    trial_id = f"{block}:{identity}"
+    _marker(
+        trace_marker,
+        f"FRL_TRIAL trial={trial_id} READY pid={unit['pid']}",
+    )
     try:
         geometry = geometry_receipt(unit, prep_cpu)
         page_size = int(geometry["page_size"])
@@ -186,6 +191,8 @@ def run_trial(
             "experiment_id": "OBS-001-17-PAGE-UNCHARGETRACE-v1",
             "block": block,
             "identity": identity,
+            "worker_pid": unit["pid"],
+            "cgroup_path": str(unit["cg"]),
             "prep_cpu": prep_cpu,
             "stock_cpu": stock_cpu,
             "geometry": geometry,
@@ -199,6 +206,7 @@ def run_trial(
             "touches": touches,
         }
     finally:
+        _marker(trace_marker, f"FRL_TRIAL trial={trial_id} END")
         _stop(unit)
 
 
