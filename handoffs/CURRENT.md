@@ -1,42 +1,47 @@
 # CURRENT
 
-> **Latest bounce:** B332
-> **Stage:** MEMCG-005C IMPLEMENTED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B333
+> **Stage:** MEMCG-005C IMPLEMENTED + CI EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## MEMCG-005B accepted result
-
-Decision:
-`INCONCLUSIVE`
 
 Canonical:
 `c1a9533fe3d2e84d3982f2857f3fdd94b52f3399`
 
-Control-path flaw:
-MIGRATE receipt executes on S before measured TOUCH_ONE.
+Decision:
+`INCONCLUSIVE`
 
-## MEMCG-005C implementation
+Critical flaw:
+MIGRATE receipt executed on S before measured TOUCH_ONE.
 
-Files:
-- `specs/MEMCG-005C-ATOMIC-FIRST-TOUCH-v1.json`
-- `experiments/memcg005c_worker.c`
-- `src/finite_ram_lab/memcg005c_atomic_first_touch.py`
-- `.github/workflows/memcg-005c-atomic-first-touch.yml`
-- `tests/test_memcg005c_atomic_first_touch.py`
+## MEMCG-005C
+
+Implementation:
+`82515df80b1cde1d9b9732510c3abf1454b2aa91`
 
 A/B:
-- TWO_STEP old control path;
-- ATOMIC migrate + immediate page touch before any receipt I/O.
+- TWO_STEP old path;
+- ATOMIC migrate + immediate measured touch before receipt I/O.
 
-23 identities per arm per block, 4 blocks.
+23 identities per arm per block.
+4 blocks.
+
+Ordinary CI:
+`36550320654`
+
+Single B333 read:
+`in_progress`
+
+Do not poll again in this bounce.
 
 No launch marker exists.
 
 ## Next fresh-bounce action
 
-Discover/read ordinary CI for B332 exactly once.
+Read CI `36550320654` exactly once.
 
-- success -> explicit MEMCG-005C launch;
+- success -> explicit MEMCG-005C hosted launch;
 - pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
