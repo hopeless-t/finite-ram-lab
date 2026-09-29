@@ -17,7 +17,7 @@ TX_MARKER_RE = re.compile(
 TRACE_TS_RE = re.compile(r"(?P<seconds>\d+\.\d+):")
 CPU_RE = re.compile(r"\[(?P<cpu>\d+)\]")
 COUNTER_RE = re.compile(r"\bcounter=(?P<counter>0x[0-9a-fA-F]+)")
-MEMCG_RE = re.compile(r"\\bmemcg=(?P<memcg>0x[0-9a-fA-F]+)")
+MEMCG_RE = re.compile(r"\bmemcg=(?P<memcg>0x[0-9a-fA-F]+)")
 NR_RE = re.compile(r"\bnr=(?P<nr>\d+)")
 NR_PAGES_RE = re.compile(r"\bnr_pages=(?P<nr_pages>\d+)")
 COMM_RE = re.compile(r'\bcomm="(?P<comm>[^"]+)"')
