@@ -186,5 +186,77 @@ frltx-10 [007] ... 14.000000010: frl_pc_try64: counter=0xaaa nr_pages=64 comm="f
         self.assertFalse(packet["trace_complete"])
 
 
+    def test_off_cpu_drain_does_not_invalidate_target_stock(self) -> None:
+        trace = """
+x-1 [000] ... 15.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=5 PRE
+python-1 [000] ... 15.000000010: frl_drain_stock: stock=0x111 slot=2 comm="python"
+x-1 [000] ... 15.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=5 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "CONSUME", 5)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            stock_cpu=7,
+            phase="CONSUME",
+        )
+        self.assertEqual(receipt["drain_stock_count"], 0)
+        self.assertEqual(receipt["off_cpu_drain_stock_count"], 1)
+
+    def test_stock_cpu_consume_drain_remains_invalidating(self) -> None:
+        trace = """
+x-1 [000] ... 16.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=6 PRE
+kworker-4 [007] ... 16.000000010: frl_drain_stock: stock=0x111 slot=2 comm="kworker"
+x-1 [000] ... 16.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=6 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "CONSUME", 6)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            stock_cpu=7,
+            phase="CONSUME",
+        )
+        self.assertEqual(receipt["drain_stock_count"], 1)
+        self.assertEqual(receipt["off_cpu_drain_stock_count"], 0)
+
+    def test_normalize_internal_slot_drain_is_not_new_residual_loss(self) -> None:
+        trace = """
+x-1 [000] ... 17.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=NORMALIZE touch=1 PRE
+frltx-10 [007] ... 17.000000010: frl_pc_try64: counter=0xaaa nr_pages=64 comm="frltx"
+frltx-10 [007] ... 17.000000020: frl_drain_stock: stock=0x111 slot=3 comm="frltx"
+frltx-10 [007] ... 17.000000030: frl_refill_stock: memcg=0xbbb nr_pages=63 comm="frltx"
+x-1 [000] ... 17.000000040: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=NORMALIZE touch=1 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "NORMALIZE", 1)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter=None,
+            stock_cpu=7,
+            phase="NORMALIZE",
+        )
+        self.assertEqual(receipt["drain_stock_count"], 0)
+        self.assertEqual(receipt["normalization_internal_drain_count"], 1)
+        self.assertEqual(receipt["discovered_owner_counter"], "0xaaa")
+
+    def test_owner_release_can_be_grounded_by_uncharge_stack(self) -> None:
+        trace = """
+x-1 [000] ... 18.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=12 PRE
+dotnet-20 [002] ... 18.000000010: frl_pc_uncharge17: counter=0xaaa nr_pages=17 comm=".NET TP Worker"
+ => page_counter_uncharge
+ => folios_put_refs
+ => folio_batch_move_lru
+ => __folio_batch_add_and_move
+x-1 [000] ... 18.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=12 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "CONSUME", 12)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            stock_cpu=7,
+            phase="CONSUME",
+        )
+        self.assertEqual(receipt["classified_release_only_count"], 1)
+        self.assertEqual(receipt["unknown_emission_count"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()
