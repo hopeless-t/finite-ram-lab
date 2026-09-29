@@ -72,6 +72,7 @@ def _measured_touch(
     touch_number: int,
     trial_id: str,
     trace_marker: Path | None,
+    worker_uid: int | None,
 ) -> dict[str, Any]:
     _set_u32(unit["mm"], OFF_MODE, 2)
     _set_u32(unit["mm"], OFF_TARGET, stock_cpu)
@@ -142,6 +143,7 @@ def run_trial(
         prep_cpu,
         max_pages,
         safe_len,
+        worker_uid=worker_uid,
     )
     trial_id = f"{block}:{identity}"
     try:
@@ -335,6 +337,7 @@ def main() -> None:
     run.add_argument("--max-pages", type=int, default=1024)
     run.add_argument("--safe-len", type=int, default=192)
     run.add_argument("--trace-marker")
+    run.add_argument("--worker-uid", type=int)
 
     agg = sub.add_parser("aggregate")
     agg.add_argument("--input-root", required=True)
@@ -379,6 +382,7 @@ def main() -> None:
                 safe_len=args.safe_len,
                 touches_per_trial=args.touches,
                 trace_marker=marker,
+                worker_uid=args.worker_uid,
             )
             (
                 root / f"trial-{args.block}-{identity}.json"
