@@ -1,0 +1,8 @@
+MEMCG-005G-A explicit hosted launch
+B358
+Implementation: 29003873bda9053187e257a924aa3bf736163d0c
+CI: 36563144651 success
+Primary fixed before launch: EARLY identity 0..7 vs STEADY identity 8..31 among REMOTE_LOW valid probes.
+24 independent blocks x 32 candidates = 768 candidates.
+LOW first-touch zero failures receive residual-stock biopsy through total touch65.
+Hosted research only. No local execution.
