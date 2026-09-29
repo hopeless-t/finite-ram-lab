@@ -1,0 +1,61 @@
+{
+  "experiment_id": "MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1",
+  "stage": "A",
+  "required_page_size": 4096,
+  "runner_blocks": 16,
+  "identities_per_block": 60,
+  "arms": [
+    {
+      "id": "C8",
+      "token": "8",
+      "capacity_pages": 8,
+      "role": "canonical_low"
+    },
+    {
+      "id": "P8",
+      "token": "08",
+      "capacity_pages": 8,
+      "role": "padded_low"
+    },
+    {
+      "id": "C9",
+      "token": "9",
+      "capacity_pages": 9,
+      "role": "canonical_low"
+    },
+    {
+      "id": "P9",
+      "token": "09",
+      "capacity_pages": 9,
+      "role": "padded_low"
+    },
+    {
+      "id": "H10",
+      "token": "10",
+      "capacity_pages": 10,
+      "role": "high_anchor"
+    },
+    {
+      "id": "H32",
+      "token": "32",
+      "capacity_pages": 32,
+      "role": "plateau_anchor"
+    }
+  ],
+  "primary_argv_contrast": {
+    "a": ["P8", "P9"],
+    "b": ["C8", "C9"]
+  },
+  "capacity_survival_contrast": {
+    "a": ["H10", "H32"],
+    "b": ["P8", "P9"]
+  },
+  "low_threshold_pages": 110,
+  "q64_min_pages": 60,
+  "q64_max_pages": 68,
+  "raw_artifact_retention_days": 7,
+  "aggregate_artifact_retention_days": 30,
+  "stage_a_role": "INSTRUMENT_AND_DIRECTION_PROBE",
+  "authority": "HOSTED_RESEARCH_ONLY",
+  "scientific_launch_authorized": false
+}
