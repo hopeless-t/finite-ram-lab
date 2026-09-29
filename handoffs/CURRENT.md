@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B336
-> **Stage:** MEMCG-005C EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B337
+> **Stage:** MEMCG-005C HOSTED RUN + EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## MEMCG-005C
 
@@ -18,22 +18,27 @@ Repair CI:
 Launch:
 `d50af917577493dc457aa0439a192ab90e5f90a1`
 
+Scientific run:
+`36551226475`
+
+Single B337 read:
+`in_progress`
+
+Do not poll again in this bounce.
+
 Scientific A/B:
-- TWO_STEP = old MIGRATE receipt path;
-- ATOMIC = migrate + immediate measured page touch before receipt I/O;
+- TWO_STEP old migrate-receipt path;
+- ATOMIC migrate + immediate measured touch before receipt I/O;
 - 23 identities per arm per block;
 - 4 blocks;
-- 184 probes total.
-
-Primary question:
-does ATOMIC materially reduce non-Q64 first-touch failures relative to TWO_STEP?
+- 184 first-touch probes.
 
 ## Next fresh-bounce action
 
-Discover/read exact-head MEMCG-005C workflow once.
+Read run `36551226475` exactly once.
 
-- pending/in_progress -> record run id, EXTERNAL_WAIT;
-- success -> fetch aggregate once and canonicalize;
+- success -> fetch aggregate once, compare atomic vs two-step failure rates, canonicalize;
+- pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
 ## Authority boundary
