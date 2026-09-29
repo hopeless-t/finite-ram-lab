@@ -1,0 +1,49 @@
+{
+  "schema_version": "obs003-corrected-summary-v1",
+  "experiment_id": "OBS-003-RESIDUAL-17-CALLER-v1",
+  "run_id": "36620215583",
+  "trial_count": 48,
+  "measured_touch_count": 1152,
+  "exact_minus17_count": 13,
+  "corrected_classes": {
+    "WORKER_LRU_BATCH": 12,
+    "UNRESOLVED_COUNTER_IDENTITY": 1,
+    "STOCK_DRAIN": 0
+  },
+  "unresolved_specimen": {
+    "trial": "3:1",
+    "touch_number": 23,
+    "start_pages": 115,
+    "observed_delta_pages": -17,
+    "coincident_external_event": {
+      "comm": ".NET Tiered Com",
+      "nr_pages": 17,
+      "stack_family": "shmem_fault -> folio_add_lru -> folio_batch_move_lru -> folios_put_refs -> page_counter_uncharge"
+    },
+    "worker_lru_flush_observed": false,
+    "worker_folios_put_observed": false,
+    "block3_probe_misses": {
+      "drain_stock": 0,
+      "lru_flush": 0,
+      "folios_put": 0,
+      "page_counter_uncharge": 0
+    },
+    "interpretation": "Do not attribute the external page_counter_uncharge to the worker cgroup until page_counter identity is matched."
+  },
+  "other_negative_observation": {
+    "trial": "2:7",
+    "touch_number": 1,
+    "delta_pages": -1,
+    "drain_stock_event_in_window": true,
+    "note": "Shows separate stock/refill activity exists, but does not establish that drain_stock caused the observed -1 without counter correlation."
+  },
+  "cross_run_descriptive": {
+    "obs002_direct_worker_lru": 9,
+    "obs002_exact_minus17": 11,
+    "obs003_direct_worker_lru": 12,
+    "obs003_exact_minus17": 13,
+    "combined_direct_worker_lru": 21,
+    "combined_exact_minus17": 24,
+    "note": "Descriptive only; not a preregistered pooled estimator."
+  }
+}
