@@ -1,0 +1,48 @@
+{
+  "experiment_id": "TX-BOUNDARY-DEVIATION-HUNT-v1",
+  "status": "FROZEN_DESIGN_NOT_AUTHORIZED",
+  "chapter": "FINITE-RAM-LAB-II",
+  "role": "UNEXPLAINED_VERIFIED_EPOCH_PHASE_SHIFT_HUNT",
+  "prerequisites": [
+    "B404 transactional smoke passes",
+    "B405 perturbation classifier passes",
+    "OBS-007 epoch-local owner observer passes physical readback"
+  ],
+  "canonical_boundary": {
+    "verified_primer_residual_pages": 63,
+    "post_primer_first_direct_q64_touch": 64,
+    "boundary_variable": "T",
+    "innovation_pages": "Delta = T - 64"
+  },
+  "candidate_definition": {
+    "trace_complete": true,
+    "cpu_match": true,
+    "worker_ok": true,
+    "pte_growth_before_boundary": false,
+    "drain_stock_before_boundary": false,
+    "known_unexpected_refill_before_terminal_boundary": false,
+    "all_owner_release_events_classified": true,
+    "observed_boundary_not_equal_to_64": true
+  },
+  "capture_action": {
+    "same_identity_retry": false,
+    "commit_after_candidate": false,
+    "freeze_full_epoch_trace": true,
+    "freeze_owner_counter": true,
+    "freeze_pre_boundary_windows": 8,
+    "freeze_post_boundary_windows": 2,
+    "classification": "UNEXPLAINED_BOUNDARY_DEVIATION"
+  },
+  "followup_axes": [
+    "touch_age",
+    "wall_clock_age",
+    "cpu_competition",
+    "boundary_shift_magnitude"
+  ],
+  "claim_ceiling": "HYPOTHESIS_GENERATION_AND_CAUSAL_LOCALIZATION_ONLY",
+  "authority": {
+    "physical_run_authorized": false,
+    "paid_runner_authorized": false,
+    "local_pc_execution_authorized": false
+  }
+}
