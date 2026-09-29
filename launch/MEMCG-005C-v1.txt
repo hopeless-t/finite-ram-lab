@@ -1,0 +1,7 @@
+MEMCG-005C explicit hosted launch
+B336
+Implementation: 82515df80b1cde1d9b9732510c3abf1454b2aa91
+Fixture repair: 57d1c0767f3fd3fbeef8902c78cf6a7bc80b3143
+CI: 36550984469 success
+A/B first-touch integrity: TWO_STEP=MIGRATE receipt then TOUCH; ATOMIC=MIGRATE_TOUCH immediate page touch before receipt; 23 identities per arm per block; 4 blocks; 184 probes total.
+Hosted research only. No local execution.
