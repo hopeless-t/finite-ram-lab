@@ -1,17 +1,17 @@
 # CURRENT
 
-> Latest bounce: B364
-> Stage: MEMCG-005G-B EXPLICIT HOSTED LAUNCH
-> Stop: RUN_DISCOVERY_PENDING
-
-Implementation:
-`ba4d5a072aceca463f23cfea7c00964b14b3b8b1`
-
-CI:
-`36567606866 = success`
+> Latest bounce: B365
+> Stage: MEMCG-005G-B hosted run
+> Stop: EXTERNAL_WAIT
 
 Launch:
 `01dea9af49e28df4843019f924e717efde0c0426`
+
+Scientific run:
+`36568284433`
+
+Single B365 read:
+`in_progress`
 
 Primary:
 CAP70 vs CAP8 first-touch failure among valid REMOTE_LOW.
@@ -19,10 +19,10 @@ CAP70 vs CAP8 first-touch failure among valid REMOTE_LOW.
 Scale:
 16 independent blocks x64 candidates =1024.
 
-No biopsy in primary A/B.
+Do not poll again in this bounce.
 
 Next fresh bounce:
-discover/read exact-head MEMCG-005G-B workflow once.
+read run `36568284433` exactly once.
 
 Hosted research only.
 No local-PC execution.
