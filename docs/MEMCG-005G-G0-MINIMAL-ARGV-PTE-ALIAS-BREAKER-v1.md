@@ -141,24 +141,31 @@ Within each independent hosted block:
 - never group all padded arms contiguously;
 - preserve the same lifecycle style as G-F.
 
-Preferred maximum:
+Staged ceiling:
 
-- 32 blocks;
-- 1920 total candidates;
-- 320 raw candidates/arm.
+- Stage A: 16 blocks / 960 total candidates / 160 raw candidates per arm;
+- Stage B: cumulative 32 blocks / 1920 total / 320 per arm;
+- Stage C: cumulative 48 blocks / 2880 total / 480 per arm.
 
-This keeps the same total maximum as G0 v0 while adding a direct same-capacity alias test.
+This keeps the terminal ceiling equal to the completed G-F scale while allowing short resource-gated bounces.
 
-## 10. Staged compute option
+## 10. Staged compute interpretation
 
-To reduce hosted cost without changing the final maximum:
+MATH-010 calibrated the direct padded-vs-canonical contrast using the G-F planning rates.
 
-- Stage A: first 16 independent blocks = 960 candidates;
-- Stage B: additional 16 blocks only if the predeclared evidence state remains unresolved.
+Approximate Monte Carlo planning results:
 
-Any sequential decision rule must be frozen before launch.
+- 16 blocks: correct direction 97.22%; Fisher p<.05 with correct direction 42.66%;
+- 32 blocks: correct direction 99.76%; Fisher p<.05 with correct direction 75.83%;
+- 48 blocks: correct direction 99.96%; Fisher p<.05 with correct direction 90.69%.
 
-Do not repeatedly inspect block-level p-values and stop opportunistically.
+Stage A is therefore primarily an instrument-integrity and direction probe.
+
+Do not treat lack of p<.05 at Stage A as evidence against the argv mechanism.
+
+Ordinary p-values must not be repeatedly inspected and then presented as fixed-N confirmatory inference. Stage reads are exploratory unless a formal sequential rule is separately frozen.
+
+Each hosted stage requires Human compute approval.
 
 ## 11. Why this is higher information-per-candidate than v0
 
@@ -192,6 +199,9 @@ That second experiment addresses exact virtual-layout geometry.
 ## Compute authority
 
 No implementation or hosted launch from this document alone.
+
+Planning calibration:
+`docs/MATH-010-G0-MONTE-CARLO-CALIBRATION.md`
 
 The 5760-candidate MEMCG-005G-G remains deferred.
 
