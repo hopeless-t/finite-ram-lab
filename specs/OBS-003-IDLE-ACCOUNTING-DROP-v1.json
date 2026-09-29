@@ -1,0 +1,42 @@
+{
+  "experiment_id": "OBS-003-IDLE-ACCOUNTING-DROP-v1",
+  "stage": "PILOT",
+  "required_page_size": 4096,
+  "runner_blocks": 4,
+  "identities_per_block": 12,
+  "max_pages": 1024,
+  "safe_len": 192,
+  "sample_offsets_ms": [
+    0,
+    1,
+    2,
+    4,
+    8,
+    12,
+    16,
+    20,
+    30,
+    50,
+    100
+  ],
+  "plus17_ranges": [
+    [
+      114,
+      117
+    ],
+    [
+      179,
+      180
+    ]
+  ],
+  "neg17_drop_min_pages": 15,
+  "neg17_drop_max_pages": 19,
+  "meaningful_drop_pages": 2,
+  "rss_stable_tolerance_pages": 2,
+  "rss_matching_tolerance_pages": 3,
+  "raw_artifact_retention_days": 7,
+  "aggregate_artifact_retention_days": 30,
+  "authority": "HOSTED_RESEARCH_ONLY",
+  "local_execution": false,
+  "dynamic_scale_expansion": false
+}
