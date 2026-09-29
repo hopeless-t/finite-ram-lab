@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B314
-> **Stage:** MEMCG-004 IMPLEMENTATION PART 1 CHECKPOINTED
-> **Turn stop reason:** CHECKPOINT
+> **Latest bounce:** B315
+> **Stage:** MEMCG-004 IMPLEMENTED / CI EXTERNAL_WAIT
+> **Turn stop reason:** EXTERNAL_WAIT
 
 ## Prior canonical result
 MEMCG-003B canonical commit: `99c084a95fc39c6c4b3ae2081d74117f4355debc`
