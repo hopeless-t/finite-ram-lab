@@ -17,7 +17,7 @@ def matrix(atomic_fail=0,two_fail=8):
             for i in range(23):
                 # distribute failures deterministically across blocks/ids
                 global_i=b*23+i
-                out.append(mk(b,arm,i,global_i>=92-fail))
+                out.append(mk(b,arm,i,global_i<92-fail))
     return out
 
 class T(unittest.TestCase):
