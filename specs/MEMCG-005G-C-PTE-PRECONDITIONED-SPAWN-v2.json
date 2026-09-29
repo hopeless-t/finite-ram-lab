@@ -1,0 +1,36 @@
+{
+  "experiment_id": "MEMCG-005G-C-PTE-PRECONDITIONED-SPAWN-v2",
+  "stage": "PILOT",
+  "required_page_size": 4096,
+  "runner_blocks": 8,
+  "identities_per_block": 9,
+  "max_pages": 1024,
+  "safe_len": 192,
+  "calibration_max_touches": 64,
+  "q64_min_pages": 60,
+  "q64_max_pages": 68,
+  "arms": [
+    {
+      "id": "b62",
+      "batch_consumed_before_target": 62,
+      "expected": ["ZERO", "ZERO", "Q64"]
+    },
+    {
+      "id": "b63",
+      "batch_consumed_before_target": 63,
+      "expected": ["ZERO", "Q64"]
+    },
+    {
+      "id": "b64",
+      "batch_consumed_before_target": 64,
+      "expected": ["Q64"]
+    }
+  ],
+  "raw_candidate_ceiling": 72,
+  "replacement_trials": false,
+  "raw_artifact_retention_days": 7,
+  "aggregate_artifact_retention_days": 30,
+  "pilot_role": "MECHANISM_AND_OFF_BY_ONE_VALIDATION",
+  "authority": "HOSTED_RESEARCH_ONLY",
+  "scientific_launch_authorized": false
+}
