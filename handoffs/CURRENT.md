@@ -1,129 +1,146 @@
 # CURRENT
 
-> Latest bounce: B384
-> Stage: G0 STAGE A IMPLEMENTED / CI PASS / NOT LAUNCHED
-> Stop: HUMAN_SCIENTIFIC_LAUNCH_APPROVAL_FOR_G0_STAGE_A
+> Latest bounce: B385
+> Stage: G0 STAGE A COMPLETE / CAPACITY SIGNAL SURVIVES / PTE SUPPRESSOR EXPOSED
+> Stop: NEXT PHYSICAL RUN REQUIRES NEW HUMAN LAUNCH SCOPE
 
 ## G0 Stage A
 
-Frozen scale:
+Run:
+`36591417373 = success`
 
-- 16 hosted blocks
-- 60 candidates/block
-- 960 total candidates
-- 160 raw candidates/arm
+All:
+- 16/16 blocks PASS
+- 960/960 trials valid
+- CPU mismatches 0
+- LOW 496
+- HIGH 464
+- LOW morphology only Q64 or exact-zero
 
-Arms:
+## Argv alias
 
-- C8 = token 8 / capacity 8
-- P8 = token 08 / capacity 8
-- C9 = token 9 / capacity 9
-- P9 = token 09 / capacity 9
-- H10 = token 10 / capacity 10
-- H32 = token 32 / capacity 32
+Canonical 8/9:
+3/155 = 1.94%
 
-Primary direct argv contrast:
+Padded 08/09:
+2/179 = 1.12%
 
-`P8+P9 vs C8+C9`
+Fisher:
+`p=0.666`
 
-Capacity-survival contrast:
+Block CMH:
+`p=0.503`
 
-`H10+H32 vs P8+P9`
+1M block permutation:
+`p~=0.655`
 
-Stage A role:
+Verdict:
+`ARGV_WIDTH_EFFECT_NOT_SUPPORTED`
 
-`INSTRUMENT_AND_DIRECTION_PROBE`
+## Capacity after width control
 
-Do not interpret p>=.05 at Stage A as evidence against argv.
+Padded 08/09:
+2/179 = 1.12%
 
-## Implementation
+10/32:
+14/162 = 8.64%
 
-Core:
-`src/finite_ram_lab/memcg005gg0_alias_breaker.py`
+RD:
+`+7.52pp`
 
-Spec:
-`specs/MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1.json`
+OR:
+`8.37`
 
-Tests:
-`tests/test_memcg005gg0_alias_breaker.py`
+Fisher:
+`p=0.00128`
 
-Workflow:
-`.github/workflows/memcg-005g-g0-alias-breaker.yml`
+Block CMH:
+`p~=0.00204`
 
-Design:
-`docs/MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1.md`
+1M block permutation:
+`p~=0.00177`
 
-Unchanged worker:
-`experiments/memcg005d_worker.c`
+Core LOW pre_current 97..100 sensitivity remains essentially identical.
 
-## PTE / stock receipts
+Verdict:
+`CAPACITY_SIGNAL_SURVIVES_ARGV_WIDTH_CONTROL`
 
-First touch records:
+## H10 vs H32
 
-- memory.current delta
-- VmPTE pre/post/delta
-- memory.stat:pagetables corroboration
-- CPU/touched/error receipts
+- H10 11/89 = 12.36%
+- H32 3/73 = 4.11%
 
-Exact-zero first specimens receive exactly one second adjacent touch.
+Suggestive heterogeneity only.
 
-Candidate classifications:
+Do not assume monotonicity.
 
-- R1_CANDIDATE
-- R2_CANDIDATE
-- PTE_BOUNDARY
-- OTHER
-- INVALID
+## PTE
 
-## Environment receipt
+VmPTE +4KiB:
 
-Each block records:
+- H32 8/160
+- all other arms 0/800
+- Fisher p ~=5.13e-7
 
-- kernel/platform
-- libc
-- page size
-- CPUs
-- worker SHA-256
-- THP global setting
-- all visible hugepages-*/enabled settings
+LOW PTE-growth specimens:
+5/5 Q64.
 
-## Evidence Residency
+No LOW PTE-growth specimen was exact-zero.
 
-Raw blocks:
-`7 days`
+This is compatible with page-table charge consuming the same near-exhausted memcg stock.
 
-Aggregate:
-`30 days`
+## Two-touch
 
-Aggregate contains:
-- summary.json
-- full-raw-evidence-manifest.json
+LOW exact-zero:
+19
 
-The full raw tree is manifest-hashed and immediately verified before aggregate publication.
+- R1_CANDIDATE 12
+- OTHER/second-zero 7
+- R2 0
+- PTE_BOUNDARY 0
 
-After the run, raw evidence may be demoted to local/Google Drive only after restored-copy verification.
+R1 fraction:
+63.16%
 
-## Validation
+## mTHP
 
-CI:
-`36590212701 = success`
+All small exposed mTHP orders:
+`[never]`
 
-The scientific G0 workflow did NOT run during implementation.
+2MiB:
+`[inherit]`
 
-## Research mechanism
+global:
+`[madvise]`
 
-B382 remains active:
+Small mTHP explanation is closed for this run.
 
-Linux v7.0 page-table charge reaches the same per-CPU memcg stock before anonymous data allocation.
+## Evidence residency
 
-MATH-011 two-touch discriminator remains the prospective mechanism test.
+Raw set:
+- 1936 files
+- 4,854,520 bytes
+- content SHA:
+  `dd80fb2551833bd001cc27680c6ef3bf3053f7360421667b256b94851ab8798e`
 
-## Authority
+Drive COLD:
+`Catfood Lab Evidence/finite-ram-lab/MEMCG-005G-G0/run-36591417373`
 
-No G0 launch marker exists.
+17/17 Drive archives:
+`BYTE-IDENTICAL PASS`
 
-No scientific hosted run launched.
+## Next design
 
+Track A:
+fixed-width dense onset around
+`08,09,10,11,12`
+
+Track B:
+PTE-preconditioned controlled spawn:
+
+`preallocate target PTE -> verified Q64 primer -> consume to residual1 -> target zero -> next Q64`
+
+Track B is the direct route toward intentional rare-state generation.
+
+No new physical launch is authorized yet.
 No local-PC execution.
-
-Large 5760-candidate G-G remains DEFERRED.
