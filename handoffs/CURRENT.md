@@ -1,77 +1,63 @@
 # CURRENT
 
-> **Latest bounce:** B313
-> **Stage:** MATH-002 RUNNING / MEMCG-004 CALIBRATION DESIGN FROZEN
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B314
+> **Stage:** MEMCG-004 IMPLEMENTATION PART 1 CHECKPOINTED
+> **Turn stop reason:** CHECKPOINT
 
-## MEMCG-003B primary
-
-Canonical commit:
-`99c084a95fc39c6c4b3ae2081d74117f4355debc`
-
-Decision:
-`REJECT_K7_SLOT_MODEL_B`
-
-Accepted interpretation:
-- thresholds [null,null,null,null] are right-censored beyond m=8;
-- analyzer K9 is not an observed capacity;
-- K9 and K10 tie;
-- final distinct recharge [0,64,64,64] means stock can be absent without a prior large passive target-current drop.
+## Prior canonical result
+MEMCG-003B canonical commit: `99c084a95fc39c6c4b3ae2081d74117f4355debc`
+Decision: `REJECT_K7_SLOT_MODEL_B`.
 
 ## MATH-002
+Run `36529563011` was read once in B314 and is `completed / failure`.
+Exposed invariant: checkout/setup/install passed; synthetic sidecar failed with
+`ERR_MODULE_NOT_FOUND` for `math/dist/geometry/index.js`; canonical input,
+geometric lens, and artifact upload were skipped.
 
-Launch:
-`15ccd7d06e4786a566c56e3491f07024be6d4424`
-
-Run:
-`36529563011`
-
-Single B312 status:
-`in_progress`
-
-Do not poll again in this bounce.
-
-## New source-level lesson
-
-A created worker is not a calibrated stock entry.
-
-Source behavior:
-- consume-to-zero removes cached pointer;
-- refill can modify an existing entry;
-- refill beyond batch drains the entry;
-- kmem/socket uncharges can refill the same per-CPU memcg stock.
-
-Therefore seven worker identities are not enough to assert seven stable stocked slots.
+Decision: **INFRA_FAILURE / NO_SCIENTIFIC_RESULT**.
+Do not rerun blindly. Secondary geometry cannot rescue or overturn MEMCG-003B.
 
 ## MEMCG-004
+Frozen design: `docs/MEMCG-004-CALIBRATED-STOCK-v1.md`.
 
-Frozen design:
-`docs/MEMCG-004-CALIBRATED-STOCK-v1.md`
+Implementation commits:
+- zero-measured-touch interactive worker: `46c6484624e816db2052176401499b18f08fa200`
+- executable spec: `a7d46e73e6188245a061a70e4196f1c1d4752b9c`
+- pure analyzer: `382b0f74955d4b9d8a88a293f655635e5dbe9720`
+- synthetic analyzer tests: `34193e0a383e9156d44c558fdb3b748da25d8474`
 
-Atomic question:
-can a known 63-page stock state be created and verified?
+Implementation lesson:
+existing `memcg003_holder.c` is unsuitable because it touches one measured page
+before READY. MEMCG-004 uses a dedicated worker whose READY receipt asserts
+`touched=0`.
 
-Protocol:
-1. one-page touches until an observed +64 charge;
-2. stop immediately;
-3. passive hold;
-4. resume one-page touches;
-5. predicted next +64 is validation touch 64.
+Preregistered causal target remains: after observing a fresh Q64 calibration
+charge, stable residual stock predicts the next Q64 event at validation touch
+R=64 (+/-1), with hold and unprimed controls.
 
-Only after this calibration passes should seven-slot capacity be retested.
+Status: **PARTIALLY IMPLEMENTED / NOT LAUNCHED**.
+Runner and workflow remain to implement. Ordinary CI must pass before launch.
+
+## Mathematical bridge
+Q64 remains live. The prior pressure knee remains independently bounded at
+80 < K <= 88 MiB. Candidate `K* = nQ + phi` remains a proposal only; the
+8 MiB interval = 32 Q64 units is not evidence of quantization at current
+resolution.
+
+## Pseudo-Council B314
+Converged:
+- MATH-002 failure is infrastructure-only;
+- calibrate hidden stock phase before another K7 capacity test;
+- do not interpret numerical coincidences as laws;
+- Proposal != Decision;
+- Expressibility != Executability.
 
 ## Next fresh-bounce action
-
-Read MATH-002 run `36529563011` exactly once.
-
-- success -> canonicalize secondary result;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only exposed invariant.
-
-Then implement MEMCG-004. Do not launch MEMCG-004 during its implementation bounce.
+Implement MEMCG-004 hosted controller + workflow, add contract/synthetic tests,
+then checkpoint. **Do not launch MEMCG-004 in that implementation bounce.**
 
 ## Authority boundary
-
 Hosted research only.
 No local-PC execution.
 No memory-control policy.
+No Remote Desktop Commander.
