@@ -1,0 +1,27 @@
+OBS-005 cross-cgroup LRU handoff v1
+
+Human authorization:
+Continue finite-ram-lab forensic research on 2026-09-30 JST.
+
+Frozen diagnostic scope:
+- 4 standard GitHub-hosted ubuntu-26.04 blocks
+- 4 identities/block
+- 16 trials total
+- producer A, trigger B, scrubber S pinned to the same target CPU
+- scrubber establishes a recent LRU-add batch flush
+- producer A touches exactly 17 anonymous pages, then unmaps them while cgroup stays alive
+- trigger B touches exactly 14 anonymous pages
+- trace page_counter_try_charge, page_counter_uncharge(17), drain_stock, LRU flush, folios_put
+- producer page-counter identity bound by producer PID
+- no b63 reliability claim
+- no natural-incidence claim
+- no adaptive replacement
+- no local-PC execution
+- no paid runner
+
+Primary prediction:
+A17 + B14 fills a 31-entry per-CPU LRU-add batch.
+B's 14th touch triggers flush31/folios_put31 and page_counter_uncharge(17)
+on a page-counter pointer owned by producer A.
+
+Stop after evidence analysis.
