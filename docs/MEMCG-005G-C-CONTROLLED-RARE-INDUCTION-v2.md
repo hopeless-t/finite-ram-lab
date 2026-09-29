@@ -1,6 +1,6 @@
 # MEMCG-005G-C Controlled Rare Induction v2 — PTE-Preconditioned Spawn
 
-> **Status:** IMPLEMENTED-CANDIDATE / CI PENDING / NOT LAUNCHED
+> **Status:** IMPLEMENTED / CI PASS / NOT LAUNCHED
 > **Primary arm:** b63
 > **Authority:** HOSTED_RESEARCH_ONLY
 > **Supersedes:** v1 for the next controlled-spawn pilot
@@ -176,3 +176,21 @@ Workflow:
 `.github/workflows/memcg-005g-c-v2-controlled-spawn.yml`
 
 No launch marker exists.
+
+
+## Validation
+
+CI run:
+`36594688827 = success`
+
+Passed:
+- Python install
+- compileall
+- full unit suite
+- C worker `gcc -fsyntax-only`
+- synthetic b62/b63/b64 exact-pattern tests
+- failure-taxonomy tests
+- Monte Carlo smoke
+- environment probe smoke
+
+Scientific controlled-spawn workflow did not run during implementation.
