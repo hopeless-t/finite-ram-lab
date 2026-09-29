@@ -1,0 +1,27 @@
+MEMCG-005G-C v2 controlled-spawn pilot explicit scientific launch
+
+Human authorization:
+User asked to continue through the spawn result and then stop to review the full research trajectory on 2026-09-30 JST.
+
+Scope frozen by B386:
+- 8 GitHub-hosted ubuntu-26.04 blocks
+- 9 raw identities/block
+- 72 raw candidates total
+- 24 raw/arm
+- arms b62 / b63 / b64
+- PTE preconditioning on preparation CPU P
+- measured stock construction on distinct stock CPU S
+- no replacement identities
+- no dynamic scale expansion
+- raw artifacts 7 days
+- aggregate 30 days
+- full raw manifest + immediate verification
+
+Resource boundary:
+- standard GitHub-hosted runners only
+- no larger runner
+- no local-PC execution
+- no paid resource
+- no reliability-stage expansion (59/299) from this marker
+
+This marker authorizes only the controlled-spawn v2 pilot.
