@@ -1,0 +1,102 @@
+{
+  "schema_version": "b405-r2-physical-result-v1",
+  "run_id": "36646317346",
+  "launch_commit": "50666ddf9bf96dad0e356936e5b7eb20c09f1ceb",
+  "frozen_result": {
+    "trial_count": 16,
+    "challenge_pass_count": 13,
+    "target_fail": 0,
+    "matrix_pass": false,
+    "by_arm": {
+      "CLEAN": {
+        "n": 4,
+        "pass": 3,
+        "success": 3,
+        "reprimes": 0,
+        "target_fail": 0
+      },
+      "RELEASE_ONLY": {
+        "n": 4,
+        "pass": 3,
+        "success": 3,
+        "reprimes": 0,
+        "target_fail": 0
+      },
+      "UNEXPECTED_REFILL": {
+        "n": 4,
+        "pass": 4,
+        "success": 4,
+        "reprimes": 4,
+        "target_fail": 0
+      },
+      "PTE_GROWTH": {
+        "n": 4,
+        "pass": 3,
+        "success": 3,
+        "reprimes": 4,
+        "target_fail": 0
+      }
+    }
+  },
+  "failure_morphologies": [
+    {
+      "trial": "1:1",
+      "arm": "RELEASE_ONLY",
+      "name": "INTERVENTION_NOT_REALIZED",
+      "facts": {
+        "trigger_prime_refill_touch": 58,
+        "pre_verify_scrub_flush_touch": 43,
+        "target_normalize_touches": 58,
+        "producer_pages": 17,
+        "discard_delta_pages": -2,
+        "release_event": "RELEASE_NOT_GROUNDED",
+        "expected_residual_before": 46,
+        "expected_residual_after": 46
+      },
+      "interpretation": "LRU scrub occurred before target normalization; the 58 normalization faults advanced shared LRU batch phase again, so producer17+trigger14 did not deterministically yield the intended owner release."
+    },
+    {
+      "trial": "2:0",
+      "arm": "CLEAN",
+      "name": "ASYNCHRONOUS_STOCK_DRAIN_OWNERSHIP_UNRESOLVED",
+      "facts": {
+        "phase": "CONSUME",
+        "touch": 43,
+        "stock_cpu": 3,
+        "drain_comm": "frltx405",
+        "stack": "page_counter_uncharge -> refill_stock -> mem_cgroup_sk_uncharge -> __sk_mem_reclaim -> tcp_clean_rtx_queue -> tcp_ack -> ... -> softirq",
+        "expected_residual_before": 21
+      },
+      "interpretation": "Network softirq interrupted while current task was frltx405. CPU locality is known, but current receipts do not prove whether the drained memcg slot belonged to the target memcg."
+    },
+    {
+      "trial": "3:3",
+      "arm": "PTE_GROWTH",
+      "name": "POST_REPRIME_IMMEDIATE_REFILL_COVERAGE_AMBIGUOUS",
+      "facts": {
+        "challenge_epoch": "correctly INVALIDATED as PTE_GROWTH with VmPTE +4 KiB",
+        "recovery_normalize_touch1": "direct Q64/refill63, residual 63",
+        "recovery_consume_touch1": "direct Q64/refill63 again, classified UNEXPECTED_REFILL",
+        "elapsed_ns_between_verified_and_consume_pre": 286822000,
+        "owner_counter": "0xffff8d7e59854b40",
+        "kprobe_profile": {
+          "refill_stock_missed": 175,
+          "pc_try64_missed": 0,
+          "drain_stock_missed": 3,
+          "pc_uncharge17_missed": 3
+        }
+      },
+      "interpretation": "The challenge classifier passed; recovery stability failed. Because relevant probes had nonzero misses, absence of a visible intervening drain is not proof that no state-changing event occurred."
+    }
+  ],
+  "raw_manifest": {
+    "file_count": 88,
+    "total_bytes": 53948401,
+    "content_set_sha256": "8f1311b317978d1f596e90523e983ceacea215cc393b39e0f488913402bf531b"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11067669529,
+    "digest": "sha256:838cdcb35193fb4e8713720386de6ac9526360401abc4a0bd0a6c98122d39740"
+  },
+  "claim_ceiling": "B405_R2_DIAGNOSTIC_DO_NOT_REWRITE"
+}
