@@ -1,0 +1,44 @@
+{
+  "schema_version": "obs005-derived-summary-v1",
+  "experiment_id": "OBS-005-CROSS-CGROUP-LRU-HANDOFF-v1",
+  "run_id": "36625036954",
+  "frozen_classifier_counts": {
+    "CONTROLLED_HANDOFF_PASS": 10,
+    "COUNTER_UNKNOWN": 3,
+    "HANDOFF_NONCANONICAL_TIMING": 1,
+    "NO_HANDOFF_UNCHARGE": 1,
+    "SCRUB_NO_FLUSH": 1
+  },
+  "derived": {
+    "total_trials": 16,
+    "scrub_precondition_success": 15,
+    "scrub_precondition_hold": 1,
+    "trigger_phase_exact_minus17_raw": 15,
+    "counter_receipt_available_and_scrub_success": 12,
+    "producer_counter_uncharge17_direct": 12,
+    "trigger_task_frltrig": 11,
+    "trigger_task_external": 1,
+    "canonical_frltrig_touch14": 10,
+    "frltrig_touch13": 1,
+    "external_trigger_touch4": 1,
+    "counter_receipt_overwritten": 3
+  },
+  "interpretation": {
+    "batch_capacity": 31,
+    "producer_entries": 17,
+    "equation": "trigger_touch = 31 - 17 - external_insertions = 14 - external_insertions",
+    "canonical_external_insertions": 0,
+    "touch13_implied_external_insertions": 1,
+    "external_trigger_example": "trial 2:2 / provjobd... current task flushed producer-owned folios"
+  },
+  "receipt_loss": {
+    "affected_block": 3,
+    "kprobe_profile_hits": {
+      "page_counter_try_charge": 54642,
+      "page_counter_uncharge": 126589,
+      "lru_flush": 111737,
+      "folios_put": 527380
+    },
+    "note": "pc_try receipt lines were overwritten from the finite trace ring; phenomenon remained visible in raw memory.current."
+  }
+}
