@@ -1,0 +1,17 @@
+OBS-001 trace capability gate v2
+
+Human scope:
+Continue finite-ram-lab research on 2026-09-30 JST.
+
+Purpose:
+Correct the v1 false HOLD caused by checking runner-user writability instead of sudo tracefs access.
+
+Authorized:
+- one standard GitHub-hosted ubuntu-26.04 capability run
+- inspect/probe drain_stock, uncharge_batch, refill_stock, try_charge_memcg, page_counter_uncharge
+- probe install/enable/disable/remove only
+- no scientific reliability claim
+- no local-PC execution
+- no paid runner
+
+Stop if fewer than two useful probe points are available.
