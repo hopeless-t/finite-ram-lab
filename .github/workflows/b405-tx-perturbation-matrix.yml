@@ -79,7 +79,7 @@ jobs:
           printf '%s\n'             'p:frl_folios_put folios_put_refs fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_drain_stock drain_stock stock=$arg1:x64 slot=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
 
-          echo 'comm == "frltx405" && nr_pages == 63'             | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
+          echo 'nr_pages == 63 && (comm == "frltx405" || comm == "frltrig")'             | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
           echo 'comm == "frltx405" && nr_pages == 64'             | sudo tee "$TRACE/events/kprobes/frl_pc_try64/filter" >/dev/null
           echo 'nr_pages == 17'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge17/filter" >/dev/null
           echo 'stacktrace'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge17/trigger" >/dev/null
