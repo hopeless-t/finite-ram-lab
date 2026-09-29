@@ -1,0 +1,14 @@
+OBS-001 trace capability gate
+
+Human scope:
+Continue finite-ram-lab research on 2026-09-30 JST.
+
+Authorized:
+- one standard GitHub-hosted ubuntu-26.04 capability run
+- tracefs/kprobe capability check only
+- probe install/enable/disable/remove for memcg_uncharge and refill_stock
+- no scientific reliability claim
+- no local-PC execution
+- no paid runner
+
+Stop on capability failure.
