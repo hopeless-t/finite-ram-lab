@@ -206,12 +206,14 @@ x-1 [000] ... 15.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
         trace = """
 x-1 [000] ... 16.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=6 PRE
 kworker-4 [007] ... 16.000000010: frl_drain_stock: stock=0x111 slot=2 comm="kworker"
+kworker-4 [007] ... 16.000000011: frl_memcg_uncharge: memcg=0xbbb nr_pages=21 comm="kworker"
 x-1 [000] ... 16.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=6 POST
 """
         w = parse_transaction_trace(trace)[("0:0", 0, "CONSUME", 6)]
         receipt = observer_receipt_for_window(
             w,
             owner_counter="0xaaa",
+            owner_memcg="0xbbb",
             stock_cpu=7,
             phase="CONSUME",
         )
@@ -223,6 +225,7 @@ x-1 [000] ... 16.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
 x-1 [000] ... 17.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=NORMALIZE touch=1 PRE
 frltx-10 [007] ... 17.000000010: frl_pc_try64: counter=0xaaa nr_pages=64 comm="frltx"
 frltx-10 [007] ... 17.000000020: frl_drain_stock: stock=0x111 slot=3 comm="frltx"
+frltx-10 [007] ... 17.000000021: frl_memcg_uncharge: memcg=0xccc nr_pages=9 comm="frltx"
 frltx-10 [007] ... 17.000000030: frl_refill_stock: memcg=0xbbb nr_pages=63 comm="frltx"
 x-1 [000] ... 17.000000040: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=NORMALIZE touch=1 POST
 """
@@ -234,8 +237,10 @@ x-1 [000] ... 17.000000040: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=N
             phase="NORMALIZE",
         )
         self.assertEqual(receipt["drain_stock_count"], 0)
-        self.assertEqual(receipt["normalization_internal_drain_count"], 1)
+        self.assertEqual(receipt["other_memcg_drain_count"], 1)
+        self.assertEqual(receipt["unresolved_drain_count"], 0)
         self.assertEqual(receipt["discovered_owner_counter"], "0xaaa")
+        self.assertEqual(receipt["discovered_owner_memcg"], "0xbbb")
 
     def test_owner_release_can_be_grounded_by_uncharge_stack(self) -> None:
         trace = """
@@ -256,6 +261,45 @@ x-1 [000] ... 18.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
         )
         self.assertEqual(receipt["classified_release_only_count"], 1)
         self.assertEqual(receipt["unknown_emission_count"], 0)
+
+
+    def test_same_cpu_other_memcg_drain_is_not_target_invalidator(self) -> None:
+        trace = """
+x-1 [000] ... 19.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=13 PRE
+softirq-10 [007] ... 19.000000010: frl_drain_stock: stock=0x111 slot=2 comm="frltx405"
+softirq-10 [007] ... 19.000000011: frl_memcg_uncharge: memcg=0xccc nr_pages=21 comm="frltx405"
+x-1 [000] ... 19.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=13 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "CONSUME", 13)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            owner_memcg="0xbbb",
+            stock_cpu=7,
+            phase="CONSUME",
+        )
+        self.assertEqual(receipt["drain_stock_count"], 0)
+        self.assertEqual(receipt["other_memcg_drain_count"], 1)
+        self.assertEqual(receipt["unknown_emission_count"], 0)
+
+    def test_unpaired_same_cpu_drain_fails_closed_as_unknown(self) -> None:
+        trace = """
+x-1 [000] ... 20.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=14 PRE
+softirq-10 [007] ... 20.000000010: frl_drain_stock: stock=0x111 slot=2 comm="frltx405"
+x-1 [000] ... 20.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=14 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "CONSUME", 14)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            owner_memcg="0xbbb",
+            stock_cpu=7,
+            phase="CONSUME",
+        )
+        self.assertEqual(receipt["drain_stock_count"], 0)
+        self.assertEqual(receipt["unresolved_drain_count"], 1)
+        self.assertEqual(receipt["unknown_emission_count"], 1)
+
 
 
 if __name__ == "__main__":
