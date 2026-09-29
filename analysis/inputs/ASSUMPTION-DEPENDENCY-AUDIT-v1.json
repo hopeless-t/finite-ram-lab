@@ -1,0 +1,85 @@
+{
+  "schema_version": "assumption-dependency-audit-v1",
+  "validator_cut": "B401",
+  "principle": "raw observation identity is preserved; semantic labels and certification claims are audited separately",
+  "classes": {
+    "KEEP": "result and numerical interpretation survive materially unchanged",
+    "REINTERPRET": "raw data and numerical calculation survive, but the estimand/meaning changes",
+    "REFIT": "existing raw data are sufficient, but a model should be recalculated under a changed target or decomposition",
+    "SUPERSEDED": "design or mechanism claim has been replaced by later evidence; preserve historically",
+    "SUCCESSOR_RERUN": "historical data cannot identify the new B400 estimand; acquire new native receipts rather than repeating the old experiment verbatim"
+  },
+  "mathematical_invariants": {
+    "natural_exact_zero_endpoint": "Z_i = 1[first_touch_delta_pages == 0] is unchanged by the B400 semantic reframe",
+    "natural_model_likelihood": "models fit directly to Z_i and covariates keep the same numerical likelihood when only the semantic name changes",
+    "conditional_spawn_match": "55/55 remains a conditional terminal-pattern match statistic given a historically observed primer",
+    "accepted_success": "historical controlled-spawn lacks the direct charge64+refill63 receipt pair, so B400 accepted-result correctness is not identifiable from that run"
+  },
+  "math_audit": [
+    {"id":"MATH-001","class":"KEEP","numeric_recompute":false,"reason":"Q64 resettable staircase and hidden phase are independent of old SUCCESS/FAIL semantics."},
+    {"id":"MATH-002","class":"KEEP","numeric_recompute":false,"reason":"Secondary geometric visualization/model-lens only; no target-success interpretation is required."},
+    {"id":"MATH-003","class":"REINTERPRET","numeric_recompute":false,"reason":"The 28 specimens remain exact-zero recovery-depth phenotypes. Replace 'failure-depth' language with initial-state/normalization-depth language."},
+    {"id":"MATH-004","class":"REINTERPRET","numeric_recompute":false,"reason":"CAP8/CAP70 capture-rate arithmetic is still exact-zero incidence. It is not target mechanism failure probability."},
+    {"id":"MATH-005","class":"REINTERPRET","numeric_recompute":false,"reason":"Threshold localization remains a model of natural exact-zero capture propensity, not protocol reliability."},
+    {"id":"MATH-006","class":"REINTERPRET","numeric_recompute":false,"reason":"Monte Carlo/sample-size calculations remain valid for locating natural capture regions under the same endpoint."},
+    {"id":"MATH-007","class":"REINTERPRET","numeric_recompute":false,"reason":"Its exact-zero/nonzero morphology separation already anticipates the new semantics; rename failure propensity as phenotype incidence."},
+    {"id":"MATH-008","class":"KEEP","numeric_recompute":false,"reason":"Argv-width alias audit is an identifiability test on the natural-state signal and survives unchanged."},
+    {"id":"MATH-009","class":"KEEP","numeric_recompute":false,"reason":"Linux PTE/memcg fault-path audit is source/mechanism evidence, independent of historical outcome labels."},
+    {"id":"MATH-010","class":"KEEP","numeric_recompute":false,"reason":"Monte Carlo was design calibration for the alias breaker; preserve as historical planning analysis."},
+    {"id":"MATH-011","class":"REINTERPRET","numeric_recompute":false,"reason":"Two-touch/PTE discriminator remains useful for natural-state mechanism study; PTE growth is now also a transaction invalidator."},
+    {"id":"MATH-012","class":"REINTERPRET","numeric_recompute":false,"reason":"G0 capacity and PTE associations survive; their role shifts from success/failure explanation to initial-state and invalidation mechanism decomposition."},
+    {"id":"MATH-013","class":"SUPERSEDED","numeric_recompute":false,"reason":"b62/b63/b64 stock arithmetic survives, but its legacy net-delta success token is superseded by B400 direct receipts."},
+    {"id":"MATH-014","class":"REINTERPRET","numeric_recompute":false,"reason":"The natural exact-zero model was already separated from spawn selection. Capacity/depth fits survive; the 55/55 bound is only conditional terminal-pattern matching, not accepted correctness."},
+    {"id":"MATH-015","class":"SUPERSEDED","numeric_recompute":false,"reason":"Descriptive +17/-17 statistics survive, but the H17-STOCK/drain origin hypothesis is superseded by OBS-005/016 shared LRU-batch handoff evidence."},
+    {"id":"MATH-016","class":"KEEP","numeric_recompute":false,"reason":"Controlled LRU handoff directly grounds -17 as a release emission and is part of the new observer semantics."},
+    {"id":"MATH-017","class":"KEEP","numeric_recompute":false,"reason":"This is the semantic reframe itself."},
+    {"id":"MATH-018","class":"KEEP","numeric_recompute":false,"reason":"Transactional reliability quantities and zero-false-accept planning are defined for the new protocol."}
+  ],
+  "experiment_audit": [
+    {"id":"MEMCG-001","class":"KEEP","reuse":"full","reason":"Q64 lattice observation remains foundational."},
+    {"id":"MEMCG-002","class":"KEEP","reuse":"full","reason":"Naive durable per-CPU model rejection and net-delta masking lesson are strengthened by later observer work."},
+    {"id":"MEMCG-003","class":"KEEP","reuse":"full","reason":"Negative result remains a valid rejection of the implemented destructive detector."},
+    {"id":"MEMCG-003B","class":"KEEP","reuse":"full","reason":"Passive-threshold detector result remains valid and historically scoped."},
+    {"id":"MEMCG-004","class":"KEEP","reuse":"mechanism_full_certification_gap","reason":"Reset/63-page arithmetic remains strong; historical net-Q64 lacks B400 direct receipt certification."},
+    {"id":"MEMCG-005","class":"KEEP","reuse":"full","reason":"Normalization-state compositionality failure remains valid."},
+    {"id":"MEMCG-005B","class":"KEEP","reuse":"full","reason":"Migration/control-path interference result remains valid."},
+    {"id":"MEMCG-005C","class":"REINTERPRET","reuse":"full","reason":"Q64 vs zero measures first-touch state acquisition, not target mechanism success."},
+    {"id":"MEMCG-005D","class":"REINTERPRET","reuse":"full","reason":"External migration result remains a first-touch state-acquisition study."},
+    {"id":"MEMCG-005E","class":"REINTERPRET","reuse":"full","reason":"Baseline/CPU locality predicts hidden initial phase; not transaction correctness."},
+    {"id":"MEMCG-005F","class":"REINTERPRET","reuse":"full","reason":"REMOTE_LOW remains a high-quality cheap predictor of immediate reset-boundary placement."},
+    {"id":"MEMCG-005G-A","class":"REINTERPRET","reuse":"full","reason":"28 exact-zero cases become normalization-depth/initial-state specimens; 28/28 later recovery remains valid."},
+    {"id":"MEMCG-005G-B","class":"REINTERPRET","reuse":"full","reason":"CAP8/CAP70 effect remains natural exact-zero enrichment."},
+    {"id":"MEMCG-005G-D","class":"REINTERPRET","reuse":"full","reason":"Dose-response remains natural-state ecology; no 64-page threshold conclusion changes."},
+    {"id":"MEMCG-005G-E","class":"REINTERPRET","reuse":"full","reason":"Adaptive refinement remains a natural-state incidence map."},
+    {"id":"MEMCG-005G-F","class":"REINTERPRET","reuse":"full","reason":"CAP10-neighborhood signal remains an exact-zero phenotype association; nonzero anomalies remain separate."},
+    {"id":"MEMCG-005G-G0","class":"REINTERPRET","reuse":"full","reason":"Alias-breaker, PTE receipts, and two-touch state biopsy survive; PTE growth additionally maps to INVALIDATE in transactional use."},
+    {"id":"MEMCG-005G-C-v2","class":"SUCCESSOR_RERUN","reuse":"mechanism_and_historical_endpoint_only","reason":"49/72 and 55/55 remain frozen historical statistics, but B400 accepted correctness/TARGET_FAIL cannot be identified without native direct receipts."}
+  ],
+  "recompute_queue": [
+    {
+      "priority": 1,
+      "task": "Do not recompute natural exact-zero incidence models merely because the semantic label changed.",
+      "reason": "The response variable and raw rows are unchanged."
+    },
+    {
+      "priority": 2,
+      "task": "Rewrite summaries/plots that call natural exact-zero a mechanism failure rate.",
+      "reason": "The estimand is initial hidden-state / normalization burden."
+    },
+    {
+      "priority": 3,
+      "task": "Mark MATH-015 H17-STOCK origin as superseded while retaining its descriptive statistics.",
+      "reason": "OBS-005/MATH-016 directly construct shared LRU release."
+    },
+    {
+      "priority": 4,
+      "task": "Never convert historical 49/72 or 55/55 into B400 accepted correctness.",
+      "reason": "Required direct receipts are missing, making the new estimand historically non-identifiable."
+    },
+    {
+      "priority": 5,
+      "task": "Acquire new samples only for B400-native transaction metrics.",
+      "reason": "accepted correctness, genuine TARGET_FAIL, reprime burden, abort rate, and normalization-depth distribution require native receipt chains."
+    }
+  ]
+}
