@@ -62,7 +62,7 @@ def _wait_event_count(
     event: str,
     comm: str,
     baseline: int,
-    timeout: float = 0.5,
+    timeout: float = 0.02,
 ) -> int:
     deadline = time.monotonic() + timeout
     while True:
