@@ -25,7 +25,8 @@ jobs:
       - name: Compile
         run: |
           python -m compileall -q src tests
-          gcc -O2 -Wall -Wextra -std=c11             experiments/obs005_handoff_worker.c             -o /tmp/obs005_handoff_worker
+          gcc -O2 -Wall -Wextra -std=c11 experiments/obs005_handoff_worker.c -o /tmp/obs005_handoff_worker
+          gcc -O2 -Wall -Wextra -std=c11 experiments/obs006_masked_q64_worker.c -o /tmp/obs006_masked_q64_worker
 
       - name: Unit tests
         run: python -m unittest discover -s tests -v
