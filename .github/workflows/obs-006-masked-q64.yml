@@ -1,0 +1,211 @@
+name: OBS-006 masked Q64 observer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "launch/OBS-006-MASKED-Q64-OBSERVER-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3]
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Compile workers
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11 experiments/obs006_masked_q64_worker.c -o build/obs006_masked_q64_worker
+          gcc -O2 -Wall -Wextra -std=c11 experiments/obs005_handoff_worker.c -o build/obs005_handoff_worker
+
+      - name: Environment gate
+        run: |
+          set -euo pipefail
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+          uname -a
+
+      - name: Run masked-Q64 block
+        env:
+          BLOCK: "${{ matrix.block }}"
+        run: |
+          set -euo pipefail
+          TRACE=/sys/kernel/tracing
+          OUT="$GITHUB_WORKSPACE/evidence/OBS-006/block-$BLOCK"
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+
+          if ! mountpoint -q "$TRACE"; then
+            sudo mount -t tracefs nodev "$TRACE"
+          fi
+
+          cleanup() (
+            set +e
+            echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
+            for ev in \
+              frl_refill_stock frl_pc_try64 frl_pc_uncharge17 \
+              frl_lru_flush frl_folios_put frl_lru_scrub frl_drain_stock; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
+              fi
+              printf '%s\n' "-:$ev" | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            done
+            true
+          )
+          trap cleanup EXIT
+          cleanup
+
+          printf '%s\n' \
+            'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_pc_try64 page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_pc_uncharge17 page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_lru_flush folio_batch_move_lru fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_folios_put folios_put_refs fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_lru_scrub folio_batch_move_lru fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_drain_stock drain_stock stock=$arg1:x64 slot=$arg2:u32 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          echo 'comm == "frlq6" && nr_pages == 63' \
+            | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
+          echo 'comm == "frlq6" && nr_pages == 64' \
+            | sudo tee "$TRACE/events/kprobes/frl_pc_try64/filter" >/dev/null
+          echo 'nr_pages == 17' \
+            | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge17/filter" >/dev/null
+          echo 'stacktrace' \
+            | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge17/trigger" >/dev/null
+          echo 'comm == "frlq6"' \
+            | sudo tee "$TRACE/events/kprobes/frl_lru_flush/filter" >/dev/null
+          echo 'comm == "frlq6"' \
+            | sudo tee "$TRACE/events/kprobes/frl_folios_put/filter" >/dev/null
+          echo 'comm == "frlscrub"' \
+            | sudo tee "$TRACE/events/kprobes/frl_lru_scrub/filter" >/dev/null
+
+          for ev in \
+            frl_refill_stock frl_pc_try64 frl_pc_uncharge17 \
+            frl_lru_flush frl_folios_put frl_lru_scrub frl_drain_stock; do
+            echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
+            sudo cat "$TRACE/events/kprobes/$ev/format" > "$OUT/$ev.format"
+          done
+
+          RUNNER_UID="$(id -u)"
+          PYTHON_BIN="$(command -v python)"
+          echo 32768 | sudo tee "$TRACE/buffer_size_kb" >/dev/null
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          echo | sudo tee "$TRACE/trace" >/dev/null
+          echo 1 | sudo tee "$TRACE/tracing_on" >/dev/null
+
+          sudo -E "$PYTHON_BIN" -m finite_ram_lab.obs006_charge_side_q64 run-block \
+            --block "$BLOCK" \
+            --worker "$GITHUB_WORKSPACE/build/obs006_masked_q64_worker" \
+            --scrubber-worker "$GITHUB_WORKSPACE/build/obs005_handoff_worker" \
+            --out-root "$OUT" \
+            --trace-marker "$TRACE/trace_marker" \
+            --trace-path "$TRACE/trace" \
+            --identities 4 \
+            --calibration-max 64 \
+            --consume-after-primer 33 \
+            --producer-pages 17 \
+            --collision-pages 14 \
+            --scrub-max-touches 64 \
+            --worker-uid "$RUNNER_UID"
+
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          sudo cat "$TRACE/trace" > "$OUT/trace.log"
+          {
+            echo "=== KPROBE PROFILE ==="
+            sudo cat "$TRACE/kprobe_profile" || true
+          } > "$OUT/trace-stats.txt"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: obs006-block-${{ matrix.block }}
+          path: evidence/OBS-006/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 7
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: obs006-block-*
+          path: evidence/OBS-006/input
+
+      - name: Combine traces
+        run: |
+          mkdir -p evidence/OBS-006/aggregate
+          find evidence/OBS-006/input -name trace.log -print0 \
+            | sort -z \
+            | xargs -0 cat \
+            > evidence/OBS-006/aggregate/combined-trace.log
+
+      - name: Aggregate
+        run: |
+          python -m finite_ram_lab.obs006_charge_side_q64 aggregate \
+            --input-root evidence/OBS-006/input \
+            --trace-log evidence/OBS-006/aggregate/combined-trace.log \
+            --json-out evidence/OBS-006/aggregate/summary.json
+
+      - name: Freeze raw evidence manifest
+        run: |
+          frl evidence-manifest \
+            evidence/OBS-006/input \
+            --out evidence/OBS-006/aggregate/full-raw-evidence-manifest.json \
+            --experiment-id OBS-006-MASKED-Q64-OBSERVER-v1 \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-commit "$GITHUB_SHA" \
+            --tier HOT \
+            --origin-provider github-actions \
+            --origin-ref "run:$GITHUB_RUN_ID"
+
+      - name: Verify raw evidence
+        run: |
+          frl evidence-verify \
+            evidence/OBS-006/input \
+            --manifest evidence/OBS-006/aggregate/full-raw-evidence-manifest.json
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: OBS-006-MASKED-Q64-OBSERVER-${{ github.run_id }}
+          path: evidence/OBS-006/aggregate/
+          if-no-files-found: error
+          retention-days: 30
