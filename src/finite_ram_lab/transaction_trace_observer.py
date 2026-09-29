@@ -295,6 +295,8 @@ def apply_and_enrich_v2(
         touch_index_since_verified=current_index,
         unknown_emission_count=unknown_emission_count,
     )
+    if became_verified:
+        packet_v2["elapsed_ns_since_verified"] = 0
 
     next_index = current_index
     if (
