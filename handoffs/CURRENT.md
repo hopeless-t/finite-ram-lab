@@ -1,109 +1,79 @@
 # CURRENT
 
-> Latest bounce: B394
-> Stage: DOMINANT -17 MECHANISM = LRU/FOLIO-BATCH RELEASE
-> Stop: READY FOR OBS-003 RESIDUAL-CALLER DISCRIMINATOR
+> Latest bounce: B395
+> Stage: DOMINANT -17 = WORKER LRU/FOLIO-BATCH RELEASE / ONE COUNTER-IDENTITY RESIDUAL
+> Stop: READY FOR OBS-004 PAGE-COUNTER IDENTITY CORRELATION
 
-## OBS-001
-
-Established:
-- page_counter_uncharge(17)
-- stack through anonymous-fault LRU/folio path
-- stock drain not required for -17
-
-## OBS-002
+## OBS-003
 
 Run:
-\`36617444105 = success\`
+\`36620215583 = success\`
 
 Scale:
 - 48 trials
 - 1152 touches
 
 Exact -17:
-11
+13
 
-Full LRU-flush chain:
-9/11
+Frozen aggregate:
+- LRU_BATCH 12
+- OTHER_STACK 1
+- STOCK_DRAIN 0
 
-Chain:
-\`LRU add -> flush31 -> folios_put31 -> page_counter_uncharge17\`
+Corrected derived interpretation:
+- WORKER_LRU_BATCH 12
+- UNRESOLVED_COUNTER_IDENTITY 1
+- STOCK_DRAIN 0
 
-Two unresolved:
-- trial 1:1 touch18 start117
-- trial 3:4 touch13 start180
+The unresolved event:
+- trial 3:1
+- touch23
+- start115
+- coincident system-wide page_counter_uncharge17
+- comm = .NET Tiered Com
+- shmem-fault LRU stack
+- no worker LRU flush/folios_put
+- block3 relevant probe misses = 0
 
-LRU flush / folios_put probe misses:
-0 across all blocks.
+Because worker runs in a dedicated systemd service cgroup,
+time coincidence alone is insufficient.
 
-## Corrected occupancy analysis
+## Dominant mechanism
 
-The direct pre-insert nr field was invalid:
-\`__folio_batch_add_and_move\` arg1 is a __percpu base pointer.
-
-Do not use the frozen aggregate's empty histograms as evidence.
-
-Corrected derived summary:
-\`analysis/inputs/OBS-002-DERIVED-SUMMARY-v1.json\`
-
-All 1152 touches:
-exactly one LRU-add event.
-
-Therefore for a first flush at touch T:
-\`inferred initial occupancy = 31 - T\`
-
-First flush observed:
-26/48 trials.
-
-Occupancy17/18:
-- 9 trials
-- 9/9 exact -17 at first flush
-
-Other occupancy:
-- 17 trials
-- 0/17 exact -17 at first flush
-
-Exploratory Fisher:
-~3.20e-7
-
-## Leading mechanism
-
-FOLIO_BATCH_SIZE =31.
-
-Dominant phenotype:
-17 pre-existing releasable entries +14 additions -> flush31 -> uncharge17.
-
-One 18-entry case is compatible with:
-17 releasable +1 surviving entry.
+Across OBS-002 + OBS-003, descriptive:
+21/24 exact -17 have direct worker LRU-batch chain.
 
 ## Evidence
 
-Raw:
-- 128 files
-- 1,857,693 bytes
+OBS-003 raw:
+- files 124
+- bytes 7,480,253
 - SHA:
-  \`c6ab5dbc6f218b4a992794e22df8baa6ef8ba5a8d219621ab2f1adcc1eb3abe8\`
+  \`a0b5e7aa538778f5ac295e22b475ebf8fcfbe5f959f830af51b57f7cc2b4f67a\`
 
 Drive:
-\`Catfood Lab Evidence/finite-ram-lab/OBS-002-LRU-BATCH-OCCUPANCY-v1/run-36617444105\`
+\`Catfood Lab Evidence/finite-ram-lab/OBS-003-RESIDUAL-17-CALLER-v1/run-36620215583\`
 
 Verification:
 5/5 BYTE-IDENTICAL PASS
 
 ## Next
 
-OBS-003 residual-caller discriminator.
+OBS-004 page-counter identity correlation.
 
-Question:
-what causes the exact -17 specimens without a worker LRU flush?
+Caller attribution requires:
+1. worker page_counter_try_charge pointer
+2. candidate page_counter_uncharge17 pointer
+3. pointer equality
 
-Trace:
-- page_counter_uncharge17 + stacktrace
-- drain_stock
-- worker LRU flush
-- worker folios_put
-
-No high-frequency lru_add probe.
+Classes:
+- WORKER_LRU_BATCH
+- SAME_COUNTER_ASYNC
+- STOCK_DRAIN_SAME_COUNTER
+- EXTERNAL_COINCIDENCE
+- COUNTER_UNKNOWN
+- TRACE_MISS
 
 ## Authority
 
