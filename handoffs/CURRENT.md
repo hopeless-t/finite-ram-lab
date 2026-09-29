@@ -1,79 +1,85 @@
 # CURRENT
 
-> Latest bounce: B395
-> Stage: DOMINANT -17 = WORKER LRU/FOLIO-BATCH RELEASE / ONE COUNTER-IDENTITY RESIDUAL
-> Stop: READY FOR OBS-004 PAGE-COUNTER IDENTITY CORRELATION
+> Latest bounce: B396
+> Stage: -17 DOMINANT MECHANISM = SHARED PER-CPU LRU-BATCH RELEASE
+> Stop: READY FOR OBS-005 CONTROLLED CROSS-CGROUP HANDOFF
 
-## OBS-003
+## OBS-004
 
 Run:
-\`36620215583 = success\`
+\`36621525773 = success\`
 
 Scale:
 - 48 trials
 - 1152 touches
 
 Exact -17:
-13
+12
 
 Frozen aggregate:
-- LRU_BATCH 12
-- OTHER_STACK 1
-- STOCK_DRAIN 0
+- WORKER_LRU_BATCH 9
+- SAME_COUNTER_ASYNC 3
+- STOCK_DRAIN_SAME_COUNTER 0
+- EXTERNAL_COINCIDENCE 0
+- COUNTER_UNKNOWN 0
+- TRACE_MISS 0
 
-Corrected derived interpretation:
-- WORKER_LRU_BATCH 12
-- UNRESOLVED_COUNTER_IDENTITY 1
-- STOCK_DRAIN 0
+## Source-grounded reinterpretation
 
-The unresolved event:
-- trial 3:1
-- touch23
-- start115
-- coincident system-wide page_counter_uncharge17
-- comm = .NET Tiered Com
-- shmem-fault LRU stack
-- no worker LRU flush/folios_put
-- block3 relevant probe misses = 0
+Derived:
+- SELF_TRIGGERED_WORKER_LRU_BATCH 9
+- CROSS_TASK_WORKER_OWNED_LRU_BATCH 3
+- STOCK_DRAIN_DIRECT 0
 
-Because worker runs in a dedicated systemd service cgroup,
-time coincidence alone is insufficient.
+Why:
 
-## Dominant mechanism
+Linux lru_add folio batching is per-CPU shared state.
 
-Across OBS-002 + OBS-003, descriptive:
-21/24 exact -17 have direct worker LRU-batch chain.
+At flush:
+- dead folios are filtered into a free batch
+- uncharge uses folio_objcg
+- the current task need not own the released folios
+
+Thus a .NET task can trigger a flush that lowers the worker cgroup's memory.current.
+
+## Mechanism
+
+logical folio owner
+!=
+physical batching location
+!=
+flush trigger task
+
+Recurrent -17 is observer contamination from deferred LRU release, not residual-stock consumption.
 
 ## Evidence
 
-OBS-003 raw:
-- files 124
-- bytes 7,480,253
+Doc:
+docs/OBS-004-PAGE-COUNTER-IDENTITY-RESULT.md
+
+Raw:
+- files 128
+- bytes 7,465,126
 - SHA:
-  \`a0b5e7aa538778f5ac295e22b475ebf8fcfbe5f959f830af51b57f7cc2b4f67a\`
+  81563042daa5459c32dbb9f77ffbc9395390cebae215ac47b80dcee0e6c4dfa5
 
 Drive:
-\`Catfood Lab Evidence/finite-ram-lab/OBS-003-RESIDUAL-17-CALLER-v1/run-36620215583\`
+Catfood Lab Evidence/finite-ram-lab/OBS-004-PAGE-COUNTER-IDENTITY-v1/run-36621525773
 
 Verification:
-5/5 BYTE-IDENTICAL PASS
+5/5 BYTE-IDENTICAL PASS.
 
 ## Next
 
-OBS-004 page-counter identity correlation.
+OBS-005 controlled cross-cgroup LRU-batch handoff.
 
-Caller attribution requires:
-1. worker page_counter_try_charge pointer
-2. candidate page_counter_uncharge17 pointer
-3. pointer equality
-
-Classes:
-- WORKER_LRU_BATCH
-- SAME_COUNTER_ASYNC
-- STOCK_DRAIN_SAME_COUNTER
-- EXTERNAL_COINCIDENCE
-- COUNTER_UNKNOWN
-- TRACE_MISS
+Construct:
+- producer cgroup A
+- trigger cgroup B
+- same CPU
+- producer leaves a controlled dead-folio population in LRU-add batch
+- trigger fills remaining slots
+- observe producer page-counter drop while trigger is current
 
 ## Authority
 
