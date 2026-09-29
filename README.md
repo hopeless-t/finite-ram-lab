@@ -14,37 +14,91 @@ A small, reproducible systems research lab for understanding how finite physical
 
 ## Status
 
-**Systems research / experimental software — early development**
+**Systems research / experimental software — Chapter II active**
 
 Current principle:
 
-> **Observation before coordination.**
+> **Prove the state before interpreting the outcome.**
 
-The project currently uses GitHub-hosted Linux runners as its primary experimental substrate. It begins by characterizing what can actually be observed there before making memory-management claims.
+Finite RAM Lab has moved from broad finite-memory characterization into a narrower Linux memcg state-transition study.
 
-Current evidence:
+### Chapter I — what was established
 
-- **ENV-001 — PASS:** hosted-runner memory telemetry is observable;
-- **ENV-002 — PASS:** isolated cgroup memory budgets are enforceable;
-- **OBS-001 — PASS:** application phases and OS memory state can be captured on one monotonic timeline;
-- **MC-001 — 16,000 trials:** seeded synthetic replacement study completed successfully;
-- **CHAR-001 — PASS / 96 trials:** a sharp hosted-runner memcg-pressure regime transition was observed;
-- **VAL-001 — PASS / 108 trials:** the transition reproduced across six independent runner blocks and localized to the sampled 162–166 MiB region;
-- **OBS-002 — PASS / 48 trials:** semantic-region residency loss strongly tracked subsequent retouch cost in the transition zone;
-- **HYP-001 — negative:** simple recency ordering did not reliably control later semantic-region cost;
-- **EXP-002 — primary benefit not supported / Red-Team harm confirmed:** CORRECT_PAGEOUT did not establish central-tendency benefit over NO_HINT, while WRONG_PAGEOUT was strongly harmful;
-- **VAL-003 — confirmatory tail benefit not supported / 800 independent new trials:** >=500 ms stalls occurred in 6/400 CORRECT_PAGEOUT trials versus 7/400 NO_HINT trials; the pre-registered one-sided runner-block randomization test did not support a tail-risk reduction;
-- **OBS-003 — PASS / 320 NO_HINT trials:** natural HOT-residency misalignment was pressure-dependent: about 59% at 160 MiB, 58% at 162 MiB, 11% at 164 MiB, 6% at 166 MiB, and 2% at 168 MiB;
-- **HYP-002 — recency hypothesis not supported / 128 valid factorial trials:** randomized final recency did not predict residency selection, while a strong stable mapping-identity asymmetry remained. The exploratory A/B asymmetry from OBS-003 therefore cannot be interpreted as a clean recency-policy information gap.
-- **CHAR-002 — PASS / 192 trials:** randomized initial fault/touch order produced a strong, reproducible residency effect in both separate-VMA and shared-VMA layouts; the second-faulted region retained about 0.08–0.10 more resident fraction on average. Separate mapping creation order was not supported as an effect, while virtual-address position remains unresolved.
-- **HYP-003 — information mismatch supported / 128 trials:** with future HOT demand randomized independently of initial fault order, aligned HOT regions were about 0.083 more resident on average than misaligned HOT regions; semantic conflict increased HOT-retouch latency by about 77.8× on the runner-block geometric mean. This directly exposes a bounded past-state-versus-future-demand information gap.
-- **VOI-001 — bounded decision-headroom analysis / 100,000 bootstrap resamples:** the HYP-003 information gap leaves material idealized headroom across conflict-frequency scenarios, but asymmetric wrong-action cost rapidly raises the semantic-signal accuracy required to beat the history-only baseline. At q=0.50 the idealized geometric latency headroom is about 8.82×, while a wrong-action penalty of k=8 requires signal accuracy above 93.75% in the simplified model.
+The current memcg lane has strong evidence for:
 
-The current evidence supports a real residency-sensitive performance regime and measurable natural selection headroom under stronger pressure. CHAR-002 shows that initial fault/touch order materially affects later residency and explains much of the former fixed A/B asymmetry, while the tested semantic PAGEOUT operation remains unsupported as a beneficial coordination mechanism.
+- a source-grounded 64-page memcg charge batch;
+- a resettable Q64 stock phase;
+- controlled PTE preconditioning that removes measured page-table growth from the target sequence;
+- a shared per-CPU LRU release path that can contaminate `memory.current` without consuming the target residual stock;
+- a direct charge-side observer that sees Q64 even when net `memory.current` is masked by a simultaneous release;
+- historical controlled-spawn endpoint 49/72 and primer-qualified terminal pattern 55/55, both kept frozen under their original semantics.
 
-**Next research stage:** EXP-003 design — test a low-authority semantic intervention at the high-headroom 160–162 MiB conditions, with NO_HINT and WRONG/stale Red-Team arms and Monte Carlo sizing before launch.
+The major semantic correction is that historical SUCCESS/FAIL was too coarse. A first-touch miss, an observer contamination event, an invalidated stock epoch, and a genuine target contradiction are not the same thing.
 
-No generalized memory-coordination plane or kernel change is authorized by the current evidence.
+### Chapter II — current frontier
+
+The active model is transactional:
+
+```text
+predict
+  -> normalize
+  -> verify direct Q64
+  -> execute
+  -> target
+  -> commit
+```
+
+Known state invalidators include:
+
+- unexpected refill;
+- memcg stock drain;
+- PTE growth;
+- CPU mismatch;
+- worker error;
+- incomplete trace.
+
+A positively source-grounded LRU release is treated as observation contamination rather than residual-stock consumption.
+
+After a verified direct Q64 primer, the clean model begins with residual stock:
+
+```text
+R0 = 63
+```
+
+and predicts the next direct-Q64 boundary at post-primer touch:
+
+```text
+T0 = 64
+```
+
+The Chapter-II rare specimen is therefore:
+
+```text
+UNEXPLAINED_BOUNDARY_DEVIATION
+```
+
+meaning a complete verified epoch with no known invalidator and an observed boundary `T != 64`.
+
+### Current experiment sequence
+
+The next physical program is intentionally staged:
+
+1. **B404 transactional smoke** — 12 normal identities (b62/b63/b64 balanced) plus one forced invalidation/re-prime sentinel;
+2. **B405 perturbation matrix** — CLEAN / RELEASE_ONLY / UNEXPECTED_REFILL / PTE_GROWTH causal controls;
+3. **TX-AGE-DECOUPLING Stage A** — FAST x4 + HOLD32 x12, selected by Monte Carlo to discriminate touch-driven from wall-clock-driven hidden transitions;
+4. **adaptive Stage B only if triggered** — HOLD8 / HOLD32 / HOLD56 x4 each to turn a captured event into a position-dependent `Delta = T - 64` fingerprint;
+5. passive hazard mapping and reliability certification only after the mechanism boundary is understood.
+
+The repository now carries epoch-local owner identity, receipt packet v2, touch-age / wall-clock-age telemetry, hard re-prime isolation, stale-epoch rejection, and source-grounded release classification.
+
+See:
+
+- [MATH-022 — Boundary invariant and rare-transition capture](docs/MATH-022-BOUNDARY-INVARIANT-RARE-TRANSITION-CAPTURE.md)
+- [MATH-023 — Monte Carlo age-decoupling design](docs/MATH-023-AGE-DECOUPLING-DESIGN-MONTE-CARLO.md)
+- [OBS-007 — Epoch-local transaction observer](docs/OBS-007-EPOCH-LOCAL-TRANSACTION-OBSERVER.md)
+- [Current handoff](handoffs/CURRENT.md)
+
+Historical project stages and negative results remain part of the evidence record; this README now tracks the active frontier rather than repeating the full experiment ledger.
 
 ## Why this project exists
 
