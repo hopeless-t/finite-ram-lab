@@ -1,0 +1,6 @@
+MEMCG-003B explicit hosted launch
+B309
+Implementation: 985d4efe4ebaa2eb877d2ad307bac630279d14d6
+CI: 36469054700 success
+Non-consuming seven-slot repair: passive target current during churn; one final recharge touch; separate control CPU and stock CPU; K=1..10 inference.
+Hosted research only. No local execution.
