@@ -713,74 +713,92 @@ def run_trial(
             )
 
         elif arm == "RELEASE_ONLY":
-            producer_pages = int(release_spec["producer_pages"])
-            producer_start = sequence[cursor]
-            cursor, measured_count, producer = _consume_segment(
+            reset = _postverify_scrub_reset(
                 archive=archive,
-                unit=unit,
-                sequence=sequence,
-                cursor=cursor,
-                start_touch=1,
-                count=producer_pages,
+                scrubber=scrubber,
                 trace_marker=trace_marker,
                 trace_path=trace_path,
                 trial_id=trial_id,
                 stock_cpu=stock_cpu,
-                page_size=page_size,
-                measured_count=measured_count,
+                max_touches=int(release_spec["scrub_max_touches"]),
             )
-            epoch_row["producer_consume"] = producer
+            challenge["postverify_lru_reset"] = reset
+            epoch_row["postverify_lru_reset"] = reset
 
-            if archive.tx.state in {State.VERIFIED, State.EXECUTING}:
-                discard = _discard(
-                    unit,
-                    stock_cpu,
-                    page_size,
-                    producer_start,
-                    producer_pages,
-                )
-                epoch_row["discard"] = discard
-                observe = _observe_external_release(
+            if not reset["pass"]:
+                challenge["result"] = "INTERVENTION_SETUP_NOT_REALIZED"
+            else:
+                producer_pages = int(release_spec["producer_pages"])
+                producer_start = sequence[cursor]
+                cursor, measured_count, producer = _consume_segment(
                     archive=archive,
-                    trigger=trigger,
-                    trigger_pages=int(release_spec["trigger_pages"]),
+                    unit=unit,
+                    sequence=sequence,
+                    cursor=cursor,
+                    start_touch=1,
+                    count=producer_pages,
                     trace_marker=trace_marker,
                     trace_path=trace_path,
                     trial_id=trial_id,
                     stock_cpu=stock_cpu,
+                    page_size=page_size,
+                    measured_count=measured_count,
                 )
-                epoch_row["release_observe"] = observe
-                event = observe["event"]
-                challenge["release_event"] = event
+                epoch_row["producer_consume"] = producer
 
-                remaining = int(tx_spec["canonical_consume_before_target"]) - producer_pages
                 if archive.tx.state in {State.VERIFIED, State.EXECUTING}:
-                    cursor, measured_count, finish = _finish_b63(
+                    discard = _discard(
+                        unit,
+                        stock_cpu,
+                        page_size,
+                        producer_start,
+                        producer_pages,
+                    )
+                    epoch_row["discard"] = discard
+                    observe = _observe_external_release(
                         archive=archive,
-                        unit=unit,
-                        sequence=sequence,
-                        cursor=cursor,
-                        consume_start=producer_pages + 1,
-                        consume_count=remaining,
+                        trigger=trigger,
+                        trigger_pages=int(release_spec["trigger_pages"]),
                         trace_marker=trace_marker,
                         trace_path=trace_path,
                         trial_id=trial_id,
                         stock_cpu=stock_cpu,
-                        page_size=page_size,
-                        measured_count=measured_count,
                     )
-                    epoch_row.update(finish)
+                    epoch_row["release_observe"] = observe
+                    event = observe["event"]
+                    challenge["release_event"] = event
 
-                challenge["result"] = (
-                    "RELEASE_PRESERVED_AND_COMMITTED"
-                    if (
-                        event.get("result") == "RELEASE_ONLY"
-                        and event.get("expected_residual_before")
-                        == event.get("expected_residual_after")
-                        and archive.tx.state is State.SUCCESS
+                    remaining = (
+                        int(tx_spec["canonical_consume_before_target"])
+                        - producer_pages
                     )
-                    else "RELEASE_ONLY_FAILED"
-                )
+                    if archive.tx.state in {State.VERIFIED, State.EXECUTING}:
+                        cursor, measured_count, finish = _finish_b63(
+                            archive=archive,
+                            unit=unit,
+                            sequence=sequence,
+                            cursor=cursor,
+                            consume_start=producer_pages + 1,
+                            consume_count=remaining,
+                            trace_marker=trace_marker,
+                            trace_path=trace_path,
+                            trial_id=trial_id,
+                            stock_cpu=stock_cpu,
+                            page_size=page_size,
+                            measured_count=measured_count,
+                        )
+                        epoch_row.update(finish)
+
+                    challenge["result"] = (
+                        "RELEASE_PRESERVED_AND_COMMITTED"
+                        if (
+                            event.get("result") == "RELEASE_ONLY"
+                            and event.get("expected_residual_before")
+                            == event.get("expected_residual_after")
+                            and archive.tx.state is State.SUCCESS
+                        )
+                        else "RELEASE_ONLY_FAILED"
+                    )
 
         elif arm == "UNEXPECTED_REFILL":
             cursor, measured_count, consume = _consume_segment(
