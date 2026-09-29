@@ -18,7 +18,7 @@ def marker_text(
     touch_number: int,
     edge: str,
 ) -> str:
-    if phase not in {"NORMALIZE", "CONSUME", "TARGET"}:
+    if phase not in {"NORMALIZE", "CONSUME", "TARGET", "OBSERVE"}:
         raise ValueError(f"unsupported transaction phase {phase}")
     if edge not in {"PRE", "POST"}:
         raise ValueError(f"unsupported marker edge {edge}")
@@ -115,6 +115,7 @@ def observed_window(
             "pc_try64": [],
             "refill63": [],
             "pc_uncharge17": [],
+            "pc_uncharge17_stacks": [],
             "lru_flush": [],
             "folios_put": [],
             "drain_stock": [],
