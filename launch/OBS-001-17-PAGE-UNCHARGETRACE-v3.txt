@@ -1,0 +1,30 @@
+OBS-001 17-page uncharge trace v3
+
+Human scope:
+Continue finite-ram-lab research on 2026-09-30 JST.
+
+Previous attempts:
+- v1: workflow expression parse failure, no runner
+- v2: observer could not write trace_marker; cleanup bug caused false-success, no valid trial JSON
+Both are invalid scientific runs.
+
+v3 fixes:
+- observer runs as root for tracefs access
+- worker remains runner UID
+- cleanup runs in subshell and cannot disable parent errexit
+- any Python failure must fail the job
+
+Frozen scientific scope unchanged:
+- 4 standard GitHub-hosted ubuntu-26.04 blocks
+- 12 identities/block
+- 24 measured touches/identity
+- 48 identities total
+- 1152 measured touches total
+- trace drain_stock
+- trace refill_stock
+- trace page_counter_uncharge filtered to nr_pages==17
+- no b63 reliability claim
+- no natural-incidence claim
+- no dynamic sample expansion
+- no local-PC execution
+- no paid runner
