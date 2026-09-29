@@ -1,81 +1,62 @@
 # CURRENT
 
-> **Latest bounce:** B317
-> **Stage:** MEMCG-004 LAUNCH DELIVERED / EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B318
+> **Stage:** MEMCG-004 PASS / CALIBRATED STOCK ESTABLISHED
+> **Turn stop reason:** READY_FOR_NEXT_DESIGN
 
-## Prior canonical result
-MEMCG-003B canonical commit: `99c084a95fc39c6c4b3ae2081d74117f4355debc`
-Decision: `REJECT_K7_SLOT_MODEL_B`.
+## MEMCG-004 canonical result
+
+Run:
+`36541998246`
+
+Decision:
+`SUPPORT_CALIBRATED_STOCK`
+
+CALIBRATED:
+- fresh +64 calibration observed in 4/4 blocks;
+- calibration touch indices [2,5,5,4];
+- passive hold stable in 4/4;
+- next +64 charge at validation touch 64 in 4/4.
+
+NO_HOLD:
+- R=64 in 4/4.
+
+CONTROL_NO_PRIME:
+- R=[5,5,3,4].
+
+Model:
+- unique best R=64;
+- absolute error 0;
+- 21-bit description advantage over arbitrary event locations.
+
+Canonical result:
+`docs/MEMCG-004-RESULT.md`
+
+## Accepted mechanism-level advance
+
+Worker existence is not a known stock state.
+
+An observed fresh +64 batch followed by immediate stop **is** a reproducible calibration point.
+
+The subsequent 63 no-charge touches plus fresh charge on touch64 are exactly source-consistent with 63 cached pages.
 
 ## MATH-002
-Run `36529563011` was read once in B314 and is `completed / failure`.
-Exposed invariant: checkout/setup/install passed; synthetic sidecar failed with
-`ERR_MODULE_NOT_FOUND` for `math/dist/geometry/index.js`; canonical input,
-geometric lens, and artifact upload were skipped.
 
-Decision: **INFRA_FAILURE / NO_SCIENTIFIC_RESULT**.
-Do not rerun blindly. Secondary geometry cannot rescue or overturn MEMCG-003B.
+Prior pmndrs/math sidecar remains:
+`INFRA_FAILURE / NO_SCIENTIFIC_RESULT`
 
-## MEMCG-004
-Frozen design: `docs/MEMCG-004-CALIBRATED-STOCK-v1.md`.
-
-Implementation commits:
-- zero-measured-touch interactive worker: `46c6484624e816db2052176401499b18f08fa200`
-- executable spec: `a7d46e73e6188245a061a70e4196f1c1d4752b9c`
-- pure analyzer: `382b0f74955d4b9d8a88a293f655635e5dbe9720`
-- synthetic analyzer tests: `34193e0a383e9156d44c558fdb3b748da25d8474`
-
-Implementation lesson:
-existing `memcg003_holder.c` is unsuitable because it touches one measured page
-before READY. MEMCG-004 uses a dedicated worker whose READY receipt asserts
-`touched=0`.
-
-Preregistered causal target remains: after observing a fresh Q64 calibration
-charge, stable residual stock predicts the next Q64 event at validation touch
-R=64 (+/-1), with hold and unprimed controls.
-
-Status: **PARTIALLY IMPLEMENTED / NOT LAUNCHED**.
-Runner and workflow remain to implement. Ordinary CI must pass before launch.
-
-## Mathematical bridge
-Q64 remains live. The prior pressure knee remains independently bounded at
-80 < K <= 88 MiB. Candidate `K* = nQ + phi` remains a proposal only; the
-8 MiB interval = 32 Q64 units is not evidence of quantization at current
-resolution.
-
-## Pseudo-Council B314
-Converged:
-- MATH-002 failure is infrastructure-only;
-- calibrate hidden stock phase before another K7 capacity test;
-- do not interpret numerical coincidences as laws;
-- Proposal != Decision;
-- Expressibility != Executability.
-
-## Pseudo-Council B316
-Converged:
-- implementation gate PASS;
-- frozen preregistration remains unchanged;
-- launch is now expressible but is not implied by CI PASS;
-- hosted MEMCG-004 is eligible for a separate explicit launch bounce;
-- Proposal != Decision and Expressibility != Executability remain intact.
-
-## MEMCG-004 launch B317
-Explicit hosted launch marker created exactly once:
-`bb36429bfdbd172fede04b66dbabf633e9b1ab4a`
-at `launch/MEMCG-004-v1.txt`.
-
-A single immediate run lookup by launch head returned no run yet.
-Delivery of the launch commit is confirmed; do not recreate or retry the marker.
-Treat scheduler visibility as external wait, not delivery failure.
+It does not affect MEMCG-004.
 
 ## Next fresh-bounce action
-Look up Actions for launch head `bb36429bfdbd172fede04b66dbabf633e9b1ab4a` exactly once.
-- if a MEMCG-004 run is pending/in_progress: record its run id, checkpoint EXTERNAL_WAIT, stop;
-- if completed: inspect the exposed result once and canonicalize;
-- if still absent: checkpoint EXTERNAL_WAIT and do not retry launch.
+
+Freeze MEMCG-005 as a calibrated seven-slot capacity experiment.
+
+Prefer a one-shot replica design if testing target state after each challenger would mutate the state being measured.
+
+Do not launch during design.
 
 ## Authority boundary
+
 Hosted research only.
 No local-PC execution.
 No memory-control policy.
