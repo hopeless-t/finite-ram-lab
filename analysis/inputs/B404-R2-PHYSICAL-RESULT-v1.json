@@ -1,0 +1,59 @@
+{
+  "schema_version": "b404-r2-physical-result-v1",
+  "run_id": "36642946787",
+  "launch_commit": "c6c0feb8db7d6314dddddf9b15d2c7ab5f1d19aa",
+  "result": {
+    "trial_count": 13,
+    "normal_count": 12,
+    "normal_success": 12,
+    "target_fail": 0,
+    "instrumentation_hold": 0,
+    "sentinel_count": 1,
+    "sentinel_pass": true,
+    "reprimes_total": 1,
+    "invalidation_counts": {
+      "UNEXPECTED_REFILL": 1
+    },
+    "protocol_smoke_pass": true
+  },
+  "by_arm": {
+    "b62": {
+      "n": 4,
+      "success": 4,
+      "target_fail": 0,
+      "aborted": 0,
+      "reprimes": 0
+    },
+    "b63": {
+      "n": 4,
+      "success": 4,
+      "target_fail": 0,
+      "aborted": 0,
+      "reprimes": 0
+    },
+    "b64": {
+      "n": 4,
+      "success": 4,
+      "target_fail": 0,
+      "aborted": 0,
+      "reprimes": 0
+    }
+  },
+  "observer_telemetry": {
+    "normal_lane_classified_release_only_count": 0,
+    "normal_lane_unknown_emission_count": 0,
+    "normal_lane_off_cpu_drains_ignored": 4,
+    "normal_lane_normalize_internal_slot_drains_ignored": 4
+  },
+  "raw_manifest": {
+    "file_count": 63,
+    "content_set_sha256": "d5c819b4b7d413faa6f635fc9062f0941ee570afebbb149d5d8c1f33d05127cf",
+    "created_at_utc": "2026-09-29T23:03:06Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11067486294,
+    "name": "B404-TRANSACTIONAL-SPAWN-PILOT-36642946787",
+    "digest": "sha256:2a6b9d5fd0af968e89d8ceaca90b468ebd745641b40178ac9f50d09e73ce4e37"
+  },
+  "claim_ceiling": "PROTOCOL_INTEGRITY_SMOKE_ONLY_NO_RELIABILITY_CERTIFICATION"
+}
