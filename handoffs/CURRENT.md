@@ -1,105 +1,141 @@
 # CURRENT
 
-> Latest bounce: B402
-> Stage: ASSUMPTION DEPENDENCY AUDIT COMPLETE
-> Stop: PHYSICAL PAUSE / READY FOR NATIVE CONTROLLED-SPAWN TRANSACTION BRIDGE
+> Latest bounce: B403
+> Stage: CONTROLLED-SPAWN TRANSACTION BRIDGE PREFLIGHT COMPLETE
+> Stop: PHYSICAL PAUSE / READY FOR NATIVE TRACE WIRING + PILOT DESIGN
 
-## Core result
+## Core semantic result
 
-The transactional reclassification does **not** require finite-ram-lab to restart from zero.
+The lab no longer uses one binary SUCCESS/FAIL axis for all evidence.
 
-Separate three layers:
+Separate:
 
 1. raw observations;
 2. hidden-state interpretation;
 3. transactional certification.
 
-Most historical mathematics was fitted to immutable raw morphology such as:
+Natural exact-zero datasets remain reusable.
 
-`first_touch_delta_pages == 0`
+Transactional correctness requires B400-native direct receipts.
 
-Therefore many numerical results survive while their estimand names and causal claim ceilings change.
-
-## MATH audit
-
-No MATH-001..018 result requires a mandatory numerical refit solely because B400 changed SUCCESS/FAIL semantics.
-
-### KEEP
-
-- MATH-001
-- MATH-002
-- MATH-008
-- MATH-009
-- MATH-010
-- MATH-016
-- MATH-017
-- MATH-018
-
-### REINTERPRET
-
-- MATH-003
-- MATH-004
-- MATH-005
-- MATH-006
-- MATH-007
-- MATH-011
-- MATH-012
-- MATH-014
-
-These remain numerically usable for natural exact-zero / hidden-state / normalization phenomena.
-
-### SUPERSEDED
-
-MATH-013:
-- b62/b63/b64 stock arithmetic survives;
-- its legacy net-delta certification boundary is superseded by B400 direct receipts.
-
-MATH-015:
-- descriptive +17/-17 statistics survive;
-- H17-STOCK/drain origin is superseded by OBS-005/MATH-016 shared-LRU handoff evidence.
-
-## Experiment audit
+## Historical-data decision
 
 Do not recollect the natural-state corpus.
 
-MEMCG-005C/D/E/F and G-A/B/D/E/F/G0 are reinterpreted as first-touch state-acquisition / natural hidden-state datasets.
+Do not globally refit MATH-001..018 merely because terminology changed.
 
-Controlled-spawn v2 requires a **successor** for B400 correctness, not a literal repeat.
+Controlled-spawn v2 remains historically frozen:
 
-Historical:
+- strict 49/72;
+- primer-qualified terminal pattern 55/55.
 
-- strict 49/72 remains frozen;
-- primer-qualified terminal pattern 55/55 remains frozen.
+Neither value estimates B400 accepted-result correctness.
 
-B400 accepted-result correctness is historically non-identifiable because the required direct charge64 + refill63 receipt pair was not collected.
+Historical B400 true success and true TARGET_FAIL probabilities are non-identifiable because the direct charge64 + refill63 receipt chain was not recorded.
 
-Important:
+## B402 assumption audit
 
-`certified historical accepts = 0`
+Machine-readable:
 
-must not be interpreted as:
+- analysis/inputs/ASSUMPTION-DEPENDENCY-AUDIT-v1.json
 
-`physical success probability = 0`.
+Narrative:
 
-The replay JSON was updated to schema v1.1 to make that distinction machine-readable.
+- docs/MATH-019-SEMANTIC-DEPENDENCY-AUDIT.md
+
+Key result:
+
+most natural-state mathematics survives numerically with a changed estimand.
+
+MATH-015's old H17-STOCK/drain origin is superseded by OBS-005/MATH-016 shared-LRU handoff evidence.
+
+## B403 bridge implementation
+
+Implemented:
+
+- src/finite_ram_lab/controlled_spawn_transaction_bridge.py
+- tests/test_controlled_spawn_transaction_bridge.py
+- docs/CONTROLLED-SPAWN-TRANSACTION-BRIDGE-v1.md
+- handoffs/B403-CONTROLLED-SPAWN-TRANSACTION-BRIDGE.md
+
+### Direct transition tokens
+
+ZERO:
+
+- complete trace;
+- no direct charge64;
+- no refill63;
+- optional classified release-only.
+
+Q64:
+
+- exactly one page_counter_try_charge(64);
+- exactly one refill_stock(63);
+- complete trace;
+- optional classified release-only.
+
+Net memory.current is not authoritative.
+
+### Terminal bundle rule
+
+b62/b63/b64 are multi-touch terminal patterns:
+
+- b62: ZERO -> ZERO -> Q64
+- b63: ZERO -> Q64
+- b64: Q64
+
+The expected terminal Q64 must not be routed through ordinary CONSUME semantics.
+
+The bridge therefore validates the whole terminal sequence and emits one TARGET packet.
+
+This distinguishes:
+
+- Q64 during bait -> INVALIDATED / UNEXPECTED_REFILL
+- Q64 at wrong valid terminal phase -> TARGET_FAIL
+- partial charge/refill -> INVALIDATED / TRACE_GAP
+- expected terminal Q64 -> TARGET_MATCH
+- PTE growth -> INVALIDATED regardless of apparent pattern match
+
+## CI
+
+Bridge source CI: PASS.
+
+Bridge synthetic tests CI: PASS.
+
+Continuity Observer for the tested bridge commit: PASS.
+
+## Remaining physical integration gap
+
+The current controlled-spawn runner does not yet emit all source-grounded per-touch receipts required by the bridge.
+
+Before any pilot, wire:
+
+- transaction trace markers;
+- page_counter_try_charge(64);
+- refill_stock(63);
+- drain_stock;
+- positive release-only classification;
+- trace completeness;
+- per-epoch packet archive;
+- bounded REPRIME orchestration.
 
 ## Research topology
 
 ### Track N — Natural Hidden-State Ecology
 
-Reuse historical samples to study:
+Reuse historical samples for:
 
 - CAP10-neighborhood association;
-- initial residual phase;
+- initial residual state;
 - depth1/deep tail;
 - PTE perturbation;
-- normalization burden predictors.
+- normalization burden prediction.
 
 ### Track T — Transactional Correctness
 
-Acquire new B400-native samples only for:
+New B400-native samples only for:
 
-- verified-reset acquisition;
+- verified reset acquisition;
 - invalidation causes;
 - re-prime burden;
 - genuine TARGET_FAIL;
@@ -108,27 +144,15 @@ Acquire new B400-native samples only for:
 
 ### Bridge
 
-`X -> normalization burden -> verified reset -> target transition`
+X -> normalization burden -> verified reset -> target transition
 
-replaces the old one-step:
+replaces:
 
-`X -> SUCCESS/FAIL`.
-
-## New artifacts
-
-- analysis/inputs/ASSUMPTION-DEPENDENCY-AUDIT-v1.json
-- docs/MATH-019-SEMANTIC-DEPENDENCY-AUDIT.md
-- handoffs/B402-ASSUMPTION-DEPENDENCY-AUDIT.md
-
-Updated:
-
-- analysis/inputs/HISTORICAL-TRANSACTION-REPLAY-v1.json -> schema v1.1
+X -> SUCCESS/FAIL
 
 ## Next
 
-Build the native controlled-spawn -> TRANSACTION-RECEIPT-PACKET bridge.
-
-Then design the smallest information-maximizing transactional pilot.
+Specify native trace wiring and choose the smallest information-maximizing transactional pilot.
 
 Do not launch a large b63 reliability certification yet.
 
@@ -137,4 +161,4 @@ Do not launch a large b63 reliability certification yet.
 PAUSE.
 No local-PC execution.
 No paid runner.
-No large b63 certification run.
+No physical certification run.
