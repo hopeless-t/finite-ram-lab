@@ -1,0 +1,43 @@
+{
+  "schema_version": "obs005-cold-replica-v1",
+  "experiment_id": "OBS-005-CROSS-CGROUP-LRU-HANDOFF-v1",
+  "run_id": "36625036954",
+  "source_commit": "8561cd58d54fe7aacc3e6c2b22df283f8cafec37",
+  "raw_content_set_sha256": "dfbf406339e955779333346f935a6312f7e45a7d06c57ce14378bcd38ca355e0",
+  "raw_file_count": 96,
+  "raw_total_bytes": 150274057,
+  "storage": {
+    "tier": "COLD",
+    "provider": "google-drive",
+    "locator": "Catfood Lab Evidence/finite-ram-lab/OBS-005-CROSS-CGROUP-LRU-HANDOFF-v1/run-36625036954",
+    "visibility_at_verification": "private"
+  },
+  "verification": {
+    "method": "download Drive ZIPs and compare SHA-256 to GitHub Actions artifact digests",
+    "verified_archives": 5,
+    "mismatches": 0,
+    "status": "PASS"
+  },
+  "archives": [
+    {
+      "name": "obs005-block-0.zip",
+      "sha256": "6b70700314d49d7989082c9af83b55dbcf6fdf7212efe748d7760287492ff843"
+    },
+    {
+      "name": "obs005-block-1.zip",
+      "sha256": "60e8fe4a0b986dc18970dc3029484a01dae2d38ee840cc965f6f89e2849e2893"
+    },
+    {
+      "name": "obs005-block-2.zip",
+      "sha256": "12bf18ba84a04188198a1cfb5026790e8e178d5587ca0864a70ffd10e7da2cd0"
+    },
+    {
+      "name": "obs005-block-3.zip",
+      "sha256": "0f6e6d80920fb090afd156624f4a5e27b23e3bf93b5c062880610760038083f0"
+    },
+    {
+      "name": "OBS-005-CROSS-CGROUP-LRU-HANDOFF-36625036954.zip",
+      "sha256": "83069827e759bb3060d9f3e8a71cda6e73d24ae15b7fd4acc9ad6f9e3edbb989"
+    }
+  ]
+}
