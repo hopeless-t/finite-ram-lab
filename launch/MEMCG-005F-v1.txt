@@ -1,0 +1,7 @@
+MEMCG-005F explicit hosted launch
+B354
+Implementation: f27d0a18c1fa5a8c9e5a0ee7b31549906c260a83
+CI: 36557411699 success
+Primary confirmatory gate frozen before launch: REMOTE_LOW = startup P, measured S != P, pre_current_pages <= 110.
+64 identities per block; 4 blocks; 256 probes.
+Hosted research only. No local execution.
