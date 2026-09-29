@@ -1,46 +1,66 @@
 # CURRENT
 
-> **Latest bounce:** B324
-> **Stage:** MEMCG-005 HOSTED RUN + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B325
+> **Stage:** MEMCG-005 INCONCLUSIVE / NORMALIZATION INTERFERENCE IDENTIFIED
+> **Turn stop reason:** READY_FOR_REPAIR_DESIGN
 
-## Accepted primitive
+## MEMCG-004 accepted primitive
 
-MEMCG-004:
 `SUPPORT_CALIBRATED_STOCK`
 
-Exact calibrated phase:
+Single-worker calibrated phase:
 `R=[64,64,64,64]`
 
-## MEMCG-005
+## MEMCG-005 canonical result
 
-Implementation:
-`81118055839291dc3f939c0b7ff01ca7080cf343`
-
-Launch:
-`b8c1cfbf4e54fef37a314fbe629fceef4734ff0b`
-
-Scientific run:
+Run:
 `36545631176`
 
-Single B324 read:
-`in_progress`
+Decision:
+`INCONCLUSIVE`
 
-Do not poll again in this bounce.
+20 replicas:
+- 11 nominally valid
+- 9 invalid
+- 0 complete-valid blocks
+- systematic invalid-state pattern
 
-Primary source K7 signature:
-- m0/5/6 PRESENT
-- m7/8 ABSENT
+Source K7 complete signature was not observed in any block.
 
-All participating memcgs are calibrated before insertion.
+Critical diagnostic:
+- all 9 INSERT_NOT_Q64 failures had same-identity consume63_delta=+64 during normalization;
+- insertion delta then equaled 0;
+- every replica had at least one used identity with a +64 normalization-window anomaly.
+
+Therefore preparing 16 identities on the same stock CPU perturbed the shared cache before the measured sequence.
+
+Canonical result:
+`docs/MEMCG-005-RESULT.md`
+
+## Accepted interpretation
+
+Do not infer K={1..5} from the nominally valid subset.
+
+The calibration precondition was compositionally unstable.
+
+Q64 and MEMCG-004 remain accepted.
+
+## Next repair
+
+Use three CPU roles:
+- C controller
+- P preparation/startup
+- S stock-test
+
+Future identities must not execute on S before their measured insertion.
+
+Use enough verified distinct wash insertions on S to wash out unknown initial cache occupancy before target insertion.
 
 ## Next fresh-bounce action
 
-Read run `36545631176` exactly once.
+Freeze MEMCG-005B staged-CPU repair design.
 
-- success -> fetch aggregate once and canonicalize;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only exposed invariant.
+Do not launch during design.
 
 ## Authority boundary
 
