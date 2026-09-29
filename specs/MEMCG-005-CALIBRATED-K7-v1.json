@@ -1,0 +1,18 @@
+{
+  "experiment_id": "MEMCG-005-CALIBRATED-K7-v1",
+  "required_page_size": 4096,
+  "runner_blocks": 4,
+  "tested_m": [0, 5, 6, 7, 8],
+  "wash_count": 7,
+  "max_challengers": 8,
+  "max_prime_touches": 192,
+  "normalize_consume_touches": 63,
+  "q64_min_pages": 60,
+  "q64_max_pages": 68,
+  "present_abs_lt_pages": 16,
+  "candidate_k": [1,2,3,4,5,6,7,8,9],
+  "source_k": 7,
+  "required_support_blocks": 3,
+  "model_error_floor": 0.01,
+  "authority": "HOSTED_RESEARCH_ONLY"
+}

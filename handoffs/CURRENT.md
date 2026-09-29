@@ -1,69 +1,61 @@
 # CURRENT
 
-> **Latest bounce:** B319
-> **Stage:** MEMCG-005 CALIBRATED SEVEN-SLOT DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B320
+> **Stage:** MEMCG-005 IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## MEMCG-004 accepted result
+## Accepted primitive
 
-Canonical commit:
-`acdcb6e28baa448cd5f38d7ef960b6bbf321ac80`
-
-Decision:
+MEMCG-004:
 `SUPPORT_CALIBRATED_STOCK`
 
-Exact calibrated phase:
-`R=[64,64,64,64]`
+Calibrated R:
+`[64,64,64,64]`
 
-This supplies a validated state primitive.
+## MEMCG-005 implementation
 
-## MEMCG-005 frozen design
+Files:
+- `specs/MEMCG-005-CALIBRATED-K7-v1.json`
+- `experiments/memcg005_worker.c`
+- `src/finite_ram_lab/memcg005_calibrated_k7.py`
+- `src/finite_ram_lab/memcg005_runner.py`
+- `.github/workflows/memcg-005-calibrated-k7.yml`
+- `tests/test_memcg005_calibrated_k7.py`
 
-`docs/MEMCG-005-CALIBRATED-K7-v1.md`
+Per replica:
+- prestart 16 worker identities;
+- normalize each to EMPTY by observed +64 then 63 consumptions;
+- require next measured insertion touch to be +64;
+- insert W0..W6;
+- insert target;
+- insert C1..Cm;
+- one-shot target probe;
+- terminate replica.
 
-Key improvement:
-do not infer a stock slot from worker existence.
+Independent m:
+`{0,5,6,7,8}`
 
-All worker identities are prestarted first.
+Source K7 signature:
+- m0/5/6 PRESENT
+- m7/8 ABSENT
 
-Every worker is normalized to EMPTY:
-1. find fresh +64;
-2. consume exactly 63 pages;
-3. stop before next miss.
+Model candidate K:
+`1..9`
 
-Every measured insertion is then required to produce a fresh +64 charge.
+Sparse observational equivalence classes are reported explicitly.
 
-Independent one-shot replicas test:
-`m={0,5,6,7,8}`
+PRESENT operationalization:
+`abs(target_probe_delta) < 16 pages`
 
-Primary K7 signature:
-- 0 -> PRESENT
-- 5 -> PRESENT
-- 6 -> PRESENT
-- 7 -> ABSENT
-- 8 -> ABSENT
-
-4 blocks × 5 replicas.
-
-Target is probed exactly once per replica.
-
-## MATH-002
-
-pmndrs/math sidecar remains infrastructure-failed with no scientific result.
-It is secondary and does not block MEMCG-005.
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement MEMCG-005 only:
-- extend interactive worker with bounded multi-touch command if needed;
-- prestart/normalize orchestration;
-- verified insertion receipts;
-- one-shot target probe;
-- sparse-boundary model analyzer with equivalence-class reporting;
-- synthetic tests;
-- hosted workflow.
+Discover/read ordinary CI for B320 exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-005 launch in a separate bounce;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 
