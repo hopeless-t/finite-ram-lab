@@ -179,6 +179,9 @@ def run_trial(
 
     _marker(trace_marker, f"FRL_OBS005 trial={trial_id} START")
     try:
+        for d in [root / "producer", root / "trigger", root / "scrubber"]:
+            d.mkdir(parents=True, exist_ok=True)
+
         producer = _start_role(
             worker=worker,
             root=root / "producer",
@@ -206,9 +209,6 @@ def run_trial(
             max_pages=max(96, scrub_max_touches),
             worker_uid=worker_uid,
         )
-
-        for d in [root / "producer", root / "trigger", root / "scrubber"]:
-            d.mkdir(parents=True, exist_ok=True)
 
         scrub_base = _event_count(trace_path, "frl_lru_flush:", "frlscrub")
         scrub_flush_touch = None
