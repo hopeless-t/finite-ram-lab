@@ -191,6 +191,28 @@ def _pte_escape_touch(
     return row, packet
 
 
+def _prime_trigger_stock(
+    *,
+    trigger: dict[str, Any],
+    trace_path: Path,
+    max_touches: int,
+) -> dict[str, Any]:
+    baseline = _event_count(trace_path, "frl_refill_stock:", "frltrig")
+    rows: list[dict[str, Any]] = []
+    refill_touch: int | None = None
+    for touch in range(1, max_touches + 1):
+        row = _handoff_command(trigger, CMD_TOUCH)
+        rows.append({"touch": touch, **row})
+        if _event_count(trace_path, "frl_refill_stock:", "frltrig") > baseline:
+            refill_touch = touch
+            break
+    return {
+        "refill_touch": refill_touch,
+        "rows": rows,
+        "pass": refill_touch is not None,
+    }
+
+
 def _scrub_shared_lru(
     *,
     scrubber: dict[str, Any],
@@ -490,9 +512,42 @@ def run_trial(
                 ),
                 role="trigger",
                 cpu=stock_cpu,
-                max_pages=max(64, int(release_spec["trigger_pages"])),
+                max_pages=max(
+                    128,
+                    int(release_spec["trigger_prime_max_touches"])
+                    + int(release_spec["trigger_pages"]),
+                ),
                 worker_uid=worker_uid,
             )
+            challenge["trigger_prime"] = _prime_trigger_stock(
+                trigger=trigger,
+                trace_path=trace_path,
+                max_touches=int(release_spec["trigger_prime_max_touches"]),
+            )
+            if not challenge["trigger_prime"]["pass"]:
+                challenge["result"] = "SETUP_FAIL_TRIGGER_STOCK_NO_REFILL"
+                _stop_role(trigger)
+                trigger = None
+                _stop_role(scrubber)
+                scrubber = None
+                return {
+                    "experiment_id": spec["experiment_id"],
+                    "kind": "PERTURBATION",
+                    "block": block,
+                    "identity": identity,
+                    "trial_id": trial_id,
+                    "arm": arm,
+                    "challenge": challenge,
+                    "epochs": epochs,
+                    "archive": archive.as_dict(),
+                    "final_state": archive.tx.state.value,
+                    "challenge_pass": False,
+                    "reprimes": archive.tx.reprimes,
+                }
+
+            # Reset the shared LRU batch after trigger-stock priming so the
+            # later 17 producer + 14 trigger geometry starts from a fresh
+            # batch boundary without touching the verified target state.
             challenge["scrub"] = _scrub_shared_lru(
                 scrubber=scrubber,
                 trace_path=trace_path,
