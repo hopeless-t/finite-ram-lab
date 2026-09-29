@@ -1,0 +1,38 @@
+OBS-006 masked Q64 observer v1
+
+Human authorization:
+Continue finite-ram-lab research on 2026-09-30 JST.
+
+Frozen diagnostic scope:
+- 4 standard GitHub-hosted ubuntu-26.04 blocks
+- 4 identities/block
+- 16 total trials
+- PTE-precondition measured worker Q
+- direct Q64 primer = refill_stock(...,63)
+- consume exactly 33 pages after primer
+- scrub shared per-CPU LRU-add batch to a recent flush
+- Q touches 17 producer pages and discards them
+- Q then touches 14 collision pages
+- direct probes:
+  refill_stock63
+  page_counter_try_charge64
+  page_counter_uncharge17
+  Q LRU flush / folios_put
+  scrubber LRU flush
+  drain_stock
+- no replacement trials
+- no b63 reliability claim
+- no natural-incidence claim
+- no local-PC execution
+- no paid runner
+
+Primary MASKED_Q64_PASS:
+collision touch14 contains both:
+1) direct Q64 charge/refill receipt,
+2) same-counter 17-page LRU release receipt,
+with LRU flush31 / folios_put31 and no VmPTE growth.
+
+Secondary prediction:
+net memory.current delta on that touch = +47 pages.
+
+Stop after evidence analysis.
