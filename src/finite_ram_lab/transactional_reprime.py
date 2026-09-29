@@ -102,6 +102,12 @@ def reduce(tx: Transaction, event: Event, payload: dict[str, Any] | None = None)
                 raise ValueError("DIRECT_Q64 missing page_counter_try_charge(64)")
             if not payload.get("refill_stock_63", False):
                 raise ValueError("DIRECT_Q64 missing refill_stock(63)")
+            if not payload.get("pte_clean", False):
+                return _invalidate(replace(tx, pte_clean=False), Event.PTE_GROWTH)
+            if not payload.get("cpu_match", False):
+                return _invalidate(replace(tx, cpu_clean=False), Event.CPU_MISMATCH)
+            if not payload.get("trace_complete", False):
+                return _invalidate(replace(tx, trace_complete=False), Event.TRACE_GAP)
             if not tx.pte_clean or not tx.cpu_clean or not tx.trace_complete:
                 return _invalidate(tx, Event.TRACE_GAP)
             return replace(
