@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "launch/OBS-001-TRACE-CAPABILITY-v4.txt"
+      - "launch/OBS-001-TRACE-CAPABILITY-v5.txt"
 
 permissions:
   contents: read
