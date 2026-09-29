@@ -1,48 +1,46 @@
 # CURRENT
 
-> **Latest bounce:** B351
-> **Stage:** MEMCG-005E REJECTED / MEMCG-005F REMOTE-LOW DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B352
+> **Stage:** MEMCG-005F IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## MEMCG-005E canonical result
+## MEMCG-005E
 
-Run:
-`36556517823`
+Canonical:
+`a0254e7d8b4348986a0d9fe034e94ecdb47a0255`
 
 Decision:
 `REJECT_BASELINE_GATE`
 
-Canonical:
-`docs/MEMCG-005E-RESULT.md`
-
-Key result:
-- pooled LOW: 89/160 Q64
-- pooled HIGH: 9/96 Q64
-- LOCAL_P: 0/128 Q64
-- REMOTE_S LOW: 89/90 Q64
-- REMOTE_S HIGH: 9/38 Q64
-
-Frozen threshold remains:
-`pre_current_pages <= 110`
+Key secondary:
+REMOTE_S LOW = 89/90 Q64.
 
 ## MEMCG-005F
 
-Design:
-`docs/MEMCG-005F-REMOTE-LOW-ADMISSION-GATE-v1.md`
+Implementation files:
+- `specs/MEMCG-005F-REMOTE-LOW-ADMISSION-GATE-v1.json`
+- `src/finite_ram_lab/memcg005f_remote_low_gate.py`
+- `.github/workflows/memcg-005f-remote-low-gate.yml`
+- `tests/test_memcg005f_remote_low_gate.py`
 
-Primary composite gate:
-`REMOTE_LOW := startup P, measured S != P, pre_current_pages <= 110`
+Worker unchanged:
+`experiments/memcg005d_worker.c`
+
+Primary gate:
+`REMOTE_LOW := startup P, measured S!=P, pre_current_pages<=110`
 
 Scale:
-64 identities per block x 4 blocks = 256 probes.
+64 identities/block x4 =256 probes.
 
-No K7 inference.
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement MEMCG-005F only.
+Discover/read ordinary CI exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-005F launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 

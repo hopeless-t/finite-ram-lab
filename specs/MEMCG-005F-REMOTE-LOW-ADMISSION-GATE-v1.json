@@ -1,0 +1,23 @@
+{
+  "experiment_id": "MEMCG-005F-REMOTE-LOW-ADMISSION-GATE-v1",
+  "required_page_size": 4096,
+  "runner_blocks": 4,
+  "identities_per_block": 64,
+  "expected_trials": 256,
+  "low_threshold_pages": 110,
+  "q64_min_pages": 60,
+  "q64_max_pages": 68,
+  "support_min_low_n": 120,
+  "support_low_success_rate": 0.97,
+  "support_block_min_low_n": 20,
+  "support_block_low_success_rate": 0.90,
+  "support_high_min_n": 40,
+  "support_high_max_success_rate": 0.60,
+  "support_fisher_p_max": 1e-10,
+  "reject_min_low_n": 120,
+  "reject_low_success_rate": 0.90,
+  "reject_bad_block_count": 2,
+  "reject_block_min_low_n": 20,
+  "reject_block_low_success_rate": 0.80,
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
