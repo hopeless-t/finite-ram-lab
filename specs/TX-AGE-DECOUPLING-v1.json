@@ -1,0 +1,61 @@
+{
+  "experiment_id": "TX-AGE-DECOUPLING-v1",
+  "status": "FROZEN_DESIGN_NOT_AUTHORIZED",
+  "chapter": "FINITE-RAM-LAB-II",
+  "role": "TOUCH_VS_WALL_CLOCK_MECHANISM_DISCRIMINATION",
+  "prerequisites": [
+    "B404 transactional smoke passes",
+    "B405 perturbation matrix passes",
+    "successor transactional-spawn runner archives packet-v2 epochs"
+  ],
+  "arm": "b63",
+  "stage_a": {
+    "total_identities": 16,
+    "blocks": 4,
+    "fast_per_block": 1,
+    "hold32_per_block": 3,
+    "randomize_order_within_block": true,
+    "fast": {
+      "n": 4,
+      "deliberate_dwell": false
+    },
+    "hold32": {
+      "n": 12,
+      "hold_after_post_primer_touch": 32,
+      "target_total_wall_clock_exposure_factor": 16,
+      "dwell_definition": "dwell ~= 15 * median FAST verified-to-boundary duration measured in validated pilot",
+      "measured_touch_count_changed": false
+    }
+  },
+  "stage_b_if_triggered": {
+    "trigger": "at least one UNEXPLAINED_BOUNDARY_DEVIATION in Stage-A HOLD32",
+    "total_identities": 12,
+    "arms": {
+      "HOLD8": 4,
+      "HOLD32": 4,
+      "HOLD56": 4
+    },
+    "same_dwell_duration_as_stage_a": true,
+    "purpose": "localize time-driven transition by hold position and Delta fingerprint"
+  },
+  "primary_observables": [
+    "T_first_post_primer_direct_q64",
+    "Delta_T_minus_64",
+    "touch_index_since_verified",
+    "elapsed_ns_since_verified",
+    "invalidation_cause",
+    "owner_counter",
+    "trace_complete"
+  ],
+  "model_contrast": {
+    "TOUCH": "deviation probability unchanged when wall-clock exposure changes at fixed measured-touch count",
+    "TIME": "deviation hazard scales with wall-clock exposure at fixed measured-touch count"
+  },
+  "capture_rule": "Any complete unexplained Delta != 0 freezes the epoch before COMMIT; no same-identity retry.",
+  "claim_ceiling": "MECHANISM_DISCRIMINATION_AND_LOCALIZATION_ONLY",
+  "authority": {
+    "physical_run_authorized": false,
+    "paid_runner_authorized": false,
+    "local_pc_execution_authorized": false
+  }
+}
