@@ -118,6 +118,7 @@ frltx-10 [007] ... 14.000000010: frl_pc_try64: counter=0xaaa nr_pages=64 comm="f
         self.assertEqual(p0["expected_residual_before"], None)
         self.assertEqual(p0["expected_residual_after"], 63)
         self.assertEqual(p0["touch_index_since_verified"], 0)
+        self.assertEqual(p0["elapsed_ns_since_verified"], 0)
         self.assertEqual(verified_at, 120)
         self.assertEqual(next_index, 1)
 
