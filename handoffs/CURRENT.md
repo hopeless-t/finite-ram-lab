@@ -1,42 +1,63 @@
 # CURRENT
 
-> Latest bounce: B398
-> Stage: Q64 / LRU RETROSPECTIVE AUDIT COMPLETE
-> Stop: PHYSICAL PAUSE / READY FOR OBS-006 DESIGN
+> Latest bounce: B399
+> Stage: SUCCESS-SIDE THEORY = VERIFIED TRANSACTION, NOT FIRST-TOUCH LUCK
+> Stop: PHYSICAL PAUSE / READY FOR RE-PRIME STATE-MACHINE DESIGN
 
-## What is established
+## Historical 1.6%
 
-- Natural LOW exact-zero incidence is associated with the CAP10+ neighborhood in G-F/G0.
-- G0 breaks the decimal argv-width confound.
-- Q64-primer-conditioned b62/b63/b64 terminal arithmetic matches 55/55.
-- Frozen controlled-spawn strict endpoint remains 49/72.
-- PTE is a real pre-data perturbation path but not a deterministic veto.
-- Recurrent -17 is dominated by shared per-CPU LRU/folio-batch release.
-- OBS-005 constructs producer17 + trigger14 = batch31 and cross-cgroup uncharge17.
+MEMCG-005F REMOTE_LOW:
+- Q64 first touch 121/123 = 98.374%
+- zero first touch 2/123 = 1.626%
 
-## What is not established
+Interpretation updated:
+the 1.6% is not an established irreducible mechanism error.
 
-- causal physical explanation of the natural CAP10+ association
-- universal capacity threshold or monotone law
-- exact natural residual-stock distribution
-- >95% b63 raw-start reliability
-- full explanation of rare non-17 negative deltas
-- cross-kernel/general-hardware transport
+## Current success model
 
-## Audit doc
+REMOTE_LOW is an admission predictor only.
 
-docs/RETROSPECTIVE-2026-09-30-Q64-LRU-AUDIT.md
+Correctness protocol:
+predict -> normalize -> verify -> execute -> commit
+
+Verified Q64 reset token:
+- page_counter_try_charge(64)
+- refill_stock(63)
+- PTE clean
+- no unexpected state-invalidating transition
+
+## Supporting evidence
+
+- G-A first-touch zero: 28/28 later Q64 by touch65
+- MEMCG-004 calibrated reset phase: exact R64 in 4/4
+- controlled-spawn primer-qualified terminal match: 55/55
+- OBS-005 closes dominant -17 LRU contamination
+- OBS-006 corrected run: MASKED_Q64_PASS 14/16, STOCK_STATE_LOST 2/16
+- all 14 state-preserved OBS-006 trials correctly identify deliberately masked Q64 (+64-17 = net +47)
+
+## 100% target
+
+Primary engineering target:
+P(correct | emitted SUCCESS)
+
+Fail closed:
+unexpected refill / drain / PTE / CPU mismatch => INVALIDATE and RE-PRIME.
+
+Do not define success by raw memory.current delta.
+
+## Docs
+
+- docs/OBS-006-MASKED-Q64-OBSERVER-RESULT.md
+- docs/MATH-017-SUCCESS-SIDE-REFRAME.md
 
 ## Next
 
-OBS-006 decontaminated charge-side Q64 observer.
+Design and preflight transactional re-prime controlled-spawn.
 
-Goal:
-separate charge/refill events from release emissions before any reliability scaling.
+No large b63 certification run yet.
 
 ## Authority
 
 PAUSE.
 No local-PC execution.
 No paid runner.
-No b63 reliability scaling.
