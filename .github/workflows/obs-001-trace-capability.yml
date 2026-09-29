@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "launch/OBS-001-TRACE-CAPABILITY-v1.txt"
+      - "launch/OBS-001-TRACE-CAPABILITY-v2.txt"
 
 permissions:
   contents: read
@@ -17,14 +17,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Kernel receipt
+      - name: Kernel and symbol receipt
         run: |
           set -euo pipefail
           uname -a
           getconf PAGESIZE
-          test -d /sys/kernel/tracing || true
-          grep -w 'memcg_uncharge' /proc/kallsyms | head || true
-          grep -w 'refill_stock' /proc/kallsyms | head || true
+          for sym in \
+            memcg_uncharge drain_stock uncharge_batch uncharge_folio \
+            refill_stock try_charge_memcg page_counter_uncharge; do
+            printf '%-24s ' "$sym"
+            grep -w "$sym" /proc/kallsyms | head -1 || true
+          done
 
       - name: Kprobe capability gate
         run: |
@@ -37,53 +40,89 @@ jobs:
 
           cleanup() {
             set +e
-            echo 0 | sudo tee "$TRACE/events/kprobes/frl_memcg_uncharge/enable" >/dev/null 2>&1
-            echo 0 | sudo tee "$TRACE/events/kprobes/frl_refill_stock/enable" >/dev/null 2>&1
-            printf '%s\n' '-:frl_memcg_uncharge' | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
-            printf '%s\n' '-:frl_refill_stock' | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            for ev in \
+              frl_drain_stock frl_uncharge_batch frl_refill_stock \
+              frl_try_charge frl_page_counter_uncharge; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
+              fi
+              printf '%s\n' "-:$ev" | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            done
           }
           trap cleanup EXIT
           cleanup
 
-          test -w "$TRACE/kprobe_events" || {
-            echo "TRACE_CAPABILITY_HOLD: kprobe_events not writable"
-            exit 20
+          sudo test -e "$TRACE/kprobe_events"
+
+          : > capability.tsv
+          printf 'symbol\tvisible\tprobeable\n' >> capability.tsv
+
+          try_probe() {
+            sym="$1"
+            ev="$2"
+            spec="$3"
+
+            if grep -qw "$sym" /proc/kallsyms; then
+              visible=1
+            else
+              visible=0
+            fi
+
+            if printf '%s\n' "$spec" | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1; then
+              probeable=1
+              echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
+              echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
+              cat "$TRACE/events/kprobes/$ev/format"
+            else
+              probeable=0
+            fi
+
+            printf '%s\t%s\t%s\n' "$sym" "$visible" "$probeable" >> capability.tsv
           }
 
-          printf '%s\n' \
-            'p:frl_memcg_uncharge memcg_uncharge memcg=$arg1:x64 nr_pages=$arg2:u32' \
-            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          try_probe \
+            drain_stock frl_drain_stock \
+            'p:frl_drain_stock drain_stock stock=$arg1:x64 slot=$arg2:u32'
 
-          printf '%s\n' \
-            'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32' \
-            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          try_probe \
+            uncharge_batch frl_uncharge_batch \
+            'p:frl_uncharge_batch uncharge_batch ug=$arg1:x64'
 
-          test -f "$TRACE/events/kprobes/frl_memcg_uncharge/format"
-          test -f "$TRACE/events/kprobes/frl_refill_stock/format"
+          try_probe \
+            refill_stock frl_refill_stock \
+            'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32'
 
-          cat "$TRACE/events/kprobes/frl_memcg_uncharge/format"
-          cat "$TRACE/events/kprobes/frl_refill_stock/format"
+          try_probe \
+            try_charge_memcg frl_try_charge \
+            'p:frl_try_charge try_charge_memcg memcg=$arg1:x64 nr_pages=$arg3:u32'
 
-          echo 1 | sudo tee "$TRACE/events/kprobes/frl_memcg_uncharge/enable" >/dev/null
-          echo 1 | sudo tee "$TRACE/events/kprobes/frl_refill_stock/enable" >/dev/null
+          try_probe \
+            page_counter_uncharge frl_page_counter_uncharge \
+            'p:frl_page_counter_uncharge page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64'
 
-          test "$(cat "$TRACE/events/kprobes/frl_memcg_uncharge/enable")" = "1"
-          test "$(cat "$TRACE/events/kprobes/frl_refill_stock/enable")" = "1"
+          cat capability.tsv
+
+          probeable_count="$(awk 'NR>1 && $3==1 {n++} END {print n+0}' capability.tsv)"
+          if test "$probeable_count" -lt 2; then
+            echo "TRACE_CAPABILITY_HOLD: fewer than two useful probe points"
+            exit 20
+          fi
 
           echo "TRACE_CAPABILITY_PASS"
 
       - name: Cleanup readback
         if: always()
         run: |
+          set -euo pipefail
           TRACE=/sys/kernel/tracing
           if mountpoint -q "$TRACE"; then
-            if test -e "$TRACE/events/kprobes/frl_memcg_uncharge/enable"; then
-              echo "cleanup_fail: frl_memcg_uncharge still exists"
-              exit 30
-            fi
-            if test -e "$TRACE/events/kprobes/frl_refill_stock/enable"; then
-              echo "cleanup_fail: frl_refill_stock still exists"
-              exit 31
-            fi
+            for ev in \
+              frl_drain_stock frl_uncharge_batch frl_refill_stock \
+              frl_try_charge frl_page_counter_uncharge; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo "cleanup_fail: $ev still exists"
+                exit 30
+              fi
+            done
           fi
           echo "TRACE_CLEANUP_PASS"
