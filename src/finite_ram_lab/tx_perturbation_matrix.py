@@ -118,6 +118,7 @@ def _pte_escape_index(geometry: dict[str, Any], *, max_pages: int = 1024) -> int
 
 def _pte_escape_touch(
     *,
+    archive: EpochArchive,
     unit: dict[str, Any],
     stock_cpu: int,
     page_size: int,
@@ -499,6 +500,10 @@ def run_trial(
             )
             if not challenge["scrub"]["pass"]:
                 challenge["result"] = "SETUP_FAIL_SCRUB_NO_FLUSH"
+                _stop_role(trigger)
+                trigger = None
+                _stop_role(scrubber)
+                scrubber = None
                 return {
                     "experiment_id": spec["experiment_id"],
                     "kind": "PERTURBATION",
@@ -671,6 +676,7 @@ def run_trial(
             escape_index = _pte_escape_index(geometry)
             measured_count += 1
             row, packet = _pte_escape_touch(
+                archive=archive,
                 unit=unit,
                 stock_cpu=stock_cpu,
                 page_size=page_size,
