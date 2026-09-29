@@ -1,0 +1,117 @@
+name: MEMCG-005G-C PTE-Preconditioned Spawn Pilot v2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["launch/MEMCG-005G-C-v2-PILOT.txt"]
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Compile PTE-preconditioned spawn worker
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11 \
+            experiments/memcg005gc_spawn_worker.c \
+            -o build/memcg005gc_spawn_worker
+
+      - name: Environment gate
+        run: |
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+          uname -a
+          cat /sys/kernel/mm/transparent_hugepage/enabled || true
+          find /sys/kernel/mm/transparent_hugepage \
+            -maxdepth 2 -path '*/hugepages-*/enabled' \
+            -type f -print -exec cat {} \; || true
+
+      - name: Run controlled-spawn block
+        env:
+          BLOCK: "${{ matrix.block }}"
+        run: |
+          python -m finite_ram_lab.memcg005gc_controlled_spawn run-block \
+            --spec specs/MEMCG-005G-C-PTE-PRECONDITIONED-SPAWN-v2.json \
+            --block "$BLOCK" \
+            --worker "$GITHUB_WORKSPACE/build/memcg005gc_spawn_worker" \
+            --out-root "$GITHUB_WORKSPACE/evidence/MEMCG-005G-C-v2/block-$BLOCK"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: memcg005gc-v2-block-${{ matrix.block }}
+          path: evidence/MEMCG-005G-C-v2/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 7
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: memcg005gc-v2-block-*
+          path: evidence/MEMCG-005G-C-v2/input
+
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/MEMCG-005G-C-v2/aggregate
+          python -m finite_ram_lab.memcg005gc_controlled_spawn aggregate \
+            --spec specs/MEMCG-005G-C-PTE-PRECONDITIONED-SPAWN-v2.json \
+            --input-root evidence/MEMCG-005G-C-v2/input \
+            --json-out evidence/MEMCG-005G-C-v2/aggregate/summary.json
+
+      - name: Freeze full raw evidence manifest
+        run: |
+          frl evidence-manifest \
+            evidence/MEMCG-005G-C-v2/input \
+            --out evidence/MEMCG-005G-C-v2/aggregate/full-raw-evidence-manifest.json \
+            --experiment-id MEMCG-005G-C-PTE-PRECONDITIONED-SPAWN-v2 \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-commit "$GITHUB_SHA" \
+            --tier HOT \
+            --origin-provider github-actions \
+            --origin-ref "run:$GITHUB_RUN_ID"
+
+      - name: Verify raw evidence before publishing aggregate
+        run: |
+          frl evidence-verify \
+            evidence/MEMCG-005G-C-v2/input \
+            --manifest evidence/MEMCG-005G-C-v2/aggregate/full-raw-evidence-manifest.json
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: MEMCG-005G-C-v2-PILOT-${{ github.run_id }}
+          path: evidence/MEMCG-005G-C-v2/aggregate/
+          if-no-files-found: error
+          retention-days: 30
