@@ -268,7 +268,7 @@ def run_trial(
                 scrub_rows.append({"touch_number": touch_no, **row})
                 count = _wait_event_count(
                     trace_path,
-                    "frl_lru_flush:",
+                    "frl_lru_scrub:",
                     "frlscrub",
                     scrub_base,
                 )
