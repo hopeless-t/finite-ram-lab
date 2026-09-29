@@ -1,0 +1,43 @@
+{
+  "schema_version": "obs002-cold-replica-v1",
+  "experiment_id": "OBS-002-LRU-BATCH-OCCUPANCY-v1",
+  "run_id": "36617444105",
+  "source_commit": "f480da31742595b83ce0d06b31f1ed43ec3a4de8",
+  "raw_content_set_sha256": "c6ab5dbc6f218b4a992794e22df8baa6ef8ba5a8d219621ab2f1adcc1eb3abe8",
+  "raw_file_count": 128,
+  "raw_total_bytes": 1857693,
+  "storage": {
+    "tier": "COLD",
+    "provider": "google-drive",
+    "locator": "Catfood Lab Evidence/finite-ram-lab/OBS-002-LRU-BATCH-OCCUPANCY-v1/run-36617444105",
+    "visibility_at_verification": "private"
+  },
+  "verification": {
+    "method": "download Drive ZIPs and compare SHA-256 to GitHub Actions artifact digests",
+    "verified_archives": 5,
+    "mismatches": 0,
+    "status": "PASS"
+  },
+  "archives": [
+    {
+      "name": "obs002-block-0.zip",
+      "sha256": "5ccc12e6509e5189f5fee3262ee6636e880461825fff1b30142d757c20270af3"
+    },
+    {
+      "name": "obs002-block-1.zip",
+      "sha256": "834b177bf625c941e68eb0e93c0e0e2f9b6ce0f530b94b346f981bca828b6107"
+    },
+    {
+      "name": "obs002-block-2.zip",
+      "sha256": "8a7976c7aef79b34f9785bb3b82db0f31c07819898eb4077961a5507f91af33c"
+    },
+    {
+      "name": "obs002-block-3.zip",
+      "sha256": "a731bf33dde9b581b5bc27e7a87c0a0b6b70fe72fa11ead06b2e2a9790e0374b"
+    },
+    {
+      "name": "OBS-002-LRU-BATCH-OCCUPANCY-36617444105.zip",
+      "sha256": "8195d5aa93a71002b4ea166106d592e993a0461256d5a76c28fdd5bec93c5dc3"
+    }
+  ]
+}
