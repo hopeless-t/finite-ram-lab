@@ -1,0 +1,18 @@
+OBS-002 LRU batch capability gate v2
+
+Human authorization:
+Continue finite-ram-lab research on 2026-09-30 JST.
+
+Purpose:
+Re-run the LRU-batch capability gate after fixing only the required-symbol shell loop.
+
+Authorized:
+- one standard GitHub-hosted ubuntu-26.04 capability run
+- probe install/enable/disable/remove only
+- no scientific endpoint
+- no reliability claim
+- no local-PC execution
+- no paid runner
+
+Expected:
+all five previously probeable symbols remain probeable and cleanup passes.
