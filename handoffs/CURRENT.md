@@ -1,58 +1,52 @@
 # CURRENT
 
-> **Latest bounce:** B338
-> **Stage:** MEMCG-005C REJECTED / MEMCG-005D EXTERNAL-MIGRATION DESIGN FROZEN
-> **Turn stop reason:** READY_FOR_IMPLEMENTATION
+> **Latest bounce:** B339
+> **Stage:** MEMCG-005D IMPLEMENTED / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## MEMCG-005C canonical result
+## MEMCG-005C accepted result
 
-Run:
-`36551226475`
+Canonical:
+`909b554048e4e269ebb644c8533857468cae8296`
 
 Decision:
 `REJECT_ATOMIC_PATH`
 
-ATOMIC:
-- 69/92 Q64
-- 23/92 zero-delta failures
-- success rate 0.75
-- 0/4 perfect blocks
+ATOMIC was worse than TWO_STEP in 4/4 blocks.
 
-TWO_STEP:
-- 77/92 Q64
-- 15/92 zero-delta failures
-- success rate 0.8369565
+## MEMCG-005D implementation
 
-ATOMIC was worse in 4/4 blocks despite arm-order reversal across block parity.
+Files:
+- `specs/MEMCG-005D-EXTERNAL-MIGRATION-FIRST-TOUCH-v1.json`
+- `experiments/memcg005d_worker.c`
+- `src/finite_ram_lab/memcg005d_external_migration.py`
+- `.github/workflows/memcg-005d-external-migration.yml`
+- `tests/test_memcg005d_external_migration.py`
 
-Therefore post-migration receipt I/O is not supported as the dominant failure mechanism.
-
-Canonical result:
-`docs/MEMCG-005C-RESULT.md`
-
-## MEMCG-005D
-
-Frozen design:
-`docs/MEMCG-005D-EXTERNAL-MIGRATION-FIRST-TOUCH-v1.md`
+Shared-latch worker:
+- READY / GO / DONE / STOP in prefaulted shared page;
+- no measured-path FIFO/status I/O.
 
 A/B:
-- SELF_ATOMIC = worker self-migrates then immediate touch;
-- EXTERNAL_ATOMIC = controller externally migrates spinning worker, then shared-memory GO causes immediate touch.
+- SELF_ATOMIC = worker self-migration then immediate touch;
+- EXTERNAL_ATOMIC = controller migrates PID, confirms S, samples mid current, then GO triggers immediate touch.
 
-No worker control/status I/O is allowed between shared READY and measured touch.
+EXTERNAL separately records:
+- migration_delta_pages = mid - pre;
+- touch_delta_pages = post - mid.
 
-23 identities per arm per block, 4 blocks.
+23 identities per arm per block.
+4 blocks.
+
+No launch marker exists.
 
 ## Next fresh-bounce action
 
-Implement MEMCG-005D only:
-- shared-latch worker;
-- external PID affinity change;
-- SELF vs EXTERNAL arms;
-- exact delta/CPU receipts;
-- analyzer/tests/workflow.
+Discover/read ordinary CI for B339 exactly once.
 
-Do not launch during implementation.
+- success -> explicit MEMCG-005D hosted launch;
+- pending/in_progress -> EXTERNAL_WAIT;
+- failure -> inspect only exposed invariant.
 
 ## Authority boundary
 

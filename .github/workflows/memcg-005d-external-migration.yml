@@ -1,0 +1,78 @@
+name: MEMCG-005D External Migration First Touch v1
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["launch/MEMCG-005D-v1.txt"]
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with: {python-version: "3.12"}
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Compile worker
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11 \
+            experiments/memcg005d_worker.c \
+            -o build/memcg005d_worker
+      - name: Environment
+        run: |
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+      - name: Run block
+        env: {BLOCK: "${{ matrix.block }}"}
+        run: |
+          python -m finite_ram_lab.memcg005d_external_migration run-block \
+            --spec specs/MEMCG-005D-EXTERNAL-MIGRATION-FIRST-TOUCH-v1.json \
+            --block "$BLOCK" \
+            --worker "$GITHUB_WORKSPACE/build/memcg005d_worker" \
+            --out-root "$GITHUB_WORKSPACE/evidence/MEMCG-005D/block-$BLOCK"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: memcg005d-block-${{ matrix.block }}
+          path: evidence/MEMCG-005D/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with: {python-version: "3.12"}
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: memcg005d-block-*
+          path: evidence/MEMCG-005D/input
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/MEMCG-005D/aggregate
+          python -m finite_ram_lab.memcg005d_external_migration aggregate \
+            --spec specs/MEMCG-005D-EXTERNAL-MIGRATION-FIRST-TOUCH-v1.json \
+            --input-root evidence/MEMCG-005D/input \
+            --json-out evidence/MEMCG-005D/aggregate/summary.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: MEMCG-005D-EXTERNAL-MIGRATION-${{ github.run_id }}
+          path: evidence/MEMCG-005D/aggregate/
+          if-no-files-found: error
+          retention-days: 90

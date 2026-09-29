@@ -1,0 +1,15 @@
+{
+  "experiment_id": "MEMCG-005D-EXTERNAL-MIGRATION-FIRST-TOUCH-v1",
+  "required_page_size": 4096,
+  "runner_blocks": 4,
+  "identities_per_arm": 23,
+  "arms": ["self_atomic", "external_atomic"],
+  "expected_trials": 184,
+  "q64_min_pages": 60,
+  "q64_max_pages": 68,
+  "external_support_min_successes": 90,
+  "external_support_required_perfect_blocks": 3,
+  "external_reject_min_failures": 8,
+  "confidence_level": 0.95,
+  "authority": "HOSTED_RESEARCH_ONLY"
+}
