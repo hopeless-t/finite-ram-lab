@@ -1,31 +1,28 @@
 # CURRENT
 
-> Latest bounce: B357
-> Stage: MEMCG-005G-A IMPLEMENTED / CI PENDING
-> Stop: CI_DISCOVERY_PENDING
-
-Design:
-`docs/MEMCG-005G-A-EARLY-TRANSIENT-BIOPSY-v1.md`
+> Latest bounce: B358
+> Stage: MEMCG-005G-A EXPLICIT HOSTED LAUNCH
+> Stop: RUN_DISCOVERY_PENDING
 
 Implementation:
-- `specs/MEMCG-005G-A-EARLY-TRANSIENT-BIOPSY-v1.json`
-- `src/finite_ram_lab/memcg005g_early_biopsy.py`
-- `.github/workflows/memcg-005g-a-early-biopsy.yml`
-- `tests/test_memcg005g_early_biopsy.py`
+`29003873bda9053187e257a924aa3bf736163d0c`
 
-Primary fixed boundary:
-EARLY identity 0..7
-STEADY identity 8..31
+CI:
+`36563144651 = success`
 
-24 independent blocks x32 candidates =768.
+Launch:
+`085ff36e9fbc86cd634bf1795322be9eef1b5544`
+
+Primary:
+EARLY 0..7 vs STEADY 8..31 among valid REMOTE_LOW.
+
+24 independent blocks x32 candidates.
 
 Failure biopsy:
-valid REMOTE_LOW first-touch zero -> continue fresh touches through total touch65, recording first next Q64 as residual_depth_candidate.
-
-No launch marker exists.
+first-touch zero LOW -> touch through total index65 and record residual depth candidate.
 
 Next fresh bounce:
-discover/read ordinary CI exactly once.
+discover/read exact-head MEMCG-005G-A workflow once.
 
 Hosted research only.
 No local-PC execution.
