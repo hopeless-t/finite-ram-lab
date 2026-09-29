@@ -1,106 +1,85 @@
 # CURRENT
 
-> Latest bounce: B392
-> Stage: 17-PAGE LATENT COMPONENT / OBS-001 TRACE GATE PASS
-> Stop: READY FOR FRESH OBS-001 DIAGNOSTIC RELAUNCH
-
-## Existing-evidence discovery
-
-MATH-015:
-docs/MATH-015-17-PAGE-LATENT-COMPONENT.md
-
-Controlled-spawn v2 raw:
-- exact -17 events: 20
-- other negatives: -13, -3, -2
-
-Start-state modes:
-- 98..100
-- 114..117
-- 161..163
-- 179..180
-
-Descriptive additive lattice:
-baseline + optional 17 + optional ~63
-
-Fit:
-- exact 68/72
-- within 1 page 69/72
-
-Exact -17 shifted by -17:
-- exact clean-support landing 17/20
-- within 1 page 19/20
-
-Near-lattice association:
-- no-17 component: 0/42 exact -17
-- 17-component: 19/27 exact -17
-- one-sided Fisher ~4.8e-11
-- post-hoc descriptive only
-
-Working hypothesis:
-a transient 17-page accounted component can disappear asynchronously.
-
-Identity unresolved:
-- Prep-CPU stock drain is a strong candidate
-- ordinary/other uncharge remains possible
+> Latest bounce: B393
+> Stage: -17 CALLER IDENTIFIED AS LRU/FOLIO-BATCH UNCHARGE FAMILY
+> Stop: READY FOR OBS-002 LRU-BATCH-OCCUPANCY DISCRIMINATOR
 
 ## OBS-001
 
-Design:
-docs/OBS-001-CHARGE-UNCHARGE-DISCRIMINATOR.md
+Run:
+36615514509 = success
 
-Frozen diagnostic scale:
+Scale:
 - 4 blocks
-- 12 identities/block
-- 24 touches/identity
-- 48 identities
+- 48 trials
 - 1152 touches
-- no b63 reliability claim
 
-## Trace capability
+Exact -17:
+5
 
-Final gate:
-run 36614225845 = PASS
+All five:
+- start 115/116 pages
+- touch 14
+- VmRSS +4 KiB
+- VmPTE delta 0
+- page_counter_uncharge(17)
+- stack through folios_put_refs / folio_batch_move_lru / __folio_batch_add_and_move / folio_add_lru / do_anonymous_page
 
-Probeable:
-- drain_stock
-- refill_stock
-- try_charge_memcg
-- page_counter_uncharge
+No observed drain_stock in those windows.
 
-Not directly probeable:
-- uncharge_batch
+Miss-free block 3 contributes 2/2 direct specimens with:
+- drain_stock misses 0
+- page_counter_uncharge misses 0
 
-Also PASS:
-- page_counter_uncharge nr_pages==17 filter
-- stacktrace trigger
-- trace buffer control
-- root trace_marker write/readback
-- cleanup readback
+Therefore:
+Prep-CPU stock drain is not required for -17.
 
-## Infrastructure findings
+## Leading mechanism
 
-OBS-001 development exposed and repaired:
-- runner-user vs sudo tracefs capability confusion
-- escaped GitHub workflow expressions
-- trace_marker permission mismatch
-- cleanup set +e false-success bug
-- cleanup return-code false-failure bug
-- root observer / runner-UID worker separation
+Linux:
+FOLIO_BATCH_SIZE = 31
 
-No prior OBS-001 scientific attempt is valid.
-Do not interpret their job labels as data.
+Observation:
+17 latent pages + touch 14 = 31
 
-## Next action
+Hypothesis:
+17 dead/releasable folios are held until LRU-add batch fill;
+touch 14 fills the batch;
+flush drops refs;
+17 pages uncharge.
 
-Fresh OBS-001 diagnostic relaunch only.
+Not yet directly proven:
+- pre-touch occupancy
+- origin/cgroup identity of the 17 folios
 
-Goal:
-directly classify the caller of -17.
+## Evidence
 
-No reliability scaling before observer cleanliness is resolved.
+Doc:
+docs/OBS-001-17-PAGE-UNCHARGETRACE-RESULT.md
+
+Raw:
+- files 120
+- bytes 13,731,781
+- content-set SHA:
+  aeee124d149aab0fb66023ff527e4982027b523290d864f5bc4e00a33a216335
+
+Drive:
+Catfood Lab Evidence/finite-ram-lab/OBS-001-17-PAGE-UNCHARGETRACE-v1/run-36615514509
+
+Verification:
+5/5 BYTE-IDENTICAL PASS
+
+## Next
+
+OBS-002:
+trace LRU-batch occupancy and page-counter identity.
+
+Primary prediction:
+pre-touch14 occupancy 30 -> fill 31 -> flush -> uncharge17.
 
 ## Authority
 
 HOSTED_RESEARCH_ONLY.
 No local-PC execution.
 No paid runner.
+No b63 reliability scaling yet.
