@@ -324,6 +324,19 @@ def classify_failure(
         return "PTE_CONTAMINATED"
     if row["primer_status"] == "CPU_OR_WORKER_ERROR":
         return "CPU_OR_WORKER_ERROR"
+    if row["primer_status"] == "SEQUENCE_EXHAUSTED":
+        return "SEQUENCE_EXHAUSTED"
+
+    measured = [
+        *row["bait_touches"],
+        *row["observed_pattern_touches"],
+    ]
+    if any(
+        touch["worker_error"] != 0
+        or touch["observed_cpu"] != row["stock_cpu"]
+        for touch in measured
+    ):
+        return "CPU_OR_WORKER_ERROR"
 
     for touch in row["bait_touches"]:
         if touch["vmpte_delta_kib"] != 0:
