@@ -1,59 +1,90 @@
 # CURRENT
 
-> Latest bounce: B379
-> Stage: MEMCG-005G-F COMPLETE / MATH-007 ROBUSTNESS COMPLETE
-> Stop: HUMAN_COMPUTE_APPROVAL_FOR_005G-G
+> Latest bounce: B380
+> Stage: MATH-008 ALIAS AUDIT COMPLETE / G0 + INDUCTION DRAFTED
+> Stop: HUMAN_COMPUTE_APPROVAL
 
-## MEMCG-005G-F
+## Critical new finding
 
-Run:
-`36577573774`
+The observed capacity signal is aliased with decimal argv width.
 
-Artifact:
-`11037439387`
+Implementation passed capacity as:
+`str(max_pages)`
 
-Digest:
-`sha256:da5eb0c5b3ab3bd17d078dda7ff052c2ed6d70af1949fb4145b0f150daf4f346`
+Across the relevant experiments:
+- one-digit capacities: 8/9
+- two-digit capacities: 10+
 
-Frozen decision:
-`REJECT_OR_UNRESOLVED_HARD_STEP`
+In MEMCG-005G-F, the candidate T10 split is exactly identical to this digit-width partition.
 
-Reason:
-two valid REMOTE_LOW non-{0,Q64} failure morphologies violated the frozen invariant.
+Exploratory cross-experiment CMH:
+- common OR ~=4.20
+- p ~=1.33e-10
+- heterogeneity p ~=0.270
 
-Restricted threshold signal:
-- MAP T=10
-- posterior 95.58%
-- MAP/second odds 34.3:1
-- T10 split Fisher p=2.268e-4
+This proves the partition is reproducible, not which variable causes it.
 
-## MATH-007
+Doc:
+`docs/MATH-008-ARGV-WIDTH-ALIAS-AND-INDUCTION.md`
 
-`docs/MATH-007-T10-ROBUSTNESS-AND-MORPHOLOGY.md`
+## Q64 status
 
-Exploratory robustness:
-- remove two nonzero morphologies -> T10 posterior 97.50%
-- block-conditioned permutation 300k -> p ~=3.50e-4
-- leave-one-block-out -> T10 MAP in 48/48 fits
+Q64 remains independently supported.
 
-Accepted:
-exact-zero and nonzero anomalous first-touch deltas must be treated as separate phenotypes prospectively.
+Current Linux source defines a 64-page memcg charge batch, and finite-ram-lab MEMCG-004 reproduced:
 
-## Next candidate
+fresh Q64 -> residual63 -> 63 stock-consuming touches -> next Q64.
+
+Do not conflate Q64 with T10.
+
+## Next experiment candidate: G0 alias breaker
 
 Draft:
+`docs/MEMCG-005G-G0-CAPACITY-ARGV-ALIAS-BREAKER-DRAFT-v0.md`
+
+Preferred discovery scale:
+- 32 hosted blocks
+- 60 candidates/block
+- 1920 candidates total
+- 320 candidates/arm
+
+Key change:
+capacity is written as binary `max_pages_u32` into shared control memory and removed from capacity-dependent argv text.
+
+Secondary receipts:
+region/control addresses and page-table-position diagnostics.
+
+Do not implement/launch without Human compute approval.
+
+## Rare-Pokemon construction track
+
+Revised draft:
+`docs/MEMCG-005G-C-CONTROLLED-RARE-INDUCTION-v1.md`
+
+Route:
+directly observe Q64 primer -> consume fixed bait pages -> measure target.
+
+Primary operational arm:
+`b63`
+
+Prediction:
+- one residual stock page before target
+- target delta0
+- next touch Q64
+- exact depth1
+
+This is the preferred route toward near-deterministic capture rather than waiting for natural rare states.
+
+## Large confirmatory replication
+
+Existing draft:
 `docs/MEMCG-005G-G-EXACT-ZERO-REPLICATION-DRAFT-v0.md`
 
-Preferred scale:
-96 hosted blocks x60 candidates =5760 total.
-960 candidates/arm.
+Scale:
+5760 total candidates.
 
-Monte Carlo calibration:
-- P(MAP=T10) ~97.7%
-- P(T10 posterior >=.90) ~90.3%
-
-This is materially larger hosted compute.
-Do not implement/launch until Human explicitly approves the compute scale.
+Status:
+DEFERRED until the capacity/argv alias is broken.
 
 ## Collaboration
 
