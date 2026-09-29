@@ -1,14 +1,16 @@
 TX-PERTURBATION-MATRIX-v1
+schema_generation=R3
 human_authorized_at=2026-09-30
-run_generation=R2
-reason=PRIME_TRIGGER_STOCK_BEFORE_TARGET_VERIFY
+reason=MEMCG_OWNERSHIP_PLUS_POST_VERIFY_LRU_RESET
 purpose=Chapter-II causal validation of named state transitions
 blocks=4
 arms_per_block=CLEAN,RELEASE_ONLY,UNEXPECTED_REFILL,PTE_GROWTH
 scientific_identities=16
+measurement_layers=INTERVENTION_REALIZATION,CHALLENGE_CLASSIFICATION,INCIDENTAL_INVALIDATION,RECOVERY_COMPLETION,OBSERVER_COVERAGE
 runner=standard-github-hosted-ubuntu-26.04
 paid_larger_runner=false
 local_pc=false
 automatic_scale_expansion=false
 prerequisite_b404_run=36642946787
 r1_diagnostic_run=36645745433
+r2_diagnostic_run=36646317346
