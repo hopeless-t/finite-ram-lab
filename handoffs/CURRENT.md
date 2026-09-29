@@ -1,61 +1,108 @@
 # CURRENT
 
-> Latest bounce: B388
-> Stage: EXTERNAL MEMORY-SYSTEMS RECONNAISSANCE COMPLETE
-> Stop: RESEARCH PAUSE / RARE-SPECIMEN MODEL REVIEW
+> Latest bounce: B390
+> Stage: EXTERNAL-TO-FRL TRANSFER COUNCIL CONVERGED
+> Stop: RESEARCH PAUSE / NO NEW PHYSICAL RUN
 
-## Physical research
+## Rare-state evidence
 
-No new physical run after B387.
+B389 remains canonical for existing-evidence modeling.
 
-Controlled-spawn result remains canonical:
-- frozen primary: 49/72
-- direct-primer terminal phase: 55/55
-- b63 direct-primer phase: 14/14
-- measured VmPTE growth: 0/4164
+Natural LOW incidence:
+- CAP10+ step remains best block-held-out baseline
+- richer interaction/hierarchical/mixture models not promoted
+
+Mechanism:
+- Q64/reset stock arithmetic remains supported
+- controlled-spawn direct-primer terminal phase 55/55
+- frozen strict endpoint remains 49/72
 - negative -17 accounting signature unresolved
+- PTE deterministic veto rejected
+- pre_current is context, not a stock read
 
-## External reconnaissance
+## Council architecture
+
+Four lanes:
+
+1. natural incidence
+2. kernel mechanism / observation
+3. generic finite-memory control
+4. application adapters
+
+Do not silently pool their likelihoods or semantics.
+
+## Kernel semantics correction
+
+Latest reviewed page_counter-stock v6/resend:
+- abstraction relocation only
+- seven-slot per-CPU policy retained
+- drain policy retained
+
+Therefore kernel receipt separates:
+- implementation owner
+- stock policy/topology
+- MEMCG_CHARGE_BATCH
+- drain policy
+- tiered-memcg state
+
+Schema:
+schemas/KERNEL-MEMORY-SEMANTICS-RECEIPT-v1.schema.json
+
+## Generic state model
 
 Doc:
-`docs/EXT-2026-09-30-MEMORY-SYSTEMS-RECON.md`
+docs/FRL-STATE-TRANSITION-MODEL-v0.md
 
-### Linux stock architecture
+Control dimensions:
+- tier
+- owner / lease
+- hotness
+- predicted next use
+- transfer cost
+- restore cost
+- interference
+- bottleneck regime
 
-Current upstream at reconnaissance cut:
-- `NR_MEMCG_STOCK = 7`
-- `MEMCG_CHARGE_BATCH = 64`
-- existing per-CPU shared memcg stock
+External AI-memory work enters here, not into the Q64 mechanism model.
 
-Active v5 proposal:
-`memcg -> page_counter_stock`
+## Council
 
-If merged, it changes:
-- ownership topology
-- cross-memcg victim eviction
-- drain behavior
-- precharged-memory scaling
+Doc:
+docs/COUNCIL-2026-09-30-FRL-TRANSFER-v1.md
 
-Future Q64 comparisons must record stock architecture, not kernel version alone.
+Immediate absorbs:
+- dual-model contract
+- observation contamination labels
+- kernel semantics receipts
+- topology-before-size
+- restoration cost
+- phase leasing
+- bounded staging
+- bottleneck migration
+- explicit promotion rule
 
-### External AI-memory convergence
+Borrow-only branches:
+- LEASE-001
+- RESTORE-001
+- STAGING-001
+- PREDICT-001
+- ACTIVE-COLD-001
+- KERNEL-TIER-001
 
-Reviewed:
-- mzCache
-- vLLM tiered KV
-- TierKV
-- KV Cache memory-wall survey
-- SSD-LLaMA
-- cache-aware MoE router adaptation
-- Strata (B387)
+Hold:
+- demand shaping in application lane
+- Strata hardware/model constants
+- richer latent incidence model until held-out improvement
 
-Shared pattern:
+## Core next question
 
-`classify state -> estimate future demand / transfer / restore cost -> control residency transition`
+Resolve charge-vs-uncharge observation cleanliness, especially -17,
+before fixed-N b63 reliability scaling.
 
 ## Authority
 
 PAUSE.
 
 No new physical experiment.
-Codex rare-specimen census / mathematical generative-model work may continue from existing evidence.
+No local-PC execution.
+No paid resource.
