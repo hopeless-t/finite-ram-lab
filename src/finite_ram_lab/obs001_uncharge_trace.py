@@ -72,7 +72,6 @@ def _measured_touch(
     touch_number: int,
     trial_id: str,
     trace_marker: Path | None,
-    worker_uid: int | None,
 ) -> dict[str, Any]:
     _set_u32(unit["mm"], OFF_MODE, 2)
     _set_u32(unit["mm"], OFF_TARGET, stock_cpu)
@@ -131,6 +130,7 @@ def run_trial(
     safe_len: int,
     touches_per_trial: int,
     trace_marker: Path | None,
+    worker_uid: int | None,
 ) -> dict[str, Any]:
     name = (
         f"fr-obs001-{os.getenv('GITHUB_RUN_ID', 'local')}"
