@@ -88,8 +88,6 @@ jobs:
             'p:frl_folios_put folios_put_refs fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm' \
             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
 
-          echo 'comm == "frlprod"' \
-            | sudo tee "$TRACE/events/kprobes/frl_pc_try/filter" >/dev/null
           echo 'nr_pages == 17' \
             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge/filter" >/dev/null
           echo 'stacktrace' \
