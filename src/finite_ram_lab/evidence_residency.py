@@ -259,6 +259,7 @@ def _collect_files(
                 "sha256": sha256_file(path),
             }
         )
+    files.sort(key=lambda item: item["path"])
     return files
 
 
