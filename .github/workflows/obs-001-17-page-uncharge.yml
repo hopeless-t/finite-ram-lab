@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "launch/OBS-001-17-PAGE-UNCHARGETRACE-v3.txt"
+      - "launch/OBS-001-17-PAGE-UNCHARGETRACE-v4.txt"
 
 permissions:
   contents: read
