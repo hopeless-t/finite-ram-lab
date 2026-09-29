@@ -1,56 +1,67 @@
 # CURRENT
 
-> **Latest bounce:** B330
-> **Stage:** MEMCG-005B HOSTED RUN + EXTERNAL_WAIT
-> **Turn stop reason:** EXTERNAL_WAIT
+> **Latest bounce:** B331
+> **Stage:** MEMCG-005B INCONCLUSIVE / MEMCG-005C ATOMIC PATH DESIGN FROZEN
+> **Turn stop reason:** READY_FOR_IMPLEMENTATION
 
-## MEMCG-005 canonical result
+## MEMCG-005B canonical result
 
-`INCONCLUSIVE`
-
-Canonical:
-`95191357ac80b9157c2f9f05df86672abb661983`
-
-## MEMCG-005B
-
-Implementation:
-`4d899453a4ffaf8aaaf68f285ede6ea1e9e1ae1b`
-
-Implementation CI:
-`36547079561 = success`
-
-Launch:
-`73baca88f9701c1d819cdb9a11da38d033669aff`
-
-Scientific run:
+Run:
 `36547649316`
 
-Single B330 read:
-`in_progress`
+Decision:
+`INCONCLUSIVE`
 
-Do not poll again in this bounce.
+Canonical result:
+`docs/MEMCG-005B-RESULT.md`
 
-CPU roles:
-- C controller
-- P startup/prep
-- S stock-test
+Valid observations:
+- m0: PRESENT 2/2
+- m5: PRESENT 1/2, ABSENT 1/2
+- m6: ABSENT 3/3
+- m7: ABSENT 3/3
+- m8: ABSENT 4/4
 
-No participant touches S before insertion.
+Only one complete-valid block existed; it showed a K6-like boundary.
 
-Prefill:
-14 distinct verified wash insertions before target.
+Do not promote K6 while insertion validity remains systematic.
 
-Source signature:
-- m0/5/6 PRESENT
-- m7/8 ABSENT
+## Control-path invariant failure
+
+MEMCG-005B MIGRATE command:
+
+- moves worker to S;
+- then emits MIGRATE status I/O on S;
+- only later performs measured TOUCH_ONE.
+
+Therefore the measured touch was not guaranteed to be the worker's first S-side demand.
+
+All six insertion-invalid events were delta=0.
+
+## MEMCG-005C
+
+Frozen design:
+`docs/MEMCG-005C-ATOMIC-FIRST-TOUCH-v1.md`
+
+A/B:
+- TWO_STEP = old migrate receipt then touch
+- ATOMIC = migrate then immediate measured touch before any receipt I/O
+
+23 fresh identities per arm per block.
+4 blocks.
+
+Primary goal:
+validate the insertion primitive before another K7 capacity test.
 
 ## Next fresh-bounce action
 
-Read run `36547649316` exactly once.
+Implement MEMCG-005C only:
+- worker MIGRATE_TOUCH command;
+- paired A/B runner;
+- exact delta receipts;
+- analyzer/tests/workflow.
 
-- success -> fetch aggregate once and canonicalize;
-- pending/in_progress -> EXTERNAL_WAIT;
-- failure -> inspect only exposed invariant.
+Do not launch during implementation.
 
 ## Authority boundary
 
