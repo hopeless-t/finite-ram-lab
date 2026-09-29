@@ -14,6 +14,9 @@ from finite_ram_lab.transactional_reprime import (
 Q64 = {
     "page_counter_try_charge_64": True,
     "refill_stock_63": True,
+    "pte_clean": True,
+    "cpu_match": True,
+    "trace_complete": True,
 }
 
 
