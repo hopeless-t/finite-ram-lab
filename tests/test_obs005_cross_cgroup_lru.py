@@ -19,6 +19,7 @@ x-1 [000] ...: tracing_mark_write: FRL_OBS005 trial=0:0 END
 """
         traces = parse_trace(text)
         trial = {
+            "producer_pid": 10,
             "scrub_flush_touch": 7,
             "trigger_pages": 14,
         }
@@ -35,7 +36,7 @@ x-1 [000] ...: tracing_mark_write: FRL_OBS005 trial=0:0 phase=PRODUCER touch=4 P
 x-1 [000] ...: tracing_mark_write: FRL_OBS005 trial=0:0 END
 """
         result = classify_trial(
-            {"scrub_flush_touch": 2, "trigger_pages": 14},
+            {"producer_pid": 10, "scrub_flush_touch": 2, "trigger_pages": 14},
             parse_trace(text)["0:0"],
         )
         self.assertEqual(
