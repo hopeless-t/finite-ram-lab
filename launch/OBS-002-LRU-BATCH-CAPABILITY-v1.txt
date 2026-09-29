@@ -1,0 +1,22 @@
+OBS-002 LRU batch capability gate v1
+
+Human authorization:
+Continue finite-ram-lab research on 2026-09-30 JST.
+
+Purpose:
+Verify that the hosted Ubuntu 7.0 kernel can expose LRU folio-batch occupancy and page-counter identity before any OBS-002 scientific run.
+
+Authorized:
+- one standard GitHub-hosted ubuntu-26.04 capability run
+- probe install/enable/disable/remove only
+- __folio_batch_add_and_move
+- folio_batch_move_lru
+- page_counter_try_charge
+- page_counter_uncharge
+- folios_put_refs
+- no scientific endpoint
+- no reliability claim
+- no local-PC execution
+- no paid runner
+
+Stop if required LRU-batch probes are unavailable.
