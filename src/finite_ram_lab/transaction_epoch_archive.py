@@ -18,6 +18,7 @@ from .transactional_reprime import Event, State, Transaction, reduce
 class EpochArchive:
     tx: Transaction
     owner_counter: str | None = None
+    owner_memcg: str | None = None
     verified_at_ns: int | None = None
     next_touch_index_since_verified: int | None = None
     packets: list[dict[str, Any]] = field(default_factory=list)
@@ -48,6 +49,7 @@ class EpochArchive:
         receipt = observer_receipt_for_window(
             window,
             owner_counter=self.owner_counter,
+            owner_memcg=self.owner_memcg,
             stock_cpu=stock_cpu,
             phase=phase,
         )
@@ -61,6 +63,7 @@ class EpochArchive:
         )
 
         candidate_owner = receipt.get("discovered_owner_counter")
+        candidate_memcg = receipt.get("discovered_owner_memcg")
         owner_for_packet = self.owner_counter or candidate_owner
 
         tx_after, packet_v2, verified_at, next_index = apply_and_enrich_v2(
@@ -82,7 +85,10 @@ class EpochArchive:
         ):
             if candidate_owner is None:
                 raise ValueError("VERIFIED without epoch owner counter")
+            if candidate_memcg is None:
+                raise ValueError("VERIFIED without epoch owner memcg")
             self.owner_counter = candidate_owner
+            self.owner_memcg = candidate_memcg
 
         self.tx = tx_after
         self.verified_at_ns = verified_at
@@ -110,6 +116,7 @@ class EpochArchive:
             observer_receipt_for_window(
                 window,
                 owner_counter=self.owner_counter,
+                owner_memcg=self.owner_memcg,
                 stock_cpu=stock_cpu,
                 phase="TARGET",
             )
@@ -179,6 +186,7 @@ class EpochArchive:
         receipt = observer_receipt_for_window(
             window,
             owner_counter=self.owner_counter,
+            owner_memcg=self.owner_memcg,
             stock_cpu=stock_cpu,
             phase="OBSERVE",
         )
@@ -220,6 +228,7 @@ class EpochArchive:
             "expected_residual_before": before,
             "expected_residual_after": after,
             "owner_counter": self.owner_counter,
+            "owner_memcg": self.owner_memcg,
             "classified_release_only_count": int(
                 receipt.get("classified_release_only_count", 0)
             ),
@@ -261,6 +270,7 @@ class EpochArchive:
 
         # Epoch-local observer authority must never cross the boundary.
         self.owner_counter = None
+        self.owner_memcg = None
         self.verified_at_ns = None
         self.next_touch_index_since_verified = None
 
@@ -284,6 +294,7 @@ class EpochArchive:
             "reprimes": self.tx.reprimes,
             "max_reprimes": self.tx.max_reprimes,
             "owner_counter": self.owner_counter,
+            "owner_memcg": self.owner_memcg,
             "verified_at_ns": self.verified_at_ns,
             "next_touch_index_since_verified": (
                 self.next_touch_index_since_verified
