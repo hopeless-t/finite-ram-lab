@@ -1,33 +1,30 @@
 # CURRENT
 
-> **Latest bounce:** B354
-> **Stage:** MEMCG-005F EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
-
-Implementation:
-`f27d0a18c1fa5a8c9e5a0ee7b31549906c260a83`
-
-CI:
-`36557411699 = success`
+> Latest bounce: B355
+> Stage: MEMCG-005F confirmatory hosted run
+> Stop: EXTERNAL_WAIT
 
 Launch:
 `15c0ac94f0bd5707cec327eaa6f44a6fdb2c8520`
 
+Scientific run:
+`36558350433`
+
+Single B355 read:
+`in_progress`
+
 Primary gate:
 `REMOTE_LOW := startup P, measured S!=P, pre_current_pages<=110`
 
-Scale:
-64 identities per block x4 =256 probes.
+Do not poll again in this bounce.
 
-## Next fresh-bounce action
+After this experiment completes:
+1. fetch aggregate once;
+2. canonicalize result;
+3. review and retrospect all finite-ram-lab findings to date.
 
-Discover/read exact-head MEMCG-005F workflow once.
-
-- pending/in_progress -> record run id, EXTERNAL_WAIT;
-- success -> fetch aggregate once, canonicalize, then perform full project retrospective;
-- failure -> inspect only exposed invariant.
-
-## Authority boundary
+Next fresh bounce:
+read run `36558350433` exactly once.
 
 Hosted research only.
 No local-PC execution.
