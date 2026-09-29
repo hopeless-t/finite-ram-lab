@@ -8,6 +8,9 @@ from finite_ram_lab.transactional_reprime import Event, State, Transaction, redu
 Q64 = {
     "page_counter_try_charge_64": True,
     "refill_stock_63": True,
+    "pte_clean": True,
+    "cpu_match": True,
+    "trace_complete": True,
 }
 
 
@@ -68,8 +71,24 @@ class TransactionalReprimeTests(unittest.TestCase):
                 {
                     "page_counter_try_charge_64": True,
                     "refill_stock_63": False,
+                    "pte_clean": True,
+                    "cpu_match": True,
+                    "trace_complete": True,
                 },
             )
+
+    def test_q64_guard_receipt_fails_closed(self) -> None:
+        for key, expected_state in (
+            ("pte_clean", State.INVALIDATED),
+            ("cpu_match", State.INVALIDATED),
+            ("trace_complete", State.INVALIDATED),
+        ):
+            with self.subTest(key=key):
+                tx = reduce(Transaction(), Event.ADMIT)
+                payload = dict(Q64)
+                payload[key] = False
+                tx = reduce(tx, Event.DIRECT_Q64, payload)
+                self.assertEqual(tx.state, expected_state)
 
     def test_reprime_budget_aborts_without_false_failure(self) -> None:
         tx = Transaction(max_reprimes=1)
