@@ -1,0 +1,10 @@
+MEMCG-005G-E explicit hosted launch
+B373
+Implementation: 2c61ba703230bb062b822fdab541c5359f7f1d48
+CI: 36572718726 success
+Frozen panel: 8,12,16,19,22,26,32,70 pages.
+Scale: 16 independent blocks x80 candidates =1280.
+Primary: refine transition location/shape for valid REMOTE_LOW first-touch-zero capture.
+Models: CONSTANT / HARD_STEP / SMOOTH_SIGMOID / CATEGORICAL.
+No biopsy in primary.
+Hosted research only. No local execution.
