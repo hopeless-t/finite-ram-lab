@@ -1,63 +1,84 @@
 # CURRENT
 
-> Latest bounce: B399
-> Stage: SUCCESS-SIDE THEORY = VERIFIED TRANSACTION, NOT FIRST-TOUCH LUCK
-> Stop: PHYSICAL PAUSE / READY FOR RE-PRIME STATE-MACHINE DESIGN
+> Latest bounce: B400
+> Stage: TRANSACTIONAL SUCCESS VALIDATOR PREFLIGHT COMPLETE
+> Stop: PHYSICAL PAUSE / READY FOR HISTORICAL REPLAY + CONTROLLED-SPAWN ADAPTER
 
-## Historical 1.6%
+## Success semantics
 
-MEMCG-005F REMOTE_LOW:
-- Q64 first touch 121/123 = 98.374%
-- zero first touch 2/123 = 1.626%
+SUCCESS is no longer first-touch luck or net memory.current.
 
-Interpretation updated:
-the 1.6% is not an established irreducible mechanism error.
+Canonical path:
 
-## Current success model
-
-REMOTE_LOW is an admission predictor only.
-
-Correctness protocol:
 predict -> normalize -> verify -> execute -> commit
 
-Verified Q64 reset token:
+Verified Q64 token requires:
+
 - page_counter_try_charge(64)
 - refill_stock(63)
 - PTE clean
-- no unexpected state-invalidating transition
+- CPU match
+- trace complete
 
-## Supporting evidence
+## Outcomes
 
-- G-A first-touch zero: 28/28 later Q64 by touch65
-- MEMCG-004 calibrated reset phase: exact R64 in 4/4
-- controlled-spawn primer-qualified terminal match: 55/55
-- OBS-005 closes dominant -17 LRU contamination
-- OBS-006 corrected run: MASKED_Q64_PASS 14/16, STOCK_STATE_LOST 2/16
-- all 14 state-preserved OBS-006 trials correctly identify deliberately masked Q64 (+64-17 = net +47)
+SUCCESS:
+complete verified epoch + target match + commit.
 
-## 100% target
+TARGET_FAIL:
+verified uninterrupted epoch + genuine target mismatch.
 
-Primary engineering target:
-P(correct | emitted SUCCESS)
+NO_RESULT:
+state invalidation -> REPRIME, or bounded-budget ABORT.
 
-Fail closed:
-unexpected refill / drain / PTE / CPU mismatch => INVALIDATE and RE-PRIME.
+Do not retry TARGET_FAIL away.
 
-Do not define success by raw memory.current delta.
+## State invalidators
 
-## Docs
+- unexpected refill
+- drain_stock
+- PTE growth
+- CPU mismatch
+- worker error
+- trace gap
 
-- docs/OBS-006-MASKED-Q64-OBSERVER-RESULT.md
-- docs/MATH-017-SUCCESS-SIDE-REFRAME.md
+## Release-only
+
+Positively classified LRU release is state-preserving.
+
+Unknown emissions fail closed.
+
+## Epoch
+
+REPRIME increments epoch.
+
+Old receipts cannot authorize current SUCCESS.
+
+## Implemented
+
+- src/finite_ram_lab/transactional_reprime.py
+- src/finite_ram_lab/transactional_receipt_adapter.py
+- specs/TRANSACTIONAL-REPRIME-v1.json
+- schemas/TRANSACTION-RECEIPT-PACKET-v1.schema.json
+- docs/MATH-018-TRANSACTIONAL-REPRIME-RELIABILITY.md
+- docs/COUNCIL-2026-09-30-TRANSACTIONAL-SUCCESS-v1.md
+- docs/TRANSACTIONAL-REPRIME-RECEIPT-ADAPTER-v1.md
+
+CI:
+PASS after adapter integration and property tests.
+
+Continuity Observer:
+event-path bug fixed; new runs PASS.
 
 ## Next
 
-Design and preflight transactional re-prime controlled-spawn.
+Historical replay and controlled-spawn adapter integration.
 
-No large b63 certification run yet.
+Do not launch physical transactional certification yet.
 
 ## Authority
 
 PAUSE.
 No local-PC execution.
 No paid runner.
+No large b63 certification run.
