@@ -1,0 +1,6 @@
+MEMCG-005 explicit hosted launch
+B322
+Implementation: 81118055839291dc3f939c0b7ff01ca7080cf343
+CI: 36544481855 success
+Calibrated K7 boundary: prestart 16 workers; normalize each to EMPTY via observed +64 then 63 consumptions; verify every wash/target/challenger insertion with fresh +64; independent m={0,5,6,7,8}; one-shot target probe.
+Hosted research only. No local execution.
