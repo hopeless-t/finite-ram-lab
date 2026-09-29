@@ -1,17 +1,17 @@
 # CURRENT
 
-> Latest bounce: B372
-> Stage: MEMCG-005G-E ADAPTIVE REFINEMENT IMPLEMENTED / CI
-> Stop: EXTERNAL_WAIT
+> Latest bounce: B373
+> Stage: MEMCG-005G-E EXPLICIT HOSTED LAUNCH
+> Stop: RUN_DISCOVERY_PENDING
 
 Implementation:
 `2c61ba703230bb062b822fdab541c5359f7f1d48`
 
-Ordinary CI:
-`36572718726`
+CI:
+`36572718726 = success`
 
-Single B372 read:
-`in_progress`
+Launch:
+`272c75dc49fad06d1489d20489332c982fd08c03`
 
 Frozen panel:
 `{8,12,16,19,22,26,32,70}`
@@ -19,12 +19,11 @@ Frozen panel:
 Scale:
 16 independent blocks x80 candidates =1280.
 
-No launch marker exists.
-Do not poll again in this bounce.
+Models:
+CONSTANT / HARD_STEP / SMOOTH_SIGMOID / CATEGORICAL.
 
 Next fresh bounce:
-read CI `36572718726` exactly once.
-If success, explicitly launch MEMCG-005G-E.
+discover/read exact-head MEMCG-005G-E scientific run once.
 
 Hosted research only.
 No local-PC execution.
