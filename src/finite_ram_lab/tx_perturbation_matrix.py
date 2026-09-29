@@ -197,13 +197,13 @@ def _prime_trigger_stock(
     trace_path: Path,
     max_touches: int,
 ) -> dict[str, Any]:
-    baseline = _event_count(trace_path, "frl_refill_stock:", "frltrig")
+    baseline = _event_count(trace_path, "frl_trigger_refill:", "frltrig")
     rows: list[dict[str, Any]] = []
     refill_touch: int | None = None
     for touch in range(1, max_touches + 1):
         row = _handoff_command(trigger, CMD_TOUCH)
         rows.append({"touch": touch, **row})
-        if _event_count(trace_path, "frl_refill_stock:", "frltrig") > baseline:
+        if _event_count(trace_path, "frl_trigger_refill:", "frltrig") > baseline:
             refill_touch = touch
             break
     return {
