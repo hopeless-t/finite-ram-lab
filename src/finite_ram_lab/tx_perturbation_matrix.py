@@ -213,6 +213,39 @@ def _prime_trigger_stock(
     }
 
 
+def _prime_scrubber_stock(
+    *,
+    scrubber: dict[str, Any],
+    trace_path: Path,
+    max_touches: int,
+) -> dict[str, Any]:
+    baseline = _event_count(
+        trace_path,
+        "frl_scrubber_refill:",
+        "frlscrub",
+    )
+    rows: list[dict[str, Any]] = []
+    refill_touch: int | None = None
+    for touch in range(1, max_touches + 1):
+        row = _handoff_command(scrubber, CMD_TOUCH)
+        rows.append({"touch": touch, **row})
+        if (
+            _event_count(
+                trace_path,
+                "frl_scrubber_refill:",
+                "frlscrub",
+            )
+            > baseline
+        ):
+            refill_touch = touch
+            break
+    return {
+        "refill_touch": refill_touch,
+        "rows": rows,
+        "pass": refill_touch is not None,
+    }
+
+
 def _scrub_shared_lru(
     *,
     scrubber: dict[str, Any],
@@ -232,6 +265,79 @@ def _scrub_shared_lru(
         "flush_touch": flush_touch,
         "rows": rows,
         "pass": flush_touch is not None,
+    }
+
+
+def _postverify_scrub_reset(
+    *,
+    archive: EpochArchive,
+    scrubber: dict[str, Any],
+    trace_marker: Path,
+    trace_path: Path,
+    trial_id: str,
+    stock_cpu: int,
+    max_touches: int,
+) -> dict[str, Any]:
+    refill_before = _event_count(
+        trace_path,
+        "frl_scrubber_refill:",
+        "frlscrub",
+    )
+    write_marker(
+        trace_marker,
+        trial_id=trial_id,
+        epoch=archive.tx.epoch,
+        phase="OBSERVE",
+        touch_number=0,
+        edge="PRE",
+    )
+    try:
+        scrub = _scrub_shared_lru(
+            scrubber=scrubber,
+            trace_path=trace_path,
+            max_touches=max_touches,
+        )
+    finally:
+        write_marker(
+            trace_marker,
+            trial_id=trial_id,
+            epoch=archive.tx.epoch,
+            phase="OBSERVE",
+            touch_number=0,
+            edge="POST",
+        )
+
+    refill_after = _event_count(
+        trace_path,
+        "frl_scrubber_refill:",
+        "frlscrub",
+    )
+    window = _trace_window(
+        trace_path,
+        trial_id=trial_id,
+        epoch=archive.tx.epoch,
+        phase="OBSERVE",
+        touch_number=0,
+    )
+    event = archive.apply_neutral_window(
+        epoch=archive.tx.epoch,
+        touch_number=0,
+        window=window,
+        stock_cpu=stock_cpu,
+        label="POST_VERIFY_LRU_RESET",
+    )
+    helper_refills = refill_after - refill_before
+    pure = (
+        scrub.get("pass") is True
+        and helper_refills == 0
+        and event.get("result") == "NEUTRAL"
+        and archive.tx.state in {State.VERIFIED, State.EXECUTING}
+    )
+    return {
+        "scrub": scrub,
+        "helper_refill_count": helper_refills,
+        "event": event,
+        "pass": pure,
     }
 
 
@@ -500,7 +606,11 @@ def run_trial(
                 ),
                 role="scrubber",
                 cpu=stock_cpu,
-                max_pages=max(96, int(release_spec["scrub_max_touches"])),
+                max_pages=max(
+                    192,
+                    int(release_spec["scrubber_prime_max_touches"])
+                    + int(release_spec["scrub_max_touches"]),
+                ),
                 worker_uid=worker_uid,
             )
             trigger = _start_role(
@@ -524,37 +634,17 @@ def run_trial(
                 trace_path=trace_path,
                 max_touches=int(release_spec["trigger_prime_max_touches"]),
             )
-            if not challenge["trigger_prime"]["pass"]:
-                challenge["result"] = "SETUP_FAIL_TRIGGER_STOCK_NO_REFILL"
-                _stop_role(trigger)
-                trigger = None
-                _stop_role(scrubber)
-                scrubber = None
-                return {
-                    "experiment_id": spec["experiment_id"],
-                    "kind": "PERTURBATION",
-                    "block": block,
-                    "identity": identity,
-                    "trial_id": trial_id,
-                    "arm": arm,
-                    "challenge": challenge,
-                    "epochs": epochs,
-                    "archive": archive.as_dict(),
-                    "final_state": archive.tx.state.value,
-                    "challenge_pass": False,
-                    "reprimes": archive.tx.reprimes,
-                }
-
-            # Reset the shared LRU batch after trigger-stock priming so the
-            # later 17 producer + 14 trigger geometry starts from a fresh
-            # batch boundary without touching the verified target state.
-            challenge["scrub"] = _scrub_shared_lru(
+            challenge["scrubber_prime"] = _prime_scrubber_stock(
                 scrubber=scrubber,
                 trace_path=trace_path,
-                max_touches=int(release_spec["scrub_max_touches"]),
+                max_touches=int(release_spec["scrubber_prime_max_touches"]),
             )
-            if not challenge["scrub"]["pass"]:
-                challenge["result"] = "SETUP_FAIL_SCRUB_NO_FLUSH"
+            if not challenge["trigger_prime"]["pass"]:
+                challenge["result"] = "SETUP_FAIL_TRIGGER_STOCK_NO_REFILL"
+            elif not challenge["scrubber_prime"]["pass"]:
+                challenge["result"] = "SETUP_FAIL_SCRUBBER_STOCK_NO_REFILL"
+
+            if challenge.get("result", "").startswith("SETUP_FAIL_"):
                 _stop_role(trigger)
                 trigger = None
                 _stop_role(scrubber)
