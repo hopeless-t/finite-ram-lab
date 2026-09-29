@@ -2,6 +2,11 @@ name: MATH-002 pmndrs Geometry Lens v1
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "launch/MATH-002-v1.txt"
 
 permissions:
   contents: read
