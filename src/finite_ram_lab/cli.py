@@ -8,6 +8,11 @@ from pathlib import Path
 
 from .calculators import CATALOG, run_spec, template
 from .recorder import ingest_many
+from .evidence_residency import (
+    parse_storage_ref,
+    verify_manifest,
+    write_manifest,
+)
 
 
 def _dump(data: object) -> None:
@@ -50,6 +55,57 @@ def cmd_ingest_evidence(args: argparse.Namespace) -> None:
             rebuild=args.rebuild,
         )
     )
+
+
+def cmd_evidence_manifest(args: argparse.Namespace) -> None:
+    storage_refs = [
+        parse_storage_ref(value)
+        for value in args.storage_ref
+    ]
+    origin = None
+    if args.origin_provider or args.origin_ref or args.origin_digest:
+        if not args.origin_provider or not args.origin_ref:
+            raise SystemExit(
+                "--origin-provider and --origin-ref must be supplied together"
+            )
+        origin = {
+            "provider": args.origin_provider,
+            "reference": args.origin_ref,
+        }
+        if args.origin_digest:
+            origin["digest"] = args.origin_digest
+
+    manifest = write_manifest(
+        args.root,
+        args.out,
+        experiment_id=args.experiment_id,
+        run_id=args.run_id,
+        source_commit=args.source_commit,
+        residency_tier=args.tier,
+        storage_refs=storage_refs,
+        origin=origin,
+    )
+    _dump(
+        {
+            "status": "PASS",
+            "out": str(Path(args.out)),
+            "content_set_sha256": manifest["content_set_sha256"],
+            "file_count": manifest["file_count"],
+            "total_bytes": manifest["total_bytes"],
+            "residency_tier": manifest["residency_tier"],
+        }
+    )
+
+
+def cmd_evidence_verify(args: argparse.Namespace) -> None:
+    result = verify_manifest(
+        args.root,
+        args.manifest,
+        allow_extra=args.allow_extra,
+    )
+    _dump(result)
+    if result["status"] != "PASS":
+        raise SystemExit(2)
 
 
 def _version(name: str) -> str | None:
@@ -122,6 +178,45 @@ def main() -> None:
         help="Delete the existing SQLite projection before ingesting inputs",
     )
     p.set_defaults(func=cmd_ingest_evidence)
+
+    p = sub.add_parser(
+        "evidence-manifest",
+        help="Create a content-addressed HOT/WARM/COLD evidence manifest",
+    )
+    p.add_argument("root")
+    p.add_argument("--out", required=True)
+    p.add_argument("--experiment-id", required=True)
+    p.add_argument("--run-id", required=True)
+    p.add_argument("--source-commit", required=True)
+    p.add_argument(
+        "--tier",
+        required=True,
+        choices=["HOT", "WARM", "COLD"],
+    )
+    p.add_argument(
+        "--storage-ref",
+        action="append",
+        default=[],
+        metavar="TIER:PROVIDER:LOCATOR",
+        help="Repeatable opaque storage reference; avoid public absolute paths or private URLs",
+    )
+    p.add_argument("--origin-provider")
+    p.add_argument("--origin-ref")
+    p.add_argument("--origin-digest")
+    p.set_defaults(func=cmd_evidence_manifest)
+
+    p = sub.add_parser(
+        "evidence-verify",
+        help="Verify a restored evidence directory against a residency manifest",
+    )
+    p.add_argument("root")
+    p.add_argument("--manifest", required=True)
+    p.add_argument(
+        "--allow-extra",
+        action="store_true",
+        help="Allow unmanifested files while still verifying all manifested files",
+    )
+    p.set_defaults(func=cmd_evidence_verify)
 
     p = sub.add_parser(
         "doctor",
