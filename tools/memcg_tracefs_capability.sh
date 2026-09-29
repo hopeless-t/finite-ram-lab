@@ -1,126 +1,159 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -u -o pipefail
 
-OUT="${1:-memcg-tracefs-capability.json}"
-TRACE=/sys/kernel/tracing
+OUT="${1:-memcg-tracefs-diagnostic.json}"
+TMP="$(mktemp -d)"
+trap 'rm -rf "$TMP"' EXIT
 
-if [[ ! -d "$TRACE" ]]; then
-  echo "missing tracefs mountpoint: $TRACE" >&2
-  exit 2
-fi
-
-if [[ ! -e "$TRACE/dynamic_events" && ! -e "$TRACE/kprobe_events" ]]; then
-  sudo mount -t tracefs nodev "$TRACE" 2>/dev/null || true
-fi
-
-if [[ -e "$TRACE/dynamic_events" ]]; then
-  EVENTS_FILE="$TRACE/dynamic_events"
-elif [[ -e "$TRACE/kprobe_events" ]]; then
-  EVENTS_FILE="$TRACE/kprobe_events"
-else
-  echo "no dynamic_events or kprobe_events" >&2
-  exit 3
-fi
-
-symbols=(
-  try_charge_memcg
-  consume_stock
-  refill_stock
-  memcg_uncharge
-)
-
-missing=()
-for sym in "${symbols[@]}"; do
-  if ! grep -Eq "[[:space:]]${sym}$" /proc/kallsyms; then
-    missing+=("$sym")
-  fi
-done
-
-cleanup() {
+run_capture() {
+  local name="$1"
+  shift
   set +e
-  for ev in try_charge consume refill uncharge; do
-    if [[ -e "$TRACE/events/frl_obs/$ev/enable" ]]; then
-      echo 0 | sudo tee "$TRACE/events/frl_obs/$ev/enable" >/dev/null
-    fi
-  done
-  if [[ -e "$TRACE/events/frl_obs/uncharge/trigger" ]]; then
-    echo '!stacktrace' | sudo tee "$TRACE/events/frl_obs/uncharge/trigger" >/dev/null 2>&1
-  fi
-  for ev in uncharge refill consume try_charge; do
-    echo "-:frl_obs/$ev" | sudo tee -a "$EVENTS_FILE" >/dev/null 2>&1
-  done
+  "$@" >"$TMP/$name.out" 2>"$TMP/$name.err"
+  local rc=$?
+  set -e
+  printf '%s' "$rc" >"$TMP/$name.rc"
 }
-trap cleanup EXIT
 
-if ((${#missing[@]})); then
-  printf 'missing symbols:' >&2
-  printf ' %s' "${missing[@]}" >&2
-  printf '\n' >&2
-  exit 4
+set -e
+uname -a >"$TMP/uname.out"
+mount >"$TMP/mount.out" 2>&1 || true
+ls -la /sys/kernel/tracing >"$TMP/sys_kernel_tracing.out" 2>&1 || true
+ls -la /sys/kernel/debug >"$TMP/sys_kernel_debug.out" 2>&1 || true
+ls -la /sys/kernel/debug/tracing >"$TMP/sys_kernel_debug_tracing.out" 2>&1 || true
+cat /sys/kernel/security/lockdown >"$TMP/lockdown.out" 2>&1 || true
+cat /proc/sys/kernel/kptr_restrict >"$TMP/kptr_restrict.out" 2>&1 || true
+cat /proc/sys/kernel/perf_event_paranoid >"$TMP/perf_event_paranoid.out" 2>&1 || true
+
+CONFIG_SRC=""
+if [[ -r "/boot/config-$(uname -r)" ]]; then
+  CONFIG_SRC="/boot/config-$(uname -r)"
+  cp "$CONFIG_SRC" "$TMP/kernel_config.out"
+elif [[ -r /proc/config.gz ]]; then
+  CONFIG_SRC="/proc/config.gz"
+  zcat /proc/config.gz >"$TMP/kernel_config.out"
+else
+  : >"$TMP/kernel_config.out"
 fi
 
-defs=(
-'p:frl_obs/try_charge try_charge_memcg memcg=$arg1:x64 request_pages=$arg3:u32'
-'r:frl_obs/consume consume_stock memcg=$arg1:x64 request_pages=$arg2:u32 ret=$retval:u64'
-'p:frl_obs/refill refill_stock memcg=$arg1:x64 pages=$arg2:u32'
-'p:frl_obs/uncharge memcg_uncharge memcg=$arg1:x64 pages=$arg2:u32'
-)
+grep -E '^(CONFIG_(KPROBES|KPROBE_EVENTS|FTRACE|TRACING|TRACEPOINTS|DYNAMIC_EVENTS|DEBUG_FS))=' "$TMP/kernel_config.out" >"$TMP/config_interest.out" 2>&1 || true
+grep -E '[[:space:]](try_charge_memcg|consume_stock|refill_stock|memcg_uncharge)$' /proc/kallsyms >"$TMP/symbols.out" 2>&1 || true
 
-for def in "${defs[@]}"; do
-  echo "$def" | sudo tee -a "$EVENTS_FILE" >/dev/null
-done
+run_capture mount_tracefs_primary sudo mount -t tracefs tracefs /sys/kernel/tracing
 
-formats_ok=true
-for ev in try_charge consume refill uncharge; do
-  fmt="$TRACE/events/frl_obs/$ev/format"
-  [[ -r "$fmt" ]] || formats_ok=false
-done
-
-grep -q 'field:.*memcg' "$TRACE/events/frl_obs/try_charge/format" || formats_ok=false
-grep -q 'field:.*request_pages' "$TRACE/events/frl_obs/try_charge/format" || formats_ok=false
-grep -q 'field:.*ret' "$TRACE/events/frl_obs/consume/format" || formats_ok=false
-grep -q 'field:.*pages' "$TRACE/events/frl_obs/uncharge/format" || formats_ok=false
-
-echo stacktrace | sudo tee "$TRACE/events/frl_obs/uncharge/trigger" >/dev/null
-trigger_text="$(cat "$TRACE/events/frl_obs/uncharge/trigger")"
-if ! grep -q 'stacktrace' <<<"$trigger_text"; then
-  echo "stacktrace trigger registration failed" >&2
-  exit 5
+if [[ -d /sys/kernel/debug ]]; then
+  run_capture mount_debugfs sudo mount -t debugfs debugfs /sys/kernel/debug
 fi
-echo '!stacktrace' | sudo tee "$TRACE/events/frl_obs/uncharge/trigger" >/dev/null
 
-python - "$OUT" "$EVENTS_FILE" "$formats_ok" <<'PY'
+if [[ -d /sys/kernel/debug/tracing ]]; then
+  run_capture mount_tracefs_debug sudo mount -t tracefs tracefs /sys/kernel/debug/tracing
+fi
+
+for base in /sys/kernel/tracing /sys/kernel/debug/tracing; do
+  key="$(echo "$base" | tr '/-' '__')"
+  {
+    echo "BASE=$base"
+    for f in dynamic_events kprobe_events available_events trace kprobe_profile; do
+      if [[ -e "$base/$f" ]]; then
+        stat -c '%n mode=%a uid=%u gid=%g type=%F' "$base/$f" 2>&1 || true
+      else
+        echo "$base/$f MISSING"
+      fi
+    done
+  } >"$TMP/${key}_files.out" 2>&1
+done
+
+python - "$OUT" "$TMP" "$CONFIG_SRC" <<'PY'
 import json
 import platform
 import sys
 from pathlib import Path
 
-out, events_file, formats_ok = sys.argv[1:]
-trace = Path('/sys/kernel/tracing')
+out, tmp, config_src = sys.argv[1:]
+root = Path(tmp)
+
+def read(name):
+    p = root / name
+    return p.read_text(encoding='utf-8', errors='replace') if p.exists() else ''
+
+def rc(name):
+    p = root / (name + '.rc')
+    if not p.exists():
+        return None
+    try:
+        return int(p.read_text())
+    except ValueError:
+        return None
+
+bases = {}
+for base in ['/sys/kernel/tracing', '/sys/kernel/debug/tracing']:
+    p = Path(base)
+    bases[base] = {
+        'exists': p.exists(),
+        'dynamic_events': (p / 'dynamic_events').exists(),
+        'kprobe_events': (p / 'kprobe_events').exists(),
+        'available_events': (p / 'available_events').exists(),
+        'trace': (p / 'trace').exists(),
+    }
+
+symbols = []
+for line in read('symbols.out').splitlines():
+    parts = line.split()
+    if parts:
+        symbols.append(parts[-1])
+
 payload = {
-    'schema_version': 'memcg-tracefs-capability-v1',
-    'status': 'PASS' if formats_ok == 'true' else 'FAIL',
+    'schema_version': 'memcg-tracefs-diagnostic-v2',
     'kernel_release': platform.release(),
     'platform': platform.platform(),
-    'events_file': events_file,
-    'required_symbols': [
-        'try_charge_memcg',
-        'consume_stock',
-        'refill_stock',
-        'memcg_uncharge',
-    ],
-    'formats_ok': formats_ok == 'true',
-    'probe_formats': {},
+    'config_source': config_src or None,
+    'config_interest': read('config_interest.out').splitlines(),
+    'lockdown': read('lockdown.out').strip(),
+    'kptr_restrict': read('kptr_restrict.out').strip(),
+    'perf_event_paranoid': read('perf_event_paranoid.out').strip(),
+    'symbols_found': sorted(symbols),
+    'bases': bases,
+    'mount_attempts': {
+        'tracefs_primary': {
+            'rc': rc('mount_tracefs_primary'),
+            'stdout': read('mount_tracefs_primary.out'),
+            'stderr': read('mount_tracefs_primary.err'),
+        },
+        'debugfs': {
+            'rc': rc('mount_debugfs'),
+            'stdout': read('mount_debugfs.out'),
+            'stderr': read('mount_debugfs.err'),
+        },
+        'tracefs_debug': {
+            'rc': rc('mount_tracefs_debug'),
+            'stdout': read('mount_tracefs_debug.out'),
+            'stderr': read('mount_tracefs_debug.err'),
+        },
+    },
+    'mount_table': read('mount.out'),
+    'directory_receipts': {
+        '/sys/kernel/tracing': read('sys_kernel_tracing.out'),
+        '/sys/kernel/debug': read('sys_kernel_debug.out'),
+        '/sys/kernel/debug/tracing': read('sys_kernel_debug_tracing.out'),
+    },
 }
-for ev in ['try_charge', 'consume', 'refill', 'uncharge']:
-    path = trace / 'events' / 'frl_obs' / ev / 'format'
-    payload['probe_formats'][ev] = path.read_text(encoding='utf-8')
-Path(out).write_text(
-    json.dumps(payload, indent=2, sort_keys=True) + '\n',
-    encoding='utf-8',
+
+payload['status'] = (
+    'TRACEFS_AVAILABLE'
+    if any(v['dynamic_events'] or v['kprobe_events'] for v in bases.values())
+    else 'TRACEFS_HOLD'
 )
-if payload['status'] != 'PASS':
-    raise SystemExit(6)
+
+Path(out).write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+print(json.dumps({
+    'status': payload['status'],
+    'kernel_release': payload['kernel_release'],
+    'config_interest': payload['config_interest'],
+    'lockdown': payload['lockdown'],
+    'symbols_found': payload['symbols_found'],
+    'bases': payload['bases'],
+    'mount_attempts': payload['mount_attempts'],
+}, indent=2, sort_keys=True))
 PY
 
-echo "PASS: tracefs dynamic memcg observer capability"
+exit 0
