@@ -1,8 +1,8 @@
 # CURRENT
 
-> **Latest bounce:** B339
-> **Stage:** MEMCG-005D IMPLEMENTED / CI PENDING
-> **Turn stop reason:** CI_DISCOVERY_PENDING
+> **Latest bounce:** B340
+> **Stage:** MEMCG-005D EXPLICIT HOSTED LAUNCH
+> **Turn stop reason:** RUN_DISCOVERY_PENDING
 
 ## MEMCG-005C accepted result
 
@@ -12,40 +12,33 @@ Canonical:
 Decision:
 `REJECT_ATOMIC_PATH`
 
-ATOMIC was worse than TWO_STEP in 4/4 blocks.
+## MEMCG-005D
 
-## MEMCG-005D implementation
+Implementation:
+`bac7f0babe87a7350f81ea37113b3798b512ca7d`
 
-Files:
-- `specs/MEMCG-005D-EXTERNAL-MIGRATION-FIRST-TOUCH-v1.json`
-- `experiments/memcg005d_worker.c`
-- `src/finite_ram_lab/memcg005d_external_migration.py`
-- `.github/workflows/memcg-005d-external-migration.yml`
-- `tests/test_memcg005d_external_migration.py`
+Implementation CI:
+`36552457074 = success`
 
-Shared-latch worker:
-- READY / GO / DONE / STOP in prefaulted shared page;
-- no measured-path FIFO/status I/O.
+Launch:
+`f4ca08442547142f1aaf0d0113f0653da3d7ee09`
 
 A/B:
 - SELF_ATOMIC = worker self-migration then immediate touch;
-- EXTERNAL_ATOMIC = controller migrates PID, confirms S, samples mid current, then GO triggers immediate touch.
-
-EXTERNAL separately records:
-- migration_delta_pages = mid - pre;
-- touch_delta_pages = post - mid.
+- EXTERNAL_ATOMIC = controller external migration + mid current + shared GO + immediate touch.
 
 23 identities per arm per block.
 4 blocks.
+184 probes.
 
-No launch marker exists.
+EXTERNAL records migration delta and touch delta separately.
 
 ## Next fresh-bounce action
 
-Discover/read ordinary CI for B339 exactly once.
+Discover/read exact-head MEMCG-005D workflow once.
 
-- success -> explicit MEMCG-005D hosted launch;
-- pending/in_progress -> EXTERNAL_WAIT;
+- pending/in_progress -> record run id, EXTERNAL_WAIT;
+- success -> fetch aggregate once and canonicalize;
 - failure -> inspect only exposed invariant.
 
 ## Authority boundary
