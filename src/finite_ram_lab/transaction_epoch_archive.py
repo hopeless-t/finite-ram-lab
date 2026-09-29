@@ -158,6 +158,94 @@ class EpochArchive:
         self.packets.append(packet_v2)
         return packet_v2
 
+
+    def apply_release_only_window(
+        self,
+        *,
+        epoch: int,
+        touch_number: int,
+        window: dict[str, Any],
+        stock_cpu: int,
+    ) -> dict[str, Any]:
+        """Apply an external observation window without consuming target stock."""
+        self._assert_epoch(epoch)
+        if self.tx.state not in {State.VERIFIED, State.EXECUTING}:
+            raise ValueError(
+                "OBSERVE release-only window requires VERIFIED/EXECUTING state"
+            )
+        if self.owner_counter is None:
+            raise ValueError("OBSERVE requires epoch-local owner counter")
+
+        receipt = observer_receipt_for_window(
+            window,
+            owner_counter=self.owner_counter,
+            stock_cpu=stock_cpu,
+            phase="OBSERVE",
+        )
+
+        before = self.tx.expected_residual
+        after = before
+
+        if not bool(receipt.get("trace_complete", False)):
+            self.tx = reduce(self.tx, Event.TRACE_GAP)
+            outcome = "TRACE_GAP"
+        elif int(receipt.get("unknown_emission_count", 0)) > 0:
+            self.tx = reduce(self.tx, Event.TRACE_GAP)
+            outcome = "TRACE_GAP"
+        elif int(receipt.get("drain_stock_count", 0)) > 0:
+            self.tx = reduce(self.tx, Event.DRAIN_STOCK)
+            outcome = "DRAIN_STOCK"
+        elif (
+            int(receipt.get("page_counter_try_charge_64_count", 0)) > 0
+            or int(receipt.get("refill_stock_63_count", 0)) > 0
+        ):
+            self.tx = reduce(self.tx, Event.UNEXPECTED_REFILL)
+            outcome = "UNEXPECTED_REFILL"
+        elif int(receipt.get("classified_release_only_count", 0)) <= 0:
+            self.tx = reduce(self.tx, Event.TRACE_GAP)
+            outcome = "RELEASE_NOT_GROUNDED"
+        else:
+            count = int(receipt["classified_release_only_count"])
+            for _ in range(count):
+                self.tx = reduce(self.tx, Event.RELEASE_ONLY)
+            after = self.tx.expected_residual
+            outcome = "RELEASE_ONLY"
+
+        event = {
+            "event": "OBSERVE_RELEASE_ONLY",
+            "epoch": self.tx.epoch,
+            "touch": int(touch_number),
+            "result": outcome,
+            "state": self.tx.state.value,
+            "expected_residual_before": before,
+            "expected_residual_after": after,
+            "owner_counter": self.owner_counter,
+            "classified_release_only_count": int(
+                receipt.get("classified_release_only_count", 0)
+            ),
+            "unknown_emission_count": int(
+                receipt.get("unknown_emission_count", 0)
+            ),
+            "drain_stock_count": int(receipt.get("drain_stock_count", 0)),
+            "off_cpu_drain_stock_count": int(
+                receipt.get("off_cpu_drain_stock_count", 0)
+            ),
+            "marker_pre_ns": receipt.get("marker_pre_ns"),
+            "marker_post_ns": receipt.get("marker_post_ns"),
+            "touch_index_since_verified": self.next_touch_index_since_verified,
+            "elapsed_ns_since_verified": (
+                None
+                if (
+                    self.verified_at_ns is None
+                    or receipt.get("marker_pre_ns") is None
+                )
+                else int(receipt["marker_pre_ns"]) - int(self.verified_at_ns)
+            ),
+            "notes": receipt.get("notes"),
+        }
+        self.control_events.append(event)
+        return event
+
     def reprime(self, *, mode: str = "HARD_NEW_WORKER_CGROUP") -> None:
         before_epoch = self.tx.epoch
         self.tx = reduce(self.tx, Event.REPRIME)
