@@ -1,10 +1,10 @@
 # CURRENT
 
-> **Latest bounce:** B340
-> **Stage:** MEMCG-005D EXPLICIT HOSTED LAUNCH
-> **Turn stop reason:** RUN_DISCOVERY_PENDING
+> **Latest bounce:** B341
+> **Stage:** MEMCG-005D RUNTIME REPAIR / CI PENDING
+> **Turn stop reason:** CI_DISCOVERY_PENDING
 
-## MEMCG-005C accepted result
+## MEMCG-005C
 
 Canonical:
 `909b554048e4e269ebb644c8533857468cae8296`
@@ -17,28 +17,32 @@ Decision:
 Implementation:
 `bac7f0babe87a7350f81ea37113b3798b512ca7d`
 
-Implementation CI:
-`36552457074 = success`
-
-Launch:
+Initial scientific launch:
 `f4ca08442547142f1aaf0d0113f0653da3d7ee09`
 
-A/B:
-- SELF_ATOMIC = worker self-migration then immediate touch;
-- EXTERNAL_ATOMIC = controller external migration + mid current + shared GO + immediate touch.
+Failed run:
+`36552551097`
 
-23 identities per arm per block.
-4 blocks.
-184 probes.
+Failure:
+unaligned `mmap.flush(offset,4)` in Python latch helper caused `EINVAL`.
 
-EXTERNAL records migration delta and touch delta separately.
+Repair:
+`c89fec2940537f610ee517885c1d9e813d79f3c6`
+
+Scientific design unchanged:
+- SELF_ATOMIC worker self-migration;
+- EXTERNAL_ATOMIC controller-driven migration;
+- external pre/mid/post current decomposition;
+- shared latch, no measured-path status I/O.
+
+No new scientific launch marker has been created after the repair.
 
 ## Next fresh-bounce action
 
-Discover/read exact-head MEMCG-005D workflow once.
+Discover/read ordinary CI for repair commit exactly once.
 
-- pending/in_progress -> record run id, EXTERNAL_WAIT;
-- success -> fetch aggregate once and canonicalize;
+- success -> create a new explicit MEMCG-005D repair launch marker/path or otherwise explicit new launch;
+- pending/in_progress -> EXTERNAL_WAIT;
 - failure -> inspect only exposed invariant.
 
 ## Authority boundary
