@@ -1,0 +1,43 @@
+{
+  "schema_version": "obs001-cold-replica-v1",
+  "experiment_id": "OBS-001-17-PAGE-UNCHARGETRACE-v1",
+  "run_id": "36615514509",
+  "source_commit": "5338b2aaf51ca4e89bccdf60807894544a7fd7e5",
+  "raw_content_set_sha256": "aeee124d149aab0fb66023ff527e4982027b523290d864f5bc4e00a33a216335",
+  "raw_file_count": 120,
+  "raw_total_bytes": 13731781,
+  "storage": {
+    "tier": "COLD",
+    "provider": "google-drive",
+    "locator": "Catfood Lab Evidence/finite-ram-lab/OBS-001-17-PAGE-UNCHARGETRACE-v1/run-36615514509",
+    "visibility_at_verification": "private"
+  },
+  "verification": {
+    "method": "download Drive ZIPs and compare SHA-256 to GitHub Actions artifact digests",
+    "verified_archives": 5,
+    "mismatches": 0,
+    "status": "PASS"
+  },
+  "archives": [
+    {
+      "name": "obs001-block-0.zip",
+      "sha256": "e8550fee7d928bb77cb079be6e064143eb95305869fe201b62c05dd3fc5c1cc6"
+    },
+    {
+      "name": "obs001-block-1.zip",
+      "sha256": "480ac943a39fd6527808a4f954f628ae4f71b234593e35a19211dec5b614fda6"
+    },
+    {
+      "name": "obs001-block-2.zip",
+      "sha256": "156f1d8a322fa944bc512a25450e8ef4ad56f536c0f88a52ab960a61d6f2c277"
+    },
+    {
+      "name": "obs001-block-3.zip",
+      "sha256": "560812459cb298753baf366928c7fdff0e5b87edde04a9c03e6a754204756c3d"
+    },
+    {
+      "name": "OBS-001-17-PAGE-UNCHARGETRACE-36615514509.zip",
+      "sha256": "c977d4cfce13e65a795c5dba6af3335cf145e6c537d9a45db02b21ef9c8d505b"
+    }
+  ]
+}
