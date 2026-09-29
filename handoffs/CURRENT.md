@@ -1,95 +1,104 @@
 # CURRENT
 
-> Latest bounce: B380
-> Stage: MATH-008 ALIAS AUDIT COMPLETE / G0 + INDUCTION DRAFTED
-> Stop: HUMAN_COMPUTE_APPROVAL
+> Latest bounce: B381
+> Stage: MATH-009 FAULT PATH COMPLETE / G0 MINIMAL DESIGN CALIBRATED
+> Stop: HUMAN_COMPUTE_APPROVAL_FOR_G0_STAGE_A
 
-## Critical new finding
+## Main source-level finding
 
-The observed capacity signal is aliased with decimal argv width.
+Linux v7.0 user PTE allocation is memcg-accounted and reaches the same per-CPU stock path:
 
-Implementation passed capacity as:
-`str(max_pages)`
+`GFP_PGTABLE_USER (__GFP_ACCOUNT)`
+-> `__memcg_kmem_charge_page()`
+-> `obj_cgroup_charge_pages()`
+-> `try_charge_memcg()`
+-> `consume_stock()`
 
-Across the relevant experiments:
-- one-digit capacities: 8/9
-- two-digit capacities: 10+
+Anonymous write fault ordering:
 
-In MEMCG-005G-F, the candidate T10 split is exactly identical to this digit-width partition.
+`pte_alloc()`
+then
+`alloc_anon_folio()`
 
-Exploratory cross-experiment CMH:
-- common OR ~=4.20
-- p ~=1.33e-10
-- heterogeneity p ~=0.270
-
-This proves the partition is reproducible, not which variable causes it.
+This makes page-table state a concrete candidate modulator of the first-touch Q64/exact-zero phenotype.
 
 Doc:
-`docs/MATH-008-ARGV-WIDTH-ALIAS-AND-INDUCTION.md`
+`docs/MATH-009-LINUX7-FAULT-PATH-AUDIT.md`
 
-## Q64 status
+## Exact hosted environment
 
-Q64 remains independently supported.
+G-F run `36577573774` exact job log:
+- Ubuntu 26.04.1 LTS
+- image `ubuntu-26.04`
+- image version `20260920.143.1`
 
-Current Linux source defines a 64-page memcg charge batch, and finite-ram-lab MEMCG-004 reproduced:
+Matching image manifest:
+- kernel `7.0.0-1012-azure`
 
-fresh Q64 -> residual63 -> 63 stock-consuming touches -> next Q64.
+## PTE receipt
 
-Do not conflate Q64 with T10.
+Primary:
+`VmPTE_pre_kib -> VmPTE_post_kib`
 
-## Next experiment candidate: G0 alias breaker
+Corroboration only:
+`memory.stat:pagetables`
 
-Draft:
-`docs/MEMCG-005G-G0-CAPACITY-ARGV-ALIAS-BREAKER-DRAFT-v0.md`
+Reason:
+VmPTE reads atomic `mm_pgtables_bytes`; memcg rstat may suppress small immediate flushes.
 
-Preferred discovery scale:
-- 32 hosted blocks
-- 60 candidates/block
-- 1920 candidates total
-- 320 candidates/arm
+## G0 minimal alias breaker
 
-Key change:
-capacity is written as binary `max_pages_u32` into shared control memory and removed from capacity-dependent argv text.
+Doc:
+`docs/MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1.md`
 
-Secondary receipts:
-region/control addresses and page-table-position diagnostics.
+Keep existing C worker unchanged.
 
-Do not implement/launch without Human compute approval.
+Arms:
+- C8=`8`
+- P8=`08`
+- C9=`9`
+- P9=`09`
+- H10=`10`
+- H32=`32`
 
-## Rare-Pokemon construction track
+Primary:
+`P8+P9 vs C8+C9`
 
-Revised draft:
+This directly changes argv representation while holding numeric capacity fixed.
+
+## Monte Carlo
+
+Doc:
+`docs/MATH-010-G0-MONTE-CARLO-CALIBRATION.md`
+
+Planning ladder:
+- 16 blocks / 960 total: direction ~97.22%, p<.05+direction ~42.66%
+- 32 / 1920: ~99.76%, ~75.83%
+- 48 / 2880: ~99.96%, ~90.69%
+
+Recommended:
+`16 -> 32 -> 48 only as needed`
+
+Stage A is an instrument/direction probe.
+
+## Counter-audits
+
+- naive uniform 2 MiB boundary model alone is too weak (~0.39% order-of-magnitude crossing effect);
+- default PMD THP cannot fit a <=128 KiB VMA;
+- small mTHP is downgraded absent an explicit runner override.
+
+## Rare-Pokemon construction
+
 `docs/MEMCG-005G-C-CONTROLLED-RARE-INDUCTION-v1.md`
 
-Route:
-directly observe Q64 primer -> consume fixed bait pages -> measure target.
+b63 remains the preferred near-deterministic depth1 construction route after G0 clarifies natural-state mechanism.
 
-Primary operational arm:
-`b63`
+## Large replication
 
-Prediction:
-- one residual stock page before target
-- target delta0
-- next touch Q64
-- exact depth1
+MEMCG-005G-G 5760-candidate replication remains DEFERRED.
 
-This is the preferred route toward near-deterministic capture rather than waiting for natural rare states.
+## Authority
 
-## Large confirmatory replication
-
-Existing draft:
-`docs/MEMCG-005G-G-EXACT-ZERO-REPLICATION-DRAFT-v0.md`
-
-Scale:
-5760 total candidates.
-
-Status:
-DEFERRED until the capacity/argv alias is broken.
-
-## Collaboration
-
-Draft:
-`docs/DISTRIBUTED-RARE-STATE-REPLICATION-DRAFT-v0.md`
-
-Hosted research only.
+No G0 implementation/hosted launch yet.
 No local-PC execution.
+Each hosted stage requires Human compute approval.
