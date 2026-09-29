@@ -127,6 +127,7 @@ def _start(
     prep_cpu: int,
     max_pages: int,
     safe_len: int,
+    worker_uid: int | None = None,
 ) -> dict[str, Any]:
     ctl = root / f"{name}.ctl"
     fd = os.open(
@@ -135,6 +136,9 @@ def _start(
         0o600,
     )
     os.ftruncate(fd, CONTROL_BYTES)
+    selected_uid = os.getuid() if worker_uid is None else int(worker_uid)
+    if selected_uid != os.getuid():
+        os.chown(ctl, selected_uid, -1)
     mm = mmap.mmap(
         fd,
         CONTROL_BYTES,
@@ -148,7 +152,7 @@ def _start(
             "--quiet",
             "--collect",
             f"--unit={name}",
-            f"--uid={os.getuid()}",
+            f"--uid={selected_uid}",
             "-p",
             "MemoryAccounting=yes",
             "-p",
