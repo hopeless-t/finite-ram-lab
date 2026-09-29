@@ -1,12 +1,12 @@
 # CURRENT
 
-> Latest bounce: B381
-> Stage: MATH-009 FAULT PATH COMPLETE / G0 MINIMAL DESIGN CALIBRATED
+> Latest bounce: B382
+> Stage: TWO-TOUCH PTE/STOCK DISCRIMINATOR COMPLETE
 > Stop: HUMAN_COMPUTE_APPROVAL_FOR_G0_STAGE_A
 
-## Main source-level finding
+## Source-grounded mechanism
 
-Linux v7.0 user PTE allocation is memcg-accounted and reaches the same per-CPU stock path:
+Linux v7.0:
 
 `GFP_PGTABLE_USER (__GFP_ACCOUNT)`
 -> `__memcg_kmem_charge_page()`
@@ -14,91 +14,110 @@ Linux v7.0 user PTE allocation is memcg-accounted and reaches the same per-CPU s
 -> `try_charge_memcg()`
 -> `consume_stock()`
 
-Anonymous write fault ordering:
+Anonymous first write:
 
 `pte_alloc()`
 then
 `alloc_anon_folio()`
 
-This makes page-table state a concrete candidate modulator of the first-touch Q64/exact-zero phenotype.
+Thus page-table allocation can consume the same per-CPU memcg stock before the measured data-page charge.
 
-Doc:
+Reference:
 `docs/MATH-009-LINUX7-FAULT-PATH-AUDIT.md`
 
-## Exact hosted environment
+## G0 direct alias breaker
 
-G-F run `36577573774` exact job log:
-- Ubuntu 26.04.1 LTS
-- image `ubuntu-26.04`
-- image version `20260920.143.1`
-
-Matching image manifest:
-- kernel `7.0.0-1012-azure`
-
-## PTE receipt
-
-Primary:
-`VmPTE_pre_kib -> VmPTE_post_kib`
-
-Corroboration only:
-`memory.stat:pagetables`
-
-Reason:
-VmPTE reads atomic `mm_pgtables_bytes`; memcg rstat may suppress small immediate flushes.
-
-## G0 minimal alias breaker
-
-Doc:
-`docs/MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1.md`
-
-Keep existing C worker unchanged.
+Use unchanged C worker.
 
 Arms:
-- C8=`8`
-- P8=`08`
-- C9=`9`
-- P9=`09`
-- H10=`10`
-- H32=`32`
+- C8 token 8
+- P8 token 08
+- C9 token 9
+- P9 token 09
+- H10 token 10
+- H32 token 32
 
 Primary:
 `P8+P9 vs C8+C9`
 
-This directly changes argv representation while holding numeric capacity fixed.
+Capacity-survival:
+`P8+P9 vs H10+H32`
 
-## Monte Carlo
+Reference:
+`docs/MEMCG-005G-G0-MINIMAL-ARGV-PTE-ALIAS-BREAKER-v1.md`
 
-Doc:
+## PTE receipt
+
+Primary:
+`VmPTE_pre -> VmPTE_post1`
+
+Corroboration:
+`memory.stat:pagetables`
+
+VmPTE is preferred because it reads atomic per-mm page-table bytes while memcg rstat can defer small updates.
+
+## New two-touch discriminator
+
+For first-touch exact-zero specimens only, perform one additional adjacent touch.
+
+Record:
+- first VmPTE delta
+- second touch memory.current delta
+- second VmPTE delta
+
+Ideal candidate states:
+
+- VmPTE1 delta=0 + ZERO + second Q64 + VmPTE2 delta=0 -> R=1 candidate
+- VmPTE1 delta>0 + ZERO + second Q64 + VmPTE2 delta=0 -> R=2 candidate
+- VmPTE2 delta>0 -> boundary phenotype
+
+Reference:
+`docs/MATH-011-TWO-TOUCH-PTE-STOCK-DISCRIMINATOR.md`
+
+## Quantitative constraint
+
+Ideal one-PTE mediation:
+
+`Delta ZERO = Delta P(existing PTE) * P(R=1)`
+
+G-F observed difference:
+`+5.1413 percentage points`
+
+Therefore pure one-PTE mediation requires:
+`P(R=1) >= 5.1413%`
+
+## Historical biopsy
+
+G-A:
+- exact-zero specimens: 28
+- depth1: 22/28 = 78.57%
+
+Historical specimens lacked VmPTE, so existing-PTE/R1 and new-PTE/R2 depth1 cases could not be separated.
+
+## Monte Carlo ladder
+
+Reference:
 `docs/MATH-010-G0-MONTE-CARLO-CALIBRATION.md`
 
-Planning ladder:
-- 16 blocks / 960 total: direction ~97.22%, p<.05+direction ~42.66%
+- 16 blocks / 960: direction ~97.22%, Fisher-significant+direction ~42.66%
 - 32 / 1920: ~99.76%, ~75.83%
 - 48 / 2880: ~99.96%, ~90.69%
 
 Recommended:
 `16 -> 32 -> 48 only as needed`
 
-Stage A is an instrument/direction probe.
-
-## Counter-audits
-
-- naive uniform 2 MiB boundary model alone is too weak (~0.39% order-of-magnitude crossing effect);
-- default PMD THP cannot fit a <=128 KiB VMA;
-- small mTHP is downgraded absent an explicit runner override.
+Each hosted stage requires explicit Human compute approval.
 
 ## Rare-Pokemon construction
 
-`docs/MEMCG-005G-C-CONTROLLED-RARE-INDUCTION-v1.md`
+Controlled b63 route remains alive:
 
-b63 remains the preferred near-deterministic depth1 construction route after G0 clarifies natural-state mechanism.
+verified Q64 primer -> construct one residual stock page -> target -> predicted next Q64/depth1.
 
-## Large replication
-
-MEMCG-005G-G 5760-candidate replication remains DEFERRED.
+Do not merge natural-cause and constructed-state claims yet.
 
 ## Authority
 
-No G0 implementation/hosted launch yet.
+No new scientific hosted run launched.
 No local-PC execution.
-Each hosted stage requires Human compute approval.
+MEMCG-005G-G 5760 replication remains DEFERRED.
