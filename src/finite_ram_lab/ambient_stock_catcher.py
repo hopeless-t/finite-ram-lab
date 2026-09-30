@@ -11,6 +11,7 @@ CLASSIFICATIONS = frozenset({
     "OBSERVATION_HOLD",
     "INSTRUMENTATION_HOLD",
     "CANARY_CONTAMINATED",
+    "AMBIENT_Q64_RESET",
     "STABLE_RESIDUAL",
     "DIRECT_SLOT_EVICTION_FINGERPRINT",
     "DIRECT_STOCK_CONSUMPTION_FINGERPRINT",
@@ -27,6 +28,7 @@ class AmbientObservation:
     normalized: bool
     initial_residual: int
     ambient_target_touch_count: int
+    ambient_owner_q64_count: int
     trace_complete: bool
     worker_ok: bool
     cpu_stable: bool
@@ -51,6 +53,7 @@ def _validate(obs: AmbientObservation) -> None:
     for name in (
         "initial_residual",
         "ambient_target_touch_count",
+        "ambient_owner_q64_count",
         "hist_dropped",
         "owner_refill_pages",
         "owner_consume_pages",
@@ -111,6 +114,9 @@ def classify_ambient_stock(obs: AmbientObservation) -> dict[str, Any]:
 
     if obs.ambient_target_touch_count != 0:
         return _result(obs, "CANARY_CONTAMINATED", exact=False)
+
+    if obs.ambient_owner_q64_count != 0:
+        return _result(obs, "AMBIENT_Q64_RESET", exact=False)
 
     mechanisms = _mechanisms(obs)
     mechanism_count = len(mechanisms)
