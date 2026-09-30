@@ -219,8 +219,8 @@ def reduce_catcher_records(
         structural_errors.append("session_end_count")
     if health_seen != 1:
         structural_errors.append("health_count")
-    if histogram_seen != 1:
-        structural_errors.append("histogram_count")
+    if histogram_seen < 1:
+        structural_errors.append("histogram_missing")
     if boundary_seen != 1:
         structural_errors.append("boundary_count")
     if session_mismatches:
