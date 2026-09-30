@@ -1,0 +1,104 @@
+{
+  "schema_version": "normalize-boundary-chase-r2-physical-result-v1",
+  "run_id": "36686845958",
+  "launch_commit": "7ad4490bee7dbb6b5e71bcf277ca9ee0c37ee448",
+  "result": {
+    "trial_count": 32,
+    "valid_trial_count": 32,
+    "classifications": {
+      "WITHIN_BOUND": 32
+    },
+    "first_q64_histogram": {
+      "1": 26,
+      "2": 2,
+      "27": 1,
+      "46": 2,
+      "48": 1
+    },
+    "max_observed_first_q64_touch": 48,
+    "max_stock_boundary_observed": false,
+    "bound_violation_count": 0,
+    "coverage_pass": true,
+    "stock_bound_pass": true
+  },
+  "inferred_initial_residual_histogram": {
+    "0": 26,
+    "1": 2,
+    "26": 1,
+    "45": 2,
+    "47": 1
+  },
+  "premeasurement_target_q64": {
+    "count_histogram": {
+      "0": 28,
+      "6": 1,
+      "7": 3
+    },
+    "grouped_T": {
+      "0": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2
+      ],
+      "6": [
+        27
+      ],
+      "7": [
+        46,
+        46,
+        48
+      ]
+    },
+    "pearson_r_approx": 0.9881,
+    "spearman_rho_approx": 0.8432,
+    "interpretation": "Strong design-internal association only; not yet a causal estimate."
+  },
+  "cgroup_process_check": {
+    "all_32_single_process": true,
+    "condition": "cgroup.procs == [target worker pid] at receipt time"
+  },
+  "r8_sandwich_implication": {
+    "specimen": "B405 R8 trial 0:0",
+    "lower_bound": "64 complete fresh measured touches with zero target-worker Q64 implies S0 >= 64 under the one-page consumption model",
+    "source_upper_bound": "refill_stock permits at most MEMCG_CHARGE_BATCH=64 cached pages in a matching slot",
+    "conclusion": "S0 = 64 exactly under frozen assumptions",
+    "state_name": "PREVERIFY_S64 / MAX_STOCK_BOUNDARY",
+    "predicted_unmeasured_next_boundary_touch": 65
+  },
+  "raw_manifest": {
+    "file_count": 80,
+    "total_bytes": 645036,
+    "content_set_sha256": "dd2e337ca007a97495e78583c03565db3021cf308efc978033edc3b31a12fbc2",
+    "created_at_utc": "2026-09-30T07:59:54Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11084795245,
+    "digest": "sha256:4bd40c9b8506fa7a5132b822f5570b33fd6dd780cbe6927c30c4c5eaff975f3d"
+  },
+  "claim_ceiling": "INITIAL_STATE_BOUND_AND_HISTORY_ASSOCIATION_NO_POPULATION_RELIABILITY"
+}
