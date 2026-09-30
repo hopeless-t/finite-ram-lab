@@ -36,7 +36,7 @@ class EpochContinuityTests(unittest.TestCase):
         result = scan(
             """
 softirq-20 [007] ... 10.000500000: frl_drain_stock: stock=0x111 slot=2 comm="frltx405"
-softirq-20 [007] ... 10.000500010: frl_pc_uncharge_any: counter=0xccc nr_pages=21 comm="frltx405"
+softirq-20 [007] ... 10.000500010: frl_pc_uncharge_owner: counter=0xccc nr_pages=21 comm="frltx405"
 """
         )
         self.assertTrue(result["gap_clean"])
@@ -47,22 +47,23 @@ softirq-20 [007] ... 10.000500010: frl_pc_uncharge_any: counter=0xccc nr_pages=2
         result = scan(
             """
 softirq-20 [007] ... 10.000500000: frl_drain_stock: stock=0x111 slot=2 comm="frltx405"
-softirq-20 [007] ... 10.000500010: frl_pc_uncharge_any: counter=0xaaa nr_pages=21 comm="frltx405"
+softirq-20 [007] ... 10.000500010: frl_pc_uncharge_owner: counter=0xaaa nr_pages=21 comm="frltx405"
 """
         )
         self.assertFalse(result["gap_clean"])
         self.assertEqual(result["target_drain_count"], 1)
         self.assertEqual(result["state_change_count"], 1)
 
-    def test_unpaired_stock_cpu_gap_drain_fails_closed(self) -> None:
+    def test_unpaired_stock_cpu_gap_drain_is_other_when_owner_probe_has_no_match(self) -> None:
         result = scan(
             """
 softirq-20 [007] ... 10.000500000: frl_drain_stock: stock=0x111 slot=2 comm="frltx405"
 """
         )
-        self.assertFalse(result["gap_clean"])
-        self.assertEqual(result["unresolved_drain_count"], 1)
-        self.assertEqual(result["unknown_count"], 1)
+        self.assertTrue(result["gap_clean"])
+        self.assertEqual(result["other_counter_drain_count"], 1)
+        self.assertEqual(result["unresolved_drain_count"], 0)
+        self.assertEqual(result["unknown_count"], 0)
 
     def test_owner_counter_gap_charge64_is_state_change(self) -> None:
         result = scan(
@@ -86,7 +87,7 @@ softirq-20 [007] ... 10.000500000: frl_pc_try64: counter=0xccc nr_pages=64 comm=
     def test_grounded_owner_release_in_gap_is_state_preserving(self) -> None:
         result = scan(
             """
-dotnet-20 [007] ... 10.000500000: frl_pc_uncharge_any: counter=0xaaa nr_pages=17 comm=".NET TP Worker"
+dotnet-20 [007] ... 10.000500000: frl_pc_uncharge_owner: counter=0xaaa nr_pages=17 comm=".NET TP Worker"
  => page_counter_uncharge
  => folios_put_refs
  => folio_batch_move_lru
@@ -100,7 +101,7 @@ dotnet-20 [007] ... 10.000500000: frl_pc_uncharge_any: counter=0xaaa nr_pages=17
     def test_ungrounded_owner_uncharge_in_gap_fails_closed(self) -> None:
         result = scan(
             """
-dotnet-20 [007] ... 10.000500000: frl_pc_uncharge_any: counter=0xaaa nr_pages=17 comm=".NET TP Worker"
+dotnet-20 [007] ... 10.000500000: frl_pc_uncharge_owner: counter=0xaaa nr_pages=17 comm=".NET TP Worker"
  => page_counter_uncharge
  => mystery_path
 """
@@ -111,7 +112,7 @@ dotnet-20 [007] ... 10.000500000: frl_pc_uncharge_any: counter=0xaaa nr_pages=17
     def test_owner_uncharge_without_drain_or_release_is_unknown(self) -> None:
         result = scan(
             """
-worker-20 [007] ... 10.000500000: frl_pc_uncharge_any: counter=0xaaa nr_pages=9 comm="worker"
+worker-20 [007] ... 10.000500000: frl_pc_uncharge_owner: counter=0xaaa nr_pages=9 comm="worker"
 """
         )
         self.assertFalse(result["gap_clean"])
@@ -123,7 +124,7 @@ worker-20 [007] ... 10.000500000: frl_pc_uncharge_any: counter=0xaaa nr_pages=9 
             + BASE_SUFFIX
             + """
 softirq-20 [007] ... 10.002000000: frl_drain_stock: stock=0x111 slot=2 comm="frltx405"
-softirq-20 [007] ... 10.002000010: frl_pc_uncharge_any: counter=0xaaa nr_pages=21 comm="frltx405"
+softirq-20 [007] ... 10.002000010: frl_pc_uncharge_owner: counter=0xaaa nr_pages=21 comm="frltx405"
 """
         )
         result = scan_interwindow_continuity(
