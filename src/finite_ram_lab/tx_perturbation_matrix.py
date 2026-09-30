@@ -49,6 +49,27 @@ from .transactional_spawn_pilot import (
 ARM_ORDER = ("CLEAN", "RELEASE_ONLY", "UNEXPECTED_REFILL", "PTE_GROWTH")
 MODE_PTE_ESCAPE = 4
 TARGET_COMM = "frltx405"
+OWNER_UNCHARGE_EVENT = "frl_pc_uncharge_owner"
+
+
+def _owner_probe_dir(trace_path: Path) -> Path:
+    return trace_path.parent / "events" / "kprobes" / OWNER_UNCHARGE_EVENT
+
+
+def _prepare_owner_probe_global(trace_path: Path) -> None:
+    """Observe all uncharges only during NORMALIZE so owner identity can be bound."""
+    probe = _owner_probe_dir(trace_path)
+    (probe / "filter").write_text("0\n", encoding="utf-8")
+    (probe / "enable").write_text("1\n", encoding="utf-8")
+
+
+def _bind_owner_probe(trace_path: Path, owner_counter: str) -> None:
+    """Narrow the already-enabled probe to the verified epoch owner counter."""
+    probe = _owner_probe_dir(trace_path)
+    (probe / "filter").write_text(
+        f"counter == {owner_counter}\n",
+        encoding="utf-8",
+    )
 
 
 def load_spec(path: str | Path) -> dict[str, Any]:
@@ -90,6 +111,7 @@ def _consume_segment(
             page_size=page_size,
             expected_worker_touched=measured_count,
             target_comm=TARGET_COMM,
+            owner_probe_filtered=True,
         )
         cursor += 1
         rows.append({"touch": row, "packet": packet})
@@ -192,6 +214,7 @@ def _pte_escape_touch(
         window=window,
         stock_cpu=stock_cpu,
         target_comm=TARGET_COMM,
+        owner_probe_filtered=True,
     )
     return row, packet
 
@@ -318,6 +341,7 @@ def _postverify_prime_helper_stock(
         window=window,
         stock_cpu=stock_cpu,
         label=label,
+        owner_probe_filtered=True,
     )
     passed = (
         q64_touch is not None
@@ -411,6 +435,7 @@ def _postverify_scrub_reset(
         window=window,
         stock_cpu=stock_cpu,
         label="POST_VERIFY_LRU_RESET",
+        owner_probe_filtered=True,
     )
     helper_charge64 = charge64_after - charge64_before
     pure = (
@@ -476,6 +501,7 @@ def _observe_external_release(
         touch_number=1,
         window=window,
         stock_cpu=stock_cpu,
+        owner_probe_filtered=True,
     )
     helper_charge64_after = _event_count(
         trace_path,
@@ -526,6 +552,7 @@ def _fresh_epoch(
     )
     cursor = 0
     measured_count = 0
+    _prepare_owner_probe_global(trace_path)
     cursor, measured_count, normalization = _normalize(
         archive=archive,
         unit=unit,
@@ -539,7 +566,10 @@ def _fresh_epoch(
         calibration_max=calibration_max,
         measured_count=measured_count,
         target_comm=TARGET_COMM,
+        owner_probe_filtered=False,
     )
+    if archive.tx.state is State.VERIFIED and archive.owner_counter is not None:
+        _bind_owner_probe(trace_path, archive.owner_counter)
     epoch_row = {
         "epoch": epoch,
         "arm": arm,
@@ -594,6 +624,7 @@ def _finish_b63(
             page_size=page_size,
             measured_count=measured_count,
             target_comm=TARGET_COMM,
+            owner_probe_filtered=True,
         )
     if archive.tx.state is State.COMMIT_READY:
         archive.commit()
