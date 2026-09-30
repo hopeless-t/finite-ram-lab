@@ -84,8 +84,7 @@ def _parse_epoch_timeline(
             # Legacy/fallback evidence only.
             kind = "MEMCG_UNCHARGE"
         elif "frl_refill_stock:" in line:
-            if int(row.get("nr_pages", 0)) == 63:
-                kind = "REFILL63"
+            kind = "REFILL_ANY"
         elif "frl_pc_try64:" in line:
             if int(row.get("nr_pages", 0)) == 64:
                 kind = "PC_TRY64"
@@ -317,15 +316,21 @@ def scan_interwindow_continuity(
     target_refills = [
         row
         for row in relevant
-        if row["kind"] == "REFILL63"
+        if row["kind"] == "REFILL_ANY"
         and int(row.get("cpu", -1)) == int(stock_cpu)
         and str(row.get("memcg", "")).lower() == owner_memcg
+    ]
+    target_refill_non63 = [
+        row
+        for row in target_refills
+        if int(row.get("nr_pages", -1)) != 63
     ]
 
     unknown_count = len(unknown_owner_uncharges)
     state_change_count = (
         len(target_drains)
         + len(target_charge64)
+        + len(target_refills)
     )
 
     return {
@@ -342,6 +347,7 @@ def scan_interwindow_continuity(
         "target_drain_count": len(target_drains),
         "target_charge64_count": len(target_charge64),
         "target_refill_count": len(target_refills),
+        "target_refill_non63_count": len(target_refill_non63),
         "other_counter_drain_count": len(other_counter_drains),
         "unresolved_drain_count": len(unresolved_drains),
         "grounded_release_only_count": len(grounded_releases),
