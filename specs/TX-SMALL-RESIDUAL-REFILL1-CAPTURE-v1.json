@@ -21,7 +21,7 @@
   },
   "observer": {
     "refill_probe": "one frl_refill_stock kprobe dynamically phase-gated",
-    "premeasurement_filter": "nr_pages == 1",
+    "premeasurement_filter": "nr_pages == 1 || nr_pages == 63",
     "boundary_filter": "nr_pages == 63 && common_pid == target MainPID",
     "q64_probe": "page_counter_try_charge nr_pages == 64 && common_pid == target MainPID",
     "stacktrace": false,
@@ -32,7 +32,8 @@
       "enable Q64 only during measured touch windows"
     ],
     "attribution": "later boundary owner_memcg + stock_cpu retrospectively matched only inside current trial epoch",
-    "zero_miss_requirement": "refill1 premeasurement delta, measured Q64 deltas, and measured refill63 deltas must all have missed == 0"
+    "zero_miss_requirement": "refill1 premeasurement delta, measured Q64 deltas, and measured refill63 deltas must all have missed == 0",
+    "rationale": "One refill_stock hook is active only during the short premeasurement epoch. Capturing 63 alongside 1 costs no additional function hook and prevents a hidden classic refill63 from being mistaken for a pure small-residual specimen."
   },
   "classifications": {
     "SMALL_RESIDUAL_REFILL_ESTABLISHMENT": "zero-miss T>1 specimen whose current-trial owner refill1 sum covers S0=T-1 and has no preboundary owner refill63",
@@ -41,13 +42,15 @@
     "DELAY_WITHOUT_OWNER_REFILL1": "T>1 and no matching owner refill1",
     "OWNER_REFILL1_PARTIAL": "T>1 but observed owner refill1 sum is smaller than S0",
     "CLASSIC_REFILL63_PREBOUNDARY": "owner refill63 exists before boundary outside the measured boundary touch",
-    "INVALID_OBSERVER": "any probe miss, owner ambiguity, PTE growth, CPU mismatch, worker error, trace gap, cpuset receipt failure, or multi-process cgroup"
+    "INVALID_OBSERVER": "any probe miss, owner ambiguity, PTE growth, CPU mismatch, worker error, trace gap, cpuset receipt failure, or multi-process cgroup",
+    "CLASSIC_REFILL63_PREMEASURE": "owner refill63 occurs in the current premeasurement epoch; do not promote as pure small-residual"
   },
   "promotion_rule": [
     "at least one SMALL_RESIDUAL_REFILL_ESTABLISHMENT specimen",
-    "all promoted evidence is inside current-trial STARTUP PRE to boundary PRE",
+    "all promoted evidence is inside current-trial STARTUP PRE to PREMEASURE-END",
     "matching owner_memcg and stock_cpu",
-    "zero misses on all phase-gated critical probe intervals"
+    "zero misses on premeasurement refill probe and all measured Q64/refill63 touch windows",
+    "no current-trial owner refill63 in the premeasurement epoch"
   ],
   "planning_sensitivity": {
     "basis": "two T=2 observations across 160 CPUSET-style identities in R12 + R13-A; used only as a weak planning signal",
