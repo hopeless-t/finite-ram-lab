@@ -1,0 +1,122 @@
+{
+  "schema_version": "age-decoupling-stage-a-r2-physical-result-v1",
+  "experiment_id": "TX-AGE-DECOUPLING-STAGE-A-v2",
+  "run_id": "36703139110",
+  "launch_commit": "52149a35e11a2c2151081b98cd0b00f82df92d2f",
+  "workflow_conclusion": "success",
+  "frozen_result": {
+    "trial_count": 16,
+    "evidence_panel_complete": true,
+    "classifications": {
+      "CANONICAL_SUCCESS": 12,
+      "INSTRUMENTATION_HOLD": 4
+    },
+    "all_observed_T_histogram": {
+      "64": 16
+    },
+    "all_final_states": {
+      "SUCCESS": 16
+    },
+    "stage_b_trigger": false,
+    "known_hold_hazard_requires_council": false,
+    "unknown_hold_requires_council": false,
+    "true_target_fail_count": 0,
+    "known_state_change_count": 0,
+    "unexplained_boundary_deviation_count": 0,
+    "unknown_complete_emission_count": 0
+  },
+  "by_arm": {
+    "FAST": {
+      "n": 4,
+      "canonical_zero_miss_n": 3,
+      "instrumentation_hold_n": 1,
+      "T_histogram": {
+        "64": 4
+      },
+      "canonical_median_elapsed_ns_verified_to_q64": 1868684000,
+      "canonical_elapsed_ns_sum": 6351724000
+    },
+    "HOLD32": {
+      "n": 12,
+      "canonical_zero_miss_n": 9,
+      "instrumentation_hold_n": 3,
+      "T_histogram": {
+        "64": 12
+      },
+      "canonical_median_elapsed_ns_verified_to_q64": 25001723000,
+      "canonical_elapsed_ns_sum": 221937447000,
+      "canonical_median_dwell_observed_ns": 22077272000,
+      "canonical_dwell_observed_ns_sum": 198695213000
+    }
+  },
+  "timing": {
+    "requested_dwell_ns": 22077060000,
+    "nominal_exposure_factor": 16,
+    "realized_exposure_factor_canonical_medians": 13.3793209552819
+  },
+  "instrumentation_holds": [
+    {
+      "trial_id": "0:3",
+      "arm": "HOLD32",
+      "T": 64,
+      "missed": {
+        "frl_pc_try64": 0,
+        "frl_pc_uncharge_owner": 0,
+        "frl_refill_stock": 1
+      }
+    },
+    {
+      "trial_id": "2:3",
+      "arm": "HOLD32",
+      "T": 64,
+      "missed": {
+        "frl_pc_try64": 0,
+        "frl_pc_uncharge_owner": 0,
+        "frl_refill_stock": 2
+      }
+    },
+    {
+      "trial_id": "3:0",
+      "arm": "HOLD32",
+      "T": 64,
+      "missed": {
+        "frl_pc_try64": 0,
+        "frl_pc_uncharge_owner": 0,
+        "frl_refill_stock": 1
+      }
+    },
+    {
+      "trial_id": "3:2",
+      "arm": "FAST",
+      "T": 64,
+      "missed": {
+        "frl_pc_try64": 0,
+        "frl_pc_uncharge_owner": 0,
+        "frl_refill_stock": 6
+      }
+    }
+  ],
+  "observer_interpretation": {
+    "q64_missed_all_trials": 0,
+    "owner_uncharge_missed_all_trials": 0,
+    "only_failure_mode": "owner-memcg refill_stock observer miss",
+    "note": "The four instrumentation holds all reached canonical T=64 and final SUCCESS with clean continuity, but remain excluded from zero-miss scientific classification under the frozen contract."
+  },
+  "raw_manifest": {
+    "file_count": 68,
+    "total_bytes": 7056729,
+    "content_set_sha256": "e8fc47058103323eb46a3728235b51e4e7869921aed18c104bc9b943df532d9b",
+    "created_at_utc": "2026-09-30T10:35:54Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11090363265,
+    "digest": "sha256:b370602350ab9fa60bba942d5c5b97ef16ef87a153bb13d3e77c7fdc68d5dda9"
+  },
+  "decision": {
+    "automatic_stage_b": false,
+    "automatic_scale_expansion": false,
+    "physical_interpretation": "No complete known or unexplained verified-state hazard was captured at realized canonical-median exposure factor 13.38. This is a bounded no-specimen result, not evidence of absence.",
+    "next": "offline sensitivity and council; do not launch more identities automatically"
+  },
+  "claim_ceiling": "BOUNDED_STAGE_A_NO_SPECIMEN_RESULT_AT_REALIZED_F13_38"
+}
