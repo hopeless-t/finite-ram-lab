@@ -454,6 +454,35 @@ x-1 [000] ... 27.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
         )
 
 
+    def test_one_owner_uncharge_is_not_reused_for_two_drains(self) -> None:
+        trace = """
+x-1 [000] ... 27.500000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=99 PRE
+helper-20 [007] ... 27.500000010: frl_drain_stock: stock=0x111 slot=6 comm="systemd"
+helper-20 [007] ... 27.500000020: frl_drain_stock: stock=0x111 slot=1 comm="systemd"
+helper-20 [007] ... 27.500000021: frl_pc_uncharge_owner: counter=0xaaa nr_pages=31 comm="systemd"
+ => page_counter_uncharge
+ => drain_stock
+x-1 [000] ... 27.500000030: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=99 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "OBSERVE", 99)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            owner_memcg="0xbbb",
+            stock_cpu=7,
+            phase="OBSERVE",
+            owner_probe_filtered=True,
+        )
+        self.assertEqual(receipt["drain_stock_count"], 1)
+        self.assertEqual(receipt["other_memcg_drain_count"], 1)
+        event = receipt["target_drain_events"][0]
+        self.assertEqual(event["slot"], 1)
+        self.assertEqual(
+            event["paired_page_counter_uncharge"]["nr_pages"],
+            31,
+        )
+
+
     def test_owner_refill_any_retains_small_verified_refill(self) -> None:
         trace = """
 x-1 [000] ... 28.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=1 PRE
