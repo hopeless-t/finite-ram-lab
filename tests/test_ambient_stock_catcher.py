@@ -15,6 +15,7 @@ def base(**overrides):
         "normalized": True,
         "initial_residual": 31,
         "ambient_target_touch_count": 0,
+        "ambient_owner_q64_count": 0,
         "trace_complete": True,
         "worker_ok": True,
         "cpu_stable": True,
@@ -128,6 +129,15 @@ class AmbientStockClassifierTests(unittest.TestCase):
     def test_ambient_target_touch_contaminates_canary(self):
         result = classify_ambient_stock(base(ambient_target_touch_count=1))
         self.assertEqual(result["classification"], "CANARY_CONTAMINATED")
+
+    def test_ambient_owner_q64_blocks_simple_boundary_arithmetic(self):
+        result = classify_ambient_stock(base(
+            ambient_owner_q64_count=1,
+            owner_consume_pages=31,
+            final_boundary_T=64,
+        ))
+        self.assertEqual(result["classification"], "AMBIENT_Q64_RESET")
+        self.assertFalse(result["exact_mechanistic_fingerprint"])
 
     def test_censored_boundary_is_not_failure(self):
         result = classify_ambient_stock(base(
