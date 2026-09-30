@@ -1,0 +1,105 @@
+{
+  "schema_version": "samecpu-stock-slot-pressure-pilot-r2-result-v1",
+  "experiment_id": "TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-v1",
+  "run_id": "36715482390",
+  "launch_commit": "aac716b3a0c23ae36db103329e2420a94da3768c",
+  "frozen_result": {
+    "workflow_conclusion": "success",
+    "trial_count": 4,
+    "classifications": {
+      "EVICTION_FINGERPRINT_MATCH": 1,
+      "SLOT_EVICTION_BOUND_VIOLATION_CANDIDATE": 2,
+      "TARGET_DRAIN_SIZE_MISMATCH": 1
+    },
+    "pilot_pass": true,
+    "zero_miss_target_eviction_count": 2,
+    "fingerprint_match_count": 1,
+    "fingerprint_match_trials": [
+      "3:0"
+    ],
+    "helper_count_to_eviction": [
+      2,
+      3
+    ]
+  },
+  "clean_specimen": {
+    "trial_id": "3:0",
+    "helpers_started": 3,
+    "target_drain_pages": [
+      31
+    ],
+    "pressure_owner_refill_delta": 0,
+    "hist_dropped": 0,
+    "critical_probe_misses": 0,
+    "pressure_unknown_emission_count": 0,
+    "diagnostic_q64_count": 1,
+    "fingerprint": "verified residual31 -> same-CPU helper pressure -> target drain31 -> first post-pressure target touch direct Q64",
+    "T": 33,
+    "delta": -31,
+    "status": "EVICTION_FINGERPRINT_MATCH"
+  },
+  "forensic_notes": {
+    "block1": {
+      "frozen_classification": "TARGET_DRAIN_SIZE_MISMATCH",
+      "frozen_target_drain_pages": [
+        31,
+        31
+      ],
+      "raw_issue": "two drain_stock events within microseconds were both paired to one later owner page_counter_uncharge(31)",
+      "observer_bug": "one-to-many drain/uncharge pairing",
+      "prospective_fix_commit": "e0e130ed3f35e87765bf8ff181438ed0ee8f76ff",
+      "historical_result_rewritten": false
+    },
+    "block0": {
+      "frozen_classification": "SLOT_EVICTION_BOUND_VIOLATION_CANDIDATE",
+      "helpers_started": 13,
+      "target_drain_pages": [],
+      "diagnostic_q64_count": 0,
+      "caution": "helper insertion receipt was only frltrig Q64 growth, not distinct helper leaf refill63 identity; do not treat as a proven violation of the 13-distinct-leaf-insertion source bound"
+    },
+    "block2": {
+      "frozen_classification": "SLOT_EVICTION_BOUND_VIOLATION_CANDIDATE",
+      "helpers_started": 13,
+      "target_drain_pages": [],
+      "diagnostic_q64_count": 1,
+      "owner_uncharge_evidence": "owner counter uncharge31 on stock CPU from kworker without drain_stock stack during pressure",
+      "caution": "T33 without a classified target drain suggests a separate hidden target-memcg stock-consumption path or incomplete drain attribution; requires direct consume_stock observation"
+    }
+  },
+  "histogram_scope": {
+    "inline_owner_filter_applied": true,
+    "owner_refill_delta_by_block": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+    },
+    "histogram_dropped_by_block": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+    }
+  },
+  "raw_manifest": {
+    "file_count": 71,
+    "total_bytes": 1040646,
+    "content_set_sha256": "10dc9ebe286909723d7b21721c4d61efbb28110b594f7ab29514d9be12d855df",
+    "created_at_utc": "2026-09-30T12:34:29Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11095094755,
+    "digest": "sha256:996c864dfa109ee398430d07d674ae51ebe28ea1aa4ca3ea2aff9efa965938cd"
+  },
+  "decision": {
+    "samecpu_slot_pressure_mechanism_pilot_supported": true,
+    "launch_full_three_arm_panel": false,
+    "next": [
+      "prove each helper insertion with distinct helper leaf refill63 memcg receipts",
+      "validate a target-owner consume_stock success observer",
+      "use one-to-one nearest drain/uncharge pairing prospectively",
+      "then design QUIET/OFFCPU/SAMECPU panel"
+    ]
+  },
+  "claim_ceiling": "ONE_ZERO_MISS_CLEAN_SAMECPU_SLOT_PRESSURE_EVICTION_FINGERPRINT_PLUS_DIAGNOSTIC_ANOMALIES"
+}
