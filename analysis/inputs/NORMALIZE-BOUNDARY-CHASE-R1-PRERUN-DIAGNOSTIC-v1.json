@@ -1,0 +1,14 @@
+{
+  "schema_version": "normalize-boundary-chase-r1-prerun-diagnostic-v1",
+  "run_id": "36686596342",
+  "launch_commit": "bd4810c5829a309028b70fb71eb3c85a66edbf2e",
+  "status": "NO_SCIENTIFIC_IDENTITIES_EXECUTED",
+  "failure": {
+    "stage": "Run normalize boundary block",
+    "all_four_blocks_same_failure": true,
+    "exception": "KeyError: identities_per_block",
+    "root_cause": "Frozen spec stores design parameters under spec.design while runner R1 read top-level keys."
+  },
+  "scientific_interpretation": "NONE",
+  "decision": "Fix runner/spec binding only; do not change theorem, sample size, or observer contract."
+}
