@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B421
-> Stage: CONSUME_STOCK RETURN OBSERVER / LDC HOST-ACTION BOUNDARY FROZEN
-> Stop: IMPLEMENT QUALIFIED finite_ram.consume_stock_ret_observer_pilot_v1 THEN RUN BLOCK0 ONLY
+> Latest bounce: B422
+> Stage: AMBIENT STOCK CATCHER v1 / CLASSIFIER FROZEN
+> Stop: IMPLEMENT ONE-CANARY 10-MINUTE BOUNDED AMBIENT SESSION RUNNER
 
 ## Chapter II frontier
 
@@ -448,3 +448,65 @@ Next atomic bounce:
 2. launch exactly one block-0 identity;
 3. freeze the receipt;
 4. expand to the original four identities only if the one-identity specimen is complete.
+
+
+## B422 ambient stock catcher v1
+
+Research direction now has two complementary modes:
+
+- active causal falsifier: same-CPU slot pressure;
+- low-disturbance ambient catcher: verified canary + passive host activity + final boundary readback.
+
+Frozen files:
+
+- specs/TX-AMBIENT-STOCK-CATCHER-v1.json
+- src/finite_ram_lab/ambient_stock_catcher.py
+- tests/test_ambient_stock_catcher.py
+- docs/B422-AMBIENT-STOCK-CATCHER-v1.md
+
+B422 does not launch a physical experiment.
+
+Canary geometry:
+
+- VERIFY R0=63;
+- exactly 32 measured target touches;
+- expected residual=31;
+- zero target touches during ambient exposure;
+- no helper memcgs;
+- no synthetic pressure;
+- final bounded Q64 boundary chase.
+
+Default first physical exposure:
+
+- one canary;
+- 600 seconds;
+- hard v1 ambient maximum=1800 seconds;
+- private tracefs instance;
+- owner-filtered or count-only core observers;
+- no long-window ordinary drain_stock requirement.
+
+Classifier promotion is deliberately conservative.
+
+Direct slot-eviction fingerprint requires:
+
+- isolated attributed drain d;
+- matching owner uncharge d;
+- 0<d<=31;
+- final T=64-d.
+
+Direct hidden-consumption fingerprint requires:
+
+- isolated successful owner consume c;
+- 0<c<=31;
+- final T=64-c.
+
+All complete mismatches remain non-promoted, including UNKNOWN_COMPLETE.
+
+During authoring, a deterministic 100,000-case software fuzz pass completed with no out-of-domain classification and no exact-mechanism promotion outside the two exact direct fingerprint classes. This is classifier validation only, not physical evidence.
+
+Next atomic bounce:
+
+1. implement the bounded ambient session runner around the frozen classifier;
+2. preserve the low-rate observer design;
+3. run software tests only;
+4. then launch one 10-minute local LDC session only after the runner/action surface is qualified.
