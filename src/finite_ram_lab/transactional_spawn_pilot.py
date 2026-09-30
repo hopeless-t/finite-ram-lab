@@ -97,6 +97,7 @@ def _one_touch(
     stock_cpu: int,
     page_size: int,
     expected_worker_touched: int,
+    target_comm: str | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     row = touch_with_transaction_marker(
         unit=unit,
@@ -124,6 +125,7 @@ def _one_touch(
         touch=row,
         window=window,
         stock_cpu=stock_cpu,
+        target_comm=target_comm,
     )
     return row, packet
 
@@ -141,6 +143,7 @@ def _normalize(
     page_size: int,
     calibration_max: int,
     measured_count: int,
+    target_comm: str | None = None,
 ) -> tuple[int, int, list[dict[str, Any]]]:
     rows: list[dict[str, Any]] = []
     for touch_number in range(1, calibration_max + 1):
@@ -160,6 +163,7 @@ def _normalize(
             stock_cpu=stock_cpu,
             page_size=page_size,
             expected_worker_touched=measured_count,
+            target_comm=target_comm,
         )
         cursor += 1
         rows.append({"touch": row, "packet": packet})
@@ -196,6 +200,7 @@ def _consume(
     stock_cpu: int,
     page_size: int,
     measured_count: int,
+    target_comm: str | None = None,
 ) -> tuple[int, int, list[dict[str, Any]]]:
     rows: list[dict[str, Any]] = []
     for touch_number in range(1, count + 1):
@@ -215,6 +220,7 @@ def _consume(
             stock_cpu=stock_cpu,
             page_size=page_size,
             expected_worker_touched=measured_count,
+            target_comm=target_comm,
         )
         cursor += 1
         rows.append({"touch": row, "packet": packet})
@@ -240,6 +246,7 @@ def _target_bundle(
     stock_cpu: int,
     page_size: int,
     measured_count: int,
+    target_comm: str | None = None,
 ) -> tuple[int, int, dict[str, Any]]:
     touches: list[dict[str, Any]] = []
     windows: list[dict[str, Any]] = []
@@ -279,6 +286,7 @@ def _target_bundle(
         touches=touches,
         windows=windows,
         stock_cpu=stock_cpu,
+        target_comm=target_comm,
     )
     return cursor, measured_count, {
         "touches": touches,
