@@ -186,23 +186,90 @@ def window_trace_complete(window: dict[str, Any]) -> bool:
     )
 
 
+def _same_execution_lane(
+    left: dict[str, Any],
+    right: dict[str, Any],
+) -> bool:
+    return (
+        left.get("cpu") is not None
+        and left.get("cpu") == right.get("cpu")
+        and left.get("comm") is not None
+        and left.get("comm") == right.get("comm")
+    )
+
+
+def _select_q64_receipt_events(
+    window: dict[str, Any],
+    *,
+    owner_counter: str | None = None,
+    owner_memcg: str | None = None,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Project global Q64 probes onto the target transaction lane.
+
+    The R4+ physical workflow intentionally keeps page_counter_try_charge(64)
+    global for inter-window continuity. refill_stock(63) remains target-scoped.
+
+    Before owner identity is known, a charge is attributed to the NORMALIZE
+    touch when it shares CPU/comm with a target refill. If the refill receipt
+    is absent, all observed Q64 charges remain visible so the packet fails
+    closed rather than silently becoming ZERO.
+
+    After verification, owner counter/memcg identity is authoritative.
+    """
+    charges = list(window.get("pc_try64", []))
+    refills = list(window.get("refill63", []))
+
+    if owner_counter is not None:
+        counter = owner_counter.lower()
+        selected_charges = [
+            event
+            for event in charges
+            if str(event.get("counter", "")).lower() == counter
+        ]
+    elif refills:
+        selected_charges = [
+            event
+            for event in charges
+            if any(_same_execution_lane(event, refill) for refill in refills)
+        ]
+        if not selected_charges and charges:
+            # Ambiguous/partial evidence must not collapse to ZERO.
+            selected_charges = charges
+    else:
+        selected_charges = charges
+
+    if owner_memcg is not None:
+        memcg = owner_memcg.lower()
+        selected_refills = [
+            event
+            for event in refills
+            if str(event.get("memcg", "")).lower() == memcg
+        ]
+    else:
+        selected_refills = refills
+
+    return selected_charges, selected_refills
+
+
 def direct_q64_owner_counter(window: dict[str, Any]) -> str | None:
-    """Return the unique page-counter identity for an exact direct Q64 pair."""
-    if len(window.get("pc_try64", [])) != 1:
+    """Return the unique target page-counter identity for an exact Q64 pair."""
+    charges, refills = _select_q64_receipt_events(window)
+    if len(charges) != 1 or len(refills) != 1:
         return None
-    if len(window.get("refill63", [])) != 1:
+    if not _same_execution_lane(charges[0], refills[0]):
         return None
-    counter = window["pc_try64"][0].get("counter")
+    counter = charges[0].get("counter")
     return str(counter).lower() if counter else None
 
 
 def direct_q64_owner_memcg(window: dict[str, Any]) -> str | None:
-    """Return the memcg identity carried by an exact direct Q64 restock."""
-    if len(window.get("pc_try64", [])) != 1:
+    """Return the memcg identity carried by an exact target Q64 restock."""
+    charges, refills = _select_q64_receipt_events(window)
+    if len(charges) != 1 or len(refills) != 1:
         return None
-    if len(window.get("refill63", [])) != 1:
+    if not _same_execution_lane(charges[0], refills[0]):
         return None
-    memcg = window["refill63"][0].get("memcg")
+    memcg = refills[0].get("memcg")
     return str(memcg).lower() if memcg else None
 
 
@@ -390,10 +457,16 @@ def observer_receipt_for_window(
         )
         unknown_release += len(unresolved_drains)
 
+    selected_charges, selected_refills = _select_q64_receipt_events(
+        window,
+        owner_counter=effective_owner if owner_counter is not None else None,
+        owner_memcg=effective_memcg if owner_memcg is not None else None,
+    )
+
     return {
         "trace_complete": window_trace_complete(window),
-        "page_counter_try_charge_64_count": len(window.get("pc_try64", [])),
-        "refill_stock_63_count": len(window.get("refill63", [])),
+        "page_counter_try_charge_64_count": len(selected_charges),
+        "refill_stock_63_count": len(selected_refills),
         "drain_stock_count": len(target_drains),
         "classified_release_only_count": grounded_release,
         "unknown_emission_count": unknown_release,
