@@ -82,7 +82,6 @@ jobs:
           echo 'comm == "frltx405" && nr_pages == 63'             | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
           echo 'nr_pages == 64'             | sudo tee "$TRACE/events/kprobes/frl_pc_try64/filter" >/dev/null
           echo 'counter == 0'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/filter" >/dev/null
-          echo 'stacktrace if nr_pages == 17'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/trigger" >/dev/null
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_lru_flush/filter" >/dev/null
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_folios_put/filter" >/dev/null
 
