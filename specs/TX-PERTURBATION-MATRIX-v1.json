@@ -1,6 +1,6 @@
 {
   "experiment_id": "TX-PERTURBATION-MATRIX-v1",
-  "status": "R3_OWNERSHIP_AND_REALIZATION_PREFLIGHT",
+  "status": "R6_TARGET_LANE_AND_POSTVERIFY_HELPER_PREFLIGHT",
   "chapter": "FINITE-RAM-LAB-II",
   "role": "CAUSAL_VALIDATION_OF_TRANSACTION_INVALIDATORS",
   "prerequisite": "B404 R2 physical transactional smoke PASS run 36642946787",
@@ -21,14 +21,14 @@
     "mechanism": "shared per-CPU LRU batch handoff using separate trigger cgroup",
     "trigger_prime_max_touches": 64,
     "order": [
-      "start trigger and scrubber helper cgroups",
-      "prime trigger stock before target VERIFY",
-      "prime scrubber stock before target VERIFY",
-      "target NORMALIZE / VERIFY",
-      "post-VERIFY scrubber advances shared LRU batch to next flush inside OBSERVE_NEUTRAL",
-      "require OBSERVE_NEUTRAL to have no target drain/refill/release and no scrubber restock",
+      "start trigger and scrubber helpers idle",
+      "verify target direct Q64 and bind owner_counter/owner_memcg",
+      "inside neutral OBSERVE force trigger helper to its next Q64 and require no target state mutation",
+      "inside neutral OBSERVE force scrubber helper to its next Q64 and require no target state mutation",
+      "with scrubber stock now fresh, scrub shared LRU batch to the next flush and require zero helper Q64 during reset",
       "target consumes 17 pages and discards them",
-      "trigger performs 14 cached-stock touches inside RELEASE_ONLY OBSERVE"
+      "trigger performs 14 cached-stock touches inside RELEASE_ONLY OBSERVE",
+      "require grounded owner release, residual invariance, zero trigger Q64 during release, and canonical b63 commit"
     ],
     "scrubber_prime_max_touches": 64
   },
@@ -88,17 +88,29 @@
   "claim_ceiling": "MECHANISM_AND_CLASSIFIER_CAUSAL_VALIDATION_ONLY",
   "authority": {
     "physical_run_authorized": true,
-    "authorization_basis": "user authorized continuation; R1/R2 frozen and R3 adds ownership/realization resolution without weakening classifier",
+    "authorization_basis": "user authorized continued physical research; R1-R5 diagnostics preserved separately",
     "paid_runner_authorized": false,
     "larger_runner_authorized": false,
     "local_pc_execution_authorized": false
   },
-  "schema_version": "tx-perturbation-matrix-v2",
+  "schema_version": "tx-perturbation-matrix-v3",
   "measurement_layers": [
     "INTERVENTION_REALIZATION",
     "CHALLENGE_CLASSIFICATION",
     "INCIDENTAL_INVALIDATION",
     "RECOVERY_COMPLETION",
     "OBSERVER_COVERAGE"
-  ]
+  ],
+  "observer_contract": {
+    "counter_backbone": [
+      "frl_pc_try64",
+      "frl_pc_uncharge_any"
+    ],
+    "critical_missed_required": 0,
+    "target_receipt_projection": "target_comm + owner_counter/owner_memcg",
+    "target_comm": "frltx405",
+    "target_refill_scope": "comm == frltx405 && nr_pages == 63",
+    "global_charge_scope": "nr_pages == 64; transaction receipts project to target lane; continuity retains all",
+    "uncharge_scope": "all page_counter_uncharge events; conditional stacktrace when nr_pages == 17"
+  }
 }
