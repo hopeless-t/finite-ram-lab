@@ -147,5 +147,25 @@ softirq-20 [007] ... 10.002000010: frl_pc_uncharge_owner: counter=0xaaa nr_pages
         self.assertEqual(result["target_drain_count"], 1)
 
 
+    def test_owner_small_refill_in_gap_is_state_change(self) -> None:
+        result = scan(
+            """
+systemd-1 [007] ... 10.000500000: frl_refill_stock: memcg=0xbbb nr_pages=1 comm="systemd"
+"""
+        )
+        self.assertFalse(result["gap_clean"])
+        self.assertEqual(result["target_refill_count"], 1)
+        self.assertEqual(result["target_refill_non63_count"], 1)
+        self.assertEqual(result["state_change_count"], 1)
+
+    def test_other_memcg_small_refill_in_gap_is_not_target_state_change(self) -> None:
+        result = scan(
+            """
+systemd-1 [007] ... 10.000500000: frl_refill_stock: memcg=0xccc nr_pages=1 comm="systemd"
+"""
+        )
+        self.assertTrue(result["gap_clean"])
+        self.assertEqual(result["target_refill_count"], 0)
+
 if __name__ == "__main__":
     unittest.main()
