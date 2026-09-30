@@ -428,5 +428,31 @@ x-1 [000] ... 26.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
         self.assertEqual(receipt["unknown_emission_count"], 0)
 
 
+    def test_owner_stack_detects_target_drain_when_drain_probe_is_missing(self) -> None:
+        trace = """
+x-1 [000] ... 27.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=11 PRE
+worker-20 [007] ... 27.000000010: frl_pc_uncharge_owner: counter=0xaaa nr_pages=38 comm="worker"
+ => page_counter_uncharge
+ => memcg_uncharge
+ => drain_stock
+x-1 [000] ... 27.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=11 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "CONSUME", 11)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            owner_memcg="0xbbb",
+            stock_cpu=7,
+            phase="CONSUME",
+            owner_probe_filtered=True,
+        )
+        self.assertEqual(receipt["drain_stock_count"], 1)
+        self.assertEqual(receipt["unknown_emission_count"], 0)
+        self.assertEqual(
+            receipt["target_drain_events"][0]["ownership"],
+            "OWNER_STACK_DRAIN_STOCK",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
