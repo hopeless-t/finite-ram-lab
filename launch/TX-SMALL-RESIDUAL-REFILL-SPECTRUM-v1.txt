@@ -1,0 +1,19 @@
+TX-SMALL-RESIDUAL-REFILL-SPECTRUM-v1
+human_authorized_at=2026-09-30
+purpose=capture source-grounded small refill events behind clean T>1 residuals
+blocks=4
+identities_per_block=32
+total_identities=128
+arm=CPUSET_PREP_ONLY
+primary_bound_touch=65
+q64_probe=page_counter_try_charge:nr_pages_64
+refill_probe=refill_stock:nr_pages_1_to_8_or_63
+stacktrace=false
+owner_resolution=first_measured_q64_plus_refill63
+panel_coverage_and_discovery_reported_separately=true
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+automatic_scale_expansion=false
+prerequisite_cpuset_run=36691073336
+preflight_commit=333a26ae0b723e629a7e44c9bac1580b3f226205
