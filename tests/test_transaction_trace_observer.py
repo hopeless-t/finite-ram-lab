@@ -237,7 +237,8 @@ x-1 [000] ... 17.000000040: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=N
             phase="NORMALIZE",
         )
         self.assertEqual(receipt["drain_stock_count"], 0)
-        self.assertEqual(receipt["other_memcg_drain_count"], 1)
+        self.assertEqual(receipt["normalization_internal_drain_count"], 1)
+        self.assertEqual(receipt["other_memcg_drain_count"], 0)
         self.assertEqual(receipt["unresolved_drain_count"], 0)
         self.assertEqual(receipt["discovered_owner_counter"], "0xaaa")
         self.assertEqual(receipt["discovered_owner_memcg"], "0xbbb")
@@ -305,7 +306,7 @@ x-1 [000] ... 20.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
     def test_all_counter_probe_can_ground_17_page_release(self) -> None:
         trace = """
 x-1 [000] ... 21.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=15 PRE
-worker-20 [007] ... 21.000000010: frl_pc_uncharge_any: counter=0xaaa nr_pages=17 comm="worker"
+worker-20 [007] ... 21.000000010: frl_pc_uncharge_owner: counter=0xaaa nr_pages=17 comm="worker"
  => page_counter_uncharge
  => folios_put_refs
  => folio_batch_move_lru
