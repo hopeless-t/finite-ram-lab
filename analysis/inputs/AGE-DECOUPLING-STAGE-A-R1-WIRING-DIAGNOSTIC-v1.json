@@ -1,0 +1,17 @@
+{
+  "schema_version": "age-decoupling-stage-a-r1-wiring-diagnostic-v1",
+  "experiment_id": "TX-AGE-DECOUPLING-STAGE-A-v2",
+  "run_id": "36702673576",
+  "launch_commit": "7d719855c5255f973bf1e2cc72d4afb30f232b3d",
+  "status": "NO_STAGE_A_SCIENTIFIC_PANEL_EXECUTED",
+  "failure": {
+    "stage": "post-VERIFY owner-probe binding",
+    "all_four_blocks_same_failure": true,
+    "exception": "FileExistsError: [Errno 17] File exists",
+    "root_cause": "_fresh_epoch() already binds the owner-uncharge stacktrace after VERIFY; the Age runner attempted the same bind a second time, causing tracefs trigger EEXIST."
+  },
+  "scientific_interpretation": "NONE",
+  "hold_exposure_executed": false,
+  "aggregate_executed": false,
+  "decision": "Preserve v2 design and timing. Remove only the duplicate bind and relaunch as R2."
+}
