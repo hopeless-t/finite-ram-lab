@@ -203,6 +203,7 @@ def _select_q64_receipt_events(
     *,
     owner_counter: str | None = None,
     owner_memcg: str | None = None,
+    target_comm: str | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Project global Q64 probes onto the target transaction lane.
 
@@ -218,6 +219,16 @@ def _select_q64_receipt_events(
     """
     charges = list(window.get("pc_try64", []))
     refills = list(window.get("refill63", []))
+
+    if target_comm is not None:
+        charges = [
+            event for event in charges
+            if event.get("comm") == target_comm
+        ]
+        refills = [
+            event for event in refills
+            if event.get("comm") == target_comm
+        ]
 
     if owner_counter is not None:
         counter = owner_counter.lower()
@@ -251,9 +262,16 @@ def _select_q64_receipt_events(
     return selected_charges, selected_refills
 
 
-def direct_q64_owner_counter(window: dict[str, Any]) -> str | None:
+def direct_q64_owner_counter(
+    window: dict[str, Any],
+    *,
+    target_comm: str | None = None,
+) -> str | None:
     """Return the unique target page-counter identity for an exact Q64 pair."""
-    charges, refills = _select_q64_receipt_events(window)
+    charges, refills = _select_q64_receipt_events(
+        window,
+        target_comm=target_comm,
+    )
     if len(charges) != 1 or len(refills) != 1:
         return None
     if not _same_execution_lane(charges[0], refills[0]):
@@ -262,9 +280,16 @@ def direct_q64_owner_counter(window: dict[str, Any]) -> str | None:
     return str(counter).lower() if counter else None
 
 
-def direct_q64_owner_memcg(window: dict[str, Any]) -> str | None:
+def direct_q64_owner_memcg(
+    window: dict[str, Any],
+    *,
+    target_comm: str | None = None,
+) -> str | None:
     """Return the memcg identity carried by an exact target Q64 restock."""
-    charges, refills = _select_q64_receipt_events(window)
+    charges, refills = _select_q64_receipt_events(
+        window,
+        target_comm=target_comm,
+    )
     if len(charges) != 1 or len(refills) != 1:
         return None
     if not _same_execution_lane(charges[0], refills[0]):
@@ -291,6 +316,7 @@ def observer_receipt_for_window(
     owner_memcg: str | None = None,
     stock_cpu: int | None = None,
     phase: str | None = None,
+    target_comm: str | None = None,
 ) -> dict[str, Any]:
     """Create a source-grounded B403-compatible observer receipt.
 
@@ -307,8 +333,14 @@ def observer_receipt_for_window(
 
     Net memory.current is never authoritative.
     """
-    candidate_owner = direct_q64_owner_counter(window)
-    candidate_memcg = direct_q64_owner_memcg(window)
+    candidate_owner = direct_q64_owner_counter(
+        window,
+        target_comm=target_comm,
+    )
+    candidate_memcg = direct_q64_owner_memcg(
+        window,
+        target_comm=target_comm,
+    )
     effective_owner = owner_counter or candidate_owner
     effective_memcg = owner_memcg or candidate_memcg
     if effective_owner is not None:
@@ -461,6 +493,7 @@ def observer_receipt_for_window(
         window,
         owner_counter=effective_owner if owner_counter is not None else None,
         owner_memcg=effective_memcg if owner_memcg is not None else None,
+        target_comm=target_comm,
     )
 
     return {
