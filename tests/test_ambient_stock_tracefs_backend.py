@@ -96,10 +96,10 @@ class AmbientTracefsBackendTests(unittest.TestCase):
             trace = root / "trace"
             trace.write_text("", encoding="utf-8")
             for event in (
-                "frl_ambient_refill",
-                "frl_ambient_consume_ret",
-                "frl_ambient_owner_uncharge",
-                "frl_ambient_owner_q64",
+                "frl_refill_stock",
+                "frl_consume_stock_ret",
+                "frl_pc_uncharge_owner",
+                "frl_pc_try64",
             ):
                 probe = root / "events" / "kprobes" / event
                 probe.mkdir(parents=True)
@@ -114,9 +114,9 @@ class AmbientTracefsBackendTests(unittest.TestCase):
             )
 
             for event in (
-                "frl_ambient_refill",
-                "frl_ambient_consume_ret",
-                "frl_ambient_owner_uncharge",
+                "frl_refill_stock",
+                "frl_consume_stock_ret",
+                "frl_pc_uncharge_owner",
             ):
                 probe = root / "events" / "kprobes" / event
                 self.assertEqual(
@@ -128,7 +128,7 @@ class AmbientTracefsBackendTests(unittest.TestCase):
                     (probe / "trigger").read_text(encoding="utf-8"),
                 )
 
-            q64 = root / "events" / "kprobes" / "frl_ambient_owner_q64"
+            q64 = root / "events" / "kprobes" / "frl_pc_try64"
             self.assertEqual(
                 (q64 / "enable").read_text(encoding="utf-8"),
                 "1\n",
