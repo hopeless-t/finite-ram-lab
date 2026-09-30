@@ -67,6 +67,7 @@ def _empty_window() -> dict[str, Any]:
         "post_ns": None,
         "marker_error_count": 0,
         "pc_try64": [],
+        "refill_any": [],
         "refill63": [],
         "pc_uncharge17": [],
         "pc_uncharge17_stacks": [],
@@ -139,6 +140,7 @@ def parse_transaction_trace(
                 item["pc_try64"].append(row)
             active_stack = None
         elif "frl_refill_stock:" in line:
+            item["refill_any"].append(row)
             if int(row.get("nr_pages", 0)) == 63:
                 item["refill63"].append(row)
             active_stack = None
@@ -584,10 +586,40 @@ def observer_receipt_for_window(
         target_comm=target_comm,
     )
 
+    owner_refill_events: list[dict[str, Any]] = []
+    off_cpu_owner_refill_events: list[dict[str, Any]] = []
+    if effective_memcg is not None:
+        for event in window.get("refill_any", []):
+            if str(event.get("memcg", "")).lower() != effective_memcg:
+                continue
+            if (
+                stock_cpu is not None
+                and int(event.get("cpu", -1)) != int(stock_cpu)
+            ):
+                off_cpu_owner_refill_events.append(event)
+                continue
+            owner_refill_events.append(event)
+
+    owner_refill_non63_events = [
+        event
+        for event in owner_refill_events
+        if int(event.get("nr_pages", -1)) != 63
+    ]
+    if off_cpu_owner_refill_events:
+        notes.append(
+            "off_cpu_owner_refill_ignored="
+            f"{len(off_cpu_owner_refill_events)}"
+        )
+
     return {
         "trace_complete": window_trace_complete(window),
         "page_counter_try_charge_64_count": len(selected_charges),
         "refill_stock_63_count": len(selected_refills),
+        "owner_refill_any_count": len(owner_refill_events),
+        "owner_refill_non63_count": len(owner_refill_non63_events),
+        "owner_refill_events": owner_refill_events,
+        "owner_refill_non63_events": owner_refill_non63_events,
+        "off_cpu_owner_refill_count": len(off_cpu_owner_refill_events),
         "drain_stock_count": len(target_drains),
         "classified_release_only_count": grounded_release,
         "unknown_emission_count": unknown_release,
