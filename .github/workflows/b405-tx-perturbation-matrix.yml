@@ -61,7 +61,7 @@ jobs:
           cleanup() (
             set +e
             echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
-            for ev in               frl_refill_stock frl_trigger_refill frl_scrubber_refill frl_memcg_uncharge frl_pc_try64 frl_pc_uncharge17               frl_lru_flush frl_folios_put frl_drain_stock; do
+            for ev in               frl_refill_stock frl_trigger_refill frl_scrubber_refill frl_pc_uncharge_any frl_pc_try64 frl_pc_uncharge17               frl_lru_flush frl_folios_put frl_drain_stock; do
               if test -e "$TRACE/events/kprobes/$ev/enable"; then
                 echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
               fi
@@ -75,7 +75,7 @@ jobs:
           printf '%s\n'             'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_trigger_refill refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_scrubber_refill refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
-          printf '%s\n'             'p:frl_memcg_uncharge memcg_uncharge memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n'             'p:frl_pc_uncharge_any page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_pc_try64 page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_pc_uncharge17 page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_lru_flush folio_batch_move_lru fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
@@ -91,7 +91,7 @@ jobs:
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_lru_flush/filter" >/dev/null
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_folios_put/filter" >/dev/null
 
-          for ev in             frl_refill_stock frl_trigger_refill frl_scrubber_refill frl_memcg_uncharge frl_pc_try64 frl_pc_uncharge17             frl_lru_flush frl_folios_put frl_drain_stock; do
+          for ev in             frl_refill_stock frl_trigger_refill frl_scrubber_refill frl_pc_uncharge_any frl_pc_try64 frl_pc_uncharge17             frl_lru_flush frl_folios_put frl_drain_stock; do
             echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
             sudo cat "$TRACE/events/kprobes/$ev/format" > "$OUT/$ev.format"
           done
@@ -110,10 +110,11 @@ jobs:
           sudo cat "$TRACE/kprobe_profile" > "$OUT/kprobe-profile.txt" || true
 
       - uses: actions/upload-artifact@v7
+        if: always()
         with:
           name: b405-block-${{ matrix.block }}
           path: evidence/B405/block-${{ matrix.block }}/
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 7
 
   aggregate:
