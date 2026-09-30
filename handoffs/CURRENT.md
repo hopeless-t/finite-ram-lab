@@ -1,203 +1,133 @@
 # CURRENT
 
-> Latest bounce: B412
-> Stage: B404 PHYSICAL PROTOCOL SMOKE PASS
-> Stop: B404 COMPLETE / READY TO IMPLEMENT B405 PERTURBATION MATRIX
+> Latest bounce: B413
+> Stage: NORMALIZE BOUNDARY CHASE PREFLIGHT
+> Stop: READY TO LAUNCH TX-NORMALIZE-BOUNDARY-CHASE-v1 AFTER CI
 
-## Chapter II objective
+## Chapter II current frontier
 
-Capture an unexplained verified-epoch boundary shift and distinguish real state mutation from observer contamination before reliability scaling.
+B405 causal classification is now largely separated from normalization ecology.
 
-## Clean boundary invariant
+R8 run 36681393399 produced:
 
-After a verified direct Q64:
-
-`R_0 = 63`
-
-and, under a complete uninterrupted clean epoch:
-
-`R_t = 63 - t`.
-
-The canonical next direct-Q64 boundary is:
-
-`T_0 = 64`.
-
-Define:
-
-`Delta = T - 64`.
-
-A complete unexplained `Delta != 0` remains the Chapter-II rare specimen.
-
-## B404 R1 — observer falsification
-
-Run:
-
-- 36642120375
-- launch commit `0d2a3286f3e0346e101285c52670e0ab817e427c`
-
-Frozen result:
-
-- normal SUCCESS 10/12
+- CLEAN 3/4
+- RELEASE_ONLY 4/4
+- UNEXPECTED_REFILL 4/4
+- PTE_GROWTH 4/4
+- challenge pass 15/16
+- completion pass 15/16
 - TARGET_FAIL 0
-- instrumentation hold 1
-- ABORTED 1
-- sentinel PASS
-- protocol smoke FAIL under observer v1
 
-R1 exposed two observer defects:
+Critical observer coverage passed for the first time:
 
-1. all observed `drain_stock` events were being treated as target-state mutation without CPU/context attribution;
-2. an owner `page_counter_uncharge(...,17)` could fail attribution when its known LRU stack was not captured inside the narrow same-window flush/put envelope.
+- frl_pc_try64 missed = 0
+- frl_pc_uncharge_owner missed = 0
 
-Raw forensics:
+The sole R8 failure was CLEAN trial 0:0:
 
-- 12 v1 drain invalidations
-- 9/12 off target stock CPU
-- 3/12 same stock CPU during direct-Q64 NORMALIZE refill/slot replacement
-- zero observed same-stock-CPU post-verification drains
+- NORMALIZE_EXHAUSTED
+- 64 complete normalization touches
+- no measured target direct Q64
+- no PTE growth
+- no CPU mismatch
+- no worker error
+- target transaction never reached VERIFIED
 
-R1 remains frozen and is not rewritten as success.
+This remains frozen as a normalization specimen, not TARGET_FAIL.
 
-Artifacts:
+## Named natural state-changing event
 
-- `analysis/inputs/B404-R1-OBSERVER-RECLASSIFICATION-v1.json`
-- `docs/B404-R1-TRANSACTIONAL-SPAWN-PHYSICAL-RESULT.md`
+TARGET_STOCK_EVICTION remains established from B405 R6 trial 0:0:
 
-## Observer R2 correction
+verified target residual is asynchronously drained from the per-CPU memcg stock before the next measured transition.
 
-Implemented and CI-tested:
+Its full-residual fingerprint is:
 
-- trace CPU attribution
-- off-stock-CPU drain ignored as target-stock mutation
-- direct-Q64 NORMALIZE slot eviction distinguished from destruction of the newly established residual
-- same-stock-CPU post-verification drain remains invalidating
-- owner uncharge17 may be positively grounded by the known LRU/folio stack
-- unknown owner uncharge remains fail-closed
-- evidence-manifest records sorted by normalized relative path
+Delta = -d
 
-The target arithmetic and transaction semantics were not changed.
+for an eviction of d cached pages.
 
-## B404 R2 — physical PASS
+## New pre-VERIFY state distinction
 
-Valid run:
+Verified direct-Q64 primer:
 
-- **36642946787**
-- launch commit `c6c0feb8db7d6314dddddf9b15d2c7ab5f1d19aa`
+R0 = 63.
 
-Normal lane:
+Natural pre-VERIFY stock:
 
-- **12/12 SUCCESS**
-- b62 = 4/4
-- b63 = 4/4
-- b64 = 4/4
-- TARGET_FAIL = 0
-- instrumentation hold = 0
-- normal-lane re-prime = 0
+0 <= S <= 64.
 
-Sentinel:
+Linux refill_stock permits an existing same-memcg slot to reach exactly MEMCG_CHARGE_BATCH and drains only if the merged stock is greater than the batch.
 
-- forced epoch0 UNEXPECTED_REFILL detected
-- invalidated epoch could not commit
-- hard re-prime opened epoch1
-- epoch1 required a fresh direct Q64
-- final SUCCESS
-- sentinel PASS
+Therefore define:
 
-Aggregate:
+PREVERIFY_S64 / MAX_STOCK_BOUNDARY.
 
-- `protocol_smoke_pass = true`
-- `reprimes_total = 1`
-- `invalidation_counts = {UNEXPECTED_REFILL: 1}`
+## 65-touch theorem
 
-The one invalidation/re-prime is intentional sentinel behavior.
+For one-page fresh data faults on one CPU, with a complete direct-Q64 observer:
 
-Observer telemetry in the normal lane:
+T = S0 + 1
 
-- classified release-only = 0
-- unknown emission = 0
-- off-stock-CPU drain observations safely ignored = 4
-- NORMALIZE internal slot-drain observations safely ignored = 4
+and:
 
-## Evidence
+0 <= S0 <= 64
 
-Machine result:
+therefore:
 
-- `analysis/inputs/B404-R2-PHYSICAL-RESULT-v1.json`
+1 <= T <= 65.
 
-Narrative:
+Interpretation:
 
-- `docs/B404-R2-TRANSACTIONAL-SPAWN-PHYSICAL-PASS.md`
+- T=1..64 -> WITHIN_BOUND
+- T=65 -> MAX_STOCK_BOUNDARY
+- T>65 -> STOCK_BOUND_VIOLATION_CANDIDATE
 
-Handoff:
+A valid no-Q64-through-65 specimen would falsify the current one-slot stock-bound model or expose an unmodeled charge path.
 
-- `handoffs/B412-B404-PHYSICAL-PASS.md`
+## R9 experiment
 
-Raw manifest:
+TX-NORMALIZE-BOUNDARY-CHASE-v1
 
-- files = 63
-- content-set SHA-256 = `d5c819b4b7d413faa6f635fc9062f0941ee570afebbb149d5d8c1f33d05127cf`
+Design:
 
-Aggregate artifact:
+- 4 blocks
+- 8 fresh identities/block
+- 32 total identities
+- primary horizon 65 touches
+- diagnostic horizon 80 only after bound violation
+- target Q64 attribution by trace task PID + stock CPU
+- one critical page_counter_try_charge(...,64) probe
+- zero critical probe misses required
+- no transactional target arm
 
-- ID = 11067486294
-- digest = `sha256:2a6b9d5fd0af968e89d8ceaca90b468ebd745641b40178ac9f50d09e73ce4e37`
+Files:
 
-## Claim boundary
+- specs/TX-NORMALIZE-BOUNDARY-CHASE-v1.json
+- src/finite_ram_lab/normalize_boundary_chase.py
+- tests/test_normalize_boundary_chase.py
+- docs/MATH-024-PREVERIFY-STOCK-BOUND-65-TOUCH-THEOREM.md
+- handoffs/B413-NORMALIZE-BOUNDARY-CHASE.md
+- .github/workflows/normalize-boundary-chase.yml
 
-B404 proves protocol-smoke behavior for this 13-identity physical panel.
+## Frozen evidence
 
-It does **not** prove:
+B405 R8:
 
-- population-level 100% reliability;
-- zero TARGET_FAIL probability;
-- absence of unknown state-changing mechanisms.
+- analysis/inputs/B405-R8-PHYSICAL-RESULT-v1.json
+- raw files = 80
+- raw bytes = 9,669,832
+- raw content-set SHA-256 = 31a9d3adbb979415e2dffba0a9117df066bf422a61753e39035db914f244bb3a
+- aggregate artifact ID = 11082146184
+- artifact digest = sha256:3ce31c90588f32f7f2cc2d89d8875980c650213a182f88af615eae0702a9f87c
 
-## Monte Carlo-selected discovery design
-
-B410 remains frozen for the later discovery stage:
-
-Stage A:
-
-- b63 only
-- FAST x4
-- HOLD32 x12
-- target wall-clock exposure ratio F ~= 16
-
-Stage B only if triggered:
-
-- HOLD8 x4
-- HOLD32 x4
-- HOLD56 x4
-
-Do not run age decoupling before B405.
-
-## Next physical stage
-
-B405 causal perturbation matrix:
-
-- CLEAN x4
-- RELEASE_ONLY x4
-- UNEXPECTED_REFILL x4
-- PTE_GROWTH x4
-
-Goal:
-
-prove that the physical classifier responds asymmetrically:
-
-- RELEASE_ONLY preserves the verified state;
-- UNEXPECTED_REFILL invalidates;
-- PTE_GROWTH invalidates;
-- CLEAN commits normally.
+Historical B405 generations remain frozen and must not be rewritten by R9.
 
 ## Authority
 
-B404 physical experiment: COMPLETE / AUTHORIZED.
+R9 physical continuation is authorized.
 
-Next:
-B405 implementation and preflight are authorized as continuation of the user-requested experiment program.
-
-No paid runner.
-No larger runner.
+Standard public-repository GitHub-hosted runner only.
+No paid larger runner.
 No local-PC execution.
-No age-decoupling launch until B405 passes.
 No reliability certification.
