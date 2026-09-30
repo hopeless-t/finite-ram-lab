@@ -1,0 +1,34 @@
+{
+  "schema_version": "b405-r4-preaggregate-diagnostic-v1",
+  "run_id": "36649528104",
+  "launch_commit": "6d4a6116ce70fd3d32e54e286810a5990b136368",
+  "status": "PRE_AGGREGATE_ABORTED_BY_TARGET_RECEIPT_CONTAMINATION",
+  "aggregate_status": "SKIPPED because block 1 failed during physical runner execution",
+  "root_cause": "frl_refill_stock was temporarily broadened to all comm values while target NORMALIZE still required an exact unique charge64/refill63 pair; background/helper refill events could contaminate the target window and make owner acquisition non-unique.",
+  "block_observations": {
+    "0": {
+      "challenge_pass": 3,
+      "completion_pass": 1
+    },
+    "1": {
+      "runner_exception": "ValueError: VERIFIED without epoch owner counter"
+    },
+    "2": {
+      "challenge_pass": 2,
+      "completion_pass": 0
+    },
+    "3": {
+      "challenge_pass": 2,
+      "completion_pass": 0
+    }
+  },
+  "decision": [
+    "do not treat R4 as a completed causal matrix",
+    "retain global page_counter_try_charge64 for continuity",
+    "restore refill_stock63 to target-only receipt scope",
+    "prime helper stocks from global Q64 charge observations",
+    "project global Q64 events onto owner counter / target execution lane for transaction receipts"
+  ],
+  "target_fail_claim": "not evaluated as a complete 16-identity matrix",
+  "claim_ceiling": "INSTRUMENTATION_DIAGNOSTIC_ONLY"
+}
