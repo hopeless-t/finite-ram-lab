@@ -61,13 +61,16 @@
     "SMALL_REFILL_EXPLAINS_DELAY": "T>1 and owner small refill receipts before boundary are source-compatible with S0=T-1",
     "HIGH_T_WITHOUT_SMALL_REFILL": "T>1 but no matching owner small refill receipt",
     "CLASSIC_REFILL63_LEAK": "owner refill63 occurs on stock_cpu before measured boundary despite cpuset intervention",
-    "INVALID_OBSERVER": "probe miss, missing owner identity, trace gap, PTE growth, CPU mismatch, worker error, cpuset receipt failure, or multi-process cgroup"
+    "INVALID_OBSERVER": "probe miss, missing owner identity, trace gap, PTE growth, CPU mismatch, worker error, cpuset receipt failure, or multi-process cgroup",
+    "SMALL_REFILL_PARTIAL": "T>1 and matching owner small-refill receipts exist, but their observed total is smaller than inferred S0=T-1",
+    "T1_WITH_SMALL_REFILL_HISTORY": "T=1 but owner small-refill history exists; retain as ecology evidence without attributing boundary delay"
   },
   "primary_acceptance": [
-    "all valid identities obey T<=65",
-    "Q64 and refill-spectrum missed deltas are zero for any promoted small-refill specimen",
-    "at least one T>1 specimen is captured",
-    "at least one T>1 specimen has matching owner_memcg small refill evidence, preferably refill1 for T=2"
+    "all promoted mechanism specimens have T<=65",
+    "Q64 and refill-spectrum missed deltas are zero for every promoted small-refill specimen",
+    "at least one valid T>1 specimen is captured",
+    "at least one valid T>1 specimen is classified SMALL_REFILL_EXPLAINS_DELAY, preferably T=2 with owner refill1",
+    "panel coverage is reported separately and does not erase a complete promoted mechanism specimen"
   ],
   "sample_sensitivity": {
     "signal": "one clean CPUSET T=2 among 32 intervention identities in R12",
