@@ -91,6 +91,7 @@
       "OBSERVATION_HOLD",
       "INSTRUMENTATION_HOLD",
       "CANARY_CONTAMINATED",
+      "AMBIENT_Q64_RESET",
       "STABLE_RESIDUAL",
       "DIRECT_SLOT_EVICTION_FINGERPRINT",
       "DIRECT_STOCK_CONSUMPTION_FINGERPRINT",
@@ -103,6 +104,7 @@
     "direct_drain_rule": "isolated attributed drain d, matching owner uncharge d, 0<d<=31, and final T == 64-d",
     "direct_consume_rule": "isolated successful owner consume c, 0<c<=31, and final T == 64-c",
     "stable_rule": "complete zero-miss observation, no drain/consume/refill/uncharge signal, and final T=64",
+    "ambient_q64_rule": "any owner Q64 during the zero-target-touch ambient window is a state reset and blocks simple final-boundary arithmetic",
     "unknown_rule": "preserve complete observations that do not satisfy an exact known fingerprint"
   },
   "local_execution": {
