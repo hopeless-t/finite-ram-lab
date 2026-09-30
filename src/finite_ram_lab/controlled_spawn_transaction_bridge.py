@@ -69,7 +69,10 @@ def transition_token(observer: dict[str, Any]) -> str:
 
     charge = _count(observer, "page_counter_try_charge_64_count")
     refill = _count(observer, "refill_stock_63_count")
+    refill_non63 = _count(observer, "owner_refill_non63_count")
 
+    if refill_non63:
+        return "OTHER"
     if charge == 0 and refill == 0:
         return "ZERO"
     if charge == 1 and refill == 1:
