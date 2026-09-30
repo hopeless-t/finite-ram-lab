@@ -1,0 +1,22 @@
+TX-AGE-DECOUPLING-STAGE-A-v2
+human_authorized_at=2026-09-30
+purpose=distinguish verified-state touch-driven vs wall-clock-driven hazards
+parent_frozen_design=TX-AGE-DECOUPLING-v1
+stage=Stage_A_only
+blocks=4
+identities_per_block=4
+fast_n=4
+hold32_n=12
+hold_after_touch=32
+dwell_ns=22077060000
+tau_fast_reference_ns=1471804000
+tau_source_run=36642946787
+critical_probes=frl_pc_try64,frl_pc_uncharge_owner,frl_refill_stock
+postverify_refill_binding=owner_memcg_all_sizes
+unknown_complete_preserved=true
+stage_b_auto_launch=false
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+automatic_scale_expansion=false
+preflight_commit=b22f50d8f50f0281c3dee995074aa68527b0ab3f
