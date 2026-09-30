@@ -223,28 +223,28 @@ def _prime_scrubber_stock(
 ) -> dict[str, Any]:
     baseline = _event_count(
         trace_path,
-        "frl_refill_stock:",
+        "frl_pc_try64:",
         "frlscrub",
     )
     rows: list[dict[str, Any]] = []
-    refill_touch: int | None = None
+    charge64_touch: int | None = None
     for touch in range(1, max_touches + 1):
         row = _handoff_command(scrubber, CMD_TOUCH)
         rows.append({"touch": touch, **row})
         if (
             _event_count(
                 trace_path,
-                "frl_refill_stock:",
+                "frl_pc_try64:",
                 "frlscrub",
             )
             > baseline
         ):
-            refill_touch = touch
+            charge64_touch = touch
             break
     return {
-        "refill_touch": refill_touch,
+        "charge64_touch": charge64_touch,
         "rows": rows,
-        "pass": refill_touch is not None,
+        "pass": charge64_touch is not None,
     }
 
 
@@ -353,6 +353,11 @@ def _observe_external_release(
     trial_id: str,
     stock_cpu: int,
 ) -> dict[str, Any]:
+    helper_charge64_before = _event_count(
+        trace_path,
+        "frl_pc_try64:",
+        "frltrig",
+    )
     write_marker(
         trace_marker,
         trial_id=trial_id,
@@ -388,7 +393,18 @@ def _observe_external_release(
         window=window,
         stock_cpu=stock_cpu,
     )
-    return {"trigger_rows": rows, "event": event}
+    helper_charge64_after = _event_count(
+        trace_path,
+        "frl_pc_try64:",
+        "frltrig",
+    )
+    return {
+        "trigger_rows": rows,
+        "event": event,
+        "helper_charge64_count": (
+            helper_charge64_after - helper_charge64_before
+        ),
+    }
 
 
 def _fresh_epoch(
@@ -836,6 +852,7 @@ def run_trial(
                         "RELEASE_PRESERVED_AND_COMMITTED"
                         if (
                             event.get("result") == "RELEASE_ONLY"
+                            and observe.get("helper_charge64_count") == 0
                             and event.get("expected_residual_before")
                             == event.get("expected_residual_after")
                             and archive.tx.state is State.SUCCESS
