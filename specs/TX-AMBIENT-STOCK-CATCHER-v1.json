@@ -21,7 +21,8 @@
       "target performs zero touches during ambient window"
     ],
     "ambient_window": {
-      "default_seconds": 600,
+      "default_seconds": 60,
+      "qualification_target_seconds": 600,
       "maximum_seconds": 1800,
       "helper_memcgs": 0,
       "synthetic_pressure": false,
@@ -114,6 +115,8 @@
     "paid_resources_allowed": false,
     "automatic_retry": false,
     "automatic_sample_expansion": false,
+    "synchronous_ldc_session_seconds": 60,
+    "extended_600s_session_requires_separate_qualification": true,
     "physical_launch_by_this_spec": false
   }
 }
