@@ -45,6 +45,7 @@ class EpochArchive:
         window: dict[str, Any],
         stock_cpu: int,
         target_comm: str | None = None,
+        owner_probe_filtered: bool = False,
     ) -> dict[str, Any]:
         self._assert_epoch(epoch)
         receipt = observer_receipt_for_window(
@@ -54,6 +55,7 @@ class EpochArchive:
             stock_cpu=stock_cpu,
             phase=phase,
             target_comm=target_comm,
+            owner_probe_filtered=owner_probe_filtered,
         )
         packet = packet_from_touch(
             epoch=epoch,
@@ -108,6 +110,7 @@ class EpochArchive:
         windows: list[dict[str, Any]],
         stock_cpu: int,
         target_comm: str | None = None,
+        owner_probe_filtered: bool = False,
     ) -> dict[str, Any]:
         self._assert_epoch(epoch)
         if self.owner_counter is None:
@@ -123,6 +126,7 @@ class EpochArchive:
                 stock_cpu=stock_cpu,
                 phase="TARGET",
                 target_comm=target_comm,
+                owner_probe_filtered=owner_probe_filtered,
             )
             for window in windows
         ]
@@ -178,6 +182,7 @@ class EpochArchive:
         window: dict[str, Any],
         stock_cpu: int,
         label: str = "OBSERVE_NEUTRAL",
+        owner_probe_filtered: bool = False,
     ) -> dict[str, Any]:
         """Validate an external setup window without consuming target stock."""
         self._assert_epoch(epoch)
@@ -194,6 +199,7 @@ class EpochArchive:
             owner_memcg=self.owner_memcg,
             stock_cpu=stock_cpu,
             phase="OBSERVE",
+            owner_probe_filtered=owner_probe_filtered,
         )
         before = self.tx.expected_residual
         after = before
@@ -262,6 +268,7 @@ class EpochArchive:
         touch_number: int,
         window: dict[str, Any],
         stock_cpu: int,
+        owner_probe_filtered: bool = False,
     ) -> dict[str, Any]:
         """Apply an external observation window without consuming target stock."""
         self._assert_epoch(epoch)
@@ -278,6 +285,7 @@ class EpochArchive:
             owner_memcg=self.owner_memcg,
             stock_cpu=stock_cpu,
             phase="OBSERVE",
+            owner_probe_filtered=owner_probe_filtered,
         )
 
         before = self.tx.expected_residual
