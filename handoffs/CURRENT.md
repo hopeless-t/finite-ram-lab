@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B424
-> Stage: AMBIENT STOCK CATCHER / COUNT-ONLY TRACEFS BACKEND FROZEN
-> Stop: IMPLEMENT EPHEMERAL ONE-CANARY SESSION ORCHESTRATOR
+> Latest bounce: B425
+> Stage: AMBIENT STOCK CATCHER / EPHEMERAL ONE-CANARY SESSION ORCHESTRATOR FROZEN
+> Stop: WIRE AND SOFTWARE-QUALIFY FIXED LOCAL MCP GATEWAY ACTION
 
 ## Chapter II frontier
 
@@ -596,3 +596,43 @@ Implement the one-canary ephemeral session orchestrator:
 9. cleanup and exit.
 
 First live session remains one canary / 60 seconds / no synthetic pressure. 600 seconds is a later separately qualified target.
+
+
+## B425 ephemeral one-canary ambient session orchestrator
+
+Frozen files:
+
+- src/finite_ram_lab/ambient_stock_session.py
+- tests/test_ambient_stock_session.py
+- docs/B425-EPHEMERAL-AMBIENT-SESSION-ORCHESTRATOR.md
+
+The bounded session now composes the full scientific path:
+
+- fresh verified epoch;
+- exact R0=63;
+- exactly 32 measured target touches;
+- require residual31;
+- switch qualified refill/consume/uncharge probes to count-only owner histograms;
+- zero synthetic pressure and zero helper memcgs;
+- 60-second synchronous ambient exposure;
+- measure canary quiescence from worker touch counter, worker error, VmPTE, and CPU before/after;
+- freeze ambient histograms before target touches resume;
+- owner-Q64-only bounded final chase;
+- emit source-neutral JSONL receipts;
+- deterministic reduction and conservative classification;
+- cleanup and exit.
+
+The first synchronous LDC exposure is 60 seconds because the current bounded process surface is roughly two minutes. 600 seconds remains a separate later qualification target, not the first dispatch.
+
+B425 also adds AMBIENT_Q64_RESET. Any owner Q64 during the zero-target-touch ambient interval blocks simple final-boundary arithmetic, because the canary state crossed a reset/charge boundary before the final diagnostic.
+
+No physical ambient session has run.
+No persistent daemon, service, or probe has been installed.
+
+Next atomic bounce:
+
+1. add one fixed zero-argument Local MCP Gateway action for the exact B425 orchestrator;
+2. pin the finite-ram experiment source bytes;
+3. qualify the action with local unit tests while preserving unrelated dirty LDC work;
+4. publish only the selected finite-ram gateway files to an isolated mvca-hq research branch;
+5. only after qualification, dispatch one physical 60-second canary session.
