@@ -98,6 +98,7 @@ def _one_touch(
     page_size: int,
     expected_worker_touched: int,
     target_comm: str | None = None,
+    owner_probe_filtered: bool = False,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     row = touch_with_transaction_marker(
         unit=unit,
@@ -126,6 +127,7 @@ def _one_touch(
         window=window,
         stock_cpu=stock_cpu,
         target_comm=target_comm,
+        owner_probe_filtered=owner_probe_filtered,
     )
     return row, packet
 
@@ -144,6 +146,7 @@ def _normalize(
     calibration_max: int,
     measured_count: int,
     target_comm: str | None = None,
+    owner_probe_filtered: bool = False,
 ) -> tuple[int, int, list[dict[str, Any]]]:
     rows: list[dict[str, Any]] = []
     for touch_number in range(1, calibration_max + 1):
@@ -164,6 +167,7 @@ def _normalize(
             page_size=page_size,
             expected_worker_touched=measured_count,
             target_comm=target_comm,
+            owner_probe_filtered=owner_probe_filtered,
         )
         cursor += 1
         rows.append({"touch": row, "packet": packet})
@@ -201,6 +205,7 @@ def _consume(
     page_size: int,
     measured_count: int,
     target_comm: str | None = None,
+    owner_probe_filtered: bool = False,
 ) -> tuple[int, int, list[dict[str, Any]]]:
     rows: list[dict[str, Any]] = []
     for touch_number in range(1, count + 1):
@@ -221,6 +226,7 @@ def _consume(
             page_size=page_size,
             expected_worker_touched=measured_count,
             target_comm=target_comm,
+            owner_probe_filtered=owner_probe_filtered,
         )
         cursor += 1
         rows.append({"touch": row, "packet": packet})
@@ -247,6 +253,7 @@ def _target_bundle(
     page_size: int,
     measured_count: int,
     target_comm: str | None = None,
+    owner_probe_filtered: bool = False,
 ) -> tuple[int, int, dict[str, Any]]:
     touches: list[dict[str, Any]] = []
     windows: list[dict[str, Any]] = []
@@ -287,6 +294,7 @@ def _target_bundle(
         windows=windows,
         stock_cpu=stock_cpu,
         target_comm=target_comm,
+        owner_probe_filtered=owner_probe_filtered,
     )
     return cursor, measured_count, {
         "touches": touches,
