@@ -17,6 +17,7 @@ KNOWN_RECORDS = frozenset({
     "COVERAGE",
     "HISTOGRAM",
     "AMBIENT_TARGET_TOUCH",
+    "AMBIENT_OWNER_Q64",
     "CONSUME_SUCCESS",
     "REFILL",
     "DRAIN_ATTRIBUTED",
@@ -60,6 +61,7 @@ def reduce_catcher_records(
     normalized = False
     initial_residual = 0
     ambient_target_touch_count = 0
+    ambient_owner_q64_count = 0
 
     health = {
         "trace_complete": False,
@@ -169,6 +171,12 @@ def reduce_catcher_records(
                 "ambient_target_touch_count",
                 minimum=1,
             )
+        elif kind == "AMBIENT_OWNER_Q64":
+            ambient_owner_q64_count += _int(
+                record.get("count", 1),
+                "ambient_owner_q64_count",
+                minimum=1,
+            )
         elif kind == "CONSUME_SUCCESS":
             owner_consume_pages += _int(
                 record.get("pages"),
@@ -242,6 +250,7 @@ def reduce_catcher_records(
         normalized=normalized,
         initial_residual=initial_residual,
         ambient_target_touch_count=ambient_target_touch_count,
+        ambient_owner_q64_count=ambient_owner_q64_count,
         trace_complete=trace_complete,
         worker_ok=bool(health["worker_ok"]),
         cpu_stable=bool(health["cpu_stable"]),
