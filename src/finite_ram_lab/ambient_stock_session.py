@@ -21,7 +21,15 @@ from .ambient_stock_tracefs_backend import (
     histogram_receipt,
     parse_histogram,
 )
-from .memcg005gc_controlled_spawn import _stop, environment_receipt
+from .memcg005gc_controlled_spawn import (
+    OFF_ERROR,
+    OFF_TOUCHED,
+    _proc_cpu,
+    _stop,
+    _u32,
+    _vmpte_kib,
+    environment_receipt,
+)
 from .startup_stock_seed_phase import _delta_counts, _profile_counts
 from .transaction_epoch_archive import EpochArchive
 from .transactional_reprime import State
@@ -426,6 +434,9 @@ def run_session(
         )
 
         profile_before = _profile_snapshot(trace_path)
+        ambient_touched_before = _u32(unit["mm"], OFF_TOUCHED)
+        ambient_vmpte_before = _vmpte_kib(int(unit["pid"]))
+        ambient_cpu_before = _proc_cpu(int(unit["pid"]))
 
         write_marker(
             trace_marker,
@@ -444,6 +455,14 @@ def run_session(
             touch_number=AMBIENT_MARKER_TOUCH,
             edge="POST",
         )
+
+        ambient_touched_after = _u32(unit["mm"], OFF_TOUCHED)
+        ambient_touch_delta = (
+            int(ambient_touched_after) - int(ambient_touched_before)
+        )
+        ambient_vmpte_after = _vmpte_kib(int(unit["pid"]))
+        ambient_cpu_after = _proc_cpu(int(unit["pid"]))
+        ambient_worker_error = _u32(unit["mm"], OFF_ERROR)
 
         ambient_window = observed_window(
             trace_text=trace_path.read_text(
@@ -495,6 +514,17 @@ def run_session(
             "seconds": ambient_seconds,
             "trace_complete": _trace_window_complete(ambient_window),
             "owner_q64_count": len(ambient_q64),
+            "worker_touched_before": int(ambient_touched_before),
+            "worker_touched_after": int(ambient_touched_after),
+            "target_touch_delta": int(ambient_touch_delta),
+            "worker_error_after": int(ambient_worker_error),
+            "vmpte_before_kib": int(ambient_vmpte_before),
+            "vmpte_after_kib": int(ambient_vmpte_after),
+            "vmpte_delta_kib": (
+                int(ambient_vmpte_after) - int(ambient_vmpte_before)
+            ),
+            "cpu_before": int(ambient_cpu_before),
+            "cpu_after": int(ambient_cpu_after),
             "histograms": {
                 key: {
                     "hits": value.hits,
@@ -522,9 +552,19 @@ def run_session(
                 bool(ambient_detail["trace_complete"])
                 and bool(diagnostic["trace_complete"])
             ),
-            "worker_ok": bool(diagnostic["worker_ok"]),
-            "cpu_stable": bool(diagnostic["cpu_stable"]),
-            "pte_stable": bool(diagnostic["pte_stable"]),
+            "worker_ok": (
+                int(ambient_worker_error) == 0
+                and bool(diagnostic["worker_ok"])
+            ),
+            "cpu_stable": (
+                int(ambient_cpu_before) == int(stock_cpu)
+                and int(ambient_cpu_after) == int(stock_cpu)
+                and bool(diagnostic["cpu_stable"])
+            ),
+            "pte_stable": (
+                int(ambient_vmpte_after) == int(ambient_vmpte_before)
+                and bool(diagnostic["pte_stable"])
+            ),
         }
         records.append(health)
 
@@ -557,6 +597,13 @@ def run_session(
                 summary=histograms["uncharge"],
             )
         )
+
+        if ambient_touch_delta > 0:
+            records.append({
+                "kind": "AMBIENT_TARGET_TOUCH",
+                "session_id": session_id,
+                "count": int(ambient_touch_delta),
+            })
 
         if ambient_q64:
             records.append({
