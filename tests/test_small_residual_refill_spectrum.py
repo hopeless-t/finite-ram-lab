@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from finite_ram_lab.small_residual_refill_spectrum import (
+    _current_trial_owner_refills,
     _marker_intervals,
     _phase_bucket,
     aggregate,
@@ -115,6 +116,53 @@ x-1 [000] ... 10.510000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=N
                 first_q64_touch=2,
             ),
             "MEASURED_PREBOUNDARY_TOUCHES",
+        )
+
+    def test_pointer_reuse_before_startup_pre_is_excluded(self) -> None:
+        intervals = {
+            ("OBSERVE", 91): {
+                "pre": 94_167_155_000,
+                "post": 94_202_800_000,
+            },
+            ("NORMALIZE", 2): {
+                "pre": 94_733_440_000,
+                "post": 94_734_881_000,
+            },
+        }
+        rows = [
+            {
+                "timestamp_ns": 83_905_101_000,
+                "memcg": "0xabc",
+                "cpu": 3,
+                "nr_pages": 63,
+            },
+            {
+                "timestamp_ns": 94_185_697_000,
+                "memcg": "0xabc",
+                "cpu": 3,
+                "nr_pages": 1,
+            },
+            {
+                "timestamp_ns": 94_733_666_000,
+                "memcg": "0xabc",
+                "cpu": 3,
+                "nr_pages": 63,
+            },
+        ]
+
+        selected = _current_trial_owner_refills(
+            refill_rows=rows,
+            intervals=intervals,
+            owner_memcg="0xabc",
+            stock_cpu=3,
+            first_q64_touch=2,
+        )
+
+        self.assertEqual(len(selected), 1)
+        self.assertEqual(selected[0]["nr_pages"], 1)
+        self.assertEqual(
+            selected[0]["timestamp_ns"],
+            94_185_697_000,
         )
 
     def test_aggregate_discovery_separate_from_panel_coverage(self) -> None:
