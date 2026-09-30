@@ -483,6 +483,36 @@ x-1 [000] ... 27.500000030: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=O
         )
 
 
+    def test_owner_consume_stock_return_is_exposed(self) -> None:
+        trace = """
+x-1 [000] ... 27.750000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=100 PRE
+worker-20 [007] ... 27.750000010: frl_consume_stock_ret: memcg=0xbbb nr_pages=1 ret=1 comm="worker"
+other-21 [003] ... 27.750000011: frl_consume_stock_ret: memcg=0xbbb nr_pages=1 ret=1 comm="other"
+x-1 [000] ... 27.750000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=100 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "OBSERVE", 100)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            owner_memcg="0xbbb",
+            stock_cpu=7,
+            phase="OBSERVE",
+        )
+        self.assertEqual(len(w["consume_stock_ret"]), 2)
+        self.assertEqual(
+            receipt["owner_consume_stock_success_count"],
+            1,
+        )
+        self.assertEqual(
+            receipt["owner_consume_stock_success_events"][0]["ret"],
+            1,
+        )
+        self.assertEqual(
+            receipt["off_cpu_owner_consume_stock_success_count"],
+            1,
+        )
+
+
     def test_owner_refill_any_retains_small_verified_refill(self) -> None:
         trace = """
 x-1 [000] ... 28.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=1 PRE
