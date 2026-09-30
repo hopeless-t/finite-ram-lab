@@ -174,6 +174,26 @@ def configure_owner_count_only(
     (q64 / "enable").write_text("1\n", encoding="utf-8")
 
 
+def configure_owner_q64_only(
+    trace_path: Path,
+    *,
+    owner_memcg: str,
+    owner_counter: str,
+) -> None:
+    """Disable long-window histograms and leave only owner Q64 logging."""
+    cleanup_owner_count_only(trace_path)
+    q64 = event_dir(trace_path, "q64")
+    (q64 / "filter").write_text(
+        event_filter(
+            "q64",
+            owner_memcg=owner_memcg,
+            owner_counter=owner_counter,
+        ) + "\n",
+        encoding="utf-8",
+    )
+    (q64 / "enable").write_text("1\n", encoding="utf-8")
+
+
 def cleanup_owner_count_only(trace_path: Path) -> None:
     for logical_name in ("refill", "consume", "uncharge"):
         probe = event_dir(trace_path, logical_name)
