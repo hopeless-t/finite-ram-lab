@@ -50,6 +50,14 @@ ARM_ORDER = ("CLEAN", "RELEASE_ONLY", "UNEXPECTED_REFILL", "PTE_GROWTH")
 MODE_PTE_ESCAPE = 4
 TARGET_COMM = "frltx405"
 OWNER_UNCHARGE_EVENT = "frl_pc_uncharge_owner"
+HELPER_RESIDUAL_AFTER_Q64 = 63
+
+
+def _single_helper_scrub_budget(trigger_pages: int) -> int:
+    """Maximum scrub touches that leave trigger_pages cached stock available."""
+    if trigger_pages < 1 or trigger_pages >= HELPER_RESIDUAL_AFTER_Q64:
+        raise ValueError("trigger_pages must be in [1, 62]")
+    return HELPER_RESIDUAL_AFTER_Q64 - int(trigger_pages)
 
 
 def _owner_probe_dir(trace_path: Path) -> Path:
@@ -816,7 +824,12 @@ def run_trial(
                     trace_path=trace_path,
                     trial_id=trial_id,
                     stock_cpu=stock_cpu,
-                    max_touches=int(release_spec["scrub_max_touches"]),
+                    max_touches=min(
+                        int(release_spec["scrub_max_touches"]),
+                        _single_helper_scrub_budget(
+                            int(release_spec["trigger_pages"])
+                        ),
+                    ),
                 )
                 challenge["postverify_lru_reset"] = reset
                 epoch_row["postverify_lru_reset"] = reset
