@@ -129,8 +129,8 @@ def run_identity(
         root,
         name,
         prep_cpu,
-        int(spec["max_pages"]),
-        int(spec["safe_len_pages"]),
+        int(spec["design"]["max_pages"]),
+        int(spec["design"]["safe_len_pages"]),
         worker_uid=worker_uid,
     )
 
@@ -154,7 +154,7 @@ def run_identity(
                 + int(geometry["safe_len"]),
             )
         )
-        hard_max = int(spec["diagnostic_max_touch"])
+        hard_max = int(spec["design"]["diagnostic_max_touch"])
         if len(sequence) < hard_max:
             raise RuntimeError("safe span shorter than diagnostic horizon")
 
@@ -246,7 +246,7 @@ def run_identity(
         classification = classify_boundary(
             first_q64_touch=first_q64_touch,
             invalidation_reason=invalidation_reason,
-            primary_bound_touch=int(spec["primary_bound_touch"]),
+            primary_bound_touch=int(spec["design"]["primary_bound_touch"]),
             diagnostic_max_touch=hard_max,
         )
 
@@ -285,7 +285,7 @@ def run_identity(
             "initial_residual_estimate": initial_residual_estimate,
             "classification": classification,
             "invalidation_reason": invalidation_reason,
-            "primary_bound_touch": int(spec["primary_bound_touch"]),
+            "primary_bound_touch": int(spec["design"]["primary_bound_touch"]),
             "diagnostic_max_touch": hard_max,
         }
     finally:
@@ -320,7 +320,7 @@ def run_block(
     )
 
     rows: list[dict[str, Any]] = []
-    per_block = int(spec["identities_per_block"])
+    per_block = int(spec["design"]["identities_per_block"])
     for identity in range(per_block):
         row = run_identity(
             spec=spec,
@@ -417,7 +417,7 @@ def aggregate(
         "q64_probe_missed_by_block": profile_missed,
         "coverage_pass": coverage_pass,
         "stock_bound_pass": (
-            len(trials) == int(spec["total_identities"])
+            len(trials) == int(spec["design"]["total_identities"])
             and len(valid) == len(trials)
             and len(bound_violations) == 0
             and coverage_pass
