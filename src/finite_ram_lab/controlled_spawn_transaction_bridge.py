@@ -46,6 +46,8 @@ def packet_from_touch(
             observer, "page_counter_try_charge_64_count"
         ),
         "refill_stock_63_count": _count(observer, "refill_stock_63_count"),
+        "owner_refill_any_count": _count(observer, "owner_refill_any_count"),
+        "owner_refill_non63_count": _count(observer, "owner_refill_non63_count"),
         "drain_stock_count": _count(observer, "drain_stock_count"),
         "classified_release_only_count": _count(
             observer, "classified_release_only_count"
@@ -134,6 +136,12 @@ def target_bundle_packet(
         _count(obs, "page_counter_try_charge_64_count") for obs in observers
     )
     refill_count = sum(_count(obs, "refill_stock_63_count") for obs in observers)
+    owner_refill_any_count = sum(
+        _count(obs, "owner_refill_any_count") for obs in observers
+    )
+    owner_refill_non63_count = sum(
+        _count(obs, "owner_refill_non63_count") for obs in observers
+    )
 
     tokens = [transition_token(obs) for obs in observers]
     if "INCOMPLETE" in tokens:
@@ -156,6 +164,8 @@ def target_bundle_packet(
         "vmpte_delta_kib": vmpte_delta,
         "page_counter_try_charge_64_count": charge_count,
         "refill_stock_63_count": refill_count,
+        "owner_refill_any_count": owner_refill_any_count,
+        "owner_refill_non63_count": owner_refill_non63_count,
         "drain_stock_count": drain_count,
         "classified_release_only_count": release_count,
         "target_match": target_match,
@@ -168,6 +178,7 @@ def observer_receipt(
     trace_complete: bool = True,
     charge64: int = 0,
     refill63: int = 0,
+    refill_non63: int = 0,
     drain: int = 0,
     releases: int = 0,
     unknown: int = 0,
@@ -178,6 +189,8 @@ def observer_receipt(
         "trace_complete": bool(trace_complete),
         "page_counter_try_charge_64_count": int(charge64),
         "refill_stock_63_count": int(refill63),
+        "owner_refill_any_count": int(refill63) + int(refill_non63),
+        "owner_refill_non63_count": int(refill_non63),
         "drain_stock_count": int(drain),
         "classified_release_only_count": int(releases),
         "unknown_emission_count": int(unknown),
