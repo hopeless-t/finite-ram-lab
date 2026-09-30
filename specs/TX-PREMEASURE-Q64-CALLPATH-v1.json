@@ -1,0 +1,56 @@
+{
+  "experiment_id": "TX-PREMEASURE-Q64-CALLPATH-v1",
+  "status": "FROZEN_DESIGN_NOT_LAUNCHED",
+  "chapter": "FINITE-RAM-LAB-II",
+  "role": "PREVERIFY_INITIAL_STATE_CAUSAL_PATH_CAPTURE",
+  "prerequisite": "TX-NORMALIZE-BOUNDARY-CHASE R2 PASS run 36686845958",
+  "design": {
+    "blocks": 4,
+    "identities_per_block": 8,
+    "total_identities": 32,
+    "settle_arms_ms": [
+      0,
+      5
+    ],
+    "assignment": "identity parity: even=0ms, odd=5ms",
+    "primary_bound_touch": 65,
+    "safe_len_pages": 192,
+    "max_pages": 1024
+  },
+  "observer_contract": {
+    "event": "page_counter_try_charge(...,64)",
+    "trace_event": "frl_pc_try64",
+    "filter_lifecycle": "bind common_pid to current target worker before migration; close before worker teardown",
+    "stacktrace": "enabled only for current target PID",
+    "attribution": "target PID + stock CPU",
+    "critical_missed_required": 0
+  },
+  "measurements": [
+    "premeasurement Q64 count",
+    "premeasurement Q64 stack fingerprints",
+    "migration settle arm",
+    "first measured target Q64 touch T",
+    "inferred S0=T-1 for clean T<=65",
+    "PTE/CPU/worker/trace guards",
+    "single-process cgroup check"
+  ],
+  "primary_questions": [
+    "Which kernel call paths generate target Q64 batches between stock-CPU migration and measured touch 1?",
+    "Does a 5ms post-migration dwell change burst incidence or T?",
+    "Do repeated stack fingerprints explain the high-S0 cluster observed in R9?"
+  ],
+  "acceptance": [
+    "32/32 valid boundary observations",
+    "critical Q64 probe missed=0 in every block",
+    "every premeasurement target Q64 has a non-empty stack receipt",
+    "no T>65 stock-bound violation"
+  ],
+  "claim_ceiling": "PREMEASUREMENT_CALLPATH_CAUSAL_CLASSIFICATION_NO_RELIABILITY_CERTIFICATION",
+  "authority": {
+    "physical_run_authorized": true,
+    "authorization_basis": "user explicitly requested continued research on 2026-09-30",
+    "paid_runner_authorized": false,
+    "larger_runner_authorized": false,
+    "local_pc_execution_authorized": false
+  }
+}
