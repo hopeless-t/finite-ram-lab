@@ -365,5 +365,26 @@ x-1 [000] ... 23.000000030: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
         self.assertEqual(receipt["refill_stock_63_count"], 0)
 
 
+    def test_target_comm_filters_background_q64_before_owner_exists(self) -> None:
+        trace = """
+x-1 [000] ... 24.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=NORMALIZE touch=7 PRE
+python-20 [000] ... 24.000000010: frl_pc_try64: counter=0xccc nr_pages=64 comm="python"
+python-20 [000] ... 24.000000020: frl_pc_try64: counter=0xddd nr_pages=64 comm="python"
+x-1 [000] ... 24.000000030: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=NORMALIZE touch=7 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "NORMALIZE", 7)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter=None,
+            owner_memcg=None,
+            stock_cpu=7,
+            phase="NORMALIZE",
+            target_comm="frltx405",
+        )
+        self.assertEqual(receipt["page_counter_try_charge_64_count"], 0)
+        self.assertEqual(receipt["refill_stock_63_count"], 0)
+        self.assertIsNone(receipt["discovered_owner_counter"])
+
+
 if __name__ == "__main__":
     unittest.main()
