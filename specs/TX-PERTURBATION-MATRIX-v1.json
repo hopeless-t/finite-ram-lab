@@ -1,6 +1,6 @@
 {
   "experiment_id": "TX-PERTURBATION-MATRIX-v1",
-  "status": "R7_OWNER_FILTERED_SINGLE_HELPER_PREFLIGHT",
+  "status": "R8_OWNER_CALLPATH_PREFLIGHT",
   "chapter": "FINITE-RAM-LAB-II",
   "role": "CAUSAL_VALIDATION_OF_TRANSACTION_INVALIDATORS",
   "prerequisite": "B404 R2 physical transactional smoke PASS run 36642946787",
@@ -86,12 +86,12 @@
   "claim_ceiling": "MECHANISM_AND_CLASSIFIER_CAUSAL_VALIDATION_ONLY",
   "authority": {
     "physical_run_authorized": true,
-    "authorization_basis": "user authorized continued research; R1-R6 remain frozen diagnostics and are not rewritten",
+    "authorization_basis": "user authorized continued research; R1-R7 remain frozen diagnostics and are not rewritten",
     "paid_runner_authorized": false,
     "larger_runner_authorized": false,
     "local_pc_execution_authorized": false
   },
-  "schema_version": "tx-perturbation-matrix-v4",
+  "schema_version": "tx-perturbation-matrix-v5",
   "measurement_layers": [
     "INTERVENTION_REALIZATION",
     "CHALLENGE_CLASSIFICATION",
@@ -105,19 +105,37 @@
       "frl_pc_uncharge_owner"
     ],
     "critical_missed_required": 0,
-    "owner_uncharge_scope": "global only during NORMALIZE; dynamically filtered to verified owner_counter immediately after VERIFY",
+    "owner_probe_lifetime": "enabled globally only during NORMALIZE; bound to owner_counter after VERIFY; disabled before target worker teardown",
+    "owner_stacktrace": "enabled only after VERIFY and trigger-filtered by owner counter",
+    "owner_uncharge_path_classes": {
+      "TARGET_STOCK_EVICTION": "owner uncharge stack contains drain_stock; stock-state changing",
+      "RELEASE_ONLY": "owner 17-page uncharge stack contains known LRU/folio release chain; stock-state preserving",
+      "OWNER_ACCOUNTING_UNCHARGE_ONLY": "complete owner uncharge stack contains no drain_stock; page-counter accounting changes but stock residual does not",
+      "COVERAGE_AMBIGUOUS": "owner uncharge has no complete post-VERIFY stack or critical owner probe has misses"
+    },
     "target_receipt_projection": "target_comm + owner_counter/owner_memcg",
     "target_comm": "frltx405",
     "target_refill_scope": "comm == frltx405 && nr_pages == 63",
     "global_charge_scope": "nr_pages == 64; transaction receipts project to target lane; continuity retains all",
-    "absence_semantics": "post-VERIFY stock-CPU drain without owner-uncharge match is other-stock only when owner probe missed=0",
-    "release_stacktrace": "conditional on owner-filtered nr_pages == 17"
+    "release_helper": "single frltrig cgroup/process",
+    "helper_stock_budget": "fresh Q64 leaves 63; scrub <=49 leaves 14 cached touches for release trigger"
   },
   "named_natural_invalidators": [
     {
       "id": "TARGET_STOCK_EVICTION",
       "definition": "verified target residual is asynchronously drained from per-CPU memcg stock before the next measured transition",
-      "observed_in": "B405 R6 trial 0:0"
+      "observed_in": "B405 R6 trial 0:0",
+      "fingerprint": "for a full residual eviction of d pages, Delta = -d"
+    }
+  ],
+  "named_state_preserving_events": [
+    {
+      "id": "RELEASE_ONLY",
+      "definition": "source-grounded owner release that changes page-counter accounting but not expected stock residual"
+    },
+    {
+      "id": "OWNER_ACCOUNTING_UNCHARGE_ONLY",
+      "definition": "owner page_counter_uncharge with a complete non-drain_stock call path; stock residual unchanged"
     }
   ]
 }
