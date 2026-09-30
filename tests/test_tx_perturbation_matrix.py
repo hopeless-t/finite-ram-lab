@@ -7,6 +7,9 @@ from pathlib import Path
 
 from finite_ram_lab.tx_perturbation_matrix import (
     ARM_ORDER,
+    _bind_owner_probe,
+    _close_owner_probe,
+    _prepare_owner_probe_global,
     _pte_escape_index,
     _single_helper_scrub_budget,
     aggregate,
@@ -24,6 +27,49 @@ frl_drain_stock 20 2
 """
 
 class TxPerturbationMatrixTests(unittest.TestCase):
+    def test_owner_probe_lifecycle_is_epoch_scoped(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            trace = root / "trace"
+            probe = root / "events" / "kprobes" / "frl_pc_uncharge_owner"
+            probe.mkdir(parents=True)
+            for name in ["filter", "enable", "trigger"]:
+                (probe / name).write_text("", encoding="utf-8")
+
+            _prepare_owner_probe_global(trace)
+            self.assertEqual(
+                (probe / "filter").read_text(encoding="utf-8"),
+                "0\n",
+            )
+            self.assertEqual(
+                (probe / "enable").read_text(encoding="utf-8"),
+                "1\n",
+            )
+
+            _bind_owner_probe(trace, "0xabc")
+            self.assertEqual(
+                (probe / "filter").read_text(encoding="utf-8"),
+                "counter == 0xabc\n",
+            )
+            self.assertEqual(
+                (probe / "trigger").read_text(encoding="utf-8"),
+                "stacktrace\n",
+            )
+
+            _close_owner_probe(trace)
+            self.assertEqual(
+                (probe / "enable").read_text(encoding="utf-8"),
+                "0\n",
+            )
+            self.assertEqual(
+                (probe / "filter").read_text(encoding="utf-8"),
+                "counter == 0\n",
+            )
+            self.assertEqual(
+                (probe / "trigger").read_text(encoding="utf-8"),
+                "!stacktrace\n",
+            )
+
     def test_single_helper_scrub_budget_preserves_trigger_stock(self) -> None:
         self.assertEqual(_single_helper_scrub_budget(14), 49)
         with self.assertRaises(ValueError):
