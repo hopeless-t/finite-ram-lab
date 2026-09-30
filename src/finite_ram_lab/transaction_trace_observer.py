@@ -324,6 +324,54 @@ def _stock_drain_stack(stack: list[str]) -> bool:
     return "drain_stock" in "\n".join(stack)
 
 
+def _nearest_preceding_pairs(
+    drains: list[dict[str, Any]],
+    events: list[dict[str, Any]],
+    *,
+    max_delay_ns: int = 100_000,
+) -> dict[int, dict[str, Any]]:
+    """Pair each event to at most one nearest preceding drain on the same CPU.
+
+    Rapid refill activity can emit multiple drain_stock entries before one
+    page_counter_uncharge becomes visible. Reusing one uncharge for multiple
+    drains over-counts target evictions, so pairing is one-to-one.
+    """
+    pairs: dict[int, dict[str, Any]] = {}
+    used_drains: set[int] = set()
+
+    ordered_events = sorted(
+        (
+            event
+            for event in events
+            if event.get("timestamp_ns") is not None
+            and event.get("cpu") is not None
+        ),
+        key=lambda event: int(event["timestamp_ns"]),
+    )
+
+    for event in ordered_events:
+        event_ts = int(event["timestamp_ns"])
+        event_cpu = int(event["cpu"])
+        candidates: list[tuple[int, int]] = []
+        for index, drain in enumerate(drains):
+            if index in used_drains:
+                continue
+            if drain.get("timestamp_ns") is None:
+                continue
+            if int(drain.get("cpu", -1)) != event_cpu:
+                continue
+            delay = event_ts - int(drain["timestamp_ns"])
+            if 0 <= delay <= int(max_delay_ns):
+                candidates.append((delay, index))
+        if not candidates:
+            continue
+        _, index = min(candidates, key=lambda item: (item[0], -item[1]))
+        pairs[index] = event
+        used_drains.add(index)
+
+    return pairs
+
+
 def observer_receipt_for_window(
     window: dict[str, Any],
     *,
@@ -436,81 +484,68 @@ def observer_receipt_for_window(
                 retained.append(drain)
         same_cpu_drains = retained
 
-    for drain in same_cpu_drains:
-        drain_ts = drain.get("timestamp_ns")
-        drain_cpu = int(drain.get("cpu", -1))
-        counter_candidates = []
-        memcg_candidates = []
-        if drain_ts is not None:
-            counter_candidates = [
-                event
-                for event in counter_uncharges
-                if int(event.get("cpu", -2)) == drain_cpu
-                and event.get("timestamp_ns") is not None
-                and 0 <= int(event["timestamp_ns"]) - int(drain_ts) <= 100_000
-            ]
-            memcg_candidates = [
-                event
-                for event in memcg_uncharges
-                if int(event.get("cpu", -2)) == drain_cpu
-                and event.get("timestamp_ns") is not None
-                and 0 <= int(event["timestamp_ns"]) - int(drain_ts) <= 100_000
-            ]
+    counter_pairs = _nearest_preceding_pairs(
+        same_cpu_drains,
+        counter_uncharges,
+    )
+    counter_paired_drain_indices = set(counter_pairs)
+    remaining_drain_indices = [
+        index
+        for index in range(len(same_cpu_drains))
+        if index not in counter_paired_drain_indices
+    ]
+    remaining_drains = [
+        same_cpu_drains[index] for index in remaining_drain_indices
+    ]
+    memcg_pairs_local = _nearest_preceding_pairs(
+        remaining_drains,
+        memcg_uncharges,
+    )
+    memcg_pairs = {
+        remaining_drain_indices[local_index]: event
+        for local_index, event in memcg_pairs_local.items()
+    }
 
-        target_counter_matches = [
-            event
-            for event in counter_candidates
-            if str(event.get("counter", "")).lower() == effective_owner
-        ]
-        other_counter_matches = [
-            event
-            for event in counter_candidates
-            if str(event.get("counter", "")).lower() != effective_owner
-        ]
+    for index, drain in enumerate(same_cpu_drains):
+        counter_event = counter_pairs.get(index)
+        memcg_event = memcg_pairs.get(index)
 
-        if target_counter_matches:
-            target_drains.append(
-                {
-                    **drain,
-                    "paired_page_counter_uncharge": target_counter_matches[0],
-                }
-            )
-        elif other_counter_matches:
-            other_memcg_drains.append(
-                {
-                    **drain,
-                    "paired_page_counter_uncharge": other_counter_matches[0],
-                }
-            )
-        elif effective_memcg is not None:
-            target_memcg_matches = [
-                event
-                for event in memcg_candidates
-                if str(event.get("memcg", "")).lower() == effective_memcg
-            ]
-            if target_memcg_matches:
+        if counter_event is not None:
+            if (
+                str(counter_event.get("counter", "")).lower()
+                == effective_owner
+            ):
                 target_drains.append(
                     {
                         **drain,
-                        "paired_memcg_uncharge": target_memcg_matches[0],
-                    }
-                )
-            elif memcg_candidates:
-                other_memcg_drains.append(
-                    {
-                        **drain,
-                        "paired_memcg_uncharge": memcg_candidates[0],
-                    }
-                )
-            elif owner_probe_filtered and effective_owner is not None:
-                other_memcg_drains.append(
-                    {
-                        **drain,
-                        "ownership": "OWNER_FILTER_NO_MATCH",
+                        "paired_page_counter_uncharge": counter_event,
                     }
                 )
             else:
-                unresolved_drains.append(drain)
+                other_memcg_drains.append(
+                    {
+                        **drain,
+                        "paired_page_counter_uncharge": counter_event,
+                    }
+                )
+        elif effective_memcg is not None and memcg_event is not None:
+            if (
+                str(memcg_event.get("memcg", "")).lower()
+                == effective_memcg
+            ):
+                target_drains.append(
+                    {
+                        **drain,
+                        "paired_memcg_uncharge": memcg_event,
+                    }
+                )
+            else:
+                other_memcg_drains.append(
+                    {
+                        **drain,
+                        "paired_memcg_uncharge": memcg_event,
+                    }
+                )
         elif owner_probe_filtered and effective_owner is not None:
             other_memcg_drains.append(
                 {
