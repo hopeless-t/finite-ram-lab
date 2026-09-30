@@ -199,17 +199,17 @@ def _prime_trigger_stock(
     trace_path: Path,
     max_touches: int,
 ) -> dict[str, Any]:
-    baseline = _event_count(trace_path, "frl_refill_stock:", "frltrig")
+    baseline = _event_count(trace_path, "frl_pc_try64:", "frltrig")
     rows: list[dict[str, Any]] = []
     refill_touch: int | None = None
     for touch in range(1, max_touches + 1):
         row = _handoff_command(trigger, CMD_TOUCH)
         rows.append({"touch": touch, **row})
-        if _event_count(trace_path, "frl_refill_stock:", "frltrig") > baseline:
+        if _event_count(trace_path, "frl_pc_try64:", "frltrig") > baseline:
             refill_touch = touch
             break
     return {
-        "refill_touch": refill_touch,
+        "charge64_touch": refill_touch,
         "rows": rows,
         "pass": refill_touch is not None,
     }
@@ -280,9 +280,9 @@ def _postverify_scrub_reset(
     stock_cpu: int,
     max_touches: int,
 ) -> dict[str, Any]:
-    refill_before = _event_count(
+    charge64_before = _event_count(
         trace_path,
-        "frl_refill_stock:",
+        "frl_pc_try64:",
         "frlscrub",
     )
     write_marker(
@@ -309,9 +309,9 @@ def _postverify_scrub_reset(
             edge="POST",
         )
 
-    refill_after = _event_count(
+    charge64_after = _event_count(
         trace_path,
-        "frl_refill_stock:",
+        "frl_pc_try64:",
         "frlscrub",
     )
     window = _trace_window(
@@ -328,16 +328,16 @@ def _postverify_scrub_reset(
         stock_cpu=stock_cpu,
         label="POST_VERIFY_LRU_RESET",
     )
-    helper_refills = refill_after - refill_before
+    helper_charge64 = charge64_after - charge64_before
     pure = (
         scrub.get("pass") is True
-        and helper_refills == 0
+        and helper_charge64 == 0
         and event.get("result") == "NEUTRAL"
         and archive.tx.state in {State.VERIFIED, State.EXECUTING}
     )
     return {
         "scrub": scrub,
-        "helper_refill_count": helper_refills,
+        "helper_charge64_count": helper_charge64,
         "event": event,
         "pass": pure,
     }
