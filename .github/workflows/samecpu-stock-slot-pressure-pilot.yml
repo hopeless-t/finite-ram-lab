@@ -1,0 +1,191 @@
+name: Same-CPU stock-slot pressure pilot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "launch/TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Compile workers
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11             experiments/tx_perturbation_worker.c             -o build/tx_perturbation_worker
+          gcc -O2 -Wall -Wextra -std=c11             experiments/obs005_handoff_worker.c             -o build/obs005_handoff_worker
+
+      - name: Environment gate
+        run: |
+          set -euo pipefail
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+          test -r /sys/fs/cgroup/cpuset.cpus.effective
+          uname -a
+
+      - name: Run slot-pressure block
+        env:
+          BLOCK: "${{ matrix.block }}"
+        run: |
+          set -euo pipefail
+          TRACE=/sys/kernel/tracing
+          OUT="$GITHUB_WORKSPACE/evidence/SAMECPU-SLOT-PRESSURE/block-$BLOCK"
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+
+          if ! mountpoint -q "$TRACE"; then
+            sudo mount -t tracefs nodev "$TRACE"
+          fi
+
+          cleanup() (
+            set +e
+            echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
+
+            if test -e "$TRACE/events/kprobes/frl_refill_stock/trigger"; then
+              echo '!hist:keys=nr_pages'                 | sudo tee "$TRACE/events/kprobes/frl_refill_stock/trigger" >/dev/null 2>&1
+            fi
+            if test -e "$TRACE/events/kprobes/frl_pc_uncharge_owner/trigger"; then
+              echo '!stacktrace'                 | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/trigger" >/dev/null 2>&1
+            fi
+
+            for ev in               frl_refill_stock frl_pc_uncharge_owner frl_pc_try64               frl_drain_stock; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
+              fi
+              printf '%s\n' "-:$ev"                 | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            done
+            true
+          )
+          trap cleanup EXIT
+          cleanup
+
+          printf '%s\n'             'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n'             'p:frl_pc_uncharge_owner page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n'             'p:frl_pc_try64 page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n'             'p:frl_drain_stock drain_stock stock=$arg1:x64 slot=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          echo 'nr_pages == 64'             | sudo tee "$TRACE/events/kprobes/frl_pc_try64/filter" >/dev/null
+          echo 'counter == 0'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/filter" >/dev/null
+          echo 'memcg == 0'             | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
+
+          echo 1 | sudo tee "$TRACE/events/kprobes/frl_pc_try64/enable" >/dev/null
+          echo 1 | sudo tee "$TRACE/events/kprobes/frl_drain_stock/enable" >/dev/null
+          echo 0 | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/enable" >/dev/null
+          echo 0 | sudo tee "$TRACE/events/kprobes/frl_refill_stock/enable" >/dev/null
+
+          for ev in             frl_refill_stock frl_pc_uncharge_owner frl_pc_try64             frl_drain_stock; do
+            sudo cat "$TRACE/events/kprobes/$ev/format" > "$OUT/$ev.format"
+          done
+
+          RUNNER_UID="$(id -u)"
+          PYTHON_BIN="$(command -v python)"
+          echo 65536 | sudo tee "$TRACE/buffer_size_kb" >/dev/null
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          echo | sudo tee "$TRACE/trace" >/dev/null
+          echo 1 | sudo tee "$TRACE/tracing_on" >/dev/null
+
+          sudo -E "$PYTHON_BIN"             -m finite_ram_lab.samecpu_stock_slot_pressure_pilot run-block             --spec "$GITHUB_WORKSPACE/specs/TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-v1.json"             --block "$BLOCK"             --target-worker "$GITHUB_WORKSPACE/build/tx_perturbation_worker"             --helper-worker "$GITHUB_WORKSPACE/build/obs005_handoff_worker"             --out-root "$OUT"             --trace-marker "$TRACE/trace_marker"             --trace-path "$TRACE/trace"             --worker-uid "$RUNNER_UID"             | tee "$OUT/block-summary.json"
+
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          sudo cat "$TRACE/trace" > "$OUT/trace.log"
+          sudo cat "$TRACE/kprobe_profile" > "$OUT/kprobe-profile.txt" || true
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: samecpu-slot-pressure-block-${{ matrix.block }}
+          path: evidence/SAMECPU-SLOT-PRESSURE/block-${{ matrix.block }}/
+          if-no-files-found: warn
+          retention-days: 7
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: samecpu-slot-pressure-block-*
+          path: evidence/SAMECPU-SLOT-PRESSURE/input
+
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/SAMECPU-SLOT-PRESSURE/aggregate
+          python -m finite_ram_lab.samecpu_stock_slot_pressure_pilot aggregate             --spec specs/TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-v1.json             --input-root evidence/SAMECPU-SLOT-PRESSURE/input             --json-out evidence/SAMECPU-SLOT-PRESSURE/aggregate/summary.json
+
+      - name: Freeze raw evidence manifest
+        run: |
+          frl evidence-manifest             evidence/SAMECPU-SLOT-PRESSURE/input             --out evidence/SAMECPU-SLOT-PRESSURE/aggregate/full-raw-evidence-manifest.json             --experiment-id TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-v1             --run-id "$GITHUB_RUN_ID"             --source-commit "$GITHUB_SHA"             --tier HOT             --origin-provider github-actions             --origin-ref "run:$GITHUB_RUN_ID"
+
+      - name: Verify raw evidence
+        run: |
+          frl evidence-verify             evidence/SAMECPU-SLOT-PRESSURE/input             --manifest evidence/SAMECPU-SLOT-PRESSURE/aggregate/full-raw-evidence-manifest.json
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-${{ github.run_id }}
+          path: evidence/SAMECPU-SLOT-PRESSURE/aggregate/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Assert pilot
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path("evidence/SAMECPU-SLOT-PRESSURE/aggregate/summary.json")
+          result = json.loads(p.read_text())
+          print(json.dumps({
+              "pilot_pass": result["pilot_pass"],
+              "trial_count": result["trial_count"],
+              "classifications": result["classifications"],
+              "zero_miss_target_eviction_count": result[
+                  "zero_miss_target_eviction_count"
+              ],
+              "fingerprint_match_count": result[
+                  "fingerprint_match_count"
+              ],
+              "fingerprint_match_trials": result[
+                  "fingerprint_match_trials"
+              ],
+              "helper_count_to_eviction": result[
+                  "helper_count_to_eviction"
+              ],
+          }, sort_keys=True))
+          if not result["pilot_pass"]:
+              raise SystemExit(
+                  "same-CPU stock-slot pressure pilot did not pass"
+              )
+          PY
