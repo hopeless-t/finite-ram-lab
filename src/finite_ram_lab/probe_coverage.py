@@ -6,7 +6,7 @@ from typing import Any
 
 CRITICAL_B405_PROBES = (
     "frl_pc_try64",
-    "frl_pc_uncharge_any",
+    "frl_pc_uncharge_owner",
 )
 
 
