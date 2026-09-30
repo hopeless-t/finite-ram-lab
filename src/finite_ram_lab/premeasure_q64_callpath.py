@@ -17,6 +17,7 @@ from .memcg005gc_controlled_spawn import (
     geometry_receipt,
 )
 from .transaction_trace_observer import _event_row
+from .normalize_boundary_chase import _profile_q64_missed
 from .transactional_spawn_native import (
     observed_window,
     touch_with_transaction_marker,
