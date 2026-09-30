@@ -2,10 +2,19 @@ from __future__ import annotations
 
 import unittest
 
-from finite_ram_lab.owner_refill_hist_pilot import _hist_hits
+from finite_ram_lab.owner_refill_hist_pilot import (
+    _hist_hits,
+    _hist_trigger,
+)
 
 
 class OwnerRefillHistPilotTests(unittest.TestCase):
+    def test_hist_trigger_scopes_owner_memcg_inline(self) -> None:
+        self.assertEqual(
+            _hist_trigger("0xffff1234"),
+            "hist:keys=nr_pages if memcg == 0xffff1234",
+        )
+
     def test_hist_hits_parses_totals(self) -> None:
         text = """
 # trigger info: hist:keys=nr_pages:vals=hitcount:size=2048 [active]
