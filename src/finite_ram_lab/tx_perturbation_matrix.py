@@ -92,7 +92,7 @@ def _bind_owner_probe(trace_path: Path, owner_counter: str) -> None:
         encoding="utf-8",
     )
     (probe / "trigger").write_text(
-        "stacktrace\n",
+        f"stacktrace if counter == {owner_counter}\n",
         encoding="utf-8",
     )
 
