@@ -215,7 +215,7 @@ class EpochArchive:
             outcome = "TARGET_DRAIN"
         elif (
             int(receipt.get("page_counter_try_charge_64_count", 0)) > 0
-            or int(receipt.get("refill_stock_63_count", 0)) > 0
+            or int(receipt.get("owner_refill_any_count", 0)) > 0
         ):
             self.tx = reduce(self.tx, Event.UNEXPECTED_REFILL)
             outcome = "TARGET_REFILL"
@@ -245,6 +245,12 @@ class EpochArchive:
                 receipt.get("unknown_emission_count", 0)
             ),
             "drain_stock_count": int(receipt.get("drain_stock_count", 0)),
+            "owner_refill_any_count": int(
+                receipt.get("owner_refill_any_count", 0)
+            ),
+            "owner_refill_non63_count": int(
+                receipt.get("owner_refill_non63_count", 0)
+            ),
             "other_memcg_drain_count": int(
                 receipt.get("other_memcg_drain_count", 0)
             ),
