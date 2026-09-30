@@ -464,7 +464,32 @@ def _classify(
     if hazard is not None:
         return "KNOWN_STATE_CHANGE", hazard
 
-    if int(continuity.get("unknown_count", 0)) > 0:
+    packet_unknown = int(_packet_totals(archive)["unknown"])
+    dwell_unknown = (
+        0
+        if dwell is None
+        else int(
+            dwell.get("receipt", {}).get(
+                "unknown_emission_count",
+                0,
+            )
+        )
+    )
+    dwell_trace_complete = (
+        True
+        if dwell is None
+        else bool(
+            dwell.get("receipt", {}).get(
+                "trace_complete",
+                False,
+            )
+        )
+    )
+    if (
+        int(continuity.get("unknown_count", 0)) > 0
+        or packet_unknown > 0
+        or (dwell_unknown > 0 and dwell_trace_complete)
+    ):
         return "UNKNOWN_COMPLETE_EMISSION", "OWNER_EVENT_UNCLASSIFIED"
 
     if archive.tx.invalidation_reason in {
