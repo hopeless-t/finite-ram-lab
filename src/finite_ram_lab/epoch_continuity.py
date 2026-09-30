@@ -184,7 +184,15 @@ def scan_interwindow_continuity(
             "unknown_count": 1,
         }
 
-    end_ns = max(x.post_ns for x in intervals)
+    event_timestamps = [
+        int(row["timestamp_ns"])
+        for row in events
+        if row.get("timestamp_ns") is not None
+        and int(row["timestamp_ns"]) >= int(verified_at_ns)
+    ]
+    end_ns = max(
+        [x.post_ns for x in intervals] + event_timestamps
+    )
     relevant = [
         row
         for row in events
