@@ -153,7 +153,7 @@ Implement the ephemeral one-canary session orchestrator:
 1. exact VERIFY R0=63;
 2. consume 32 measured target pages;
 3. configure the count-only backend;
-4. ambient sleep (first run: 600 seconds);
+4. ambient sleep (first run: 60 seconds);
 5. freeze histograms + probe coverage;
 6. bounded final Q64 chase;
 7. emit JSONL receipts;
