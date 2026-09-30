@@ -32,6 +32,7 @@ from .obs005_cross_cgroup_lru import (
     _stop_role,
 )
 from .obs006_charge_side_q64 import _discard
+from .epoch_continuity import scan_interwindow_continuity
 from .transaction_epoch_archive import EpochArchive
 from .transactional_reprime import State
 from .transactional_spawn_native import write_marker
@@ -496,6 +497,41 @@ def _finish_b63(
     return cursor, measured_count, {"consume": consume, "target": target}
 
 
+def _continuity_snapshot(
+    *,
+    archive: EpochArchive,
+    trace_path: Path,
+    trial_id: str,
+    stock_cpu: int,
+) -> dict[str, Any]:
+    if (
+        archive.owner_counter is None
+        or archive.owner_memcg is None
+        or archive.verified_at_ns is None
+    ):
+        return {
+            "schema_version": "epoch-gap-continuity-v1",
+            "trial_id": trial_id,
+            "epoch": archive.tx.epoch,
+            "coverage": "OWNER_OR_VERIFIED_TIME_MISSING",
+            "gap_clean": False,
+            "unknown_count": 1,
+        }
+
+    return scan_interwindow_continuity(
+        trace_path.read_text(
+            encoding="utf-8",
+            errors="replace",
+        ),
+        trial_id=trial_id,
+        epoch=archive.tx.epoch,
+        owner_counter=archive.owner_counter,
+        owner_memcg=archive.owner_memcg,
+        stock_cpu=stock_cpu,
+        verified_at_ns=archive.verified_at_ns,
+    )
+
+
 def _recovery_epoch(
     *,
     archive: EpochArchive,
@@ -559,6 +595,12 @@ def _recovery_epoch(
                 measured_count=measured_count,
             )
             epoch_row.update(finish)
+        epoch_row["continuity"] = _continuity_snapshot(
+            archive=archive,
+            trace_path=trace_path,
+            trial_id=trial_id,
+            stock_cpu=stock_cpu,
+        )
         epoch_row["state_after"] = archive.tx.state.value
         epoch_row["invalidation_reason"] = archive.tx.invalidation_reason
         epoch_row["measured_count"] = measured_count
@@ -880,6 +922,13 @@ def run_trial(
         else:
             raise ValueError(f"unsupported arm {arm}")
 
+        challenge["continuity"] = _continuity_snapshot(
+            archive=archive,
+            trace_path=trace_path,
+            trial_id=trial_id,
+            stock_cpu=stock_cpu,
+        )
+        epoch_row["continuity"] = challenge["continuity"]
         epoch_row["state_after"] = archive.tx.state.value
         epoch_row["invalidation_reason"] = archive.tx.invalidation_reason
         epoch_row["measured_count"] = measured_count
@@ -934,30 +983,48 @@ def run_trial(
         )
     )
 
+    continuity_clean = bool(
+        challenge.get("continuity", {}).get("gap_clean", False)
+    )
+
     if arm == "CLEAN":
         challenge_classification_pass = (
             challenge.get("result") == "CLEAN_COMMIT"
+            and continuity_clean
         )
     elif arm == "RELEASE_ONLY":
         challenge_classification_pass = (
             challenge.get("result") == "RELEASE_PRESERVED_AND_COMMITTED"
             and archive.tx.release_only_count >= 1
+            and continuity_clean
         )
     elif arm == "UNEXPECTED_REFILL":
         challenge_classification_pass = (
             challenge.get("result") == "UNEXPECTED_REFILL_INVALIDATED"
+            and continuity_clean
         )
     else:
         challenge_classification_pass = (
             challenge.get("result") == "PTE_GROWTH_INVALIDATED"
+            and continuity_clean
         )
 
+    recovery_continuity_clean = (
+        not recovery_required
+        or bool(
+            (recovery or {}).get("continuity", {}).get(
+                "gap_clean",
+                False,
+            )
+        )
+    )
     recovery_pass = (
         not recovery_required
         or (
             fresh_recovery_q64
             and archive.tx.state is State.SUCCESS
             and archive.tx.reprimes == 1
+            and recovery_continuity_clean
         )
     )
     completion_pass = (
@@ -987,6 +1054,8 @@ def run_trial(
         "final_state": archive.tx.state.value,
         "reprimes": archive.tx.reprimes,
         "challenge_classification_pass": challenge_classification_pass,
+        "challenge_continuity_clean": continuity_clean,
+        "recovery_continuity_clean": recovery_continuity_clean,
         "recovery_pass": recovery_pass,
         "completion_pass": completion_pass,
         "challenge_pass": challenge_pass,
