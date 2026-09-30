@@ -57,16 +57,22 @@ def _configure_log(trace_path: Path, owner_memcg: str) -> None:
     (probe / "enable").write_text("1\n", encoding="utf-8")
 
 
+def _hist_trigger(owner_memcg: str) -> str:
+    return f"hist:keys=nr_pages if memcg == {owner_memcg}"
+
+
 def _configure_hist(trace_path: Path, owner_memcg: str) -> None:
     probe = _refill_dir(trace_path)
     _remove_hist_trigger(trace_path)
     (probe / "enable").write_text("0\n", encoding="utf-8")
+    # The event filter controls ordinary event logging, but histogram
+    # triggers have their own filter clause. Keep both explicit.
     (probe / "filter").write_text(
         f"memcg == {owner_memcg}\n",
         encoding="utf-8",
     )
     (probe / "trigger").write_text(
-        "hist:keys=nr_pages\n",
+        _hist_trigger(owner_memcg) + "\n",
         encoding="utf-8",
     )
 
