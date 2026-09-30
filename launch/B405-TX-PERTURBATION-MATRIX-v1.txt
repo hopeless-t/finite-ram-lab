@@ -1,7 +1,7 @@
 TX-PERTURBATION-MATRIX-v1
 human_authorized_at=2026-09-30
-run_generation=R6
-reason=TARGET_LANE_PROJECTION_AND_POSTVERIFY_HELPER_STOCK_PREP
+run_generation=R7
+reason=OWNER_FILTERED_UNCHARGE_PLUS_SINGLE_HELPER
 purpose=Chapter-II causal validation of named state transitions
 blocks=4
 arms_per_block=CLEAN,RELEASE_ONLY,UNEXPECTED_REFILL,PTE_GROWTH
@@ -16,7 +16,13 @@ r2_diagnostic_run=36646317346
 r3_diagnostic_run=36648499202
 r4_instrumentation_diagnostic_run=36649528104
 r5_diagnostic_run=36650014250
-counter_backbone=frl_pc_try64,frl_pc_uncharge_any
+r6_diagnostic_run=36650670428
+counter_backbone=frl_pc_try64,frl_pc_uncharge_owner
 require_counter_backbone_zero_miss=true
+owner_uncharge_scope=global_during_normalize_then_owner_counter_filtered
+release_helper=single_frltrig
+helper_residual_after_q64=63
+release_trigger_pages=14
+single_helper_scrub_max_touches=49
 target_comm=frltx405
-helper_stock_prep=postverify-neutral-observe
+named_natural_invalidator=TARGET_STOCK_EVICTION
