@@ -116,5 +116,5 @@ The backend should:
 - exit and clean up all probes;
 - never become a persistent daemon in v1.
 
-The first live session remains one canary for 600 seconds with no synthetic
+The first live session remains one canary for 60 seconds with no synthetic
 pressure.
