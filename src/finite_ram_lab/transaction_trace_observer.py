@@ -135,15 +135,23 @@ def parse_transaction_trace(
             if int(row.get("nr_pages", 0)) == 63:
                 item["refill63"].append(row)
             active_stack = None
-        elif "frl_pc_uncharge17:" in line:
+        elif "frl_pc_uncharge_any:" in line:
+            item["pc_uncharge_any"].append(row)
             if int(row.get("nr_pages", 0)) == 17:
                 item["pc_uncharge17"].append(row)
                 stack: list[str] = []
                 item["pc_uncharge17_stacks"].append(stack)
                 active_stack = stack
-        elif "frl_pc_uncharge_any:" in line:
-            item["pc_uncharge_any"].append(row)
-            active_stack = None
+            else:
+                active_stack = None
+        elif "frl_pc_uncharge17:" in line:
+            # Legacy R1-R3 compatibility. R4 uses frl_pc_uncharge_any
+            # with a conditional stacktrace trigger for nr_pages == 17.
+            if int(row.get("nr_pages", 0)) == 17:
+                item["pc_uncharge17"].append(row)
+                stack = []
+                item["pc_uncharge17_stacks"].append(stack)
+                active_stack = stack
         elif "frl_memcg_uncharge:" in line:
             item["memcg_uncharge"].append(row)
             active_stack = None
