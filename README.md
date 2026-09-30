@@ -37,69 +37,81 @@ The major semantic correction is that historical SUCCESS/FAIL was too coarse. A 
 
 ### Chapter II — current frontier
 
-The active model is transactional:
+The largest Chapter-II correction is methodological:
+
+> **Historical SUCCESS/FAIL was too coarse. The research now asks which named state transition occurred before it asks whether the run "failed."**
+
+The active state model distinguishes natural pre-VERIFY state from verified transactional state:
 
 ```text
-predict
-  -> normalize
-  -> verify direct Q64
-  -> execute
-  -> target
-  -> commit
+natural pre-VERIFY ecology
+  ├─ PREVERIFY_S64 / MAX_STOCK_BOUNDARY
+  ├─ STARTUP_STOCK_SEED
+  └─ SMALL_RESIDUAL_REFILL
+          |
+          v
+       NORMALIZE
+          |
+     measured direct Q64
+          |
+          v
+     VERIFIED R0 = 63
+          |
+          ├─ source-grounded RELEASE_ONLY
+          ├─ TARGET_STOCK_EVICTION
+          ├─ explicit invalidators
+          └─ TARGET
+                 |
+            SUCCESS / true TARGET_FAIL
 ```
 
-Known state invalidators include:
-
-- unexpected refill;
-- relevant stock-CPU memcg stock drain;
-- PTE growth;
-- CPU mismatch;
-- worker error;
-- incomplete trace.
-
-A positively source-grounded LRU release is treated as observation contamination rather than residual-stock consumption.
-
-After a verified direct Q64 primer, the clean model begins with residual stock:
+After a measured one-page direct-Q64 primer, the verified residual invariant remains:
 
 ```text
 R0 = 63
-```
-
-and predicts the next direct-Q64 boundary at post-primer touch:
-
-```text
 T0 = 64
 ```
 
-The Chapter-II rare specimen is therefore:
+But natural pre-VERIFY stock is broader. Source and physical evidence support:
 
 ```text
-UNEXPLAINED_BOUNDARY_DEVIATION
+0 <= S0 <= 64
+T = S0 + 1
 ```
 
-meaning a complete verified epoch with no known invalidator and an observed boundary `T != 64`.
+with the following named mechanisms/states:
+
+- **PREVERIFY_S64 / MAX_STOCK_BOUNDARY** — the natural stock can legally begin at 64 before the experiment establishes its own primer;
+- **STARTUP_STOCK_SEED** — transient service / worker startup can leave large inherited stock on the future stock CPU; a cpuset intervention strongly suppresses the large high-T phenotype;
+- **SMALL_RESIDUAL_REFILL — ESTABLISHED** — two zero-miss physical specimens captured `systemd` PID 1 returning exactly one page to the later measured owner memcg on the future stock CPU, followed by `S0=1` and first measured Q64 at `T=2`;
+- **TARGET_STOCK_EVICTION** — verified residual stock can be asynchronously drained, moving the next Q64 boundary earlier;
+- **RELEASE_ONLY** — a positively source-grounded shared-LRU release can change accounting while preserving the target residual.
+
+Known explicit invalidators still include unexpected refill, relevant stock-CPU drain, PTE growth, CPU mismatch, worker error, and incomplete observer coverage.
+
+Across the completed B405 generations, no complete verified target path has produced a genuine `TARGET_FAIL`. That is a current evidence statement, not a reliability guarantee.
 
 ### Current experiment sequence
 
-The physical program is intentionally staged:
+The physical program is now:
 
-1. **B404 transactional smoke — COMPLETE / PASS** — R2 produced 12/12 normal SUCCESS, zero TARGET_FAIL, zero instrumentation holds, and a passing forced invalidation/re-prime sentinel;
-2. **B405 perturbation matrix — NEXT** — CLEAN / RELEASE_ONLY / UNEXPECTED_REFILL / PTE_GROWTH causal controls;
-3. **TX-AGE-DECOUPLING Stage A** — FAST x4 + HOLD32 x12, selected by Monte Carlo to discriminate touch-driven from wall-clock-driven hidden transitions;
-4. **adaptive Stage B only if triggered** — HOLD8 / HOLD32 / HOLD56 x4 each to turn a captured event into a position-dependent `Delta = T - 64` fingerprint;
-5. passive hazard mapping and reliability certification only after the mechanism boundary is understood.
+1. **B404 transactional smoke — COMPLETE / PASS** — 12/12 normal protocol successes plus a forced invalidation/re-prime sentinel;
+2. **B405 causal matrix — mechanism decomposition complete enough to move the frontier** — CLEAN / RELEASE_ONLY / UNEXPECTED_REFILL / PTE_GROWTH plus observer-coverage work exposed named invalidators instead of an undifferentiated FAIL bucket;
+3. **normalize ecology — COMPLETE for the major known states** — R9 confirmed the source-derived `T <= 65` bound in 32/32 identities, and the frozen R8 specimen established `PREVERIFY_S64`;
+4. **STARTUP_STOCK_SEED — ESTABLISHED and causally challenged** — startup Q64/refill63 explains the large inherited-stock cluster, and `AllowedCPUs=prep` suppresses that large phenotype;
+5. **SMALL_RESIDUAL_REFILL — ESTABLISHED** — R13-B1 captured two independent zero-miss `refill_stock(...,1) -> S0=1 -> T=2` specimens;
+6. **current next step: refill1 provenance** — identify the exact caller path behind the systemd PID1 refill1 receipts;
+7. **then return to age-decoupling** — use the already-frozen FAST/HOLD design to study verified-state wall-clock hazards rather than continuing to expand the pre-VERIFY taxonomy indefinitely.
 
-B404's passing run is protocol evidence, not a population-level 100% reliability claim.
-
-The repository now carries epoch-local owner identity, receipt packet v2, touch-age / wall-clock-age telemetry, hard re-prime isolation, stale-epoch rejection, and source-grounded release classification.
+The project deliberately separates mechanism existence, provenance, prevalence, and transactional reliability. Establishing one does not imply the others.
 
 See:
 
+- [OBS-011 — SMALL_RESIDUAL_REFILL established](docs/OBS-011-SMALL-RESIDUAL-REFILL-ESTABLISHED.md)
+- [OBS-010 — R13-A refill1 candidate and scope correction](docs/OBS-010-R13A-SMALL-RESIDUAL-REFILL-RESULT.md)
+- [MATH-024 — Pre-VERIFY stock bound and 65-touch theorem](docs/MATH-024-PREVERIFY-STOCK-BOUND-65-TOUCH-THEOREM.md)
 - [B404 R2 — Transactional physical smoke PASS](docs/B404-R2-TRANSACTIONAL-SPAWN-PHYSICAL-PASS.md)
-- [B404 R1 — Observer falsification result](docs/B404-R1-TRANSACTIONAL-SPAWN-PHYSICAL-RESULT.md)
-- [MATH-022 — Boundary invariant and rare-transition capture](docs/MATH-022-BOUNDARY-INVARIANT-RARE-TRANSITION-CAPTURE.md)
 - [MATH-023 — Monte Carlo age-decoupling design](docs/MATH-023-AGE-DECOUPLING-DESIGN-MONTE-CARLO.md)
-- [OBS-007 — Epoch-local transaction observer](docs/OBS-007-EPOCH-LOCAL-TRANSACTION-OBSERVER.md)
 - [Current handoff](handoffs/CURRENT.md)
 
 Historical project stages and negative results remain part of the evidence record; this README now tracks the active frontier rather than repeating the full experiment ledger.
