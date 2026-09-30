@@ -1,0 +1,85 @@
+{
+  "schema_version": "premeasure-q64-callpath-r1-physical-result-v1",
+  "run_id": "36688225173",
+  "launch_commit": "a683fcbc0cb17175891b0022428c0e5a1952ea2f",
+  "result": {
+    "trial_count": 32,
+    "valid_trial_count": 32,
+    "classifications": {
+      "WITHIN_BOUND": 32
+    },
+    "coverage_pass": true,
+    "q64_probe_missed_by_block": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "bound_violation_count": 0,
+    "single_process_all": true,
+    "stack_receipt_complete": true,
+    "premeasurement_q64_event_count": 0,
+    "callpath_fingerprints": {},
+    "overall_first_q64_histogram": {
+      "1": 24,
+      "2": 2,
+      "36": 1,
+      "46": 1,
+      "47": 2,
+      "48": 1,
+      "64": 1
+    },
+    "max_observed_first_q64_touch": 64
+  },
+  "settle_arms": {
+    "0ms": {
+      "n": 16,
+      "pre_q64_event_count": 0,
+      "first_q64_histogram": {
+        "1": 11,
+        "2": 1,
+        "46": 1,
+        "47": 2,
+        "64": 1
+      },
+      "mean_T": 13.5625,
+      "median_T": 1
+    },
+    "5ms": {
+      "n": 16,
+      "pre_q64_event_count": 0,
+      "first_q64_histogram": {
+        "1": 13,
+        "2": 1,
+        "36": 1,
+        "48": 1
+      },
+      "mean_T": 6.1875,
+      "median_T": 1
+    }
+  },
+  "settle_difference_sensitivity": {
+    "observed_absolute_mean_difference": 7.375,
+    "permutation_monte_carlo_draws": 200000,
+    "seed": 20260930,
+    "two_sided_tail_probability_approx": 0.291,
+    "interpretation": "No persuasive evidence in this panel that a 5 ms post-migration dwell changes T."
+  },
+  "localization": {
+    "key_result": "No target-PID Q64 occurred in the explicitly observed post-_start migration-to-first-touch interval in any of 32 identities.",
+    "contrast_with_r9": "R9 saw Q64 bursts because its premeasurement snapshot included the earlier _start/systemd service-start interval.",
+    "working_hypothesis": "High natural S0 is seeded before the R10 observation window, likely during transient service/worker startup before controlled migration.",
+    "proposed_name_if_physically_confirmed": "STARTUP_STOCK_SEED"
+  },
+  "raw_manifest": {
+    "file_count": 80,
+    "total_bytes": 396980,
+    "content_set_sha256": "456f890a8071aef02e09674fd1316c768a540366edeedbb6bb278d5e1567fc0f",
+    "created_at_utc": "2026-09-30T08:13:37Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11084727839,
+    "digest": "sha256:fc719e6d8a1f8cc8f3a6ce873c13038bab99ad5efbf7326140f9ab6187f5a91d"
+  },
+  "claim_ceiling": "POST_START_LOCALIZATION_AND_SETTLE_SENSITIVITY_NO_CAUSAL_STARTUP_CLAIM_YET"
+}
