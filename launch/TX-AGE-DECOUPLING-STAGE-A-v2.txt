@@ -1,5 +1,7 @@
 TX-AGE-DECOUPLING-STAGE-A-v2
 human_authorized_at=2026-09-30
+run_generation=R2
+reason=DUPLICATE_OWNER_TRIGGER_FIX_ONLY
 purpose=distinguish verified-state touch-driven vs wall-clock-driven hazards
 parent_frozen_design=TX-AGE-DECOUPLING-v1
 stage=Stage_A_only
@@ -19,4 +21,6 @@ runner=standard-github-hosted-ubuntu-26.04
 paid_larger_runner=false
 local_pc=false
 automatic_scale_expansion=false
-preflight_commit=b22f50d8f50f0281c3dee995074aa68527b0ab3f
+r1_wiring_failure_run=36702673576
+fix_commit=c0fb63549208ddc3614e6a80594d6f9154aaed95
+preflight_commit=59ac9ebf392b3d7d4b11503a51e696c91e110a7e
