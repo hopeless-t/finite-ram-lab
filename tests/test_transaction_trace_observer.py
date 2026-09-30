@@ -454,5 +454,41 @@ x-1 [000] ... 27.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
         )
 
 
+    def test_owner_refill_any_retains_small_verified_refill(self) -> None:
+        trace = """
+x-1 [000] ... 28.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=1 PRE
+systemd-1 [007] ... 28.000000010: frl_refill_stock: memcg=0xbbb nr_pages=1 comm="systemd"
+x-1 [000] ... 28.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=1 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "OBSERVE", 1)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            owner_memcg="0xbbb",
+            stock_cpu=7,
+            phase="OBSERVE",
+        )
+        self.assertEqual(len(w["refill_any"]), 1)
+        self.assertEqual(receipt["owner_refill_any_count"], 1)
+        self.assertEqual(receipt["owner_refill_non63_count"], 1)
+        self.assertEqual(receipt["refill_stock_63_count"], 0)
+
+    def test_off_cpu_owner_refill_does_not_change_target_stock_cpu(self) -> None:
+        trace = """
+x-1 [000] ... 29.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=2 PRE
+systemd-1 [003] ... 29.000000010: frl_refill_stock: memcg=0xbbb nr_pages=1 comm="systemd"
+x-1 [000] ... 29.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=OBSERVE touch=2 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "OBSERVE", 2)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            owner_memcg="0xbbb",
+            stock_cpu=7,
+            phase="OBSERVE",
+        )
+        self.assertEqual(receipt["owner_refill_any_count"], 0)
+        self.assertEqual(receipt["off_cpu_owner_refill_count"], 1)
+
 if __name__ == "__main__":
     unittest.main()
