@@ -1,0 +1,21 @@
+TX-SMALL-RESIDUAL-REFILL1-CAPTURE-v1
+human_authorized_at=2026-09-30
+run_generation=STAGE1
+purpose=zero-miss confirmation of SMALL_RESIDUAL_REFILL
+blocks=4
+identities_per_block=8
+total_identities=32
+arm=CPUSET_PREP_ONLY
+primary_bound_touch=65
+premeasurement_refill_filter=nr_pages_1_or_63
+phase_gated_refill_probe=true
+measured_q64_filter=target_pid_nr64
+measured_refill63_filter=target_pid_nr63
+stacktrace=false
+automatic_scale_expansion=false
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+r13a_source_run=36693262942
+corrected_replay_commit=61d8bd3046b01b244b1bbf3bb27c6844d6705205
+preflight_commit=8c0059201be230a39713d5ef5346af25efcf62b1
