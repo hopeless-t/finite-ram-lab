@@ -1,0 +1,90 @@
+{
+  "schema_version": "b405-r7-physical-result-v1",
+  "run_id": "36680151129",
+  "launch_commit": "f9fa1b4ead10cdebc929402c49bb9098393211ec",
+  "frozen_result": {
+    "trial_count": 16,
+    "challenge_pass_count": 15,
+    "completion_pass_count": 15,
+    "target_fail": 0,
+    "matrix_pass": false,
+    "end_to_end_pass": false,
+    "fully_observed_matrix_pass": false,
+    "by_arm": {
+      "CLEAN": {
+        "n": 4,
+        "pass": 4,
+        "completion_pass": 4
+      },
+      "RELEASE_ONLY": {
+        "n": 4,
+        "pass": 4,
+        "completion_pass": 4
+      },
+      "UNEXPECTED_REFILL": {
+        "n": 4,
+        "pass": 3,
+        "completion_pass": 3,
+        "recovery_pass": 4,
+        "success": 4
+      },
+      "PTE_GROWTH": {
+        "n": 4,
+        "pass": 4,
+        "completion_pass": 4
+      }
+    }
+  },
+  "major_result": {
+    "single_helper_release_only": "4/4 challenge and completion PASS",
+    "clean": "4/4 PASS",
+    "pte_growth": "4/4 PASS",
+    "unexpected_refill_core_behavior": "4/4 challenge epochs invalidated as UNEXPECTED_REFILL and 4/4 recovered to SUCCESS; one trial failed continuity classification only"
+  },
+  "ambiguous_trial": {
+    "trial_id": "0:2",
+    "arm": "UNEXPECTED_REFILL",
+    "name": "OWNER_UNCHARGE_PATH_AMBIGUOUS",
+    "challenge_result": "UNEXPECTED_REFILL_INVALIDATED",
+    "challenge_epoch_commit_seen": false,
+    "recovery_pass": true,
+    "final_state": "SUCCESS",
+    "continuity_unknown": {
+      "owner_counter": "0xffff8c22d5425f80",
+      "timestamp_ns": 58767545000,
+      "cpu": 3,
+      "comm": "kworker/3:2",
+      "nr_pages": 1
+    },
+    "block_probe_miss": {
+      "frl_pc_try64": 0,
+      "frl_pc_uncharge_owner": 1,
+      "frl_drain_stock": 1
+    },
+    "interpretation": "The one-page owner uncharge could not be classified as stock-drain-origin versus ordinary owner uncharge because the corresponding block had both owner-uncharge and drain probe misses. The intentional UNEXPECTED_REFILL itself was correctly classified."
+  },
+  "probe_coverage": {
+    "critical_missed": {
+      "frl_pc_try64": 0,
+      "frl_pc_uncharge_owner": 2
+    },
+    "coverage_pass": false
+  },
+  "raw_manifest": {
+    "file_count": 80,
+    "total_bytes": 10213039,
+    "content_set_sha256": "ad89901f12409a612cefb49abee9ab968cd20c7f5e8e2a9396e53397d21904f7",
+    "created_at_utc": "2026-09-30T06:49:31Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11081581629,
+    "digest": "sha256:78b4901e4c42a0d0afaef2613bb477d45cb271e13df2dfe4de28d983859a3b71"
+  },
+  "prospective_r8": [
+    "close owner-filtered probe before target worker teardown to remove irrelevant teardown uncharges",
+    "enable stacktrace on every owner-filtered uncharge only after VERIFY",
+    "classify owner uncharge call path: drain_stock => TARGET_STOCK_EVICTION; non-drain complete stack => stock-state-preserving owner uncharge",
+    "retain zero-miss coverage gate"
+  ],
+  "claim_ceiling": "R7_CAUSAL_AND_OBSERVABILITY_DIAGNOSTIC_NO_RELIABILITY_CLAIM"
+}
