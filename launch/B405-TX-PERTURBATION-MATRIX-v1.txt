@@ -1,7 +1,7 @@
 TX-PERTURBATION-MATRIX-v1
 human_authorized_at=2026-09-30
-run_generation=R3
-reason=MEMCG_OWNERSHIP_POSTVERIFY_PURE_SCRUB_GAP_CONTINUITY_PROBE_COVERAGE
+run_generation=R4
+reason=COUNTER_SIDE_CONTINUITY_BACKBONE_AND_PROBE_CONSOLIDATION
 purpose=Chapter-II causal validation of named state transitions
 blocks=4
 arms_per_block=CLEAN,RELEASE_ONLY,UNEXPECTED_REFILL,PTE_GROWTH
@@ -13,4 +13,6 @@ automatic_scale_expansion=false
 prerequisite_b404_run=36642946787
 r1_diagnostic_run=36645745433
 r2_diagnostic_run=36646317346
-preflight_commit=f69abf1504f3b35555f6d0802e3a24d946044e35
+r3_diagnostic_run=36648499202
+counter_backbone=frl_pc_try64,frl_pc_uncharge_any
+require_counter_backbone_zero_miss=true
