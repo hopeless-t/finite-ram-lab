@@ -48,6 +48,7 @@ from .transactional_spawn_pilot import (
 
 ARM_ORDER = ("CLEAN", "RELEASE_ONLY", "UNEXPECTED_REFILL", "PTE_GROWTH")
 MODE_PTE_ESCAPE = 4
+TARGET_COMM = "frltx405"
 
 
 def load_spec(path: str | Path) -> dict[str, Any]:
@@ -88,6 +89,7 @@ def _consume_segment(
             stock_cpu=stock_cpu,
             page_size=page_size,
             expected_worker_touched=measured_count,
+            target_comm=TARGET_COMM,
         )
         cursor += 1
         rows.append({"touch": row, "packet": packet})
@@ -189,6 +191,7 @@ def _pte_escape_touch(
         touch=row,
         window=window,
         stock_cpu=stock_cpu,
+        target_comm=TARGET_COMM,
     )
     return row, packet
 
@@ -454,6 +457,7 @@ def _fresh_epoch(
         page_size=page_size,
         calibration_max=calibration_max,
         measured_count=measured_count,
+        target_comm=TARGET_COMM,
     )
     epoch_row = {
         "epoch": epoch,
@@ -508,6 +512,7 @@ def _finish_b63(
             stock_cpu=stock_cpu,
             page_size=page_size,
             measured_count=measured_count,
+            target_comm=TARGET_COMM,
         )
     if archive.tx.state is State.COMMIT_READY:
         archive.commit()
