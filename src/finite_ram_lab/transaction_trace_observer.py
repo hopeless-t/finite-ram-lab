@@ -597,6 +597,8 @@ def observer_receipt_for_window(
             normalization_internal_drains
         ),
         "unresolved_drain_count": len(unresolved_drains),
+        "target_drain_events": target_drains,
+        "other_memcg_drain_events": other_memcg_drains,
         "notes": ";".join(notes) or None,
     }
 
