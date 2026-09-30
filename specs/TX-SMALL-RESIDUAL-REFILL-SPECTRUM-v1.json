@@ -1,0 +1,87 @@
+{
+  "experiment_id": "TX-SMALL-RESIDUAL-REFILL-SPECTRUM-v1",
+  "status": "FROZEN_DESIGN_AUTHORIZED",
+  "chapter": "FINITE-RAM-LAB-II",
+  "role": "IDENTIFY_SOURCE_GROUNDED_SMALL_PREVERIFY_RESIDUAL",
+  "prerequisites": [
+    "STARTUP_STOCK_SEED classic large path established run 36689570716",
+    "cpuset causal intervention run 36691073336 suppressed classic startup seed but retained two clean T=2/S0=1 specimens"
+  ],
+  "source_basis": {
+    "refill_stock_callers": [
+      "try_charge_memcg -> refill_stock(memcg, batch - nr_pages)",
+      "obj_cgroup_uncharge_pages -> refill_stock(memcg, nr_pages)",
+      "mem_cgroup_sk_uncharge -> refill_stock(memcg, nr_pages)"
+    ],
+    "lifecycle": "mem_cgroup_css_offline drains all stock, reducing stale destroyed-cgroup stock as an explanation",
+    "implication": "per-CPU stock can increase by arbitrary small amounts without a contemporaneous direct Q64 charge"
+  },
+  "design": {
+    "blocks": 4,
+    "identities_per_block": 32,
+    "total_identities": 128,
+    "arm": "CPUSET_PREP_ONLY",
+    "primary_bound_touch": 65,
+    "safe_len_pages": 192,
+    "max_pages": 1024
+  },
+  "intervention": [
+    "transient service starts with CPUAffinity=prep_cpu and AllowedCPUs=prep_cpu",
+    "require startup cpuset effective exactly prep_cpu",
+    "after READY expand AllowedCPUs to prep_cpu,stock_cpu",
+    "explicitly migrate MainPID to stock_cpu",
+    "keep lightweight Q64 + refill spectrum observer active through first measured Q64"
+  ],
+  "probes": {
+    "q64": {
+      "event": "page_counter_try_charge",
+      "filter": "nr_pages == 64",
+      "stacktrace": false
+    },
+    "refill_spectrum": {
+      "event": "refill_stock",
+      "filter": "nr_pages <= 8 || nr_pages == 63",
+      "stacktrace": false,
+      "rationale": "capture S0=1..8 candidates plus measured one-page Q64 owner refill63 while limiting observer load"
+    }
+  },
+  "ownership": {
+    "owner_counter": "counter from first measured target-PID Q64 on stock_cpu",
+    "owner_memcg": "memcg from target-PID refill63 in the same first-Q64 measured touch",
+    "retrospective_match": "same owner_memcg + stock_cpu in all earlier refill-spectrum events regardless emitting PID"
+  },
+  "phase_buckets": [
+    "STARTUP",
+    "RELEASE_GAP",
+    "TAIL_GAP_AFTER_RELEASE",
+    "MEASURED_PREBOUNDARY_TOUCHES"
+  ],
+  "classifications": {
+    "T1_NO_SMALL_REFILL": "T=1 and no owner small refill before first measured Q64",
+    "SMALL_REFILL_EXPLAINS_DELAY": "T>1 and owner small refill receipts before boundary are source-compatible with S0=T-1",
+    "HIGH_T_WITHOUT_SMALL_REFILL": "T>1 but no matching owner small refill receipt",
+    "CLASSIC_REFILL63_LEAK": "owner refill63 occurs on stock_cpu before measured boundary despite cpuset intervention",
+    "INVALID_OBSERVER": "probe miss, missing owner identity, trace gap, PTE growth, CPU mismatch, worker error, cpuset receipt failure, or multi-process cgroup"
+  },
+  "primary_acceptance": [
+    "all valid identities obey T<=65",
+    "Q64 and refill-spectrum missed deltas are zero for any promoted small-refill specimen",
+    "at least one T>1 specimen is captured",
+    "at least one T>1 specimen has matching owner_memcg small refill evidence, preferably refill1 for T=2"
+  ],
+  "sample_sensitivity": {
+    "signal": "one clean CPUSET T=2 among 32 intervention identities in R12",
+    "jeffreys_posterior": "Beta(1.5,31.5)",
+    "n": 128,
+    "posterior_predictive_probability_at_least_one_recurrence_approx": 0.9114,
+    "warning": "planning sensitivity only"
+  },
+  "authority": {
+    "physical_run_authorized": true,
+    "authorization_basis": "user explicitly requested continued research on 2026-09-30",
+    "paid_runner_authorized": false,
+    "larger_runner_authorized": false,
+    "local_pc_execution_authorized": false
+  },
+  "claim_ceiling": "SMALL_RESIDUAL_MECHANISM_IDENTIFICATION_NO_PREVALENCE_OR_RELIABILITY_CLAIM"
+}
