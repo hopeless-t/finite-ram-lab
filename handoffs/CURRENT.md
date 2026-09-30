@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B422
-> Stage: AMBIENT STOCK CATCHER v1 / CLASSIFIER FROZEN
-> Stop: IMPLEMENT ONE-CANARY 10-MINUTE BOUNDED AMBIENT SESSION RUNNER
+> Latest bounce: B423
+> Stage: AMBIENT STOCK CATCHER / RECEIPT REDUCER FROZEN
+> Stop: IMPLEMENT ONE-CANARY PRIVATE-TRACEFS CAPTURE BACKEND
 
 ## Chapter II frontier
 
@@ -510,3 +510,40 @@ Next atomic bounce:
 2. preserve the low-rate observer design;
 3. run software tests only;
 4. then launch one 10-minute local LDC session only after the runner/action surface is qualified.
+
+
+## B423 source-neutral receipt reducer
+
+The catcher architecture is now split into:
+
+- capture backend;
+- JSONL receipt stream;
+- deterministic reducer;
+- conservative classifier.
+
+Frozen files:
+
+- src/finite_ram_lab/ambient_stock_log_reducer.py
+- tests/test_ambient_stock_log_reducer.py
+- docs/B423-AMBIENT-CATCHER-RECEIPT-REDUCER.md
+
+Reducer fail-closed rules:
+
+- unknown record type -> structural error -> OBSERVATION_HOLD;
+- duplicate singleton/coverage semantics -> structural error -> OBSERVATION_HOLD;
+- session ID mismatch -> structural error -> OBSERVATION_HOLD;
+- missing required consume/refill/uncharge/q64 coverage -> INSTRUMENTATION_HOLD;
+- direct drain fingerprint additionally requires explicit drain coverage miss=0.
+
+Synthetic replay semantics now include:
+
+- T64 stable residual;
+- consume31 -> T33 direct hidden-consumption fingerprint;
+- drain31 + matching owner-uncharge31 + drain coverage0 -> T33 direct slot-eviction fingerprint;
+- R2-block2-shaped owner-uncharge31 + T33 with no classified drain/consume/refill -> UNATTRIBUTED_OWNER_UNCHARGE.
+
+No physical session, daemon, system service, or persistent probe was launched by B423.
+
+Next atomic bounce:
+
+Implement one ephemeral capture backend using a private tracefs instance and the frozen JSONL receipt schema. First live run remains one canary, 600 seconds, no synthetic pressure.
