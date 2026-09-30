@@ -1,0 +1,98 @@
+{
+  "schema_version": "b405-r6-physical-result-v1",
+  "run_id": "36650670428",
+  "launch_commit": "327e11fd8b62b1cf62c8a4acb751651d7dc78981",
+  "frozen_result": {
+    "trial_count": 16,
+    "challenge_pass_count": 13,
+    "completion_pass_count": 13,
+    "target_fail": 0,
+    "matrix_pass": false,
+    "end_to_end_pass": false,
+    "fully_observed_matrix_pass": false,
+    "by_arm": {
+      "CLEAN": {
+        "pass": 3,
+        "completion": 3,
+        "n": 4
+      },
+      "RELEASE_ONLY": {
+        "pass": 3,
+        "completion": 3,
+        "n": 4
+      },
+      "UNEXPECTED_REFILL": {
+        "pass": 4,
+        "completion": 4,
+        "n": 4
+      },
+      "PTE_GROWTH": {
+        "pass": 3,
+        "completion": 3,
+        "n": 4
+      }
+    }
+  },
+  "named_findings": {
+    "0:0": {
+      "name": "TARGET_STOCK_EVICTION",
+      "interpretation": "verified target stock residual was asynchronously drained between measured touches; next touch correctly produced UNEXPECTED_REFILL",
+      "timeline": {
+        "verified_owner_counter": "0xffff8e6e9c04a2c0",
+        "touch25_post_ns": 252780535000,
+        "drain_ns": 252786942000,
+        "owner_uncharge_ns": 252786944000,
+        "drained_pages": 38,
+        "touch26_pre_ns": 252789381000,
+        "target_q64_ns": 252789493000
+      },
+      "rare_unknown": false
+    },
+    "3:1": {
+      "name": "HELPER_STOCK_PURITY_LOSS",
+      "interpretation": "owner release was grounded and residual preserved; same trigger helper acquired an extra Q64 during release after separate helper activity",
+      "release_grounded": true,
+      "residual_before": 46,
+      "residual_after": 46,
+      "final_state": "SUCCESS",
+      "helper_charge64_count": 1,
+      "rare_unknown": false
+    },
+    "3:3": {
+      "name": "NORMALIZE_COVERAGE_GAP",
+      "interpretation": "target Q64/refill occurred, but a same-window drain lacked ownership receipt because counter-uncharge probe missed events; fail-closed TRACE_GAP",
+      "q64_seen": true,
+      "refill63_seen": true,
+      "probe_profile": {
+        "frl_pc_try64_missed": 0,
+        "frl_pc_uncharge_any_missed": 1,
+        "frl_drain_stock_missed": 1
+      },
+      "rare_unknown": false
+    }
+  },
+  "probe_coverage": {
+    "critical_missed": {
+      "frl_pc_try64": 0,
+      "frl_pc_uncharge_any": 4
+    },
+    "coverage_pass": false
+  },
+  "raw_manifest": {
+    "file_count": 83,
+    "total_bytes": 18210259,
+    "content_set_sha256": "56f96156da38e350610b544f0b7baa8121f516a4277b11639150ee4e3340ad3f",
+    "created_at_utc": "2026-09-30T00:32:00Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11069854338,
+    "digest": "sha256:cae115c88ed5d4ba72176008370bda71c0c8051bcab4173075501e8e986e6953"
+  },
+  "prospective_r7": [
+    "dynamically bind page_counter_uncharge probe to owner_counter after VERIFY",
+    "require zero misses on owner-filtered uncharge probe and Q64 probe",
+    "collapse trigger and scrubber into one helper cgroup/process",
+    "retain TARGET_STOCK_EVICTION as a named natural invalidator"
+  ],
+  "claim_ceiling": "R6_CAUSAL_AND_OBSERVABILITY_DIAGNOSTIC_NO_RELIABILITY_CLAIM"
+}
