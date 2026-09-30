@@ -219,61 +219,6 @@ def _pte_escape_touch(
     return row, packet
 
 
-def _prime_trigger_stock(
-    *,
-    trigger: dict[str, Any],
-    trace_path: Path,
-    max_touches: int,
-) -> dict[str, Any]:
-    baseline = _event_count(trace_path, "frl_pc_try64:", "frltrig")
-    rows: list[dict[str, Any]] = []
-    refill_touch: int | None = None
-    for touch in range(1, max_touches + 1):
-        row = _handoff_command(trigger, CMD_TOUCH)
-        rows.append({"touch": touch, **row})
-        if _event_count(trace_path, "frl_pc_try64:", "frltrig") > baseline:
-            refill_touch = touch
-            break
-    return {
-        "charge64_touch": refill_touch,
-        "rows": rows,
-        "pass": refill_touch is not None,
-    }
-
-
-def _prime_scrubber_stock(
-    *,
-    scrubber: dict[str, Any],
-    trace_path: Path,
-    max_touches: int,
-) -> dict[str, Any]:
-    baseline = _event_count(
-        trace_path,
-        "frl_pc_try64:",
-        helper_comm,
-    )
-    rows: list[dict[str, Any]] = []
-    charge64_touch: int | None = None
-    for touch in range(1, max_touches + 1):
-        row = _handoff_command(scrubber, CMD_TOUCH)
-        rows.append({"touch": touch, **row})
-        if (
-            _event_count(
-                trace_path,
-                "frl_pc_try64:",
-                "frlscrub",
-            )
-            > baseline
-        ):
-            charge64_touch = touch
-            break
-    return {
-        "charge64_touch": charge64_touch,
-        "rows": rows,
-        "pass": charge64_touch is not None,
-    }
-
-
 def _postverify_prime_helper_stock(
     *,
     archive: EpochArchive,
@@ -393,7 +338,7 @@ def _postverify_scrub_reset(
     charge64_before = _event_count(
         trace_path,
         "frl_pc_try64:",
-        "frlscrub",
+        helper_comm,
     )
     write_marker(
         trace_marker,
@@ -573,6 +518,11 @@ def _fresh_epoch(
     )
     if archive.tx.state is State.VERIFIED and archive.owner_counter is not None:
         _bind_owner_probe(trace_path, archive.owner_counter)
+    else:
+        (_owner_probe_dir(trace_path) / "filter").write_text(
+            "counter == 0\n",
+            encoding="utf-8",
+        )
     epoch_row = {
         "epoch": epoch,
         "arm": arm,
