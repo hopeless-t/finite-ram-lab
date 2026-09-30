@@ -1,0 +1,70 @@
+{
+  "schema_version": "samecpu-stock-slot-pressure-pilot-r1-result-v1",
+  "experiment_id": "TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-v1",
+  "run_id": "36714755845",
+  "launch_commit": "03c920a870e4e4763be95a261fe9fc41b6a87281",
+  "frozen_result": {
+    "workflow_conclusion": "failure",
+    "trial_count": 4,
+    "classifications": {
+      "PRESSURE_CONFOUNDED_BY_OWNER_REFILL": 3,
+      "INSTRUMENTATION_HOLD": 1
+    },
+    "pilot_pass": false,
+    "zero_miss_target_eviction_count": 3,
+    "fingerprint_match_count": 0,
+    "helper_count_to_eviction_zero_miss": [
+      2,
+      8,
+      5
+    ]
+  },
+  "direct_physical_receipts": {
+    "target_drain_observed": "4/4",
+    "target_drain_pages_each": [
+      31,
+      31,
+      31,
+      31
+    ],
+    "immediate_next_target_q64": "4/4",
+    "helpers_started_by_block": {
+      "0": 2,
+      "1": 4,
+      "2": 8,
+      "3": 5
+    },
+    "fingerprint": "drain31 -> first post-pressure target touch Q64, equivalent to T=33 / Delta=-31"
+  },
+  "observer_scope_bug": {
+    "affected_signal": "pressure_owner_refill_delta",
+    "bug": "hist trigger lacked its own `if memcg == owner_memcg` clause",
+    "evidence": "hist hit totals nearly equaled global refill kprobe hit totals",
+    "consequence": "frozen owner-refill-confounded labels cannot be used as scientific evidence of owner refill",
+    "prospective_fix": "hist:keys=nr_pages if memcg == <owner_memcg>"
+  },
+  "instrumentation": {
+    "block1": {
+      "q64_missed": 0,
+      "owner_uncharge_missed": 0,
+      "refill_missed": 2
+    },
+    "blocks_0_2_3": "critical probe misses=0"
+  },
+  "raw_manifest": {
+    "file_count": 59,
+    "total_bytes": 783268,
+    "content_set_sha256": "517b6cd372d9176e93f5f20196f85f3a43a961e3b58a6e7f1fa30031a810a9b6",
+    "created_at_utc": "2026-09-30T12:27:53Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11095239363,
+    "digest": "sha256:47270f4f6fb337a347875f395f907124b806525aa81c434ebc5f373d8899a374"
+  },
+  "decision": {
+    "preserve_r1_without_rewrite": true,
+    "clean_promotion": false,
+    "next": "fix histogram trigger scope and repeat same four-identity pilot as R2"
+  },
+  "claim_ceiling": "DIRECT_DRAIN31_AND_IMMEDIATE_Q64_REPRODUCED_4_OF_4_BUT_CLEAN_PROMOTION_WITHHELD"
+}
