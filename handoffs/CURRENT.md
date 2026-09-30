@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B419
-> Stage: SAME-CPU STOCK-SLOT PRESSURE PILOT IMPLEMENTATION
-> Stop: IMPLEMENT 4-IDENTITY SAMECPU PILOT; DO NOT LAUNCH FULL 3-ARM PANEL
+> Latest bounce: B420
+> Stage: SAME-CPU SLOT-PRESSURE R1 FROZEN / HIST SCOPE FIX
+> Stop: RERUN SAME FROZEN 4-IDENTITY PILOT AS R2 AFTER INLINE HIST FILTER CI
 
 ## Chapter II frontier
 
@@ -270,3 +270,78 @@ Frozen next pilot:
 - predicted clean fingerprint: target drain31 followed by immediate owner Q64 at T=33 / Delta=-31
 
 Do not run the full QUIET/OFFCPU/SAMECPU panel until this four-identity causal pilot passes.
+
+
+## Same-CPU slot-pressure R1
+
+Run 36714755845 executed all four physical identities.
+
+Frozen strict result:
+
+- PRESSURE_CONFOUNDED_BY_OWNER_REFILL=3
+- INSTRUMENTATION_HOLD=1
+- pilot_pass=false
+- zero-miss target eviction count=3
+- frozen fingerprint_match_count=0
+
+Do not rewrite this result.
+
+Direct physical receipts common to all 4 identities:
+
+- target residual before pressure=31
+- target-owner stock drain observed=4/4
+- drain size=[31] in every identity
+- first post-pressure target touch emitted owner Q64=4/4
+- physical boundary fingerprint corresponds to T=33 / Delta=-31
+- helpers started before target drain by block: 2,4,8,5
+- all drains occurred below the <=13 source-derived cap
+- unknown emission count=0 in pressure windows
+
+Block1 had refill kprobe missed=2; Q64 and owner-uncharge missed=0.
+Blocks0/2/3 had zero critical misses.
+
+Frozen evidence:
+
+- analysis/inputs/SAMECPU-STOCK-SLOT-PRESSURE-R1-PHYSICAL-RESULT-v1.json
+- raw files=59
+- bytes=783,268
+- content-set SHA-256=517b6cd372d9176e93f5f20196f85f3a43a961e3b58a6e7f1fa30031a810a9b6
+- aggregate artifact ID=11095239363
+- digest=sha256:47270f4f6fb337a347875f395f907124b806525aa81c434ebc5f373d8899a374
+
+## Histogram scope bug
+
+R1 owner-refill contamination labels are not scientifically usable.
+
+The soft-disabled histogram implementation set an ordinary event filter:
+
+memcg == owner_memcg
+
+but attached an unfiltered histogram trigger:
+
+hist:keys=nr_pages
+
+Linux histogram-trigger syntax has its own explicit:
+
+if <filter>
+
+clause.
+
+Empirically, R1 histogram hit totals nearly matched the global refill kprobe hit totals, showing the histogram was effectively aggregating broad refill activity rather than owner-only activity.
+
+Prospective fix:
+
+hist:keys=nr_pages if memcg == <owner_memcg>
+
+The direct owner drain31 receipts and immediate target-Q64 receipts are ordinary event observations and remain valid. Only owner-refill contamination status is unresolved in R1.
+
+Commits:
+
+- 0f75c0f... inline histogram owner filter
+- 35a3a92... regression test for histogram trigger filter
+
+Next action:
+
+- wait for fix CI
+- rerun the identical four-identity frozen pilot as R2
+- do not launch the full QUIET/OFFCPU/SAMECPU panel until a clean R2 specimen establishes drain31 -> T33 without owner-refill contamination and with zero critical misses
