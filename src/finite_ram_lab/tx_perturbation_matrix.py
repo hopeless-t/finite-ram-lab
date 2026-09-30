@@ -33,6 +33,7 @@ from .obs005_cross_cgroup_lru import (
 )
 from .obs006_charge_side_q64 import _discard
 from .epoch_continuity import scan_interwindow_continuity
+from .probe_coverage import summarize_probe_coverage
 from .transaction_epoch_archive import EpochArchive
 from .transactional_reprime import State
 from .transactional_spawn_native import write_marker
@@ -1174,6 +1175,24 @@ def aggregate(spec: dict[str, Any], input_root: Path) -> dict[str, Any]:
         bool(t["challenge_classification_pass"]) for t in trials
     )
     completion_pass = sum(bool(t["completion_pass"]) for t in trials)
+    probe_coverage = summarize_probe_coverage(
+        sorted(input_root.rglob("kprobe-profile.txt"))
+    )
+
+    matrix_pass = (
+        len(trials) == 16
+        and challenge_pass == 16
+        and target_fail == 0
+        and all(
+            by_arm[arm]["n"] == 4 and by_arm[arm]["pass"] == 4
+            for arm in ARM_ORDER
+        )
+    )
+    end_to_end_pass = (
+        len(trials) == 16
+        and completion_pass == 16
+        and target_fail == 0
+    )
 
     return {
         "experiment_id": spec["experiment_id"],
@@ -1182,19 +1201,11 @@ def aggregate(spec: dict[str, Any], input_root: Path) -> dict[str, Any]:
         "completion_pass_count": completion_pass,
         "target_fail": target_fail,
         "by_arm": by_arm,
-        "matrix_pass": (
-            len(trials) == 16
-            and challenge_pass == 16
-            and target_fail == 0
-            and all(
-                by_arm[arm]["n"] == 4 and by_arm[arm]["pass"] == 4
-                for arm in ARM_ORDER
-            )
-        ),
-        "end_to_end_pass": (
-            len(trials) == 16
-            and completion_pass == 16
-            and target_fail == 0
+        "matrix_pass": matrix_pass,
+        "end_to_end_pass": end_to_end_pass,
+        "probe_coverage": probe_coverage,
+        "fully_observed_matrix_pass": (
+            matrix_pass and bool(probe_coverage["coverage_pass"])
         ),
         "trials": trials,
     }
@@ -1250,6 +1261,15 @@ def main() -> None:
                 "challenge_pass_count": result["challenge_pass_count"],
                 "completion_pass_count": result["completion_pass_count"],
                 "end_to_end_pass": result["end_to_end_pass"],
+                "fully_observed_matrix_pass": result[
+                    "fully_observed_matrix_pass"
+                ],
+                "probe_coverage_pass": result["probe_coverage"][
+                    "coverage_pass"
+                ],
+                "critical_probe_missed": result["probe_coverage"][
+                    "critical_missed"
+                ],
                 "target_fail": result["target_fail"],
                 "by_arm": result["by_arm"],
             },
