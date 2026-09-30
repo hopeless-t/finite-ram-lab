@@ -1,0 +1,139 @@
+{
+  "experiment_id": "TX-AGE-DECOUPLING-STAGE-A-v2",
+  "parent_frozen_design": "TX-AGE-DECOUPLING-v1",
+  "status": "FROZEN_EXECUTION_CONTRACT_AUTHORIZED",
+  "chapter": "FINITE-RAM-LAB-II",
+  "role": "VERIFIED_STATE_TOUCH_VS_WALL_CLOCK_HAZARD_DISCRIMINATION",
+  "rationale": [
+    "Preserve the B410 Stage-A allocation: FAST x4 + HOLD32 x12, b63, four blocks.",
+    "Upgrade observation prospectively using mechanisms learned after B410.",
+    "Known verified-state transitions are named and frozen instead of being collapsed into FAIL.",
+    "Unknown complete evidence is preserved for source replay."
+  ],
+  "prerequisites": {
+    "b404": "R2 physical transactional smoke PASS, run 36642946787",
+    "b405": "historical matrix not rewritten as strict PASS; later generations resolved pre-VERIFY, observer, and named state-transition failure classes with no complete verified TARGET_FAIL",
+    "preverify_taxonomy": "closed enough after SMALL_RESIDUAL_REFILL and SLAB_FREE_OBJCG_REFILL1 provenance",
+    "observer": "SCOUT -> BIND -> SNIPER architecture available"
+  },
+  "arm": "b63",
+  "timing_reference": {
+    "source_run": 36642946787,
+    "source": "B404 R2 four successful exact b63 identities",
+    "definition": "first post-primer owner page_counter_try_charge(...,64) timestamp minus verified_at_ns",
+    "tau_fast_ns_samples": [
+      1410800000,
+      1517185000,
+      1522870000,
+      1426423000
+    ],
+    "tau_fast_median_ns": 1471804000,
+    "dwell_multiplier": 15,
+    "dwell_ns": 22077060000,
+    "nominal_total_exposure_factor": 16,
+    "note": "Stage-A aggregate must report the realized FAST and HOLD timing distributions; the nominal F=16 is a design target, not an asserted achieved value."
+  },
+  "stage_a": {
+    "total_identities": 16,
+    "blocks": 4,
+    "identities_per_block": 4,
+    "fast_n": 4,
+    "hold32_n": 12,
+    "hold_after_post_primer_touch": 32,
+    "consume_before_hold": 32,
+    "consume_after_hold": 30,
+    "target_bundle": "b63 ZERO->Q64",
+    "late_boundary_diagnostic_max_extra_touches": 8,
+    "no_same_identity_reprime": true,
+    "frozen_randomization": {
+      "seed": 41000,
+      "orders": {
+        "0": [
+          "FAST",
+          "HOLD32",
+          "HOLD32",
+          "HOLD32"
+        ],
+        "1": [
+          "HOLD32",
+          "HOLD32",
+          "HOLD32",
+          "FAST"
+        ],
+        "2": [
+          "HOLD32",
+          "FAST",
+          "HOLD32",
+          "HOLD32"
+        ],
+        "3": [
+          "HOLD32",
+          "HOLD32",
+          "FAST",
+          "HOLD32"
+        ]
+      }
+    }
+  },
+  "observer_contract": {
+    "preverify": [
+      "global page_counter_try_charge filter nr_pages==64",
+      "target-comm refill_stock filter nr_pages==63 for owner discovery",
+      "owner-uncharge probe global without owner stack until VERIFY"
+    ],
+    "postverify": [
+      "bind page_counter_uncharge probe to owner_counter and stacktrace owner uncharges",
+      "bind refill_stock probe to owner_memcg with all refill sizes retained",
+      "global Q64 charge remains for continuity",
+      "drain_stock and LRU/folios_put remain mechanistic enrichment"
+    ],
+    "critical_probes": [
+      "frl_pc_try64",
+      "frl_pc_uncharge_owner",
+      "frl_refill_stock"
+    ],
+    "required_for_promoted_specimen": "zero missed hits for all critical probes over the identity",
+    "interwindow": "scan verified epoch gaps for owner drain, owner Q64, owner refill of any size, grounded release-only, and unknown owner uncharge",
+    "preserve_unknown": true
+  },
+  "classifications": {
+    "CANONICAL_SUCCESS": "T=64, Delta=0, complete observer, no known state-changing hazard; grounded RELEASE_ONLY is allowed",
+    "KNOWN_STATE_CHANGE": "verified epoch contains source-grounded target stock drain, owner refill/Q64, PTE growth, or another named invalidator",
+    "UNEXPLAINED_BOUNDARY_DEVIATION": "complete zero-miss epoch has T != 64 and no known state-changing event",
+    "TRUE_TARGET_FAIL": "complete zero-miss target mismatch with T=64 and no known state-changing or unknown emission evidence",
+    "UNKNOWN_COMPLETE_EMISSION": "trace/probe coverage is complete but an owner event remains semantically unclassified; preserve raw stack and do not call FAIL",
+    "INSTRUMENTATION_HOLD": "probe miss, marker gap, incomplete owner identity, CPU/worker observation fault",
+    "PREVERIFY_HOLD": "identity never reaches a clean VERIFIED state and is excluded from age contrast"
+  },
+  "primary_observables": [
+    "arm",
+    "T_first_post_primer_direct_q64",
+    "Delta_T_minus_64",
+    "verified_at_ns",
+    "first_q64_at_ns",
+    "elapsed_ns_verified_to_q64",
+    "dwell_requested_ns",
+    "dwell_observed_ns",
+    "known_hazard_kind",
+    "known_hazard_elapsed_ns_since_verified",
+    "owner_counter",
+    "owner_memcg",
+    "release_only_count",
+    "continuity",
+    "critical_probe_miss_delta"
+  ],
+  "stage_b_policy": {
+    "historical_trigger_preserved": "at least one complete UNEXPLAINED_BOUNDARY_DEVIATION in Stage-A HOLD32",
+    "known_hazard_in_hold32": "freeze and return to council; do not automatically launch Stage B",
+    "no_specimen": "freeze bounded result; do not automatically scale sample"
+  },
+  "claim_ceiling": "MECHANISM_DISCRIMINATION_AND_VERIFIED_HAZARD_LOCALIZATION_ONLY",
+  "authority": {
+    "physical_run_authorized": true,
+    "authorization_basis": "user explicitly requested the next research on 2026-09-30",
+    "paid_runner_authorized": false,
+    "larger_runner_authorized": false,
+    "local_pc_execution_authorized": false,
+    "automatic_scale_expansion_authorized": false
+  }
+}
