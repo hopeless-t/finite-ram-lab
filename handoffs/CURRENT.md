@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B420
-> Stage: SAME-CPU SLOT-PRESSURE R1 FROZEN / HIST SCOPE FIX
-> Stop: RERUN SAME FROZEN 4-IDENTITY PILOT AS R2 AFTER INLINE HIST FILTER CI
+> Latest bounce: B421
+> Stage: CONSUME_STOCK RETURN OBSERVER / LDC HOST-ACTION BOUNDARY FROZEN
+> Stop: IMPLEMENT QUALIFIED finite_ram.consume_stock_ret_observer_pilot_v1 THEN RUN BLOCK0 ONLY
 
 ## Chapter II frontier
 
@@ -220,11 +220,15 @@ Raw R2 manifest:
 
 Physical continuation remains authorized by the user.
 
-Standard public-repository GitHub-hosted runner only.
+As of 2026-09-30, bounded local execution through the Local MCP Gateway / Local Desktop Commander path is explicitly authorized for this research continuation.
+
 No paid larger runner.
-No local-PC execution.
+No paid-resource expansion.
+No Remote Desktop Commander.
 No automatic sample expansion.
 No reliability certification.
+
+Do not create the hosted launch trigger for TX-CONSUME-STOCK-RET-PILOT-v1 while the LDC-local one-identity path is the active execution plan.
 
 
 ## B419 observer pilot and next bounded intervention
@@ -345,3 +349,102 @@ Next action:
 - wait for fix CI
 - rerun the identical four-identity frozen pilot as R2
 - do not launch the full QUIET/OFFCPU/SAMECPU panel until a clean R2 specimen establishes drain31 -> T33 without owner-refill contamination and with zero critical misses
+
+
+## B420 Same-CPU slot-pressure R2 frozen result
+
+Run 36715482390 completed all four identities and is frozen at:
+
+- analysis/inputs/SAMECPU-STOCK-SLOT-PRESSURE-R2-PHYSICAL-RESULT-v1.json
+
+Frozen result:
+
+- workflow conclusion=success
+- trial_count=4
+- pilot_pass=true
+- EVICTION_FINGERPRINT_MATCH=1
+- SLOT_EVICTION_BOUND_VIOLATION_CANDIDATE=2
+- TARGET_DRAIN_SIZE_MISMATCH=1
+- zero-miss target eviction count=2
+- clean fingerprint trial=3:0
+
+Clean trial 3:0:
+
+- verified residual before pressure=31
+- same-CPU helper pressure
+- helpers_started=3
+- target drain=[31]
+- owner refill delta=0
+- histogram dropped=0
+- critical probe misses=0
+- pressure unknown emission count=0
+- first post-pressure target touch emitted direct owner Q64
+- T=33
+- Delta=-31
+
+This is the clean mechanistic fingerprint supporting same-CPU stock-slot pressure -> target stock eviction.
+
+The frozen result also preserves anomalies instead of rewriting them:
+
+- block1 exposed a one-to-many drain/uncharge pairing bug; prospective pairing fix exists but historical classification stays frozen.
+- block0 reached the helper cap without a classified target drain, but helper insertion identity was not strong enough to establish a real violation of the <=13 distinct-leaf source bound.
+- block2 reached diagnostic T33 with owner uncharge31 and no classified target drain; this is the direct motivation for observing successful consume_stock returns.
+
+Do not launch the full QUIET/OFFCPU/SAMECPU panel yet.
+
+## B421 consume_stock return observer / LDC boundary
+
+The consume_stock observer implementation is already ready on the pre-B421 baseline a6434626c087a0819bef5c33596e9803c8d166f7:
+
+- specs/TX-CONSUME-STOCK-RET-PILOT-v1.json
+- src/finite_ram_lab/consume_stock_ret_pilot.py
+- consume_stock return parser and semantics tests
+- .github/workflows/consume-stock-ret-pilot.yml
+- prior CI PASS
+
+The physical consume_stock pilot has NOT run.
+
+Local MCP Gateway live checks on 2026-09-30 established:
+
+- research candidate lane READY
+- mode=INTERVENE
+- BOUNDED_PROCESS granted
+- network=false
+- canonical_write=false
+- promotion=false
+- Remote Desktop Commander=false
+- candidate.run candidate_selftest SUCCESS with retry_count=0 and MVCA_CANDIDATE_PROCESS_OK
+
+The active generic candidate process capsule does not expose host /sys/kernel/tracing and only activates bounded test/selftest templates. Therefore it cannot produce a valid physical tracefs/kprobe observer-capability specimen.
+
+This is a tool-surface capability gap, not a scientific negative result.
+
+Frozen boundary/next-action contract:
+
+- docs/B421-CONSUME-STOCK-RET-LDC-HOST-ACTION-BOUNDARY.md
+- action id: finite_ram.consume_stock_ret_observer_pilot_v1
+- local machine only
+- exact block 0 / one identity
+- fixed server-side command and experiment identities
+- no raw model-supplied command
+- no network
+- no paid resource
+- no retry
+- no automatic scale expansion
+- fail closed before trace mutation if privilege/probe/environment preflight is incomplete
+
+Current disposition:
+
+- experiment code ready = PASS
+- parser/tests = PASS
+- LDC bounded process plane = PASS
+- host tracefs surface = NOT EXPOSED
+- physical pilot dispatch = NOT DISPATCHED
+- scientific consume_stock result = NONE
+
+Next atomic bounce:
+
+1. implement and qualify finite_ram.consume_stock_ret_observer_pilot_v1 in the Local MCP Gateway;
+2. launch exactly one block-0 identity;
+3. freeze the receipt;
+4. expand to the original four identities only if the one-identity specimen is complete.
