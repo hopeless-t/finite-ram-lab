@@ -1,0 +1,177 @@
+name: Startup stock seed cpuset falsifier
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "launch/TX-STARTUP-STOCK-SEED-CPUSET-FALSIFIER-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Compile worker
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11             experiments/tx_perturbation_worker.c             -o build/tx_perturbation_worker
+
+      - name: Environment gate
+        run: |
+          set -euo pipefail
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+          test -r /sys/fs/cgroup/cpuset.cpus.effective
+          systemctl --version
+          uname -a
+
+      - name: Run causal block
+        env:
+          BLOCK: "${{ matrix.block }}"
+        run: |
+          set -euo pipefail
+          TRACE=/sys/kernel/tracing
+          OUT="$GITHUB_WORKSPACE/evidence/STARTUP-SEED-CPUSET/block-$BLOCK"
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+
+          if ! mountpoint -q "$TRACE"; then
+            sudo mount -t tracefs nodev "$TRACE"
+          fi
+
+          cleanup() (
+            set +e
+            echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
+            for ev in frl_pc_try64 frl_refill_stock; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
+              fi
+              if test -e "$TRACE/events/kprobes/$ev/trigger"; then
+                echo '!stacktrace' | sudo tee "$TRACE/events/kprobes/$ev/trigger" >/dev/null 2>&1
+              fi
+              printf '%s\n' "-:$ev"                 | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            done
+            true
+          )
+          trap cleanup EXIT
+          cleanup
+
+          printf '%s\n'             'p:frl_pc_try64 page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n'             'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          echo 0 | sudo tee "$TRACE/events/kprobes/frl_pc_try64/enable" >/dev/null
+          echo 0 | sudo tee "$TRACE/events/kprobes/frl_refill_stock/enable" >/dev/null
+
+          sudo cat "$TRACE/events/kprobes/frl_pc_try64/format"             > "$OUT/frl_pc_try64.format"
+          sudo cat "$TRACE/events/kprobes/frl_refill_stock/format"             > "$OUT/frl_refill_stock.format"
+
+          RUNNER_UID="$(id -u)"
+          PYTHON_BIN="$(command -v python)"
+          echo 65536 | sudo tee "$TRACE/buffer_size_kb" >/dev/null
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          echo | sudo tee "$TRACE/trace" >/dev/null
+          echo 1 | sudo tee "$TRACE/tracing_on" >/dev/null
+
+          sudo -E "$PYTHON_BIN"             -m finite_ram_lab.startup_stock_seed_cpuset_falsifier run-block             --spec "$GITHUB_WORKSPACE/specs/TX-STARTUP-STOCK-SEED-CPUSET-FALSIFIER-v1.json"             --block "$BLOCK"             --worker "$GITHUB_WORKSPACE/build/tx_perturbation_worker"             --out-root "$OUT"             --trace-marker "$TRACE/trace_marker"             --trace-path "$TRACE/trace"             --worker-uid "$RUNNER_UID"
+
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          sudo cat "$TRACE/trace" > "$OUT/trace.log"
+          sudo cat "$TRACE/kprobe_profile" > "$OUT/kprobe-profile.txt" || true
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: startup-seed-cpuset-block-${{ matrix.block }}
+          path: evidence/STARTUP-SEED-CPUSET/block-${{ matrix.block }}/
+          if-no-files-found: warn
+          retention-days: 7
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: startup-seed-cpuset-block-*
+          path: evidence/STARTUP-SEED-CPUSET/input
+
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/STARTUP-SEED-CPUSET/aggregate
+          python -m finite_ram_lab.startup_stock_seed_cpuset_falsifier aggregate             --spec specs/TX-STARTUP-STOCK-SEED-CPUSET-FALSIFIER-v1.json             --input-root evidence/STARTUP-SEED-CPUSET/input             --json-out evidence/STARTUP-SEED-CPUSET/aggregate/summary.json
+
+      - name: Freeze raw evidence manifest
+        run: |
+          frl evidence-manifest             evidence/STARTUP-SEED-CPUSET/input             --out evidence/STARTUP-SEED-CPUSET/aggregate/full-raw-evidence-manifest.json             --experiment-id TX-STARTUP-STOCK-SEED-CPUSET-FALSIFIER-v1             --run-id "$GITHUB_RUN_ID"             --source-commit "$GITHUB_SHA"             --tier HOT             --origin-provider github-actions             --origin-ref "run:$GITHUB_RUN_ID"
+
+      - name: Verify raw evidence
+        run: |
+          frl evidence-verify             evidence/STARTUP-SEED-CPUSET/input             --manifest evidence/STARTUP-SEED-CPUSET/aggregate/full-raw-evidence-manifest.json
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: TX-STARTUP-STOCK-SEED-CPUSET-FALSIFIER-${{ github.run_id }}
+          path: evidence/STARTUP-SEED-CPUSET/aggregate/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Assert causal falsifier
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("evidence/STARTUP-SEED-CPUSET/aggregate/summary.json")
+          result = json.loads(p.read_text())
+          print(json.dumps({
+              "causal_support": result["causal_support"],
+              "trial_count": result["trial_count"],
+              "valid_trial_count": result["valid_trial_count"],
+              "control_seed_count": result["control_seed_count"],
+              "control_seed_trials": result["control_seed_trials"],
+              "intervention_valid_count": result["intervention_valid_count"],
+              "intervention_suppressed_count": result[
+                  "intervention_suppressed_count"
+              ],
+              "intervention_startup_leak_count": result[
+                  "intervention_startup_leak_count"
+              ],
+              "intervention_release_gap_seed_count": result[
+                  "intervention_release_gap_seed_count"
+              ],
+              "by_arm": result["by_arm"],
+          }, sort_keys=True))
+          if not result["causal_support"]:
+              raise SystemExit(
+                  "STARTUP_STOCK_SEED cpuset causal falsifier did not pass"
+              )
+          PY
