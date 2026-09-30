@@ -1,0 +1,19 @@
+TX-SMALL-RESIDUAL-REFILL1-PROVENANCE-v1
+human_authorized_at=2026-09-30
+run_generation=STAGE1
+purpose=identify exact caller behind established systemd PID1 refill_stock(owner_memcg,1)
+blocks=4
+identities_per_block=8
+total_identities=32
+arm=CPUSET_PREP_ONLY
+startup_refill_filter=nr_pages_1_and_common_pid_1
+startup_stacktrace=true
+startup_probe_phase_gated=true
+measured_q64_filter=target_pid_nr64
+measured_refill63_filter=target_pid_nr63
+automatic_scale_expansion=false
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+mechanism_establishment_run=36697763027
+preflight_commit=33411c6c4a1f30bb9e637bbc098df9c3e41758b0
