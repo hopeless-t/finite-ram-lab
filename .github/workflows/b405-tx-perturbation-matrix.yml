@@ -61,7 +61,7 @@ jobs:
           cleanup() (
             set +e
             echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
-            for ev in               frl_refill_stock frl_pc_uncharge_any frl_pc_try64               frl_lru_flush frl_folios_put frl_drain_stock; do
+            for ev in               frl_refill_stock frl_pc_uncharge_owner frl_pc_try64               frl_lru_flush frl_folios_put frl_drain_stock; do
               if test -e "$TRACE/events/kprobes/$ev/enable"; then
                 echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
               fi
@@ -73,7 +73,7 @@ jobs:
           cleanup
 
           printf '%s\n'             'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
-          printf '%s\n'             'p:frl_pc_uncharge_any page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n'             'p:frl_pc_uncharge_owner page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_pc_try64 page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_lru_flush folio_batch_move_lru fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
           printf '%s\n'             'p:frl_folios_put folios_put_refs fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm'             | sudo tee -a "$TRACE/kprobe_events" >/dev/null
@@ -81,11 +81,12 @@ jobs:
 
           echo 'comm == "frltx405" && nr_pages == 63'             | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
           echo 'nr_pages == 64'             | sudo tee "$TRACE/events/kprobes/frl_pc_try64/filter" >/dev/null
-          echo 'stacktrace if nr_pages == 17'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_any/trigger" >/dev/null
+          echo 'counter == 0'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/filter" >/dev/null
+          echo 'stacktrace if nr_pages == 17'             | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/trigger" >/dev/null
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_lru_flush/filter" >/dev/null
           echo 'nr == 31'             | sudo tee "$TRACE/events/kprobes/frl_folios_put/filter" >/dev/null
 
-          for ev in             frl_refill_stock frl_pc_uncharge_any frl_pc_try64             frl_lru_flush frl_folios_put frl_drain_stock; do
+          for ev in             frl_refill_stock frl_pc_uncharge_owner frl_pc_try64             frl_lru_flush frl_folios_put frl_drain_stock; do
             echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
             sudo cat "$TRACE/events/kprobes/$ev/format" > "$OUT/$ev.format"
           done
