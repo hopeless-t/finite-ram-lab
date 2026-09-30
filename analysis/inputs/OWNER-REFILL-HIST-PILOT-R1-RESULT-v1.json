@@ -1,0 +1,56 @@
+{
+  "schema_version": "owner-refill-hist-pilot-r1-result-v1",
+  "experiment_id": "TX-OWNER-REFILL-HIST-PILOT-v1",
+  "run_id": "36705123852",
+  "launch_commit": "ccd1ebfea57a608848950f38f6fedc33adbc6106",
+  "workflow_conclusion": "success",
+  "trial_count": 8,
+  "frozen_order": [
+    "LOG",
+    "HIST",
+    "LOG",
+    "HIST",
+    "LOG",
+    "HIST",
+    "LOG",
+    "HIST"
+  ],
+  "by_mode": {
+    "LOG": {
+      "n": 4,
+      "valid": 4,
+      "refill_missed_total": 0,
+      "refill_miss_trials": [],
+      "owner_refill_counts": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "HIST": {
+      "n": 4,
+      "valid": 4,
+      "refill_missed_total": 0,
+      "refill_miss_trials": [],
+      "owner_refill_counts": [
+        403,
+        1385,
+        682,
+        596
+      ],
+      "histogram_dropped_all": 0
+    }
+  },
+  "pilot_pass": true,
+  "interpretation": {
+    "established": "A soft-disabled tracefs histogram trigger can aggregate owner-memcg refill_stock activity by nr_pages while ordinary event logging is disabled.",
+    "not_established": "This panel does not prove a lower kprobe miss rate than LOG because the four LOG identities happened to have zero owner refill events during their observation windows.",
+    "next_use": "Use HIST as the refill state-change detector in a bounded same-CPU slot-pressure pilot, while retaining kprobe missed-hit accounting."
+  },
+  "artifact": {
+    "artifact_id": 11091860816,
+    "digest": "sha256:24fe08ecedf10dcd569515ba98fff2e640319c3b7937c2c9022068e0cf3daaa2"
+  },
+  "claim_ceiling": "OBSERVER_CAPABILITY_ONLY"
+}
