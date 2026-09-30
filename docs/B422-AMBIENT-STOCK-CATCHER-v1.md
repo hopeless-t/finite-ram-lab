@@ -45,7 +45,7 @@ The bounded session begins from the already established geometry:
 
 No helper memcgs are generated and no synthetic pressure workload is injected.
 
-Default ambient exposure is 600 seconds. The v1 hard maximum is 1800 seconds.
+Default synchronous LDC capability exposure is 60 seconds; 600 seconds is a later qualification target. The v1 hard maximum is 1800 seconds.
 
 ## Core low-rate observer
 
