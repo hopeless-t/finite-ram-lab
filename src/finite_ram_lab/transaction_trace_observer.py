@@ -135,7 +135,10 @@ def parse_transaction_trace(
             if int(row.get("nr_pages", 0)) == 63:
                 item["refill63"].append(row)
             active_stack = None
-        elif "frl_pc_uncharge_any:" in line:
+        elif (
+            "frl_pc_uncharge_any:" in line
+            or "frl_pc_uncharge_owner:" in line
+        ):
             item["pc_uncharge_any"].append(row)
             if int(row.get("nr_pages", 0)) == 17:
                 item["pc_uncharge17"].append(row)
@@ -317,6 +320,7 @@ def observer_receipt_for_window(
     stock_cpu: int | None = None,
     phase: str | None = None,
     target_comm: str | None = None,
+    owner_probe_filtered: bool = False,
 ) -> dict[str, Any]:
     """Create a source-grounded B403-compatible observer receipt.
 
@@ -395,6 +399,23 @@ def observer_receipt_for_window(
     target_drains: list[dict[str, Any]] = []
     other_memcg_drains: list[dict[str, Any]] = []
     unresolved_drains: list[dict[str, Any]] = []
+    normalization_internal_drains: list[dict[str, Any]] = []
+
+    if (
+        phase == "NORMALIZE"
+        and candidate_owner is not None
+        and candidate_memcg is not None
+    ):
+        retained: list[dict[str, Any]] = []
+        for drain in same_cpu_drains:
+            if (
+                target_comm is None
+                or drain.get("comm") == target_comm
+            ):
+                normalization_internal_drains.append(drain)
+            else:
+                retained.append(drain)
+        same_cpu_drains = retained
 
     for drain in same_cpu_drains:
         drain_ts = drain.get("timestamp_ns")
@@ -462,8 +483,22 @@ def observer_receipt_for_window(
                         "paired_memcg_uncharge": memcg_candidates[0],
                     }
                 )
+            elif owner_probe_filtered and effective_owner is not None:
+                other_memcg_drains.append(
+                    {
+                        **drain,
+                        "ownership": "OWNER_FILTER_NO_MATCH",
+                    }
+                )
             else:
                 unresolved_drains.append(drain)
+        elif owner_probe_filtered and effective_owner is not None:
+            other_memcg_drains.append(
+                {
+                    **drain,
+                    "ownership": "OWNER_FILTER_NO_MATCH",
+                }
+            )
         else:
             unresolved_drains.append(drain)
 
@@ -481,6 +516,11 @@ def observer_receipt_for_window(
         notes.append(
             "other_memcg_drain_ignored="
             f"{len(other_memcg_drains)}"
+        )
+    if normalization_internal_drains:
+        notes.append(
+            "normalize_internal_slot_drain_ignored="
+            f"{len(normalization_internal_drains)}"
         )
     if unresolved_drains:
         notes.append(
@@ -511,6 +551,9 @@ def observer_receipt_for_window(
         "marker_post_ns": window.get("post_ns"),
         "off_cpu_drain_stock_count": len(off_cpu_drains),
         "other_memcg_drain_count": len(other_memcg_drains),
+        "normalization_internal_drain_count": len(
+            normalization_internal_drains
+        ),
         "unresolved_drain_count": len(unresolved_drains),
         "notes": ";".join(notes) or None,
     }
