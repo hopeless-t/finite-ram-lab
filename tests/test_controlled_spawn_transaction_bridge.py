@@ -98,6 +98,12 @@ class ControlledSpawnTransactionBridgeTests(unittest.TestCase):
         self.assertEqual(tx.state, State.INVALIDATED)
         self.assertEqual(tx.invalidation_reason, "TRACE_GAP")
 
+    def test_transition_token_marks_non63_owner_refill_noncanonical(self) -> None:
+        self.assertEqual(
+            transition_token(observer_receipt(refill_non63=1)),
+            "OTHER",
+        )
+
     def test_transition_token_ignores_release_only(self) -> None:
         self.assertEqual(
             transition_token(observer_receipt(releases=1)),
