@@ -1,0 +1,117 @@
+{
+  "schema_version": "tx-ambient-stock-catcher-v1",
+  "experiment_id": "TX-AMBIENT-STOCK-CATCHER-v1",
+  "chapter": "FINITE-RAM-LAB-II",
+  "role": "BOUNDED_PASSIVE_CANARY_OBSERVER",
+  "motivation": {
+    "source_run": "Same-CPU slot-pressure R2 run 36715482390",
+    "source_anomaly": "block2 reached diagnostic T=33 with owner uncharge31 and no classified target drain",
+    "question": "Can normal host activity consume or mutate verified target memcg stock without an injected slot-pressure stressor?",
+    "claim_ceiling": "AMBIENT_EVENT_EXPOSURE_ASSOCIATION_AND_EXACT_BOUNDARY_FINGERPRINTS_ONLY"
+  },
+  "design": {
+    "not_a_stress_test": true,
+    "bounded_session": true,
+    "canary_count": 1,
+    "setup": [
+      "fresh target reaches VERIFIED_DIRECT_Q64_RESET",
+      "require R0=63",
+      "perform exactly 32 measured target touches",
+      "require expected residual=31",
+      "target performs zero touches during ambient window"
+    ],
+    "ambient_window": {
+      "default_seconds": 600,
+      "maximum_seconds": 1800,
+      "helper_memcgs": 0,
+      "synthetic_pressure": false,
+      "workload_injection": false,
+      "network_required": false
+    },
+    "end_diagnostic": {
+      "type": "bounded target boundary chase",
+      "maximum_additional_target_touches": 64,
+      "baseline_next_q64_T": 64,
+      "boundary_censoring_allowed": true
+    }
+  },
+  "core_observers": {
+    "consume_stock_success": {
+      "probe": "kretprobe consume_stock",
+      "filter_after_verify": "memcg == owner_memcg && ret != 0",
+      "aggregate": ["event_count", "sum_nr_pages"],
+      "ordinary_ring_logging": "triggered_or_low_rate_only"
+    },
+    "refill_stock": {
+      "probe": "kprobe refill_stock",
+      "filter_after_verify": "memcg == owner_memcg",
+      "aggregate": ["event_count", "sum_nr_pages"],
+      "ordinary_ring_logging": false
+    },
+    "owner_uncharge": {
+      "probe": "kprobe page_counter_uncharge",
+      "filter_after_verify": "counter == owner_counter",
+      "aggregate": ["event_count", "sum_nr_pages"]
+    },
+    "owner_q64": {
+      "probe": "kprobe page_counter_try_charge",
+      "filter_after_verify": "counter == owner_counter && nr_pages == 64",
+      "purpose": "final boundary measurement and unexpected ambient Q64 detection"
+    },
+    "coverage": {
+      "required": [
+        "kprobe_profile deltas for every active critical probe",
+        "histogram dropped count",
+        "complete PRE/POST transaction markers during setup and final diagnostic"
+      ]
+    }
+  },
+  "optional_observers": {
+    "drain_stock": {
+      "default_enabled_for_long_ambient_window": false,
+      "reason": "drain_stock cannot be owner-memcg filtered directly and global ordinary event logging may add unnecessary load on a daily-use host",
+      "future_use": "short qualified snapshot windows or an independently qualified low-rate attribution scheme"
+    }
+  },
+  "stop_or_hold_conditions": [
+    "pre-VERIFY state not exact",
+    "initial residual != 31",
+    "any ambient target touch",
+    "worker error",
+    "target CPU invariant violation",
+    "VmPTE growth in measured canary touches",
+    "critical probe missed delta != 0 or unavailable",
+    "histogram dropped != 0",
+    "trace window incomplete"
+  ],
+  "classification": {
+    "promote_only_with_exact_boundary_match": true,
+    "classes": [
+      "PREVERIFY_HOLD",
+      "OBSERVATION_HOLD",
+      "INSTRUMENTATION_HOLD",
+      "CANARY_CONTAMINATED",
+      "STABLE_RESIDUAL",
+      "DIRECT_SLOT_EVICTION_FINGERPRINT",
+      "DIRECT_STOCK_CONSUMPTION_FINGERPRINT",
+      "REFILL_MUTATION_PRESENT",
+      "MULTI_PATH_TRANSITION",
+      "UNATTRIBUTED_OWNER_UNCHARGE",
+      "BOUNDARY_CENSORED",
+      "UNKNOWN_COMPLETE"
+    ],
+    "direct_drain_rule": "isolated attributed drain d, matching owner uncharge d, 0<d<=31, and final T == 64-d",
+    "direct_consume_rule": "isolated successful owner consume c, 0<c<=31, and final T == 64-c",
+    "stable_rule": "complete zero-miss observation, no drain/consume/refill/uncharge signal, and final T=64",
+    "unknown_rule": "preserve complete observations that do not satisfy an exact known fingerprint"
+  },
+  "local_execution": {
+    "Local_MCP_Gateway_allowed": true,
+    "Local_Desktop_Commander_allowed": true,
+    "Remote_Desktop_Commander_allowed": false,
+    "paid_resources_allowed": false,
+    "automatic_retry": false,
+    "automatic_sample_expansion": false,
+    "physical_launch_by_this_spec": false
+  }
+}
