@@ -1,0 +1,240 @@
+name: Age decoupling Stage A
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "launch/TX-AGE-DECOUPLING-STAGE-A-v2.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0, 1, 2, 3]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Compile worker
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11 \
+            experiments/tx_perturbation_worker.c \
+            -o build/tx_perturbation_worker
+
+      - name: Environment gate
+        run: |
+          set -euo pipefail
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+          uname -a
+          cat /sys/kernel/mm/transparent_hugepage/enabled || true
+
+      - name: Run age block
+        env:
+          BLOCK: "${{ matrix.block }}"
+        run: |
+          set -euo pipefail
+          TRACE=/sys/kernel/tracing
+          OUT="$GITHUB_WORKSPACE/evidence/AGE-STAGE-A/block-$BLOCK"
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+
+          if ! mountpoint -q "$TRACE"; then
+            sudo mount -t tracefs nodev "$TRACE"
+          fi
+
+          cleanup() (
+            set +e
+            echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
+            for ev in \
+              frl_refill_stock frl_pc_uncharge_owner frl_pc_try64 \
+              frl_lru_flush frl_folios_put frl_drain_stock; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
+              fi
+              if test -e "$TRACE/events/kprobes/$ev/trigger"; then
+                echo '!stacktrace' | sudo tee "$TRACE/events/kprobes/$ev/trigger" >/dev/null 2>&1
+              fi
+              printf '%s\n' "-:$ev" \
+                | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            done
+            true
+          )
+          trap cleanup EXIT
+          cleanup
+
+          printf '%s\n' \
+            'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_pc_uncharge_owner page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_pc_try64 page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_lru_flush folio_batch_move_lru fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_folios_put folios_put_refs fbatch=$arg1:x64 nr=+0($arg1):u8 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_drain_stock drain_stock stock=$arg1:x64 slot=$arg2:u32 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          echo 'nr_pages == 64' \
+            | sudo tee "$TRACE/events/kprobes/frl_pc_try64/filter" >/dev/null
+          echo 'counter == 0' \
+            | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/filter" >/dev/null
+          echo 'memcg == 0' \
+            | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
+          echo 'nr == 31' \
+            | sudo tee "$TRACE/events/kprobes/frl_lru_flush/filter" >/dev/null
+          echo 'nr == 31' \
+            | sudo tee "$TRACE/events/kprobes/frl_folios_put/filter" >/dev/null
+
+          for ev in frl_pc_try64 frl_lru_flush frl_folios_put frl_drain_stock; do
+            echo 1 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null
+          done
+          echo 0 | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/enable" >/dev/null
+          echo 0 | sudo tee "$TRACE/events/kprobes/frl_refill_stock/enable" >/dev/null
+
+          for ev in \
+            frl_refill_stock frl_pc_uncharge_owner frl_pc_try64 \
+            frl_lru_flush frl_folios_put frl_drain_stock; do
+            sudo cat "$TRACE/events/kprobes/$ev/format" > "$OUT/$ev.format"
+          done
+
+          RUNNER_UID="$(id -u)"
+          PYTHON_BIN="$(command -v python)"
+          echo 65536 | sudo tee "$TRACE/buffer_size_kb" >/dev/null
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          echo | sudo tee "$TRACE/trace" >/dev/null
+          echo 1 | sudo tee "$TRACE/tracing_on" >/dev/null
+
+          sudo -E "$PYTHON_BIN" \
+            -m finite_ram_lab.age_decoupling_stage_a run-block \
+            --spec "$GITHUB_WORKSPACE/specs/TX-AGE-DECOUPLING-STAGE-A-v2.json" \
+            --block "$BLOCK" \
+            --worker "$GITHUB_WORKSPACE/build/tx_perturbation_worker" \
+            --out-root "$OUT" \
+            --trace-marker "$TRACE/trace_marker" \
+            --trace-path "$TRACE/trace" \
+            --worker-uid "$RUNNER_UID"
+
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          sudo cat "$TRACE/trace" > "$OUT/trace.log"
+          sudo cat "$TRACE/kprobe_profile" > "$OUT/kprobe-profile.txt" || true
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: age-stage-a-block-${{ matrix.block }}
+          path: evidence/AGE-STAGE-A/block-${{ matrix.block }}/
+          if-no-files-found: warn
+          retention-days: 7
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: age-stage-a-block-*
+          path: evidence/AGE-STAGE-A/input
+
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/AGE-STAGE-A/aggregate
+          python -m finite_ram_lab.age_decoupling_stage_a aggregate \
+            --spec specs/TX-AGE-DECOUPLING-STAGE-A-v2.json \
+            --input-root evidence/AGE-STAGE-A/input \
+            --json-out evidence/AGE-STAGE-A/aggregate/summary.json
+
+      - name: Freeze raw evidence manifest
+        run: |
+          frl evidence-manifest \
+            evidence/AGE-STAGE-A/input \
+            --out evidence/AGE-STAGE-A/aggregate/full-raw-evidence-manifest.json \
+            --experiment-id TX-AGE-DECOUPLING-STAGE-A-v2 \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-commit "$GITHUB_SHA" \
+            --tier HOT \
+            --origin-provider github-actions \
+            --origin-ref "run:$GITHUB_RUN_ID"
+
+      - name: Verify raw evidence
+        run: |
+          frl evidence-verify \
+            evidence/AGE-STAGE-A/input \
+            --manifest evidence/AGE-STAGE-A/aggregate/full-raw-evidence-manifest.json
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: TX-AGE-DECOUPLING-STAGE-A-${{ github.run_id }}
+          path: evidence/AGE-STAGE-A/aggregate/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Report Stage A
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path("evidence/AGE-STAGE-A/aggregate/summary.json")
+          result = json.loads(p.read_text())
+          print(json.dumps({
+              "trial_count": result["trial_count"],
+              "evidence_panel_complete": result[
+                  "evidence_panel_complete"
+              ],
+              "classifications": result["classifications"],
+              "by_arm": result["by_arm"],
+              "realized_exposure_factor": result[
+                  "realized_exposure_factor_canonical_medians"
+              ],
+              "stage_b_trigger": result["stage_b_trigger"],
+              "known_hold_hazard_requires_council": result[
+                  "known_hold_hazard_requires_council"
+              ],
+              "unknown_hold_requires_council": result[
+                  "unknown_hold_requires_council"
+              ],
+              "true_target_fail_count": result[
+                  "true_target_fail_count"
+              ],
+              "critical_probe_miss_trials": result[
+                  "critical_probe_miss_trials"
+              ],
+          }, sort_keys=True))
+          if not result["evidence_panel_complete"]:
+              raise SystemExit("Age Stage-A evidence panel incomplete")
+          PY
