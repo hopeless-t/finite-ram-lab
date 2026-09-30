@@ -199,13 +199,13 @@ def _prime_trigger_stock(
     trace_path: Path,
     max_touches: int,
 ) -> dict[str, Any]:
-    baseline = _event_count(trace_path, "frl_trigger_refill:", "frltrig")
+    baseline = _event_count(trace_path, "frl_refill_stock:", "frltrig")
     rows: list[dict[str, Any]] = []
     refill_touch: int | None = None
     for touch in range(1, max_touches + 1):
         row = _handoff_command(trigger, CMD_TOUCH)
         rows.append({"touch": touch, **row})
-        if _event_count(trace_path, "frl_trigger_refill:", "frltrig") > baseline:
+        if _event_count(trace_path, "frl_refill_stock:", "frltrig") > baseline:
             refill_touch = touch
             break
     return {
@@ -223,7 +223,7 @@ def _prime_scrubber_stock(
 ) -> dict[str, Any]:
     baseline = _event_count(
         trace_path,
-        "frl_scrubber_refill:",
+        "frl_refill_stock:",
         "frlscrub",
     )
     rows: list[dict[str, Any]] = []
@@ -234,7 +234,7 @@ def _prime_scrubber_stock(
         if (
             _event_count(
                 trace_path,
-                "frl_scrubber_refill:",
+                "frl_refill_stock:",
                 "frlscrub",
             )
             > baseline
@@ -282,7 +282,7 @@ def _postverify_scrub_reset(
 ) -> dict[str, Any]:
     refill_before = _event_count(
         trace_path,
-        "frl_scrubber_refill:",
+        "frl_refill_stock:",
         "frlscrub",
     )
     write_marker(
@@ -311,7 +311,7 @@ def _postverify_scrub_reset(
 
     refill_after = _event_count(
         trace_path,
-        "frl_scrubber_refill:",
+        "frl_refill_stock:",
         "frlscrub",
     )
     window = _trace_window(
