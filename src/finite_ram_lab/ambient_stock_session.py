@@ -120,6 +120,40 @@ def _trace_window_complete(window: dict[str, Any]) -> bool:
     )
 
 
+
+def _ambient_quiescence(
+    *,
+    touched_before: int,
+    touched_after: int,
+    worker_error_after: int,
+    vmpte_before_kib: int,
+    vmpte_after_kib: int,
+    cpu_before: int,
+    cpu_after: int,
+    stock_cpu: int,
+) -> dict[str, Any]:
+    counter_valid = int(touched_after) >= int(touched_before)
+    touch_delta = (
+        int(touched_after) - int(touched_before)
+        if counter_valid
+        else 0
+    )
+    return {
+        "touch_counter_valid": counter_valid,
+        "target_touch_delta": touch_delta,
+        "worker_ok": counter_valid and int(worker_error_after) == 0,
+        "cpu_stable": (
+            int(cpu_before) == int(stock_cpu)
+            and int(cpu_after) == int(stock_cpu)
+        ),
+        "pte_stable": (
+            int(vmpte_after_kib) == int(vmpte_before_kib)
+        ),
+        "vmpte_delta_kib": (
+            int(vmpte_after_kib) - int(vmpte_before_kib)
+        ),
+    }
+
 def _jsonl(rows: list[dict[str, Any]]) -> str:
     return "".join(
         json.dumps(
@@ -457,12 +491,19 @@ def run_session(
         )
 
         ambient_touched_after = _u32(unit["mm"], OFF_TOUCHED)
-        ambient_touch_delta = (
-            int(ambient_touched_after) - int(ambient_touched_before)
-        )
         ambient_vmpte_after = _vmpte_kib(int(unit["pid"]))
         ambient_cpu_after = _proc_cpu(int(unit["pid"]))
         ambient_worker_error = _u32(unit["mm"], OFF_ERROR)
+        quiescence = _ambient_quiescence(
+            touched_before=int(ambient_touched_before),
+            touched_after=int(ambient_touched_after),
+            worker_error_after=int(ambient_worker_error),
+            vmpte_before_kib=int(ambient_vmpte_before),
+            vmpte_after_kib=int(ambient_vmpte_after),
+            cpu_before=int(ambient_cpu_before),
+            cpu_after=int(ambient_cpu_after),
+            stock_cpu=int(stock_cpu),
+        )
 
         ambient_window = observed_window(
             trace_text=trace_path.read_text(
@@ -516,12 +557,15 @@ def run_session(
             "owner_q64_count": len(ambient_q64),
             "worker_touched_before": int(ambient_touched_before),
             "worker_touched_after": int(ambient_touched_after),
-            "target_touch_delta": int(ambient_touch_delta),
+            "target_touch_delta": int(quiescence["target_touch_delta"]),
+            "touch_counter_valid": bool(
+                quiescence["touch_counter_valid"]
+            ),
             "worker_error_after": int(ambient_worker_error),
             "vmpte_before_kib": int(ambient_vmpte_before),
             "vmpte_after_kib": int(ambient_vmpte_after),
-            "vmpte_delta_kib": (
-                int(ambient_vmpte_after) - int(ambient_vmpte_before)
+            "vmpte_delta_kib": int(
+                quiescence["vmpte_delta_kib"]
             ),
             "cpu_before": int(ambient_cpu_before),
             "cpu_after": int(ambient_cpu_after),
@@ -553,16 +597,15 @@ def run_session(
                 and bool(diagnostic["trace_complete"])
             ),
             "worker_ok": (
-                int(ambient_worker_error) == 0
+                bool(quiescence["worker_ok"])
                 and bool(diagnostic["worker_ok"])
             ),
             "cpu_stable": (
-                int(ambient_cpu_before) == int(stock_cpu)
-                and int(ambient_cpu_after) == int(stock_cpu)
+                bool(quiescence["cpu_stable"])
                 and bool(diagnostic["cpu_stable"])
             ),
             "pte_stable": (
-                int(ambient_vmpte_after) == int(ambient_vmpte_before)
+                bool(quiescence["pte_stable"])
                 and bool(diagnostic["pte_stable"])
             ),
         }
@@ -598,11 +641,11 @@ def run_session(
             )
         )
 
-        if ambient_touch_delta > 0:
+        if int(quiescence["target_touch_delta"]) > 0:
             records.append({
                 "kind": "AMBIENT_TARGET_TOUCH",
                 "session_id": session_id,
-                "count": int(ambient_touch_delta),
+                "count": int(quiescence["target_touch_delta"]),
             })
 
         if ambient_q64:
