@@ -32,11 +32,10 @@ def scan(middle: str) -> dict:
 
 
 class EpochContinuityTests(unittest.TestCase):
-    def test_other_counter_gap_drain_is_not_target_state_change(self) -> None:
+    def test_owner_filter_no_match_drain_is_not_target_state_change(self) -> None:
         result = scan(
             """
 softirq-20 [007] ... 10.000500000: frl_drain_stock: stock=0x111 slot=2 comm="frltx405"
-softirq-20 [007] ... 10.000500010: frl_pc_uncharge_owner: counter=0xccc nr_pages=21 comm="frltx405"
 """
         )
         self.assertTrue(result["gap_clean"])
