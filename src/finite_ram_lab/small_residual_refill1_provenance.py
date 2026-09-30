@@ -140,7 +140,13 @@ def parse_refill1_stacks(
 
 
 def provenance_class(frames: list[str]) -> str:
-    if "obj_cgroup_uncharge_pages" in frames:
+    # The direct helper frames can be optimized away. In the current kernel
+    # source, __memcg_slab_free_hook -> __refill_obj_stock ->
+    # obj_cgroup_uncharge_pages -> refill_stock is the slab-free objcg path.
+    if (
+        "obj_cgroup_uncharge_pages" in frames
+        or "__memcg_slab_free_hook" in frames
+    ):
         return "OBJCG_UNCHARGE_REFILL1"
     if "mem_cgroup_sk_uncharge" in frames:
         return "SOCKET_UNCHARGE_REFILL1"
