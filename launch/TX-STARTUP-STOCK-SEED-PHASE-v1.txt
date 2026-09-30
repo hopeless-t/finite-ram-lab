@@ -1,0 +1,17 @@
+TX-STARTUP-STOCK-SEED-PHASE-v1
+human_authorized_at=2026-09-30
+purpose=localize natural pre-VERIFY stock construction inside service startup
+blocks=4
+identities_per_block=8
+total_identities=32
+observer_arms=LIGHT,STACK
+critical_events=frl_pc_try64,frl_refill_stock
+exec_boundary=sched_process_exec
+startup_window=outer wrapper around historical _start()
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+automatic_scale_expansion=false
+prerequisite_r9=36686845958
+prerequisite_r10=36688225173
+preflight_commit=f77a1cb8765ec3f06a32c978cf5c172ad73ae6aa
