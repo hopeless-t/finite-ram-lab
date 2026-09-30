@@ -1,0 +1,18 @@
+TX-PREMEASURE-Q64-CALLPATH-v1
+human_authorized_at=2026-09-30
+purpose=capture kernel call paths that construct pre-VERIFY target stock
+blocks=4
+identities_per_block=8
+total_identities=32
+settle_arms_ms=0,5
+critical_probe=frl_pc_try64
+probe_binding=common_pid target worker
+stacktrace=target pid only
+primary_bound_touch=65
+require_zero_miss=true
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+automatic_scale_expansion=false
+prerequisite_normalize_run=36686845958
+preflight_commit=2b8eb247d4d63b3d301d8ac3f0619a7ff4dac035
