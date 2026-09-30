@@ -1,5 +1,7 @@
 TX-NORMALIZE-BOUNDARY-CHASE-v1
 human_authorized_at=2026-09-30
+run_generation=R2
+reason=SPEC_BINDING_FIX_ONLY
 purpose=physically capture the pre-VERIFY stock boundary
 blocks=4
 identities_per_block=8
@@ -13,4 +15,5 @@ paid_larger_runner=false
 local_pc=false
 automatic_scale_expansion=false
 prerequisite_b405_r8_run=36681393399
-preflight_commit=d0944d4b8865f25358bfd83a79377f34ac52fec9
+r1_prerun_failure=36686596342
+preflight_commit=41e09f3e4db99ec29e324decb7c02f73719ddeb4
