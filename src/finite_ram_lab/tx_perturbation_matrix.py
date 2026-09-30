@@ -251,6 +251,87 @@ def _prime_scrubber_stock(
     }
 
 
+def _postverify_prime_helper_stock(
+    *,
+    archive: EpochArchive,
+    helper: dict[str, Any],
+    helper_comm: str,
+    trace_marker: Path,
+    trace_path: Path,
+    trial_id: str,
+    stock_cpu: int,
+    max_touches: int,
+    touch_number: int,
+    label: str,
+) -> dict[str, Any]:
+    """Force a helper Q64 after VERIFY while proving target state is neutral."""
+    baseline = _event_count(
+        trace_path,
+        "frl_pc_try64:",
+        helper_comm,
+    )
+    rows: list[dict[str, Any]] = []
+    q64_touch: int | None = None
+
+    write_marker(
+        trace_marker,
+        trial_id=trial_id,
+        epoch=archive.tx.epoch,
+        phase="OBSERVE",
+        touch_number=touch_number,
+        edge="PRE",
+    )
+    try:
+        for touch in range(1, max_touches + 1):
+            row = _handoff_command(helper, CMD_TOUCH)
+            rows.append({"touch": touch, **row})
+            if (
+                _event_count(
+                    trace_path,
+                    "frl_pc_try64:",
+                    helper_comm,
+                )
+                > baseline
+            ):
+                q64_touch = touch
+                break
+    finally:
+        write_marker(
+            trace_marker,
+            trial_id=trial_id,
+            epoch=archive.tx.epoch,
+            phase="OBSERVE",
+            touch_number=touch_number,
+            edge="POST",
+        )
+
+    window = _trace_window(
+        trace_path,
+        trial_id=trial_id,
+        epoch=archive.tx.epoch,
+        phase="OBSERVE",
+        touch_number=touch_number,
+    )
+    event = archive.apply_neutral_window(
+        epoch=archive.tx.epoch,
+        touch_number=touch_number,
+        window=window,
+        stock_cpu=stock_cpu,
+        label=label,
+    )
+    passed = (
+        q64_touch is not None
+        and event.get("result") == "NEUTRAL"
+        and archive.tx.state in {State.VERIFIED, State.EXECUTING}
+    )
+    return {
+        "q64_touch": q64_touch,
+        "rows": rows,
+        "event": event,
+        "pass": passed,
+    }
+
+
 def _scrub_shared_lru(
     *,
     scrubber: dict[str, Any],
@@ -693,41 +774,6 @@ def run_trial(
                 ),
                 worker_uid=worker_uid,
             )
-            challenge["trigger_prime"] = _prime_trigger_stock(
-                trigger=trigger,
-                trace_path=trace_path,
-                max_touches=int(release_spec["trigger_prime_max_touches"]),
-            )
-            challenge["scrubber_prime"] = _prime_scrubber_stock(
-                scrubber=scrubber,
-                trace_path=trace_path,
-                max_touches=int(release_spec["scrubber_prime_max_touches"]),
-            )
-            if not challenge["trigger_prime"]["pass"]:
-                challenge["result"] = "SETUP_FAIL_TRIGGER_STOCK_NO_REFILL"
-            elif not challenge["scrubber_prime"]["pass"]:
-                challenge["result"] = "SETUP_FAIL_SCRUBBER_STOCK_NO_REFILL"
-
-            if challenge.get("result", "").startswith("SETUP_FAIL_"):
-                _stop_role(trigger)
-                trigger = None
-                _stop_role(scrubber)
-                scrubber = None
-                return {
-                    "experiment_id": spec["experiment_id"],
-                    "kind": "PERTURBATION",
-                    "block": block,
-                    "identity": identity,
-                    "trial_id": trial_id,
-                    "arm": arm,
-                    "challenge": challenge,
-                    "epochs": epochs,
-                    "archive": archive.as_dict(),
-                    "final_state": archive.tx.state.value,
-                    "challenge_pass": False,
-                    "reprimes": archive.tx.reprimes,
-                }
-
         (
             unit,
             geometry,
@@ -777,19 +823,61 @@ def run_trial(
             )
 
         elif arm == "RELEASE_ONLY":
-            reset = _postverify_scrub_reset(
+            trigger_ready = _postverify_prime_helper_stock(
                 archive=archive,
-                scrubber=scrubber,
+                helper=trigger,
+                helper_comm="frltrig",
                 trace_marker=trace_marker,
                 trace_path=trace_path,
                 trial_id=trial_id,
                 stock_cpu=stock_cpu,
-                max_touches=int(release_spec["scrub_max_touches"]),
+                max_touches=int(release_spec["trigger_prime_max_touches"]),
+                touch_number=10,
+                label="POST_VERIFY_TRIGGER_STOCK_PREP",
             )
-            challenge["postverify_lru_reset"] = reset
-            epoch_row["postverify_lru_reset"] = reset
+            challenge["postverify_trigger_prime"] = trigger_ready
+            epoch_row["postverify_trigger_prime"] = trigger_ready
 
-            if not reset["pass"]:
+            scrubber_ready = None
+            reset = None
+            if trigger_ready["pass"]:
+                scrubber_ready = _postverify_prime_helper_stock(
+                    archive=archive,
+                    helper=scrubber,
+                    helper_comm="frlscrub",
+                    trace_marker=trace_marker,
+                    trace_path=trace_path,
+                    trial_id=trial_id,
+                    stock_cpu=stock_cpu,
+                    max_touches=int(
+                        release_spec["scrubber_prime_max_touches"]
+                    ),
+                    touch_number=11,
+                    label="POST_VERIFY_SCRUBBER_STOCK_PREP",
+                )
+                challenge["postverify_scrubber_prime"] = scrubber_ready
+                epoch_row["postverify_scrubber_prime"] = scrubber_ready
+
+            if trigger_ready["pass"] and scrubber_ready and scrubber_ready["pass"]:
+                reset = _postverify_scrub_reset(
+                    archive=archive,
+                    scrubber=scrubber,
+                    trace_marker=trace_marker,
+                    trace_path=trace_path,
+                    trial_id=trial_id,
+                    stock_cpu=stock_cpu,
+                    max_touches=int(release_spec["scrub_max_touches"]),
+                )
+                challenge["postverify_lru_reset"] = reset
+                epoch_row["postverify_lru_reset"] = reset
+
+            if (
+                not trigger_ready["pass"]
+                or not scrubber_ready
+                or not scrubber_ready["pass"]
+                or not reset
+                or not reset["pass"]
+            ):
                 challenge["result"] = "INTERVENTION_SETUP_NOT_REALIZED"
             else:
                 producer_pages = int(release_spec["producer_pages"])
