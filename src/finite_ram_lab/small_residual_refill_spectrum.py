@@ -194,6 +194,44 @@ def _phase_bucket(
     return "OTHER"
 
 
+def _current_trial_owner_refills(
+    *,
+    refill_rows: list[dict[str, Any]],
+    intervals: dict[tuple[str, int], dict[str, int]],
+    owner_memcg: str,
+    stock_cpu: int,
+    first_q64_touch: int,
+) -> list[dict[str, Any]]:
+    """Return only current-trial owner refills before the Q64 boundary.
+
+    The lower bound is the current trial STARTUP PRE marker. This prevents
+    numerical memcg-pointer reuse across sequential identities from attaching
+    older refill evidence to the current trial.
+    """
+    startup = intervals.get(("OBSERVE", STARTUP_TOUCH), {})
+    boundary = intervals.get(
+        ("NORMALIZE", int(first_q64_touch)),
+        {},
+    )
+    start_ns = startup.get("pre")
+    boundary_pre_ns = boundary.get("pre")
+    if start_ns is None or boundary_pre_ns is None:
+        return []
+
+    owner = owner_memcg.lower()
+    rows: list[dict[str, Any]] = []
+    for row in refill_rows:
+        if str(row.get("memcg", "")).lower() != owner:
+            continue
+        if int(row.get("cpu", -1)) != int(stock_cpu):
+            continue
+        ts = int(row.get("timestamp_ns", -1))
+        if not (int(start_ns) <= ts < int(boundary_pre_ns)):
+            continue
+        rows.append(row)
+    return rows
+
+
 def classify_small_residual(
     *,
     first_q64_touch: int,
@@ -444,22 +482,15 @@ def run_identity(
                     owner_memcg = memcgs[0]
 
             if owner_memcg is not None:
-                boundary_pre_ns = int(
-                    intervals[
-                        ("NORMALIZE", first_q64_touch)
-                    ]["pre"]
+                current_trial_rows = _current_trial_owner_refills(
+                    refill_rows=_refill_rows(final_text),
+                    intervals=intervals,
+                    owner_memcg=owner_memcg,
+                    stock_cpu=stock_cpu,
+                    first_q64_touch=first_q64_touch,
                 )
-                for row in _refill_rows(final_text):
-                    if (
-                        str(row.get("memcg", "")).lower()
-                        != owner_memcg
-                    ):
-                        continue
-                    if int(row.get("cpu", -1)) != stock_cpu:
-                        continue
+                for row in current_trial_rows:
                     ts = int(row["timestamp_ns"])
-                    if ts >= boundary_pre_ns:
-                        continue
                     size = int(row.get("nr_pages", -1))
                     enriched = {
                         **row,
