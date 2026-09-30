@@ -1,0 +1,46 @@
+{
+  "schema_version": "age-stage-a-no-event-sensitivity-v1",
+  "source_physical_result": "analysis/inputs/AGE-DECOUPLING-STAGE-A-R2-PHYSICAL-RESULT-v1.json",
+  "observed_complete_panel": {
+    "FAST": 3,
+    "HOLD32": 9,
+    "unexplained_or_known_hazard_events": 0
+  },
+  "descriptive_all_measured_panel": {
+    "FAST_T64": 4,
+    "HOLD32_T64": 12,
+    "note": "Four identities are excluded from zero-miss inference because the owner-memcg refill probe reported missed hits."
+  },
+  "realized_exposure_factor": 13.3793209552819,
+  "prior_warning": "B410 log-uniform ranges are design-sensitivity priors, not fitted empirical prevalence priors. Equal model weights below are conditional sensitivity calculations, not objective mechanism probabilities.",
+  "results": {
+    "low": {
+      "p_no_event_given_TOUCH": 0.9544836638934177,
+      "p_no_event_given_TIME": 0.6441499898751908,
+      "bayes_factor_TOUCH_over_TIME": 1.4817723804953509,
+      "equal_model_weight_TOUCH_after_no_event": 0.5970621609543401,
+      "equal_model_weight_TIME_after_no_event": 0.4029378390456599
+    },
+    "central": {
+      "p_no_event_given_TOUCH": 0.8440221894089678,
+      "p_no_event_given_TIME": 0.3262207949009018,
+      "bayes_factor_TOUCH_over_TIME": 2.587272799900331,
+      "equal_model_weight_TOUCH_after_no_event": 0.7212367010315512,
+      "equal_model_weight_TIME_after_no_event": 0.2787632989684487
+    },
+    "high": {
+      "p_no_event_given_TOUCH": 0.645777413315722,
+      "p_no_event_given_TIME": 0.06404827888592211,
+      "bayes_factor_TOUCH_over_TIME": 10.082666147296967,
+      "equal_model_weight_TOUCH_after_no_event": 0.909769004433658,
+      "equal_model_weight_TIME_after_no_event": 0.09023099556634188
+    }
+  },
+  "interpretation": [
+    "The no-event complete panel is more compatible with TOUCH than TIME under all three frozen B410 sensitivity ranges.",
+    "The result is weak in the LOW range because a rare TIME hazard still has substantial probability to escape nine HOLD identities.",
+    "The result is substantially more constraining in the HIGH range.",
+    "No Stage-B localization trigger occurred because no complete HOLD32 unexplained boundary deviation was observed."
+  ],
+  "decision": "Freeze bounded no-specimen Stage A. Do not auto-expand or launch Stage B."
+}
