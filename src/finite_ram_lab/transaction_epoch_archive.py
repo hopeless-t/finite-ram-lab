@@ -44,6 +44,7 @@ class EpochArchive:
         touch: dict[str, Any],
         window: dict[str, Any],
         stock_cpu: int,
+        target_comm: str | None = None,
     ) -> dict[str, Any]:
         self._assert_epoch(epoch)
         receipt = observer_receipt_for_window(
@@ -52,6 +53,7 @@ class EpochArchive:
             owner_memcg=self.owner_memcg,
             stock_cpu=stock_cpu,
             phase=phase,
+            target_comm=target_comm,
         )
         packet = packet_from_touch(
             epoch=epoch,
@@ -105,6 +107,7 @@ class EpochArchive:
         touches: list[dict[str, Any]],
         windows: list[dict[str, Any]],
         stock_cpu: int,
+        target_comm: str | None = None,
     ) -> dict[str, Any]:
         self._assert_epoch(epoch)
         if self.owner_counter is None:
@@ -119,6 +122,7 @@ class EpochArchive:
                 owner_memcg=self.owner_memcg,
                 stock_cpu=stock_cpu,
                 phase="TARGET",
+                target_comm=target_comm,
             )
             for window in windows
         ]
