@@ -1,0 +1,89 @@
+{
+  "schema_version": "b405-r8-physical-result-v1",
+  "run_id": "36681393399",
+  "launch_commit": "0e565472fd5bf5a1eb774167a68493395e08986d",
+  "frozen_result": {
+    "trial_count": 16,
+    "challenge_pass_count": 15,
+    "completion_pass_count": 15,
+    "target_fail": 0,
+    "matrix_pass": false,
+    "end_to_end_pass": false,
+    "fully_observed_matrix_pass": false,
+    "by_arm": {
+      "CLEAN": {
+        "n": 4,
+        "pass": 3,
+        "completion_pass": 3,
+        "recovery_pass": 4,
+        "reprimes": 0,
+        "success": 3,
+        "target_fail": 0
+      },
+      "RELEASE_ONLY": {
+        "n": 4,
+        "pass": 4,
+        "completion_pass": 4,
+        "recovery_pass": 4,
+        "reprimes": 0,
+        "success": 4,
+        "target_fail": 0
+      },
+      "UNEXPECTED_REFILL": {
+        "n": 4,
+        "pass": 4,
+        "completion_pass": 4,
+        "recovery_pass": 4,
+        "reprimes": 4,
+        "success": 4,
+        "target_fail": 0
+      },
+      "PTE_GROWTH": {
+        "n": 4,
+        "pass": 4,
+        "completion_pass": 4,
+        "recovery_pass": 4,
+        "reprimes": 4,
+        "success": 4,
+        "target_fail": 0
+      }
+    }
+  },
+  "observer_coverage": {
+    "coverage_pass": true,
+    "critical_missed": {
+      "frl_pc_try64": 0,
+      "frl_pc_uncharge_owner": 0
+    },
+    "note": "R8 is the first B405 generation with zero misses on both frozen critical observer probes."
+  },
+  "exceptional_trial": {
+    "trial_id": "0:0",
+    "arm": "CLEAN",
+    "result": "NORMALIZE_FAILED",
+    "state_after": "INVALIDATED",
+    "reason": "NORMALIZE_EXHAUSTED",
+    "normalize_touches": 64,
+    "target_direct_q64_seen_in_measured_windows": 0,
+    "pte_growth_seen": false,
+    "cpu_mismatch_seen": false,
+    "worker_error_seen": false,
+    "interpretation": "No challenge was reached. This is an initial-state/normalization-boundary specimen, not TARGET_FAIL."
+  },
+  "raw_forensics": {
+    "premeasurement_target_pid_q64_on_stock_cpu_observed": true,
+    "note": "R8 block0 raw trace contains target-worker Q64 activity on stock CPU before NORMALIZE touch 1; the measured 64 touches then contain no target-worker Q64. This motivates a dedicated <=65 stock-boundary chase rather than retroactive promotion."
+  },
+  "raw_manifest": {
+    "file_count": 80,
+    "total_bytes": 9669832,
+    "content_set_sha256": "31a9d3adbb979415e2dffba0a9117df066bf422a61753e39035db914f244bb3a",
+    "created_at_utc": "2026-09-30T07:03:46Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11082146184,
+    "digest": "sha256:3ce31c90588f32f7f2cc2d89d8875980c650213a182f88af615eae0702a9f87c"
+  },
+  "next_experiment": "TX-NORMALIZE-BOUNDARY-CHASE-v1",
+  "claim_ceiling": "B405_R8_CAUSAL_DIAGNOSTIC_WITH_COMPLETE_CRITICAL_OBSERVER_COVERAGE"
+}
