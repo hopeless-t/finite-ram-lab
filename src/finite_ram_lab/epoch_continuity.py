@@ -72,8 +72,11 @@ def _parse_epoch_timeline(
 
         if "frl_drain_stock:" in line:
             kind = "DRAIN_STOCK"
-        elif "frl_pc_uncharge_any:" in line:
-            kind = "PC_UNCHARGE_ANY"
+        elif (
+            "frl_pc_uncharge_any:" in line
+            or "frl_pc_uncharge_owner:" in line
+        ):
+            kind = "PC_UNCHARGE_OWNER"
             if int(row.get("nr_pages", 0)) == 17:
                 row["stack"] = []
                 active_stack = row["stack"]
@@ -96,7 +99,7 @@ def _parse_epoch_timeline(
             row["kind"] = kind
             events.append(row)
             if not (
-                kind == "PC_UNCHARGE_ANY"
+                kind == "PC_UNCHARGE_OWNER"
                 and int(row.get("nr_pages", 0)) == 17
             ):
                 active_stack = None
@@ -195,7 +198,7 @@ def scan_interwindow_continuity(
     )
     if not intervals:
         return {
-            "schema_version": "epoch-gap-continuity-v2",
+            "schema_version": "epoch-gap-continuity-v3",
             "trial_id": trial_id,
             "epoch": int(epoch),
             "coverage": "NO_MARKER_INTERVALS",
@@ -229,7 +232,7 @@ def scan_interwindow_continuity(
     counter_uncharges = [
         row
         for row in relevant
-        if row["kind"] == "PC_UNCHARGE_ANY"
+        if row["kind"] == "PC_UNCHARGE_OWNER"
         and int(row.get("cpu", -1)) == int(stock_cpu)
     ]
 
@@ -244,16 +247,18 @@ def scan_interwindow_continuity(
 
     for drain, uncharge in drain_pairs:
         if uncharge is None:
-            unresolved_drains.append(drain)
+            other_counter_drains.append(
+                {
+                    "drain": drain,
+                    "ownership": "OWNER_FILTER_NO_MATCH",
+                }
+            )
             continue
         item = {
             "drain": drain,
             "page_counter_uncharge": uncharge,
         }
-        if str(uncharge.get("counter", "")).lower() == owner_counter:
-            target_drains.append(item)
-        else:
-            other_counter_drains.append(item)
+        target_drains.append(item)
 
     unpaired_owner_uncharges = [
         row
