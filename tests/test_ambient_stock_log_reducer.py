@@ -155,6 +155,17 @@ class AmbientStockLogReducerTests(unittest.TestCase):
             "BOUNDARY_CENSORED",
         )
 
+    def test_ambient_owner_q64_is_preserved_as_reset(self):
+        result = reduce_catcher_records(session([
+            {"kind": "AMBIENT_OWNER_Q64", "session_id": "s1", "count": 1},
+            {"kind": "CONSUME_SUCCESS", "session_id": "s1", "pages": 31},
+            {"kind": "BOUNDARY", "session_id": "s1", "observed": True, "T": 64},
+        ]))
+        self.assertEqual(
+            result["classification"]["classification"],
+            "AMBIENT_Q64_RESET",
+        )
+
     def test_target_touch_contamination_is_detected(self):
         result = reduce_catcher_records(session([
             {"kind": "AMBIENT_TARGET_TOUCH", "session_id": "s1", "count": 1},
