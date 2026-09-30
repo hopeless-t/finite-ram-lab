@@ -1,0 +1,11 @@
+TX-OWNER-REFILL-HIST-PILOT-v1
+human_authorized_at=2026-09-30
+purpose=compare trace-ring LOG versus soft-disabled HIST owner refill observation
+identities=8
+order=LOG,HIST,LOG,HIST,LOG,HIST,LOG,HIST
+observation_seconds=5
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+scientific_age_claim=false
+preflight_workflow_commit=88b6121f116cc00648b9249a1713e0bc769e21ef
