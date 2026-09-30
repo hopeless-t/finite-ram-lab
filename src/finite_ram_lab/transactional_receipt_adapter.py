@@ -16,6 +16,8 @@ def _guard_event(packet: dict[str, Any]) -> Event | None:
         return Event.PTE_GROWTH
     if int(packet.get("drain_stock_count", 0)) > 0:
         return Event.DRAIN_STOCK
+    if int(packet.get("owner_refill_non63_count", 0)) > 0:
+        return Event.UNEXPECTED_REFILL
     return None
 
 
