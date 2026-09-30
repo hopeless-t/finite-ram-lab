@@ -34,11 +34,15 @@ def _target_q64_rows(
     window: dict[str, Any],
     *,
     target_pid: int,
+    stock_cpu: int,
 ) -> list[dict[str, Any]]:
     return [
         row
         for row in window.get("pc_try64", [])
-        if int(row.get("pid", -1)) == int(target_pid)
+        if (
+            int(row.get("pid", -1)) == int(target_pid)
+            and int(row.get("cpu", -1)) == int(stock_cpu)
+        )
     ]
 
 
@@ -46,6 +50,7 @@ def _target_q64_rows_from_text(
     text: str,
     *,
     target_pid: int,
+    stock_cpu: int,
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for line in text.splitlines():
@@ -54,6 +59,7 @@ def _target_q64_rows_from_text(
         row = _event_row(line)
         if (
             int(row.get("pid", -1)) == int(target_pid)
+            and int(row.get("cpu", -1)) == int(stock_cpu)
             and int(row.get("nr_pages", 0)) == 64
         ):
             rows.append(row)
@@ -164,6 +170,7 @@ def run_identity(
         premeasurement_q64 = _target_q64_rows_from_text(
             before_first_touch,
             target_pid=unit["pid"],
+            stock_cpu=stock_cpu,
         )
 
         touches: list[dict[str, Any]] = []
@@ -197,6 +204,7 @@ def run_identity(
             q64_rows = _target_q64_rows(
                 window,
                 target_pid=unit["pid"],
+                stock_cpu=stock_cpu,
             )
 
             row_out = {
@@ -217,6 +225,9 @@ def run_identity(
                 break
             if int(row_out.get("worker_error", 0)) != 0:
                 invalidation_reason = "WORKER_ERROR"
+                break
+            if int(row_out.get("worker_touched", -1)) != touch_number:
+                invalidation_reason = "WORKER_TOUCH_SEQUENCE_MISMATCH"
                 break
             if int(row_out.get("observed_cpu", -1)) != int(stock_cpu):
                 invalidation_reason = "CPU_MISMATCH"
