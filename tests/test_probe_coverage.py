@@ -13,7 +13,7 @@ from finite_ram_lab.probe_coverage import (
 PROFILE_OK = """
   frl_refill_stock        22621 17
   frl_pc_try64             4501 0
-  frl_pc_uncharge_any     12212 0
+  frl_pc_uncharge_owner     12212 0
   frl_drain_stock           220 3
   frl_lru_flush            9000 0
   frl_folios_put          90000 0
@@ -22,7 +22,7 @@ PROFILE_OK = """
 PROFILE_MISS = """
   frl_refill_stock        22621 175
   frl_pc_try64             4501 0
-  frl_pc_uncharge_any     12212 1
+  frl_pc_uncharge_owner     12212 1
   frl_drain_stock           220 3
 """
 
@@ -50,7 +50,7 @@ class ProbeCoverageTests(unittest.TestCase):
             result = summarize_probe_coverage([p])
 
         self.assertFalse(result["coverage_pass"])
-        self.assertEqual(result["critical_missed"]["frl_pc_uncharge_any"], 1)
+        self.assertEqual(result["critical_missed"]["frl_pc_uncharge_owner"], 1)
         self.assertGreater(result["critical_missed_total"], 0)
 
     def test_missing_probe_fails_coverage(self) -> None:
@@ -64,7 +64,7 @@ class ProbeCoverageTests(unittest.TestCase):
 
         self.assertFalse(result["coverage_pass"])
         self.assertIn(
-            "frl_pc_uncharge_any",
+            "frl_pc_uncharge_owner",
             result["missing_critical_probes"],
         )
 
