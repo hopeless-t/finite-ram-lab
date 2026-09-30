@@ -29,7 +29,6 @@ from .transactional_spawn_pilot import (
 )
 from .tx_perturbation_matrix import (
     TARGET_COMM,
-    _bind_owner_probe,
     _close_owner_probe,
     _consume_segment,
     _fresh_epoch,
@@ -580,7 +579,7 @@ def run_trial(
             and archive.owner_memcg is not None
         )
         if normalized:
-            _bind_owner_probe(trace_path, archive.owner_counter)
+            # _fresh_epoch() already binds the owner-uncharge probe.
             _bind_refill_owner(trace_path, archive.owner_memcg)
 
             cursor, measured_count, consume_a = _consume_segment(
