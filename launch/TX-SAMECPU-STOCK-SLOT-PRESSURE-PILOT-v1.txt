@@ -1,5 +1,7 @@
 TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-v1
 human_authorized_at=2026-09-30
+run_generation=R2
+reason=INLINE_OWNER_HIST_FILTER_FIX_ONLY
 purpose=causally force verified target memcg stock eviction via same-CPU distinct helper slot pressure
 blocks=4
 identities_per_block=1
@@ -12,9 +14,11 @@ stop_on_target_drain=true
 predicted_drain_pages=31
 predicted_next_q64_T=33
 predicted_delta=-31
-owner_refill_observer=soft_disabled_histogram
+owner_refill_observer=soft_disabled_histogram_with_inline_owner_filter
 runner=standard-github-hosted-ubuntu-26.04
 paid_larger_runner=false
 local_pc=false
 automatic_scale_expansion=false
-preflight_commit=f65cad75f89d02535751bdfd031d057486681821
+r1_run=36714755845
+r1_result=FROZEN_PILOT_FALSE_HIST_SCOPE_BUG
+fix_commit=35a3a9232117ce09ae486cb3fb48b727e8d0e0eb
