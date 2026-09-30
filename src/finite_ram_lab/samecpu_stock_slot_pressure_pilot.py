@@ -171,24 +171,27 @@ def _prime_helper_until_q64(
     trial_id: str,
     epoch: int,
     stock_cpu: int,
+    baseline_count: int,
     max_touches: int = 65,
 ) -> dict[str, Any]:
-    before = _helper_q64_count(
+    after_start = _helper_q64_count(
         trace_path,
         trial_id=trial_id,
         epoch=epoch,
         stock_cpu=stock_cpu,
     )
 
-    # Startup itself may already have emitted a direct Q64 after exec.
-    if before > 0:
+    # The current helper's startup may already have emitted a direct Q64.
+    if after_start > int(baseline_count):
         return {
             "realized": True,
             "touches": 0,
-            "q64_count_before": before,
-            "q64_count_after": before,
+            "q64_count_before": int(baseline_count),
+            "q64_count_after": after_start,
             "startup_or_prior_q64": True,
         }
+
+    before = int(baseline_count)
 
     rows: list[dict[str, Any]] = []
     for touch in range(1, int(max_touches) + 1):
@@ -377,6 +380,12 @@ def run_trial(
         drain_detected = False
         max_helpers = int(spec["design"]["max_distinct_helpers"])
         for helper_index in range(1, max_helpers + 1):
+            helper_q64_baseline = _helper_q64_count(
+                trace_path,
+                trial_id=trial_id,
+                epoch=archive.tx.epoch,
+                stock_cpu=stock_cpu,
+            )
             helper_root = (
                 out_root
                 / f"trial-{block}-{identity}"
@@ -423,6 +432,7 @@ def run_trial(
                 trial_id=trial_id,
                 epoch=archive.tx.epoch,
                 stock_cpu=stock_cpu,
+                baseline_count=helper_q64_baseline,
                 max_touches=65,
             )
             receipt = _pressure_receipt(
