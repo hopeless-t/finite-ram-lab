@@ -1,0 +1,20 @@
+TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-v1
+human_authorized_at=2026-09-30
+purpose=causally force verified target memcg stock eviction via same-CPU distinct helper slot pressure
+blocks=4
+identities_per_block=1
+total_identities=4
+consume_before_pressure=32
+expected_residual_before_pressure=31
+max_distinct_helpers=13
+helper_cpuset=same_stock_cpu_from_unit_creation
+stop_on_target_drain=true
+predicted_drain_pages=31
+predicted_next_q64_T=33
+predicted_delta=-31
+owner_refill_observer=soft_disabled_histogram
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+automatic_scale_expansion=false
+preflight_commit=f65cad75f89d02535751bdfd031d057486681821
