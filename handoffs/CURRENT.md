@@ -479,7 +479,7 @@ Canary geometry:
 Default first physical exposure:
 
 - one canary;
-- 600 seconds;
+- 60 seconds;
 - hard v1 ambient maximum=1800 seconds;
 - private tracefs instance;
 - owner-filtered or count-only core observers;
@@ -546,7 +546,7 @@ No physical session, daemon, system service, or persistent probe was launched by
 
 Next atomic bounce:
 
-Implement one ephemeral capture backend using a private tracefs instance and the frozen JSONL receipt schema. First live run remains one canary, 600 seconds, no synthetic pressure.
+Implement one ephemeral capture backend using a private tracefs instance and the frozen JSONL receipt schema. First live run remains one canary, 60 seconds, no synthetic pressure.
 
 
 ## B424 count-only ambient tracefs backend
@@ -595,4 +595,4 @@ Implement the one-canary ephemeral session orchestrator:
 8. reduce/classify;
 9. cleanup and exit.
 
-First live session remains one canary / 600 seconds / no synthetic pressure.
+First live session remains one canary / 60 seconds / no synthetic pressure. 600 seconds is a later separately qualified target.
