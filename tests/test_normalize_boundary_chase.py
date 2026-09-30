@@ -54,7 +54,11 @@ class NormalizeBoundaryChaseTests(unittest.TestCase):
 background-111 [003] ... 10.000000000: frl_pc_try64: counter=0xaaa nr_pages=64 comm="background"
 frltx405-222 [007] ... 10.000000010: frl_pc_try64: counter=0xbbb nr_pages=64 comm="frltx405"
 """
-        rows = _target_q64_rows_from_text(trace, target_pid=222)
+        rows = _target_q64_rows_from_text(
+            trace,
+            target_pid=222,
+            stock_cpu=7,
+        )
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["counter"], "0xbbb")
         self.assertEqual(rows[0]["pid"], 222)
