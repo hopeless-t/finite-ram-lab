@@ -1,0 +1,46 @@
+{
+  "schema_version": "refill1-provenance-source-replay-v1",
+  "source_run_id": "36699038147",
+  "source_trial_id": "1:7",
+  "frozen_physical_class": "OTHER_REFILL1_CALLER",
+  "source_commit_examined": "torvalds/linux@551c722f40809618230001baccf219193e22fc5a",
+  "observed_stack_prefix": [
+    "refill_stock",
+    "__memcg_slab_free_hook",
+    "kfree",
+    "skb_free_head",
+    "skb_release_data",
+    "consume_skb",
+    "skb_free_datagram",
+    "__unix_dgram_recvmsg",
+    "unix_dgram_recvmsg"
+  ],
+  "source_chain": [
+    "__memcg_slab_free_hook frees an accounted slab object and calls __refill_obj_stock(objcg, stock, obj_size, true)",
+    "__refill_obj_stock accumulates freed object bytes; when allow_uncharge and accumulated bytes exceed PAGE_SIZE it computes nr_pages = stock_nr_bytes >> PAGE_SHIFT",
+    "__refill_obj_stock calls obj_cgroup_uncharge_pages(objcg, nr_pages)",
+    "obj_cgroup_uncharge_pages resolves the memcg and calls refill_stock(memcg, nr_pages)",
+    "for the captured specimen nr_pages == 1, producing exactly one page of target memcg stock"
+  ],
+  "resolved_provenance": {
+    "family": "OBJCG_UNCHARGE_REFILL1",
+    "subtype": "SLAB_FREE_OBJCG_REFILL1",
+    "emitter_context": "systemd PID1 receiving a UNIX datagram and freeing skb memory",
+    "physical_state_chain": "systemd recvmsg -> skb free -> memcg slab free hook -> objcg one-page uncharge -> refill_stock(owner_memcg,1) -> S0=1 -> T=2"
+  },
+  "evidence_quality": {
+    "startup_refill_probe_missed": 0,
+    "measured_probe_missed": 0,
+    "stack_nonempty": true,
+    "owner_memcg_match": true,
+    "stock_cpu_match": true,
+    "T": 2,
+    "inferred_S0": 1
+  },
+  "decision": {
+    "provenance_status": "RESOLVED_SOURCE_GROUNDED",
+    "SMALL_RESIDUAL_REFILL": "ESTABLISHED",
+    "preverify_taxonomy_action": "STOP_EXPANDING_AFTER_RECORD; RETURN_TO_VERIFIED_STATE_AGE_DECOUPLING"
+  },
+  "claim_ceiling": "SOURCE_GROUNDED_CALLER_PROVENANCE_FOR_ONE_ZERO_MISS_PHYSICAL_SPECIMEN"
+}
