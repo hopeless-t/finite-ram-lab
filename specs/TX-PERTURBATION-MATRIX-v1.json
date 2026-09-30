@@ -1,6 +1,6 @@
 {
   "experiment_id": "TX-PERTURBATION-MATRIX-v1",
-  "status": "R6_TARGET_LANE_AND_POSTVERIFY_HELPER_PREFLIGHT",
+  "status": "R7_OWNER_FILTERED_SINGLE_HELPER_PREFLIGHT",
   "chapter": "FINITE-RAM-LAB-II",
   "role": "CAUSAL_VALIDATION_OF_TRANSACTION_INVALIDATORS",
   "prerequisite": "B404 R2 physical transactional smoke PASS run 36642946787",
@@ -17,20 +17,18 @@
   "release_only": {
     "producer_pages": 17,
     "trigger_pages": 14,
-    "scrub_max_touches": 64,
-    "mechanism": "shared per-CPU LRU batch handoff using separate trigger cgroup",
+    "scrub_max_touches": 49,
+    "mechanism": "shared per-CPU LRU handoff using one post-VERIFY helper cgroup/process",
     "trigger_prime_max_touches": 64,
     "order": [
-      "start trigger and scrubber helpers idle",
+      "start one helper idle on stock CPU",
       "verify target direct Q64 and bind owner_counter/owner_memcg",
-      "inside neutral OBSERVE force trigger helper to its next Q64 and require no target state mutation",
-      "inside neutral OBSERVE force scrubber helper to its next Q64 and require no target state mutation",
-      "with scrubber stock now fresh, scrub shared LRU batch to the next flush and require zero helper Q64 during reset",
+      "inside neutral OBSERVE force helper to its next Q64 and require no target state mutation",
+      "using the same helper stock, scrub shared LRU to next flush with at most 49 touches and require zero helper Q64 during scrub",
       "target consumes 17 pages and discards them",
-      "trigger performs 14 cached-stock touches inside RELEASE_ONLY OBSERVE",
-      "require grounded owner release, residual invariance, zero trigger Q64 during release, and canonical b63 commit"
-    ],
-    "scrubber_prime_max_touches": 64
+      "same helper performs 14 cached-stock touches inside RELEASE_ONLY OBSERVE",
+      "require grounded owner release, residual invariance, zero helper Q64 during release, and canonical b63 commit"
+    ]
   },
   "arms": [
     {
@@ -88,12 +86,12 @@
   "claim_ceiling": "MECHANISM_AND_CLASSIFIER_CAUSAL_VALIDATION_ONLY",
   "authority": {
     "physical_run_authorized": true,
-    "authorization_basis": "user authorized continued physical research; R1-R5 diagnostics preserved separately",
+    "authorization_basis": "user authorized continued research; R1-R6 remain frozen diagnostics and are not rewritten",
     "paid_runner_authorized": false,
     "larger_runner_authorized": false,
     "local_pc_execution_authorized": false
   },
-  "schema_version": "tx-perturbation-matrix-v3",
+  "schema_version": "tx-perturbation-matrix-v4",
   "measurement_layers": [
     "INTERVENTION_REALIZATION",
     "CHALLENGE_CLASSIFICATION",
@@ -104,13 +102,22 @@
   "observer_contract": {
     "counter_backbone": [
       "frl_pc_try64",
-      "frl_pc_uncharge_any"
+      "frl_pc_uncharge_owner"
     ],
     "critical_missed_required": 0,
+    "owner_uncharge_scope": "global only during NORMALIZE; dynamically filtered to verified owner_counter immediately after VERIFY",
     "target_receipt_projection": "target_comm + owner_counter/owner_memcg",
     "target_comm": "frltx405",
     "target_refill_scope": "comm == frltx405 && nr_pages == 63",
     "global_charge_scope": "nr_pages == 64; transaction receipts project to target lane; continuity retains all",
-    "uncharge_scope": "all page_counter_uncharge events; conditional stacktrace when nr_pages == 17"
-  }
+    "absence_semantics": "post-VERIFY stock-CPU drain without owner-uncharge match is other-stock only when owner probe missed=0",
+    "release_stacktrace": "conditional on owner-filtered nr_pages == 17"
+  },
+  "named_natural_invalidators": [
+    {
+      "id": "TARGET_STOCK_EVICTION",
+      "definition": "verified target residual is asynchronously drained from per-CPU memcg stock before the next measured transition",
+      "observed_in": "B405 R6 trial 0:0"
+    }
+  ]
 }
