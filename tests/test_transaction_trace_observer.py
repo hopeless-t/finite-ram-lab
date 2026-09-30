@@ -302,5 +302,29 @@ x-1 [000] ... 20.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
 
 
 
+    def test_all_counter_probe_can_ground_17_page_release(self) -> None:
+        trace = """
+x-1 [000] ... 21.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=15 PRE
+worker-20 [007] ... 21.000000010: frl_pc_uncharge_any: counter=0xaaa nr_pages=17 comm="worker"
+ => page_counter_uncharge
+ => folios_put_refs
+ => folio_batch_move_lru
+ => __folio_batch_add_and_move
+x-1 [000] ... 21.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=15 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "CONSUME", 15)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            owner_memcg="0xbbb",
+            stock_cpu=7,
+            phase="CONSUME",
+        )
+        self.assertEqual(len(w["pc_uncharge_any"]), 1)
+        self.assertEqual(len(w["pc_uncharge17"]), 1)
+        self.assertEqual(receipt["classified_release_only_count"], 1)
+        self.assertEqual(receipt["unknown_emission_count"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()
