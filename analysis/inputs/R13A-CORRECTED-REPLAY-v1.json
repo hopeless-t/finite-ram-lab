@@ -1,0 +1,49 @@
+{
+  "schema_version": "r13a-corrected-replay-v1",
+  "source_experiment": "TX-SMALL-RESIDUAL-REFILL-SPECTRUM-v1",
+  "source_run_id": "36693262942",
+  "source_launch_commit": "9930da8b0999d3b324d0400ba61a83d3e8f43e73",
+  "replay_rule": {
+    "lower_bound": "current trial OBSERVE touch=91 STARTUP PRE",
+    "upper_bound": "current trial first-Q64 NORMALIZE PRE",
+    "ownership": "later resolved owner_memcg + stock_cpu",
+    "historical_aggregate_rewritten": false
+  },
+  "replayed_trial_count": 128,
+  "corrected_classes": {
+    "T1_NO_SMALL_REFILL": 127,
+    "SMALL_REFILL_EXPLAINS_DELAY": 1,
+    "CLASSIC_REFILL63_LEAK": 0,
+    "SMALL_REFILL_PARTIAL": 0,
+    "HIGH_T_WITHOUT_SMALL_REFILL": 0
+  },
+  "first_q64_histogram": {
+    "1": 127,
+    "2": 1
+  },
+  "unique_delayed_specimen": {
+    "trial_id": "0:28",
+    "first_q64_touch": 2,
+    "inferred_S0": 1,
+    "current_trial_owner_small_refill_sizes": [
+      1
+    ],
+    "current_trial_owner_small_refill_sum": 1,
+    "current_trial_owner_refill63_count": 0,
+    "small_refill_phase": "STARTUP",
+    "emitter": "systemd PID1",
+    "future_stock_cpu": true,
+    "owner_memcg_match": true,
+    "q64_probe_missed": 0,
+    "refill_probe_missed": 1,
+    "corrected_mechanism_fit": "SMALL_REFILL_EXPLAINS_DELAY",
+    "promotion_status": "WITHHELD_ZERO_MISS_REQUIREMENT"
+  },
+  "important_interpretation": [
+    "All 35 frozen CLASSIC_REFILL63_LEAK labels disappear when evidence is bounded to the current trial epoch.",
+    "The only delayed boundary in the entire 128-identity panel is the same trial that contains a current-trial owner refill_stock(...,1) receipt.",
+    "The corrected replay strengthens the mechanism candidate but does not override the frozen physical promotion rule because the refill probe missed one hit in trial 0:28."
+  ],
+  "source_raw_manifest_sha256": "f2971d6ceb5a59007974f3935d5c23b4a5019d4c5bc12c03950aacb13434242a",
+  "claim_ceiling": "OFFLINE_REANALYSIS_OF_FROZEN_RAW_EVIDENCE_NO_RETROACTIVE_PROMOTION"
+}
