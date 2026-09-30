@@ -1,177 +1,163 @@
 # CURRENT
 
-> Latest bounce: B415
-> Stage: R13-A SMALL-RESIDUAL RESULT FROZEN
-> Stop: STRATEGY PAUSE BEFORE R13-B
+> Latest bounce: B416
+> Stage: SMALL_RESIDUAL_REFILL ESTABLISHED
+> Stop: READY TO IMPLEMENT / LAUNCH R13-B2 REFILL1 PROVENANCE
 
 ## Chapter II frontier
 
-The research has decomposed natural pre-VERIFY stock into multiple named mechanisms/states.
+Historical SUCCESS/FAIL has been decomposed into explicit state transitions.
 
-Established:
+Established named states/mechanisms:
 
-- VERIFIED_DIRECT_Q64_RESET: measured one-page direct Q64 -> verified residual R0=63.
-- PREVERIFY_S64 / MAX_STOCK_BOUNDARY: natural S0=64 established for the frozen R8 specimen by lower/upper-bound sandwich proof.
+- VERIFIED_DIRECT_Q64_RESET: measured one-page direct Q64 establishes verified residual R0=63.
+- PREVERIFY_S64 / MAX_STOCK_BOUNDARY: natural pre-VERIFY S0=64.
+- STARTUP_STOCK_SEED: startup Q64/refill63 can leave large inherited stock on the future stock CPU.
+- SMALL_RESIDUAL_REFILL: systemd PID1 can return one page to the later measured owner memcg on the future stock CPU, yielding S0=1 and measured T=2.
 - TARGET_STOCK_EVICTION: verified residual stock can be asynchronously drained before the next measured transition.
-- STARTUP_STOCK_SEED: startup can charge/refill the future stock CPU before historical _start() returns, leaving inherited stock and delayed measured Q64 boundary.
+- RELEASE_ONLY: source-grounded shared-LRU release changes accounting without consuming the target residual.
 
-Candidate, not yet promoted:
+No complete verified B405 target path has produced TARGET_FAIL.
 
-- SMALL_RESIDUAL_REFILL: small refill_stock increments, including nr_pages=1, may create low natural residuals such as S0=1 / T=2 without a contemporaneous direct Q64.
+## R13-A historical run and corrected replay
 
-No complete B405 transactional path has produced TARGET_FAIL.
+Physical run 36693262942 is frozen under its original semantics:
 
-## R12 cpuset intervention
+- 128 measured identities
+- frozen discovery_pass=false
+- frozen panel_coverage_pass=false
+- frozen CLASSIC_REFILL63_LEAK=35
+- frozen INVALID_OBSERVER=11
+- frozen T1_NO_SMALL_REFILL=82
+- frozen promoted count=0
 
-Run 36691073336.
+Do not rewrite that aggregate.
 
-CONTROL:
-- n=32
-- valid=31
-- classic STARTUP_STOCK_SEED=5
-- large high-T cluster T=46,47,48,49,49
-- one clean T=2
+A reducer-scope defect was found prospectively: owner matching scanned all earlier block events and could attach an earlier identity after a memcg-pointer reuse.
 
-CPUSET_PREP_ONLY:
-- n=32
-- valid=31
-- classic startup seed=0
-- release-gap classic seed=0
-- 30 CPUSET_SUPPRESSED
-- one clean T=2
+Corrected replay of the same raw evidence, bounded from current-trial STARTUP PRE to current boundary PRE:
 
-Strict preregistered causal_support=false because complete-panel 64/64 and all intervention T=1 were required.
+- T1_NO_SMALL_REFILL=127
+- SMALL_REFILL_EXPLAINS_DELAY=1
+- CLASSIC_REFILL63_LEAK=0
+- first-Q64 histogram: T1=127, T2=1
 
-Large STARTUP_STOCK_SEED remains strongly causally supported by the intervention, while T=2 was separated as a different mechanism family.
+The unique delayed specimen remained trial 0:28:
+- T=2 / inferred S0=1
+- current-trial owner refill1 exactly once
+- owner refill63 preboundary=0
+- systemd PID1 on future stock CPU
+- Q64 miss=0
+- refill-spectrum miss=1
 
-Frozen result:
-- analysis/inputs/STARTUP-STOCK-SEED-CPUSET-R1-PHYSICAL-RESULT-v1.json
+This replay strengthened the hypothesis but did not retroactively promote it.
 
-## R13-A small-refill spectrum
+Frozen replay:
+- analysis/inputs/R13A-CORRECTED-REPLAY-v1.json
 
-Run 36693262942.
-Launch commit 9930da8b0999d3b324d0400ba61a83d3e8f43e73.
+Prospective reducer fix:
+- current-trial STARTUP PRE is the retrospective lower bound
+- pointer reuse from earlier identities is rejected
 
-Physical execution:
-- four block jobs completed successfully
-- 128 identities measured
-- aggregate completed
-- final workflow failure came from frozen Assert discovery
+## R13-B1 Stage 1 — mechanism establishment
 
-Frozen aggregate:
-- trial_count=128
-- valid_trial_count=117
-- discovery_pass=false
-- panel_coverage_pass=false
-- CLASSIC_REFILL63_LEAK=35
-- INVALID_OBSERVER=11
-- T1_NO_SMALL_REFILL=82
-- promoted small-refill count=0
+Experiment:
+TX-SMALL-RESIDUAL-REFILL1-CAPTURE-v1
 
-The historical aggregate must not be rewritten.
+Run:
+36697763027
 
-## R13-A forensic correction
+Design:
+- 4 blocks x 8 = 32 fresh CPUSET_PREP_ONLY identities
+- no automatic scale expansion
+- refill_stock probe phase-gated
+- premeasurement filter: nr_pages == 1 OR nr_pages == 63
+- measured Q64/refill63 probes active only during each measured touch
+- current-trial evidence only
+- zero-miss required for promoted specimens
 
-The original retrospective reducer searched all earlier block events by owner_memcg + stock_cpu.
+Aggregate:
+- trial_count=32
+- valid_trial_count=31
+- T1_NO_OWNER_REFILL1=29
+- SMALL_RESIDUAL_REFILL_ESTABLISHMENT=2
+- INVALID_OBSERVER=1
+- T histogram: T1=29, T2=2
+- establishment_pass=true
+- promoted trials: 1:4 and 2:7
+- measured probe miss trials: none
+- premeasure probe miss trials: 2:2 only
 
-That scope is invalid across sequential identities because memcg object addresses can be reused.
+Both promoted specimens independently have:
 
-Therefore the frozen CLASSIC_REFILL63_LEAK=35 count is not scientifically interpretable as 35 current-trial leaks.
-
-Required fix:
-
-- retrospective lower bound = current trial STARTUP PRE
-- never attach evidence from a previous identity solely because a memcg pointer was later reused
-
-This correction is prospective. Do not rewrite the frozen aggregate.
-
-## Trial 0:28
-
-Highest-value R13-A specimen:
-
-- CPUSET_PREP_ONLY
-- T=2
-- inferred S0=1
-- startup cpuset effective = prep only
-- release cpuset effective = prep + stock
-- single-process cgroup
-- geometry/PTE/CPU/worker/trace guards clean
-- Q64 probe missed=0
-- refill-spectrum probe missed=1
-
-Inside the current STARTUP window:
-
-- systemd PID1
+- CPUSET_PREP_ONLY startup
 - future stock CPU
-- refill_stock(owner_memcg, 1)
+- current-trial owner refill_stock(...,1) exactly once
+- emitter systemd PID1
+- no current-trial owner refill63 in premeasurement epoch
+- first measured direct Q64 at T=2
+- inferred S0=1
+- premeasurement refill missed=0
+- measured Q64/refill63 missed=0
+- single-process cgroup
+- clean PTE/CPU/worker/trace guards
 
-The later measured boundary at touch 2 resolves the same owner memcg.
+Mechanism status:
 
-Source-compatible chain:
+SMALL_RESIDUAL_REFILL = ESTABLISHED_IN_TWO_ZERO_MISS_PHYSICAL_SPECIMENS
 
-systemd PID1 on future stock CPU
--> refill_stock(owner_memcg,1)
--> S0=1
--> T=2
+Frozen evidence:
+- analysis/inputs/SMALL-RESIDUAL-REFILL1-CAPTURE-STAGE1-PHYSICAL-RESULT-v1.json
+- docs/OBS-011-SMALL-RESIDUAL-REFILL-ESTABLISHED.md
+- raw files=84
+- bytes=3,263,807
+- content-set SHA-256=927593f98e4d532ab045a563b206e98ffc454c85c2eff190c8481f06b7243f34
+- aggregate artifact ID=11087599946
+- aggregate digest=sha256:a0f7f3dea075b98f96c6aedf8f11555dc7d32b45d6cd6a14a75004b56cf7b51e
 
-Status:
+README now reflects the named state-transition frontier.
 
-DIRECT_SMALL_REFILL_CANDIDATE
+## R13-B2 next experiment — provenance only
 
-Promotion to SMALL_RESIDUAL_REFILL = ESTABLISHED is withheld because the refill probe had one missed hit and the frozen contract requires zero misses.
+Mechanism existence is closed enough for Chapter-II purposes.
 
-## Source grounding
+The remaining question is narrower:
 
-refill_stock() is not Q64-excess-only.
+> Which kernel call path caused the systemd PID1 refill_stock(owner_memcg,1) receipts?
 
-Known source paths include:
+Candidate source-grounded provenance classes:
 
-- try_charge_memcg -> refill_stock(batch - nr_pages)
-- obj_cgroup_uncharge_pages -> refill_stock(nr_pages)
-- mem_cgroup_sk_uncharge -> refill_stock(nr_pages)
+- OBJCG_UNCHARGE_REFILL1
+- SOCKET_UNCHARGE_REFILL1
+- TRY_CHARGE_EXCESS_REFILL1
+- OTHER_REFILL1_CALLER
 
-Therefore small stock increments can occur without a contemporaneous direct Q64.
+Recommended Stage 1:
 
-mem_cgroup_css_offline drains all stock, which disfavors stale stock from an already-destroyed transient memcg.
+- 4 blocks x 8 = 32 fresh CPUSET_PREP_ONLY identities
+- no automatic scale expansion
+- enable refill1 observer only during STARTUP window
+- refill filter: nr_pages == 1
+- conditional stacktrace on refill1 only
+- disable immediately after STARTUP POST
+- use phase-gated measured Q64 + target refill63 afterward to resolve owner_memcg and T
+- provenance promotion requires:
+  - T>1
+  - owner refill1 on future stock CPU in current STARTUP
+  - zero STARTUP refill1 probe misses
+  - zero measured Q64/refill63 misses
+  - stack captured and source-grounded
 
-## Frozen R13-A evidence
+If no provenance specimen is captured in Stage 1, freeze the diagnostic and return to council. Do not automatically expand the sample.
 
-Machine-readable:
-- analysis/inputs/SMALL-RESIDUAL-REFILL-R1-PHYSICAL-RESULT-v1.json
-
-Narrative:
-- docs/OBS-010-R13A-SMALL-RESIDUAL-REFILL-RESULT.md
-
-Raw manifest:
-- files=276
-- bytes=18,845,986
-- content-set SHA-256=f2971d6ceb5a59007974f3935d5c23b4a5019d4c5bc12c03950aacb13434242a
-- aggregate artifact ID=11086807735
-- aggregate digest=sha256:00ab1ca0feebdb501445b06a03dec449d9e10150012bef69acd5649b1d658de5
-
-## Strategy pause
-
-Do not launch R13-B yet.
-
-Candidate next sequence for council review:
-
-1. repair current-trial retrospective scope;
-2. reduce refill observer to nr_pages == 1;
-3. retain CPUSET_PREP_ONLY to suppress the large STARTUP_STOCK_SEED path;
-4. require zero misses;
-5. capture a complete T=2 + owner refill1 specimen;
-6. only then add conditional stacktrace to refill1 to identify the caller.
-
-Need strategic review before implementation to decide whether to:
-- prioritize direct refill1 caller identification,
-- first repair/replay R13-A reducer on frozen raw evidence,
-- or use a narrower intervention that targets systemd PID1 / kmem-vs-socket refill provenance.
+After caller provenance is established, stop expanding pre-VERIFY taxonomy and return to the already-frozen TX-AGE-DECOUPLING design for verified-state hazards.
 
 ## Authority
 
-Physical continuation remains authorized by the user.
+R13-B2 physical continuation is authorized by the user.
 
 Standard public-repository GitHub-hosted runner only.
 No paid larger runner.
 No local-PC execution.
+No automatic scale expansion.
 No reliability certification.
