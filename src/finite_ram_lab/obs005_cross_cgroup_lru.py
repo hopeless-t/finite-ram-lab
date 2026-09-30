@@ -64,6 +64,7 @@ def _start_role(
     cpu: int,
     max_pages: int,
     worker_uid: int,
+    restrict_cpuset: bool = False,
 ) -> dict[str, Any]:
     ctl = root / f"{name}.ctl"
     fd = os.open(ctl, os.O_RDWR | os.O_CREAT | os.O_TRUNC, 0o600)
@@ -71,18 +72,27 @@ def _start_role(
     os.chown(ctl, worker_uid, -1)
     mm = mmap.mmap(fd, CONTROL_BYTES, access=mmap.ACCESS_WRITE)
 
-    _run(
+    command = [
+        "sudo",
+        "systemd-run",
+        "--quiet",
+        "--collect",
+        f"--unit={name}",
+        f"--uid={worker_uid}",
+        "-p",
+        "MemoryAccounting=yes",
+        "-p",
+        f"CPUAffinity={cpu}",
+    ]
+    if restrict_cpuset:
+        command.extend(
+            [
+                "-p",
+                f"AllowedCPUs={cpu}",
+            ]
+        )
+    command.extend(
         [
-            "sudo",
-            "systemd-run",
-            "--quiet",
-            "--collect",
-            f"--unit={name}",
-            f"--uid={worker_uid}",
-            "-p",
-            "MemoryAccounting=yes",
-            "-p",
-            f"CPUAffinity={cpu}",
             str(worker),
             "--shared",
             str(ctl),
@@ -92,6 +102,7 @@ def _start_role(
             str(max_pages),
         ]
     )
+    _run(command)
     _wait(lambda: _u32(mm, OFF_READY) == 1)
 
     pid = int(
