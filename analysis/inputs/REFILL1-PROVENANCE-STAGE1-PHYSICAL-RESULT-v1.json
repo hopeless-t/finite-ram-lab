@@ -1,0 +1,75 @@
+{
+  "schema_version": "refill1-provenance-stage1-physical-result-v1",
+  "experiment_id": "TX-SMALL-RESIDUAL-REFILL1-PROVENANCE-v1",
+  "run_id": "36699038147",
+  "launch_commit": "fa72ba2fe8bf4cdc7569766a5422cfccd115da13",
+  "frozen_aggregate": {
+    "trial_count": 32,
+    "valid_trial_count": 27,
+    "classifications": {
+      "INVALID_OBSERVER": 5,
+      "PROVENANCE_CAPTURED": 1,
+      "T1_NO_OWNER_REFILL1": 26
+    },
+    "first_q64_histogram": {
+      "1": 26,
+      "2": 1
+    },
+    "captured_count": 1,
+    "captured_trials": [
+      "1:7"
+    ],
+    "frozen_provenance_classes": {
+      "OTHER_REFILL1_CALLER": 1
+    },
+    "frozen_provenance_resolved": false,
+    "startup_probe_miss_trials": [
+      "0:0",
+      "0:3",
+      "1:0",
+      "1:6",
+      "2:3"
+    ],
+    "measured_probe_miss_trials": []
+  },
+  "captured_trial": {
+    "trial_id": "1:7",
+    "valid": true,
+    "first_q64_touch": 2,
+    "inferred_S0": 1,
+    "owner_refill1_count": 1,
+    "owner_refill1_sum": 1,
+    "emitter": "systemd PID1",
+    "future_stock_cpu": true,
+    "startup_refill_probe_missed": 0,
+    "measured_probe_missed": 0,
+    "stack_frames": [
+      "refill_stock",
+      "__memcg_slab_free_hook",
+      "kfree",
+      "skb_free_head",
+      "skb_release_data",
+      "consume_skb",
+      "skb_free_datagram",
+      "__unix_dgram_recvmsg",
+      "unix_dgram_recvmsg",
+      "sock_recvmsg",
+      "____sys_recvmsg",
+      "___sys_recvmsg",
+      "__sys_recvmsg"
+    ],
+    "frozen_classifier": "OTHER_REFILL1_CALLER"
+  },
+  "raw_manifest": {
+    "file_count": 84,
+    "total_bytes": 25081990,
+    "content_set_sha256": "3c8ddfa552036917db315f3a797f79c673e8659d924b53bcbaa24e0bb73ff247",
+    "created_at_utc": "2026-09-30T09:55:27Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11089576790,
+    "digest": "sha256:bec9236cb19603d6822ac24c2a14ca6197e425f1854afc23480f3b9ca8ba0adf"
+  },
+  "interpretation": "Physical provenance stack captured with zero critical misses in trial 1:7. The frozen classifier did not yet recognize __memcg_slab_free_hook as the source-grounded objcg uncharge path; preserve frozen OTHER label and resolve prospectively in a separate source-grounded replay.",
+  "claim_ceiling": "PHYSICAL_STACK_CAPTURE_FROZEN_NO_RETROACTIVE_CLASS_REWRITE"
+}
