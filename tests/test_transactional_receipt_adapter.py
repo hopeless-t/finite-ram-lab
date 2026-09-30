@@ -19,6 +19,7 @@ def packet(
     worker: bool = True,
     trace: bool = True,
     target_match: bool | None = None,
+    refill_non63: int = 0,
 ) -> dict:
     return {
         "schema_version": "transaction-receipt-packet-v1",
@@ -31,6 +32,7 @@ def packet(
         "vmpte_delta_kib": pte,
         "page_counter_try_charge_64_count": charge64,
         "refill_stock_63_count": refill63,
+        "owner_refill_non63_count": refill_non63,
         "drain_stock_count": drain,
         "classified_release_only_count": releases,
         "target_match": target_match,
@@ -97,6 +99,18 @@ class ReceiptAdapterTests(unittest.TestCase):
             packet(phase="TARGET", target_match=False),
         )
         self.assertEqual(tx.state, State.TARGET_FAIL)
+
+    def test_owner_non63_refill_invalidates_verified_consume(self) -> None:
+        tx = apply_packet(
+            self._normalizing(),
+            packet(phase="NORMALIZE", charge64=1, refill63=1),
+        )
+        tx = apply_packet(
+            tx,
+            packet(phase="CONSUME", refill_non63=1),
+        )
+        self.assertEqual(tx.state, State.INVALIDATED)
+        self.assertEqual(tx.invalidation_reason, "UNEXPECTED_REFILL")
 
     def test_stale_epoch_cannot_authorize_current_state(self) -> None:
         tx = self._normalizing()
