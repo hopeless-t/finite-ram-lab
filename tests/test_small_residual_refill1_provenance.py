@@ -25,6 +25,19 @@ class Refill1ProvenanceTests(unittest.TestCase):
             "OBJCG_UNCHARGE_REFILL1",
         )
 
+    def test_slab_free_hook_resolves_objcg_path(self) -> None:
+        self.assertEqual(
+            provenance_class(
+                [
+                    "refill_stock",
+                    "__memcg_slab_free_hook",
+                    "kfree",
+                    "skb_free_head",
+                ]
+            ),
+            "OBJCG_UNCHARGE_REFILL1",
+        )
+
     def test_socket_class(self) -> None:
         self.assertEqual(
             provenance_class(
