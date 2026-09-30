@@ -1,0 +1,105 @@
+{
+  "schema_version": "b405-r3-physical-result-v1",
+  "run_id": "36648499202",
+  "launch_commit": "e970f35293305820cd19ba133a3fa42a09faf0c1",
+  "frozen_result": {
+    "trial_count": 16,
+    "challenge_pass_count": 15,
+    "completion_pass_count": 12,
+    "target_fail": 0,
+    "matrix_pass": false,
+    "end_to_end_pass": false,
+    "fully_observed_matrix_pass": false,
+    "by_arm": {
+      "CLEAN": {
+        "n": 4,
+        "pass": 4,
+        "completion_pass": 4,
+        "recovery_pass": 4,
+        "success": 4,
+        "reprimes": 0,
+        "target_fail": 0
+      },
+      "RELEASE_ONLY": {
+        "n": 4,
+        "pass": 3,
+        "completion_pass": 3,
+        "recovery_pass": 4,
+        "success": 3,
+        "reprimes": 0,
+        "target_fail": 0
+      },
+      "UNEXPECTED_REFILL": {
+        "n": 4,
+        "pass": 4,
+        "completion_pass": 3,
+        "recovery_pass": 3,
+        "success": 4,
+        "reprimes": 4,
+        "target_fail": 0
+      },
+      "PTE_GROWTH": {
+        "n": 4,
+        "pass": 4,
+        "completion_pass": 2,
+        "recovery_pass": 2,
+        "success": 4,
+        "reprimes": 4,
+        "target_fail": 0
+      }
+    }
+  },
+  "r3_observer_findings": {
+    "counter_ownership_probe_present": true,
+    "continuity_scanner_bug": "R3 scanner still expected MEMCG_UNCHARGE in gaps even though workflow had moved to all page_counter_uncharge ownership receipts.",
+    "affected_examples": [
+      "PTE recovery block 0/1 classified recovery continuity false despite final SUCCESS",
+      "RELEASE_ONLY block 3 invalidated by unresolved same-CPU drains although frl_pc_uncharge_any ownership events were present",
+      "UNEXPECTED_REFILL recovery block 3 final SUCCESS but recovery continuity false"
+    ],
+    "postverify_release_setup": "post-VERIFY neutral LRU scrub was physically realized; block3 RELEASE_ONLY reset passed with residual 63->63 and helper_refill_count=0"
+  },
+  "observed_probe_profile_totals": {
+    "frl_pc_try64": {
+      "hits": 45371,
+      "missed": 0
+    },
+    "frl_pc_uncharge_any": {
+      "hits": 106794,
+      "missed": 3
+    },
+    "frl_refill_stock": {
+      "hits": 141438,
+      "missed": 319
+    },
+    "frl_pc_uncharge17": {
+      "hits": 109332,
+      "missed": 3
+    },
+    "frl_drain_stock": {
+      "hits": 1217,
+      "missed": 3
+    }
+  },
+  "prospective_r4_decision": {
+    "continuity_backbone": [
+      "frl_pc_try64",
+      "frl_pc_uncharge_any"
+    ],
+    "consolidate_duplicate_page_counter_uncharge_probes": true,
+    "consolidate_duplicate_refill_stock_probes": true,
+    "require_zero_miss_on_counter_backbone": true,
+    "preserve_r3_counts_without_retrospective_rewrite": true
+  },
+  "raw_manifest": {
+    "file_count": 96,
+    "total_bytes": 112756209,
+    "content_set_sha256": "ab56a4e1ba458da51cc87c4134aff1c54feff2b797e496f7e9acaa8cd8be46fc",
+    "created_at_utc": "2026-09-30T00:07:49Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11069303448,
+    "digest": "sha256:9903f3c8c00efe818fd6a5298a202f4b8ff3fdaa8017c963cb109bff0fa6f1a1"
+  },
+  "claim_ceiling": "R3_OBSERVABILITY_DIAGNOSTIC_DO_NOT_REWRITE"
+}
