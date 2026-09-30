@@ -5,11 +5,8 @@ from typing import Any
 
 
 CRITICAL_B405_PROBES = (
-    "frl_refill_stock",
     "frl_pc_try64",
-    "frl_pc_uncharge17",
-    "frl_drain_stock",
-    "frl_memcg_uncharge",
+    "frl_pc_uncharge_any",
 )
 
 
