@@ -64,18 +64,46 @@ def _owner_probe_dir(trace_path: Path) -> Path:
     return trace_path.parent / "events" / "kprobes" / OWNER_UNCHARGE_EVENT
 
 
+def _remove_owner_stacktrace(probe: Path) -> None:
+    try:
+        (probe / "trigger").write_text(
+            "!stacktrace\n",
+            encoding="utf-8",
+        )
+    except OSError:
+        # No stacktrace trigger is installed yet.
+        pass
+
+
 def _prepare_owner_probe_global(trace_path: Path) -> None:
-    """Observe all uncharges only during NORMALIZE so owner identity can be bound."""
+    """Observe all uncharges during NORMALIZE without stacktrace overhead."""
     probe = _owner_probe_dir(trace_path)
+    (probe / "enable").write_text("0\n", encoding="utf-8")
+    _remove_owner_stacktrace(probe)
     (probe / "filter").write_text("0\n", encoding="utf-8")
     (probe / "enable").write_text("1\n", encoding="utf-8")
 
 
 def _bind_owner_probe(trace_path: Path, owner_counter: str) -> None:
-    """Narrow the already-enabled probe to the verified epoch owner counter."""
+    """Bind to the verified owner and capture its uncharge call paths."""
     probe = _owner_probe_dir(trace_path)
     (probe / "filter").write_text(
         f"counter == {owner_counter}\n",
+        encoding="utf-8",
+    )
+    (probe / "trigger").write_text(
+        "stacktrace\n",
+        encoding="utf-8",
+    )
+
+
+def _close_owner_probe(trace_path: Path) -> None:
+    """Stop owner observation before worker teardown generates irrelevant noise."""
+    probe = _owner_probe_dir(trace_path)
+    (probe / "enable").write_text("0\n", encoding="utf-8")
+    _remove_owner_stacktrace(probe)
+    (probe / "filter").write_text(
+        "counter == 0\n",
         encoding="utf-8",
     )
 
@@ -527,10 +555,7 @@ def _fresh_epoch(
     if archive.tx.state is State.VERIFIED and archive.owner_counter is not None:
         _bind_owner_probe(trace_path, archive.owner_counter)
     else:
-        (_owner_probe_dir(trace_path) / "filter").write_text(
-            "counter == 0\n",
-            encoding="utf-8",
-        )
+        _close_owner_probe(trace_path)
     epoch_row = {
         "epoch": epoch,
         "arm": arm,
@@ -702,6 +727,7 @@ def _recovery_epoch(
         epoch_row["cursor"] = cursor
         return epoch_row
     finally:
+        _close_owner_probe(trace_path)
         if unit is not None:
             _stop(unit)
 
@@ -1008,6 +1034,7 @@ def run_trial(
         epochs.append(epoch_row)
 
     finally:
+        _close_owner_probe(trace_path)
         if unit is not None:
             _stop(unit)
             unit = None
