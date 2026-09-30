@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B423
-> Stage: AMBIENT STOCK CATCHER / RECEIPT REDUCER FROZEN
-> Stop: IMPLEMENT ONE-CANARY PRIVATE-TRACEFS CAPTURE BACKEND
+> Latest bounce: B424
+> Stage: AMBIENT STOCK CATCHER / COUNT-ONLY TRACEFS BACKEND FROZEN
+> Stop: IMPLEMENT EPHEMERAL ONE-CANARY SESSION ORCHESTRATOR
 
 ## Chapter II frontier
 
@@ -547,3 +547,52 @@ No physical session, daemon, system service, or persistent probe was launched by
 Next atomic bounce:
 
 Implement one ephemeral capture backend using a private tracefs instance and the frozen JSONL receipt schema. First live run remains one canary, 600 seconds, no synthetic pressure.
+
+
+## B424 count-only ambient tracefs backend
+
+Frozen files:
+
+- src/finite_ram_lab/ambient_stock_tracefs_backend.py
+- tests/test_ambient_stock_tracefs_backend.py
+- docs/B424-COUNT-ONLY-AMBIENT-TRACEFS-BACKEND.md
+
+Long-window observer policy:
+
+- owner refill -> histogram only;
+- successful owner consume_stock -> histogram only;
+- owner page_counter_uncharge -> histogram only;
+- owner Q64 -> filtered ordinary event.
+
+The histogram triggers include their own owner filter clauses. Ordinary event filters alone are not relied upon.
+
+Histogram receipts preserve:
+
+- event count;
+- weighted total pages;
+- bucket distribution;
+- Dropped count.
+
+Malformed histogram Totals are rejected.
+
+Long-window drain_stock event logging remains disabled by default in v1 because it cannot be directly owner-memcg filtered and would add unnecessary global event volume. Direct drain attribution remains a separately qualified optional observer.
+
+B424 also corrected the B423 reducer to accept multiple histogram receipts per session and sum Dropped counts.
+
+No host probe was armed and no physical ambient session ran in B424.
+
+Next atomic bounce:
+
+Implement the one-canary ephemeral session orchestrator:
+
+1. VERIFY R0=63;
+2. consume exactly 32 measured target touches;
+3. arm count-only owner observers;
+4. ambient window;
+5. freeze histogram and kprobe coverage receipts;
+6. bounded final Q64 chase;
+7. emit JSONL;
+8. reduce/classify;
+9. cleanup and exit.
+
+First live session remains one canary / 600 seconds / no synthetic pressure.
