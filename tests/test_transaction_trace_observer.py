@@ -326,5 +326,44 @@ x-1 [000] ... 21.000000020: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=C
         self.assertEqual(receipt["unknown_emission_count"], 0)
 
 
+    def test_global_q64_noise_is_projected_away_from_target_receipt(self) -> None:
+        trace = """
+x-1 [000] ... 22.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=NORMALIZE touch=1 PRE
+bg-20 [003] ... 22.000000005: frl_pc_try64: counter=0xccc nr_pages=64 comm="background"
+frltx-10 [007] ... 22.000000010: frl_pc_try64: counter=0xaaa nr_pages=64 comm="frltx405"
+frltx-10 [007] ... 22.000000020: frl_refill_stock: memcg=0xbbb nr_pages=63 comm="frltx405"
+x-1 [000] ... 22.000000030: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=NORMALIZE touch=1 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "NORMALIZE", 1)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter=None,
+            owner_memcg=None,
+            stock_cpu=7,
+            phase="NORMALIZE",
+        )
+        self.assertEqual(receipt["page_counter_try_charge_64_count"], 1)
+        self.assertEqual(receipt["refill_stock_63_count"], 1)
+        self.assertEqual(receipt["discovered_owner_counter"], "0xaaa")
+        self.assertEqual(receipt["discovered_owner_memcg"], "0xbbb")
+
+    def test_verified_owner_filters_background_q64_in_consume_window(self) -> None:
+        trace = """
+x-1 [000] ... 23.000000000: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=2 PRE
+bg-20 [003] ... 23.000000005: frl_pc_try64: counter=0xccc nr_pages=64 comm="background"
+x-1 [000] ... 23.000000030: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=CONSUME touch=2 POST
+"""
+        w = parse_transaction_trace(trace)[("0:0", 0, "CONSUME", 2)]
+        receipt = observer_receipt_for_window(
+            w,
+            owner_counter="0xaaa",
+            owner_memcg="0xbbb",
+            stock_cpu=7,
+            phase="CONSUME",
+        )
+        self.assertEqual(receipt["page_counter_try_charge_64_count"], 0)
+        self.assertEqual(receipt["refill_stock_63_count"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()
