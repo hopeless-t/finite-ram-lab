@@ -1,154 +1,220 @@
 # CURRENT
 
-> Latest bounce: B417
-> Stage: REFILL1 PROVENANCE RESOLVED
-> Stop: PRE-VERIFY TAXONOMY CLOSED ENOUGH / RETURN TO VERIFIED-STATE AGE DECOUPLING
+> Latest bounce: B418
+> Stage: AGE STAGE-A R2 BOUNDED RESULT / SLOT-PRESSURE HYPOTHESIS
+> Stop: DESIGN NEXT CAUSAL INTERVENTION; DO NOT AUTO-LAUNCH STAGE B
 
 ## Chapter II frontier
 
-Historical SUCCESS/FAIL has been decomposed into explicit state transitions.
+Historical SUCCESS/FAIL has been decomposed into named state transitions.
 
-Established named states/mechanisms:
+Established:
 
-- VERIFIED_DIRECT_Q64_RESET: measured one-page direct Q64 establishes verified residual R0=63.
-- PREVERIFY_S64 / MAX_STOCK_BOUNDARY: natural pre-VERIFY S0=64.
-- STARTUP_STOCK_SEED: startup Q64/refill63 can leave large inherited stock on the future stock CPU.
-- SMALL_RESIDUAL_REFILL: one-page refill can create S0=1 and measured T=2 without a contemporaneous direct Q64.
-- SLAB_FREE_OBJCG_REFILL1: source-grounded provenance subtype for a complete refill1 specimen.
-- TARGET_STOCK_EVICTION: verified residual stock can be asynchronously drained before the next measured transition.
-- RELEASE_ONLY: source-grounded shared-LRU release changes accounting without consuming the target residual.
+- VERIFIED_DIRECT_Q64_RESET: one-page direct Q64 establishes verified residual R0=63.
+- PREVERIFY_S64 / MAX_STOCK_BOUNDARY.
+- STARTUP_STOCK_SEED.
+- SMALL_RESIDUAL_REFILL.
+- SLAB_FREE_OBJCG_REFILL1.
+- TARGET_STOCK_EVICTION.
+- RELEASE_ONLY.
 
-No complete verified B405 target path has produced TARGET_FAIL.
+No complete verified target path has produced TARGET_FAIL.
 
-## R13-A corrected replay
+## Age-Decoupling Stage A v2
 
-Historical run 36693262942 remains frozen under original semantics.
+R1 run 36702673576 is a wiring-only failure:
 
-Prospective corrected replay bounded retrospective evidence to the current trial STARTUP PRE marker:
+- duplicate owner-uncharge trigger bind
+- no scientific panel executed
+- no HOLD exposure executed
 
-- T1_NO_SMALL_REFILL=127
-- SMALL_REFILL_EXPLAINS_DELAY=1
-- CLASSIC_REFILL63_LEAK=0
-- T histogram: T1=127, T2=1
+Frozen diagnostic:
 
-This proved the original 35 classic-leak classifications were caused by cross-identity retrospective scope / memcg pointer reuse.
+- analysis/inputs/AGE-DECOUPLING-STAGE-A-R1-WIRING-DIAGNOSTIC-v1.json
 
-## R13-B1 — SMALL_RESIDUAL_REFILL established
+The duplicate bind was fixed prospectively.
 
-Run 36697763027.
+R2 run 36703139110 completed successfully.
 
-32 fresh CPUSET_PREP_ONLY identities:
+Physical panel:
 
-- valid=31
-- T1_NO_OWNER_REFILL1=29
-- SMALL_RESIDUAL_REFILL_ESTABLISHMENT=2
-- INVALID_OBSERVER=1
-- promoted trials 1:4 and 2:7
-- both promoted specimens are zero-miss
+- FAST x4
+- HOLD32 x12
+- b63
+- requested dwell 22.077060 s
+- no automatic Stage B
+- no automatic sample expansion
 
-Both promoted specimens have:
+All 16 physical identities reached:
 
-systemd PID1 on future stock CPU
--> refill_stock(owner_memcg,1)
--> no current-trial owner refill63 before measurement
--> S0=1
--> measured first direct Q64 at T=2
+- T=64
+- final state SUCCESS
+- target result MATCH
 
-Mechanism status:
+Frozen strict classification:
 
-SMALL_RESIDUAL_REFILL = ESTABLISHED_IN_TWO_ZERO_MISS_PHYSICAL_SPECIMENS
+- CANONICAL_SUCCESS = 12
+- INSTRUMENTATION_HOLD = 4
+- KNOWN_STATE_CHANGE = 0
+- UNEXPLAINED_BOUNDARY_DEVIATION = 0
+- UNKNOWN_COMPLETE_EMISSION = 0
+- TRUE_TARGET_FAIL = 0
 
-## R13-B2 — provenance capture
+By arm:
 
-Run 36699038147.
+FAST:
+- n=4
+- zero-miss canonical=3
+- instrumentation hold=1
+- T64=4/4
 
-Frozen physical aggregate:
+HOLD32:
+- n=12
+- zero-miss canonical=9
+- instrumentation hold=3
+- T64=12/12
 
-- trial_count=32
-- valid_trial_count=27
-- T1_NO_OWNER_REFILL1=26
-- PROVENANCE_CAPTURED=1
-- INVALID_OBSERVER=5
-- captured trial=1:7
-- T histogram: T1=26, T2=1
-- measured probe miss trials=0
-- startup refill1 probe miss trials=5
-- frozen automatic provenance class=OTHER_REFILL1_CALLER
-- workflow completed SUCCESS
+Stage B trigger=false.
 
-The physical aggregate is not rewritten.
+## Realized exposure
 
-### Source-grounded replay of trial 1:7
+Historical exact-b63 calibration:
 
-Complete zero-miss specimen:
+- tau_fast median = 1.471804 s
+- requested dwell = 22.077060 s
 
-- T=2
-- S0=1
-- one owner refill1 during STARTUP
-- emitter=systemd PID1
-- future stock CPU
-- stack captured
+R2 zero-miss canonical medians:
 
-Observed stack includes:
+- FAST verified -> first Q64 = 1.868684 s
+- HOLD32 verified -> first Q64 = 25.001723 s
+- realized exposure factor = 13.3793209552819
+- observed HOLD checkpoint median = 22.077272 s
 
-refill_stock
-<- __memcg_slab_free_hook
-<- kfree
-<- skb_free_head
-<- skb_release_data
-<- consume_skb
-<- skb_free_datagram
-<- __unix_dgram_recvmsg
-<- unix_dgram_recvmsg
-<- sock_recvmsg
-<- systemd userspace receive path
+Interpretation:
 
-Linux source grounds the chain:
+Large wall-clock separation was achieved while measured target touches were fixed.
 
-__memcg_slab_free_hook
--> __refill_obj_stock(..., uncharge=true)
--> page-boundary objcg byte-credit release
--> obj_cgroup_uncharge_pages(...,1)
--> refill_stock(owner_memcg,1)
+No complete verified-state hazard or unexplained boundary deviation was captured.
 
-Resolved provenance:
+This is bounded no-specimen evidence, not evidence of absence.
 
-SLAB_FREE_OBJCG_REFILL1
+## Instrumentation holds
 
-This is a subtype of OBJCG_UNCHARGE_REFILL1.
+Four identities:
 
-Evidence:
+- 0:3 HOLD32 refill_stock missed=1
+- 2:3 HOLD32 refill_stock missed=2
+- 3:0 HOLD32 refill_stock missed=1
+- 3:2 FAST refill_stock missed=6
 
-- analysis/inputs/REFILL1-PROVENANCE-STAGE1-PHYSICAL-RESULT-v1.json
-- analysis/inputs/REFILL1-PROVENANCE-SOURCE-REPLAY-v1.json
-- docs/OBS-012-SLAB-FREE-OBJCG-REFILL1-PROVENANCE.md
-- raw files=84
-- bytes=25,081,990
-- content-set SHA-256=3c8ddfa552036917db315f3a797f79c673e8659d924b53bcbaa24e0bb73ff247
-- aggregate artifact ID=11089576790
-- aggregate digest=sha256:bec9236cb19603d6822ac24c2a14ca6197e425f1854afc23480f3b9ca8ba0adf
+For all four:
 
-## Observer lesson
+- Q64 probe missed=0
+- owner-uncharge probe missed=0
+- T=64
+- final state SUCCESS
+- continuity clean
 
-Do not widen the net indiscriminately.
+Do not retroactively promote them.
 
-Preferred capture architecture:
+The only completeness bottleneck was the owner-memcg refill_stock observer.
 
-1. SCOUT: phase-gated minimal event probes with zero-miss receipts.
-2. BIND: current-trial epoch + owner memcg/counter + stock CPU + target PID.
-3. SNIPER: conditional stacktrace only for the narrow event class under investigation.
-4. PRESERVE UNKNOWN: unknown stack fingerprints remain first-class evidence; do not collapse them into FAIL or discard them.
-5. SOURCE REPLAY: classify unknown captured stacks against source after the physical aggregate is frozen.
+## Frozen no-event sensitivity
 
-This architecture caught trial 1:7 even though the original runtime taxonomy lacked the slab-free objcg fingerprint.
+Using only complete zero-miss identities:
 
-## Research boundary
+- FAST n=3
+- HOLD32 n=9
+- events=0
+- realized F=13.3793
 
-The immediate pre-VERIFY taxonomy is closed strongly enough for Chapter-II purposes.
+B410 sensitivity replay:
 
-Do not continue expanding refill1 subtypes merely for completeness.
+- LOW BF TOUCH/TIME ~= 1.48
+- CENTRAL BF TOUCH/TIME ~= 2.59
+- HIGH BF TOUCH/TIME ~= 10.08
 
-Return to the already-frozen TX-AGE-DECOUPLING design to study verified-state hazards and time dependence.
+Interpretation:
+
+- no-event evidence is more compatible with TOUCH than TIME in all frozen sensitivity ranges;
+- rare TIME hazards remain weakly constrained;
+- high-frequency pure TIME hazards are more strongly disfavored.
+
+This is a design-sensitivity calculation, not an objective model probability.
+
+## New mechanistic target: memcg stock-slot pressure
+
+Linux source at commit 551c722f40809618230001baccf219193e22fc5a has:
+
+- NR_MEMCG_STOCK = 7 per CPU
+- per-CPU memcg_stock slots
+- refill_stock first reuses a matching memcg slot
+- otherwise it uses an empty slot
+- if no empty slot exists, refill_stock selects stock->drain_idx, drains that slot, advances drain_idx modulo 7, and installs the new memcg
+
+This gives a deterministic causal direction:
+
+passive wall-clock age
+versus
+CPU-local stock-slot occupancy/eviction pressure.
+
+Worst-case helper bound after target verification:
+
+- target occupies one of 7 slots
+- at most 6 new distinct helper memcgs are needed to fill remaining empty slots
+- after the array is full, at most 7 additional distinct helper insertions cycle drain_idx across every slot
+- therefore <=13 distinct same-CPU helper insertions are sufficient to force selection of the target slot, absent intervening slot changes
+
+Candidate next arms:
+
+- QUIET
+- OFFCPU_SLOT_PRESSURE
+- SAMECPU_SLOT_PRESSURE
+
+Preferred target geometry:
+
+1. verify target R0=63;
+2. consume exactly 32 measured pages -> expected residual=31;
+3. apply intervention with no target touches;
+4. continue measurement.
+
+Predictions:
+
+- QUIET: canonical next Q64 T=64
+- OFFCPU_SLOT_PRESSURE: canonical T=64 if CPU locality is causal
+- SAMECPU_SLOT_PRESSURE: source-grounded target stock drain; after full residual-31 eviction, next target Q64 should occur at T=33, Delta=-31
+
+The experiment must stop helper generation as soon as a source-grounded target drain is observed; cap at 13 distinct helper memcgs.
+
+## Observer lesson for next experiment
+
+Do not remove refill observation entirely.
+
+refill_stock can change per-CPU target stock without an immediate owner page_counter_uncharge, including objcg/socket uncharge paths.
+
+R2 shows full refill event logging is the main observer-load bottleneck.
+
+Investigate a count-only / histogram-style owner refill observer before the full slot-pressure panel:
+
+- dynamically bind to owner_memcg after VERIFY
+- aggregate refill sizes/counts without writing every event into the trace ring
+- retain kprobe missed-hit receipt
+- keep Q64 and owner-uncharge as ordinary event receipts
+- preserve UNKNOWN rather than collapsing to FAIL
+
+## Frozen evidence
+
+- analysis/inputs/AGE-DECOUPLING-STAGE-A-R2-PHYSICAL-RESULT-v1.json
+- analysis/inputs/AGE-STAGE-A-R2-NO-EVENT-SENSITIVITY-v1.json
+- docs/AGE-STAGE-A-R2-BOUNDED-NO-SPECIMEN.md
+
+Raw R2 manifest:
+
+- files=68
+- bytes=7,056,729
+- content-set SHA-256=e8fc47058103323eb46a3728235b51e4e7869921aed18c104bc9b943df532d9b
+- aggregate artifact ID=11090363265
+- aggregate digest=sha256:b370602350ab9fa60bba942d5c5b97ef16ef87a153bb13d3e77c7fdc68d5dda9
 
 ## Authority
 
@@ -157,5 +223,5 @@ Physical continuation remains authorized by the user.
 Standard public-repository GitHub-hosted runner only.
 No paid larger runner.
 No local-PC execution.
-No automatic scale expansion.
+No automatic sample expansion.
 No reliability certification.
