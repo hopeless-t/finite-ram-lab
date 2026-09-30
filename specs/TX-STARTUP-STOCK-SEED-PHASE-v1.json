@@ -1,0 +1,83 @@
+{
+  "experiment_id": "TX-STARTUP-STOCK-SEED-PHASE-v1",
+  "status": "FROZEN_DESIGN_NOT_LAUNCHED",
+  "chapter": "FINITE-RAM-LAB-II",
+  "role": "LOCALIZE_PREVERIFY_STOCK_CONSTRUCTION_TO_STARTUP_PHASE",
+  "prerequisites": [
+    "R9 normalize boundary chase PASS run 36686845958",
+    "R10 post-start migration interval Q64 null PASS run 36688225173"
+  ],
+  "design": {
+    "blocks": 4,
+    "identities_per_block": 8,
+    "total_identities": 32,
+    "observer_arms": [
+      "LIGHT",
+      "STACK"
+    ],
+    "assignment": "identity parity: even=LIGHT, odd=STACK",
+    "primary_bound_touch": 65,
+    "safe_len_pages": 192,
+    "max_pages": 1024
+  },
+  "startup_window": {
+    "begin": "immediately before historical _start() calls systemd-run",
+    "end": "immediately after historical _start() returns with READY/MainPID/cgroup resolved",
+    "worker_implementation": "historical _start() unchanged",
+    "exec_boundary": "sched_process_exec for final MainPID"
+  },
+  "probes": {
+    "q64": {
+      "event": "page_counter_try_charge",
+      "trace_name": "frl_pc_try64",
+      "startup_filter": "nr_pages == 64",
+      "measured_filter": "nr_pages == 64 && common_pid == final MainPID",
+      "critical": true
+    },
+    "refill": {
+      "event": "refill_stock",
+      "trace_name": "frl_refill_stock",
+      "startup_filter": "nr_pages == 63",
+      "measured_state": "disabled",
+      "critical_for_seed_claim": true
+    },
+    "exec": {
+      "event": "sched:sched_process_exec",
+      "role": "split final MainPID startup events into PRE_EXEC and POST_EXEC"
+    }
+  },
+  "observer_arms": {
+    "LIGHT": "startup Q64/refill events only, no Q64 stacktrace",
+    "STACK": "global Q64 stacktrace only during STARTUP window; removed before migration/measurement"
+  },
+  "classification": {
+    "STARTUP_STOCK_SEED_PRE_EXEC": "target final PID has stock-CPU Q64 and matching refill63 before sched_process_exec",
+    "STARTUP_STOCK_SEED_POST_EXEC": "target final PID has stock-CPU Q64 and matching refill63 after sched_process_exec but before _start returns",
+    "STARTUP_Q64_WITHOUT_REFILL_RECEIPT": "target stock-CPU Q64 exists but no target refill63 receipt",
+    "NO_STARTUP_SEED": "no target stock-CPU Q64 in startup window"
+  },
+  "measurements": [
+    "target startup Q64 by CPU",
+    "target startup refill63 by CPU",
+    "pre/post exec phase",
+    "Q64 stack fingerprints in STACK arm",
+    "first measured Q64 touch T",
+    "inferred S0=T-1",
+    "per-identity q64/refill probe missed deltas",
+    "single-process cgroup receipt",
+    "PTE/CPU/worker/trace guards"
+  ],
+  "promotion_rule": {
+    "candidate": "STARTUP_STOCK_SEED",
+    "promote_when": "at least one complete zero-miss specimen has final MainPID Q64 plus refill63 on future stock CPU inside STARTUP, with later T>1",
+    "caution": "Do not infer population prevalence from this panel."
+  },
+  "authority": {
+    "physical_run_authorized": true,
+    "authorization_basis": "user explicitly requested continued research on 2026-09-30",
+    "paid_runner_authorized": false,
+    "larger_runner_authorized": false,
+    "local_pc_execution_authorized": false
+  },
+  "claim_ceiling": "STARTUP_PHASE_CAUSAL_LOCALIZATION_NO_RELIABILITY_CERTIFICATION"
+}
