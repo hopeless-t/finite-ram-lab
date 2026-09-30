@@ -67,7 +67,7 @@ frltx405-222 [007] ... 10.000000010: frl_pc_try64: counter=0xbbb nr_pages=64 com
     def test_aggregate_accepts_32_clean_boundaries_with_zero_miss(self) -> None:
         spec = {
             "experiment_id": "TX-NORMALIZE-BOUNDARY-CHASE-v1",
-            "total_identities": 32,
+            "design": {"total_identities": 32},
         }
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
@@ -104,7 +104,7 @@ frltx405-222 [007] ... 10.000000010: frl_pc_try64: counter=0xbbb nr_pages=64 com
     def test_probe_miss_blocks_stock_bound_pass(self) -> None:
         spec = {
             "experiment_id": "TX-NORMALIZE-BOUNDARY-CHASE-v1",
-            "total_identities": 1,
+            "design": {"total_identities": 1},
         }
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
