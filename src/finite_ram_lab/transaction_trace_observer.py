@@ -23,6 +23,7 @@ COUNTER_RE = re.compile(r"\bcounter=(?P<counter>0x[0-9a-fA-F]+)")
 MEMCG_RE = re.compile(r"\bmemcg=(?P<memcg>0x[0-9a-fA-F]+)")
 NR_RE = re.compile(r"\bnr=(?P<nr>\d+)")
 NR_PAGES_RE = re.compile(r"\bnr_pages=(?P<nr_pages>\d+)")
+RET_RE = re.compile(r"\bret=(?P<ret>-?\d+)")
 COMM_RE = re.compile(r'\bcomm="(?P<comm>[^"]+)"')
 
 
@@ -54,6 +55,8 @@ def _event_row(line: str) -> dict[str, Any]:
         row["nr"] = int(m.group("nr"))
     if (m := NR_PAGES_RE.search(line)):
         row["nr_pages"] = int(m.group("nr_pages"))
+    if (m := RET_RE.search(line)):
+        row["ret"] = int(m.group("ret"))
     if (m := COMM_RE.search(line)):
         row["comm"] = m.group("comm")
     return row
@@ -77,6 +80,7 @@ def _empty_window() -> dict[str, Any]:
         "lru_flush": [],
         "folios_put": [],
         "drain_stock": [],
+        "consume_stock_ret": [],
     }
 
 
@@ -174,6 +178,9 @@ def parse_transaction_trace(
             active_stack = None
         elif "frl_drain_stock:" in line:
             item["drain_stock"].append(row)
+            active_stack = None
+        elif "frl_consume_stock_ret:" in line:
+            item["consume_stock_ret"].append(row)
             active_stack = None
         elif active_stack is not None:
             stripped = line.strip()
@@ -640,6 +647,22 @@ def observer_receipt_for_window(
         for event in owner_refill_events
         if int(event.get("nr_pages", -1)) != 63
     ]
+
+    owner_consume_stock_success_events: list[dict[str, Any]] = []
+    off_cpu_owner_consume_stock_success_events: list[dict[str, Any]] = []
+    if effective_memcg is not None:
+        for event in window.get("consume_stock_ret", []):
+            if str(event.get("memcg", "")).lower() != effective_memcg:
+                continue
+            if int(event.get("ret", 0)) == 0:
+                continue
+            if (
+                stock_cpu is not None
+                and int(event.get("cpu", -1)) != int(stock_cpu)
+            ):
+                off_cpu_owner_consume_stock_success_events.append(event)
+                continue
+            owner_consume_stock_success_events.append(event)
     if off_cpu_owner_refill_events:
         notes.append(
             "off_cpu_owner_refill_ignored="
@@ -655,6 +678,15 @@ def observer_receipt_for_window(
         "owner_refill_events": owner_refill_events,
         "owner_refill_non63_events": owner_refill_non63_events,
         "off_cpu_owner_refill_count": len(off_cpu_owner_refill_events),
+        "owner_consume_stock_success_count": len(
+            owner_consume_stock_success_events
+        ),
+        "owner_consume_stock_success_events": (
+            owner_consume_stock_success_events
+        ),
+        "off_cpu_owner_consume_stock_success_count": len(
+            off_cpu_owner_consume_stock_success_events
+        ),
         "drain_stock_count": len(target_drains),
         "classified_release_only_count": grounded_release,
         "unknown_emission_count": unknown_release,
