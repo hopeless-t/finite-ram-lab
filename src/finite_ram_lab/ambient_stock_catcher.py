@@ -147,6 +147,7 @@ def classify_ambient_stock(obs: AmbientObservation) -> dict[str, Any]:
         predicted_t = BASELINE_NEXT_Q64_T - pages
         exact = (
             0 < pages <= EXPECTED_INITIAL_RESIDUAL
+            and obs.critical_probe_missed.get("drain") == 0
             and obs.owner_uncharge_pages == pages
             and t == predicted_t
         )
@@ -162,6 +163,7 @@ def classify_ambient_stock(obs: AmbientObservation) -> dict[str, Any]:
         predicted_t = BASELINE_NEXT_Q64_T - pages
         exact = (
             0 < pages <= EXPECTED_INITIAL_RESIDUAL
+            and obs.critical_probe_missed.get("consume") == 0
             and t == predicted_t
         )
         classification = (
