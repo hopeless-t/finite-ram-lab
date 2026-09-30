@@ -15,6 +15,9 @@ TX_MARKER_RE = re.compile(
     r"(?P<edge>PRE|POST)"
 )
 TRACE_TS_RE = re.compile(r"(?P<seconds>\d+\.\d+):")
+TASK_PID_RE = re.compile(
+    r"^\s*.*-(?P<pid>\d+)\s+\[(?P<cpu>\d+)\]"
+)
 CPU_RE = re.compile(r"\[(?P<cpu>\d+)\]")
 COUNTER_RE = re.compile(r"\bcounter=(?P<counter>0x[0-9a-fA-F]+)")
 MEMCG_RE = re.compile(r"\bmemcg=(?P<memcg>0x[0-9a-fA-F]+)")
@@ -38,7 +41,10 @@ def _event_row(line: str) -> dict[str, Any]:
         "line": line.strip(),
         "timestamp_ns": _timestamp_ns(line),
     }
-    if (m := CPU_RE.search(line)):
+    if (m := TASK_PID_RE.search(line)):
+        row["pid"] = int(m.group("pid"))
+        row["cpu"] = int(m.group("cpu"))
+    elif (m := CPU_RE.search(line)):
         row["cpu"] = int(m.group("cpu"))
     if (m := COUNTER_RE.search(line)):
         row["counter"] = m.group("counter").lower()
