@@ -12,6 +12,17 @@ from finite_ram_lab.tx_perturbation_matrix import (
 )
 
 
+
+
+
+PROFILE_OK = """
+frl_refill_stock 100 0
+frl_pc_try64 100 0
+frl_pc_uncharge17 20 0
+frl_drain_stock 20 0
+frl_memcg_uncharge 20 0
+"""
+
 class TxPerturbationMatrixTests(unittest.TestCase):
     def test_pte_escape_index_selects_different_table(self) -> None:
         geometry = {
@@ -56,6 +67,10 @@ class TxPerturbationMatrixTests(unittest.TestCase):
                         encoding="utf-8",
                     )
 
+            (root / "kprobe-profile.txt").write_text(
+                PROFILE_OK,
+                encoding="utf-8",
+            )
             result = aggregate(
                 {"experiment_id": "TX-PERTURBATION-MATRIX-v1"},
                 root,
@@ -67,9 +82,46 @@ class TxPerturbationMatrixTests(unittest.TestCase):
         self.assertEqual(result["target_fail"], 0)
         self.assertTrue(result["matrix_pass"])
         self.assertTrue(result["end_to_end_pass"])
+        self.assertTrue(result["probe_coverage"]["coverage_pass"])
+        self.assertTrue(result["fully_observed_matrix_pass"])
         for arm in ARM_ORDER:
             self.assertEqual(result["by_arm"][arm]["n"], 4)
             self.assertEqual(result["by_arm"][arm]["pass"], 4)
+
+    def test_probe_miss_blocks_fully_observed_pass_only(self) -> None:
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            for block in range(4):
+                for identity, arm in enumerate(ARM_ORDER):
+                    trial = {
+                        "arm": arm,
+                        "challenge_pass": True,
+                        "challenge_classification_pass": True,
+                        "recovery_pass": True,
+                        "completion_pass": True,
+                        "final_state": "SUCCESS",
+                        "reprimes": 0,
+                        "epochs": [{"state_after": "SUCCESS"}],
+                    }
+                    (root / f"trial-{block}-{identity}.json").write_text(
+                        json.dumps(trial),
+                        encoding="utf-8",
+                    )
+            (root / "kprobe-profile.txt").write_text(
+                PROFILE_OK.replace(
+                    "frl_drain_stock 20 0",
+                    "frl_drain_stock 20 1",
+                ),
+                encoding="utf-8",
+            )
+            result = aggregate(
+                {"experiment_id": "TX-PERTURBATION-MATRIX-v1"},
+                root,
+            )
+
+        self.assertTrue(result["matrix_pass"])
+        self.assertFalse(result["probe_coverage"]["coverage_pass"])
+        self.assertFalse(result["fully_observed_matrix_pass"])
 
     def test_one_failed_challenge_fails_matrix(self) -> None:
         with tempfile.TemporaryDirectory() as td:
