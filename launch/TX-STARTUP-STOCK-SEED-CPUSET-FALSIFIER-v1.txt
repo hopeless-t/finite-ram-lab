@@ -1,0 +1,19 @@
+TX-STARTUP-STOCK-SEED-CPUSET-FALSIFIER-v1
+human_authorized_at=2026-09-30
+purpose=causally falsify STARTUP_STOCK_SEED by blocking future-stock-CPU startup execution
+blocks=4
+identities_per_block=16
+total_identities=64
+control_n=32
+intervention_n=32
+intervention=AllowedCPUs:prep_only_during_startup
+release=AllowedCPUs:prep_plus_stock_then_explicit_migration
+critical_probes=frl_pc_try64,frl_refill_stock
+stacktrace=false
+require_complete_panel=true
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+automatic_scale_expansion=false
+prerequisite_startup_seed_run=36689570716
+preflight_commit=a03284a6f44a9ad48a3030c6951ed9068ea105d7
