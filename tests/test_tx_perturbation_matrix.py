@@ -8,6 +8,7 @@ from pathlib import Path
 from finite_ram_lab.tx_perturbation_matrix import (
     ARM_ORDER,
     _pte_escape_index,
+    _single_helper_scrub_budget,
     aggregate,
 )
 
@@ -23,6 +24,11 @@ frl_drain_stock 20 2
 """
 
 class TxPerturbationMatrixTests(unittest.TestCase):
+    def test_single_helper_scrub_budget_preserves_trigger_stock(self) -> None:
+        self.assertEqual(_single_helper_scrub_budget(14), 49)
+        with self.assertRaises(ValueError):
+            _single_helper_scrub_budget(63)
+
     def test_pte_escape_index_selects_different_table(self) -> None:
         geometry = {
             "page_size": 4096,
