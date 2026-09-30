@@ -65,6 +65,7 @@ def _empty_window() -> dict[str, Any]:
         "pc_uncharge17": [],
         "pc_uncharge17_stacks": [],
         "pc_uncharge_any": [],
+        "pc_uncharge_stacks": [],
         "memcg_uncharge": [],
         "lru_flush": [],
         "folios_put": [],
@@ -140,13 +141,12 @@ def parse_transaction_trace(
             or "frl_pc_uncharge_owner:" in line
         ):
             item["pc_uncharge_any"].append(row)
+            stack: list[str] = []
+            item["pc_uncharge_stacks"].append(stack)
+            active_stack = stack
             if int(row.get("nr_pages", 0)) == 17:
                 item["pc_uncharge17"].append(row)
-                stack: list[str] = []
                 item["pc_uncharge17_stacks"].append(stack)
-                active_stack = stack
-            else:
-                active_stack = None
         elif "frl_pc_uncharge17:" in line:
             # Legacy R1-R3 compatibility. R4 uses frl_pc_uncharge_any
             # with a conditional stacktrace trigger for nr_pages == 17.
@@ -312,6 +312,10 @@ def _lru_release_stack(stack: list[str]) -> bool:
     )
 
 
+def _stock_drain_stack(stack: list[str]) -> bool:
+    return "drain_stock" in "\n".join(stack)
+
+
 def observer_receipt_for_window(
     window: dict[str, Any],
     *,
@@ -370,13 +374,20 @@ def observer_receipt_for_window(
     )
 
     grounded_owner_indices: list[int] = []
+    stock_drain_owner_indices: list[int] = []
     for i in owner_indices:
         stack = stacks[i] if i < len(stacks) else []
         if _lru_release_stack(stack) or (flush31 and put31):
             grounded_owner_indices.append(i)
+        elif _stock_drain_stack(stack):
+            stock_drain_owner_indices.append(i)
 
     grounded_release = len(grounded_owner_indices)
-    unknown_release = len(owner_indices) - grounded_release
+    unknown_release = (
+        len(owner_indices)
+        - grounded_release
+        - len(stock_drain_owner_indices)
+    )
 
     all_drains = list(window.get("drain_stock", []))
     if stock_cpu is None:
@@ -501,6 +512,37 @@ def observer_receipt_for_window(
             )
         else:
             unresolved_drains.append(drain)
+
+    generic_stacks = list(window.get("pc_uncharge_stacks", []))
+    already_grounded_uncharge_ts = {
+        int(item["paired_page_counter_uncharge"]["timestamp_ns"])
+        for item in target_drains
+        if item.get("paired_page_counter_uncharge", {}).get(
+            "timestamp_ns"
+        ) is not None
+    }
+    for i, event in enumerate(counter_uncharges):
+        if effective_owner is None:
+            continue
+        if str(event.get("counter", "")).lower() != effective_owner:
+            continue
+        if stock_cpu is not None and int(event.get("cpu", -1)) != int(stock_cpu):
+            continue
+        stack = generic_stacks[i] if i < len(generic_stacks) else []
+        event_ts = event.get("timestamp_ns")
+        if (
+            _stock_drain_stack(stack)
+            and event_ts is not None
+            and int(event_ts) not in already_grounded_uncharge_ts
+        ):
+            target_drains.append(
+                {
+                    "ownership": "OWNER_STACK_DRAIN_STOCK",
+                    "paired_page_counter_uncharge": event,
+                    "stack": stack,
+                }
+            )
+            already_grounded_uncharge_ts.add(int(event_ts))
 
     notes: list[str] = []
     if candidate_owner and owner_counter and candidate_owner != owner_counter.lower():
