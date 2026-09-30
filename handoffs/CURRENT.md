@@ -1,131 +1,184 @@
 # CURRENT
 
-> Latest bounce: B413
-> Stage: NORMALIZE BOUNDARY CHASE PREFLIGHT
-> Stop: READY TO LAUNCH TX-NORMALIZE-BOUNDARY-CHASE-v1 AFTER CI
+> Latest bounce: B414
+> Stage: SMALL-RESIDUAL REFILL SPECTRUM PREFLIGHT
+> Stop: READY TO LAUNCH TX-SMALL-RESIDUAL-REFILL-SPECTRUM-v1 AFTER CI
 
-## Chapter II current frontier
+## Chapter II frontier
 
-B405 causal classification is now largely separated from normalization ecology.
+The research has moved beyond the B405 perturbation matrix into the origin of natural pre-VERIFY stock.
 
-R8 run 36681393399 produced:
+Established named mechanisms/states:
 
-- CLEAN 3/4
-- RELEASE_ONLY 4/4
-- UNEXPECTED_REFILL 4/4
-- PTE_GROWTH 4/4
-- challenge pass 15/16
-- completion pass 15/16
-- TARGET_FAIL 0
+- VERIFIED_DIRECT_Q64_RESET: measured one-page direct Q64 establishes R0=63.
+- PREVERIFY_S64 / MAX_STOCK_BOUNDARY: natural pre-VERIFY S0=64 established for frozen R8 specimen by sandwich proof.
+- TARGET_STOCK_EVICTION: verified residual stock can be asynchronously drained, moving the next boundary earlier.
+- STARTUP_STOCK_SEED: transient service/worker startup can charge/refill the future stock CPU before historical _start() returns, leaving inherited stock that delays the measured boundary.
 
-Critical observer coverage passed for the first time:
+No complete B405 path has produced TARGET_FAIL.
 
-- frl_pc_try64 missed = 0
-- frl_pc_uncharge_owner missed = 0
+## R9 normalize boundary chase
 
-The sole R8 failure was CLEAN trial 0:0:
+Run 36686845958:
 
-- NORMALIZE_EXHAUSTED
-- 64 complete normalization touches
-- no measured target direct Q64
-- no PTE growth
-- no CPU mismatch
-- no worker error
-- target transaction never reached VERIFIED
+- 32/32 valid
+- 32/32 WITHIN_BOUND
+- critical Q64 coverage PASS
+- bound violations 0
+- max T=48
+- T histogram: 1x26, 2x2, 27x1, 46x2, 48x1
 
-This remains frozen as a normalization specimen, not TARGET_FAIL.
+The R8 64-touch specimen plus the source upper bound proves S0=64 under the frozen assumptions.
 
-## Named natural state-changing event
+## R10 post-start localization
 
-TARGET_STOCK_EVICTION remains established from B405 R6 trial 0:0:
+Run 36688225173:
 
-verified target residual is asynchronously drained from the per-CPU memcg stock before the next measured transition.
+- 32/32 valid
+- target-PID Q64 between historical _start() return and first measured touch: 0/32
+- 0 ms vs 5 ms settle showed no persuasive difference in this panel
 
-Its full-residual fingerprint is:
+This localized high-S0 construction to the earlier transient service / worker startup interval.
 
-Delta = -d
+## R11 STARTUP_STOCK_SEED establishment
 
-for an eviction of d cached pages.
+Run 36689570716:
 
-## New pre-VERIFY state distinction
+- 32/32 within bound
+- four complete startup-seed specimens
+- final MainPID future-stock-CPU Q64/refill63 before _start() return
+- promoted T/S0: 45/44, 45/44, 48/47, 44/43
+- seeding begins PRE_EXEC and continues POST_EXEC
+- stack callpaths include folio prealloc, anon folio allocation, memcg slab/anon-vma setup, and wp_page_copy
 
-Verified direct-Q64 primer:
+Mechanism status:
 
-R0 = 63.
+STARTUP_STOCK_SEED = ESTABLISHED_IN_FOUR_PHYSICAL_SPECIMENS.
 
-Natural pre-VERIFY stock:
+## R12 cpuset causal falsifier
 
-0 <= S <= 64.
+Run 36691073336.
 
-Linux refill_stock permits an existing same-memcg slot to reach exactly MEMCG_CHARGE_BATCH and drains only if the merged stock is greater than the batch.
+Intervention:
 
-Therefore define:
+- CONTROL uses historical _start().
+- CPUSET_PREP_ONLY creates service with CPUAffinity=prep and AllowedCPUs=prep.
+- after READY, AllowedCPUs expands to prep+stock and only then MainPID migrates to stock CPU.
 
-PREVERIFY_S64 / MAX_STOCK_BOUNDARY.
+Frozen result:
 
-## 65-touch theorem
+CONTROL:
+- n=32
+- valid=31
+- classic STARTUP_STOCK_SEED=5
+- large high-T cluster: T=46,47,48,49,49
+- one clean T=2
+- one observer-invalid T=1
 
-For one-page fresh data faults on one CPU, with a complete direct-Q64 observer:
+CPUSET_PREP_ONLY:
+- n=32
+- valid=31
+- classic startup seed=0
+- release-gap seed=0
+- CPUSET_SUPPRESSED=30
+- one clean T=2
+- one observer-invalid T=1
 
-T = S0 + 1
+Strict preregistered causal_support=false because the complete-panel rule required 64/64 valid and all valid intervention identities T=1.
 
-and:
+Nevertheless the large mechanism shows strong causal intervention support:
 
-0 <= S0 <= 64
+- classic seed: CONTROL 5/32 vs CPUSET 0/32
+- T>=3 high-residual phenotype: CONTROL 5/32 vs CPUSET 0/32
+- no CPUSET startup leak
+- no CPUSET release-gap classic seed
 
-therefore:
+Do not rewrite the strict result as PASS.
 
-1 <= T <= 65.
+Frozen evidence:
+- analysis/inputs/STARTUP-STOCK-SEED-CPUSET-R1-PHYSICAL-RESULT-v1.json
+- raw files=148
+- bytes=1,369,413
+- content-set SHA=232af44c0867d2a064abfb744b3ef8d0afd3d19ff2ed2dde7aeb35ecaf9bfc7d
+- aggregate artifact ID=11085837349
+- artifact digest=sha256:ffcf3fa37829957d77ced1cad9d527bce513eecd535d343c61150892cf4fd5d5
 
-Interpretation:
+## New source-grounded missing mechanism family
 
-- T=1..64 -> WITHIN_BOUND
-- T=65 -> MAX_STOCK_BOUNDARY
-- T>65 -> STOCK_BOUND_VIOLATION_CANDIDATE
+The two clean T=2 / inferred S0=1 specimens have:
 
-A valid no-Q64-through-65 specimen would falsify the current one-slot stock-bound model or expose an unmodeled charge path.
+- no classic Q64/refill63 startup seed on stock CPU
+- no classic release-gap seed
+- zero relevant probe misses
 
-## R9 experiment
+Linux source shows refill_stock() is not only used for Q64 excess.
 
-TX-NORMALIZE-BOUNDARY-CHASE-v1
+At least these paths can add stock without a contemporaneous direct Q64:
+
+- try_charge_memcg -> refill_stock(batch - nr_pages)
+- obj_cgroup_uncharge_pages -> refill_stock(memcg, nr_pages)
+- mem_cgroup_sk_uncharge -> refill_stock(memcg, nr_pages)
+
+mem_cgroup_css_offline drains all stock, so stale stock from a destroyed transient memcg is strongly disfavored.
+
+Candidate family:
+
+SMALL_RESIDUAL_REFILL / SMALL_RESIDUAL_SEED
+
+Possible subtypes, not yet promoted:
+
+- KMEM_UNCHARGE_REFILL
+- SOCKET_UNCHARGE_REFILL
+
+## R13-A next experiment
+
+TX-SMALL-RESIDUAL-REFILL-SPECTRUM-v1
+
+Purpose:
+
+Capture owner-memcg refill sizes 1..8 before the first measured Q64 while classic STARTUP_STOCK_SEED is suppressed by the CPUSET_PREP_ONLY intervention.
 
 Design:
 
-- 4 blocks
-- 8 fresh identities/block
-- 32 total identities
-- primary horizon 65 touches
-- diagnostic horizon 80 only after bound violation
-- target Q64 attribution by trace task PID + stock CPU
-- one critical page_counter_try_charge(...,64) probe
-- zero critical probe misses required
-- no transactional target arm
+- 4 blocks x 32 = 128 fresh identities
+- CPUSET_PREP_ONLY only
+- Q64 probe: nr_pages=64
+- refill spectrum probe: nr_pages<=8 OR nr_pages=63
+- no stacktrace
+- keep both probes active through first measured Q64
+- obtain owner_memcg from the measured Q64/refill63 boundary
+- retrospectively match earlier refill events by owner_memcg + stock CPU
+
+Phase buckets:
+
+- STARTUP
+- RELEASE_GAP
+- TAIL_GAP_AFTER_RELEASE
+- MEASURED_PREBOUNDARY_TOUCHES
+
+Key classes:
+
+- T1_NO_SMALL_REFILL
+- SMALL_REFILL_EXPLAINS_DELAY
+- SMALL_REFILL_PARTIAL
+- HIGH_T_WITHOUT_SMALL_REFILL
+- CLASSIC_REFILL63_LEAK
+- INVALID_OBSERVER
+
+Discovery and panel coverage are reported separately.
+
+If a complete small-refill specimen is captured, R13-B should conditionally stacktrace only small refill events to distinguish obj_cgroup_uncharge_pages, mem_cgroup_sk_uncharge, or another caller.
 
 Files:
 
-- specs/TX-NORMALIZE-BOUNDARY-CHASE-v1.json
-- src/finite_ram_lab/normalize_boundary_chase.py
-- tests/test_normalize_boundary_chase.py
-- docs/MATH-024-PREVERIFY-STOCK-BOUND-65-TOUCH-THEOREM.md
-- handoffs/B413-NORMALIZE-BOUNDARY-CHASE.md
-- .github/workflows/normalize-boundary-chase.yml
-
-## Frozen evidence
-
-B405 R8:
-
-- analysis/inputs/B405-R8-PHYSICAL-RESULT-v1.json
-- raw files = 80
-- raw bytes = 9,669,832
-- raw content-set SHA-256 = 31a9d3adbb979415e2dffba0a9117df066bf422a61753e39035db914f244bb3a
-- aggregate artifact ID = 11082146184
-- artifact digest = sha256:3ce31c90588f32f7f2cc2d89d8875980c650213a182f88af615eae0702a9f87c
-
-Historical B405 generations remain frozen and must not be rewritten by R9.
+- specs/TX-SMALL-RESIDUAL-REFILL-SPECTRUM-v1.json
+- src/finite_ram_lab/small_residual_refill_spectrum.py
+- tests/test_small_residual_refill_spectrum.py
+- .github/workflows/small-residual-refill-spectrum.yml
 
 ## Authority
 
-R9 physical continuation is authorized.
+R13-A physical continuation is authorized.
 
 Standard public-repository GitHub-hosted runner only.
 No paid larger runner.
