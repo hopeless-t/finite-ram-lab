@@ -53,7 +53,7 @@ class TxPerturbationMatrixTests(unittest.TestCase):
             )
             self.assertEqual(
                 (probe / "trigger").read_text(encoding="utf-8"),
-                "stacktrace\n",
+                "stacktrace if counter == 0xabc\n",
             )
 
             _close_owner_probe(trace)
