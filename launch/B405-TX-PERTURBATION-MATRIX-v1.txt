@@ -1,7 +1,7 @@
 TX-PERTURBATION-MATRIX-v1
 human_authorized_at=2026-09-30
-run_generation=R4
-reason=COUNTER_SIDE_CONTINUITY_BACKBONE_AND_PROBE_CONSOLIDATION
+run_generation=R5
+reason=TARGET_RECEIPT_PROJECTION_PLUS_COUNTER_BACKBONE
 purpose=Chapter-II causal validation of named state transitions
 blocks=4
 arms_per_block=CLEAN,RELEASE_ONLY,UNEXPECTED_REFILL,PTE_GROWTH
@@ -14,5 +14,9 @@ prerequisite_b404_run=36642946787
 r1_diagnostic_run=36645745433
 r2_diagnostic_run=36646317346
 r3_diagnostic_run=36648499202
+r4_instrumentation_diagnostic_run=36649528104
 counter_backbone=frl_pc_try64,frl_pc_uncharge_any
 require_counter_backbone_zero_miss=true
+target_refill_scope=comm:frltx405,nr_pages:63
+global_q64_receipt_projection=owner_counter_or_target_execution_lane
+helper_prime_signal=global_q64_charge
