@@ -1,0 +1,131 @@
+{
+  "schema_version": "startup-stock-seed-r1-physical-result-v1",
+  "run_id": "36689570716",
+  "launch_commit": "d27c5db16182178d30ce3e02b396218a17720b43",
+  "frozen_result": {
+    "trial_count": 32,
+    "valid_trial_count": 32,
+    "classifications": {
+      "WITHIN_BOUND": 32
+    },
+    "bound_violation_count": 0,
+    "startup_classifications": {
+      "NO_STARTUP_SEED": 28,
+      "STARTUP_STOCK_SEED_PRE_EXEC": 4
+    },
+    "startup_stock_cpu_q64_count": 30,
+    "startup_stock_cpu_refill63_count": 30,
+    "startup_seed_promoted_count": 4,
+    "startup_seed_promoted_trials": [
+      "0:1",
+      "2:7",
+      "3:1",
+      "3:4"
+    ],
+    "stack_receipt_complete": true,
+    "experiment_pass": false
+  },
+  "promoted_specimens": [
+    {
+      "trial_id": "0:1",
+      "arm": "STACK",
+      "q64": 8,
+      "refill63": 8,
+      "T": 45,
+      "S0": 44
+    },
+    {
+      "trial_id": "2:7",
+      "arm": "STACK",
+      "q64": 8,
+      "refill63": 8,
+      "T": 45,
+      "S0": 44
+    },
+    {
+      "trial_id": "3:1",
+      "arm": "STACK",
+      "q64": 7,
+      "refill63": 7,
+      "T": 48,
+      "S0": 47
+    },
+    {
+      "trial_id": "3:4",
+      "arm": "LIGHT",
+      "q64": 7,
+      "refill63": 7,
+      "T": 44,
+      "S0": 43
+    }
+  ],
+  "phase_decomposition": {
+    "promoted_q64_total": 30,
+    "pre_exec_q64": 6,
+    "post_exec_before_start_return_q64": 24,
+    "interpretation": "Seeding begins before sched_process_exec and continues after exec during worker startup, all before historical _start() returns."
+  },
+  "semantic_callpaths_in_stack_promoted_trials": {
+    "stack_observed_q64_total": 23,
+    "folio_prealloc": 15,
+    "alloc_anon_folio": 4,
+    "memcg_slab_or_anon_vma_setup": 3,
+    "wp_page_copy": 1
+  },
+  "observer_arms": {
+    "LIGHT": {
+      "n": 16,
+      "startup_seed_trials": 1,
+      "startup_stock_cpu_q64": 7,
+      "startup_stock_cpu_refill63": 7,
+      "first_q64_histogram": {
+        "1": 15,
+        "44": 1
+      }
+    },
+    "STACK": {
+      "n": 16,
+      "startup_seed_trials": 3,
+      "startup_stock_cpu_q64": 23,
+      "startup_stock_cpu_refill63": 23,
+      "first_q64_histogram": {
+        "1": 12,
+        "2": 1,
+        "45": 2,
+        "48": 1
+      }
+    }
+  },
+  "coverage": {
+    "q64_seed_specimens_all_zero_miss": true,
+    "refill_seed_specimens_all_zero_miss": true,
+    "whole_panel_coverage_pass": false,
+    "whole_panel_failure_reason": "Two NO_STARTUP_SEED STACK identities had refill_stock probe misses (47 and 3); promoted seed specimens themselves were complete.",
+    "q64_critical_note": "Promoted seed mechanism does not depend on the ambiguous identities."
+  },
+  "mechanism": {
+    "id": "STARTUP_STOCK_SEED",
+    "status": "ESTABLISHED_IN_FOUR_PHYSICAL_SPECIMENS",
+    "definition": "During transient service/worker startup, before historical _start() returns, the final MainPID executes on the future stock CPU and performs memcg direct Q64 charges followed by refill_stock(...,63), leaving residual per-CPU stock that is later reused after controlled migration back to that CPU.",
+    "causal_chain": [
+      "transient service process executes on future stock CPU",
+      "pre-exec and post-exec startup allocations trigger direct Q64 charges",
+      "matching refill63 deposits memcg stock on that CPU",
+      "worker later reaches READY and _start() returns on prep CPU",
+      "controller explicitly migrates worker back to stock CPU",
+      "measured first-Q64 boundary T is delayed by the inherited startup residual"
+    ]
+  },
+  "raw_manifest": {
+    "file_count": 88,
+    "total_bytes": 1554143,
+    "content_set_sha256": "e908f223fe3bc0d5d23f26002ab52f4008e2b99408a81c4d7548164cc5939fab",
+    "created_at_utc": "2026-09-30T08:26:23Z"
+  },
+  "aggregate_artifact": {
+    "artifact_id": 11084189109,
+    "digest": "sha256:9a8dcffbe809481d02cb4b9e0ccbef7cb982b7225e1434b17c5da5fbd4b26148"
+  },
+  "next_falsifier": "Constrain the transient service cgroup to the prep CPU from creation time; STARTUP_STOCK_SEED and the high-T cluster should collapse if the mechanism is causal.",
+  "claim_ceiling": "MECHANISM_ESTABLISHED_IN_OBSERVED_SPECIMENS_NO_POPULATION_PREVALENCE"
+}
