@@ -64,6 +64,7 @@ def _empty_window() -> dict[str, Any]:
         "refill63": [],
         "pc_uncharge17": [],
         "pc_uncharge17_stacks": [],
+        "pc_uncharge_any": [],
         "memcg_uncharge": [],
         "lru_flush": [],
         "folios_put": [],
@@ -140,6 +141,9 @@ def parse_transaction_trace(
                 stack: list[str] = []
                 item["pc_uncharge17_stacks"].append(stack)
                 active_stack = stack
+        elif "frl_pc_uncharge_any:" in line:
+            item["pc_uncharge_any"].append(row)
+            active_stack = None
         elif "frl_memcg_uncharge:" in line:
             item["memcg_uncharge"].append(row)
             active_stack = None
@@ -279,6 +283,7 @@ def observer_receipt_for_window(
             if int(event.get("cpu", -1)) != int(stock_cpu)
         ]
 
+    counter_uncharges = list(window.get("pc_uncharge_any", []))
     memcg_uncharges = list(window.get("memcg_uncharge", []))
     target_drains: list[dict[str, Any]] = []
     other_memcg_drains: list[dict[str, Any]] = []
@@ -287,9 +292,17 @@ def observer_receipt_for_window(
     for drain in same_cpu_drains:
         drain_ts = drain.get("timestamp_ns")
         drain_cpu = int(drain.get("cpu", -1))
-        candidates = []
+        counter_candidates = []
+        memcg_candidates = []
         if drain_ts is not None:
-            candidates = [
+            counter_candidates = [
+                event
+                for event in counter_uncharges
+                if int(event.get("cpu", -2)) == drain_cpu
+                and event.get("timestamp_ns") is not None
+                and 0 <= int(event["timestamp_ns"]) - int(drain_ts) <= 100_000
+            ]
+            memcg_candidates = [
                 event
                 for event in memcg_uncharges
                 if int(event.get("cpu", -2)) == drain_cpu
@@ -297,29 +310,53 @@ def observer_receipt_for_window(
                 and 0 <= int(event["timestamp_ns"]) - int(drain_ts) <= 100_000
             ]
 
-        if effective_memcg is None:
-            unresolved_drains.append(drain)
-            continue
-
-        target_matches = [
+        target_counter_matches = [
             event
-            for event in candidates
-            if str(event.get("memcg", "")).lower() == effective_memcg
+            for event in counter_candidates
+            if str(event.get("counter", "")).lower() == effective_owner
         ]
-        if target_matches:
+        other_counter_matches = [
+            event
+            for event in counter_candidates
+            if str(event.get("counter", "")).lower() != effective_owner
+        ]
+
+        if target_counter_matches:
             target_drains.append(
                 {
                     **drain,
-                    "paired_memcg_uncharge": target_matches[0],
+                    "paired_page_counter_uncharge": target_counter_matches[0],
                 }
             )
-        elif candidates:
+        elif other_counter_matches:
             other_memcg_drains.append(
                 {
                     **drain,
-                    "paired_memcg_uncharge": candidates[0],
+                    "paired_page_counter_uncharge": other_counter_matches[0],
                 }
             )
+        elif effective_memcg is not None:
+            target_memcg_matches = [
+                event
+                for event in memcg_candidates
+                if str(event.get("memcg", "")).lower() == effective_memcg
+            ]
+            if target_memcg_matches:
+                target_drains.append(
+                    {
+                        **drain,
+                        "paired_memcg_uncharge": target_memcg_matches[0],
+                    }
+                )
+            elif memcg_candidates:
+                other_memcg_drains.append(
+                    {
+                        **drain,
+                        "paired_memcg_uncharge": memcg_candidates[0],
+                    }
+                )
+            else:
+                unresolved_drains.append(drain)
         else:
             unresolved_drains.append(drain)
 
