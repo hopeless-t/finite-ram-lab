@@ -1,0 +1,149 @@
+name: Owner refill histogram pilot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "launch/TX-OWNER-REFILL-HIST-PILOT-v1.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  pilot:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Compile worker
+        run: |
+          mkdir -p build
+          gcc -O2 -Wall -Wextra -std=c11 \
+            experiments/tx_perturbation_worker.c \
+            -o build/tx_perturbation_worker
+
+      - name: Environment gate
+        run: |
+          set -euo pipefail
+          test "$(getconf PAGESIZE)" = "4096"
+          test "$(stat -fc %T /sys/fs/cgroup)" = "cgroup2fs"
+          test "$(nproc)" -ge 3
+          uname -a
+
+      - name: Run refill histogram pilot
+        run: |
+          set -euo pipefail
+          TRACE=/sys/kernel/tracing
+          OUT="$GITHUB_WORKSPACE/evidence/OWNER-REFILL-HIST-PILOT"
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+
+          if ! mountpoint -q "$TRACE"; then
+            sudo mount -t tracefs nodev "$TRACE"
+          fi
+
+          cleanup() (
+            set +e
+            echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null 2>&1
+
+            if test -e "$TRACE/events/kprobes/frl_refill_stock/trigger"; then
+              echo '!hist:keys=nr_pages' \
+                | sudo tee "$TRACE/events/kprobes/frl_refill_stock/trigger" >/dev/null 2>&1
+            fi
+            if test -e "$TRACE/events/kprobes/frl_pc_uncharge_owner/trigger"; then
+              echo '!stacktrace' \
+                | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/trigger" >/dev/null 2>&1
+            fi
+
+            for ev in frl_refill_stock frl_pc_uncharge_owner frl_pc_try64; do
+              if test -e "$TRACE/events/kprobes/$ev/enable"; then
+                echo 0 | sudo tee "$TRACE/events/kprobes/$ev/enable" >/dev/null 2>&1
+              fi
+              printf '%s\n' "-:$ev" \
+                | sudo tee -a "$TRACE/kprobe_events" >/dev/null 2>&1
+            done
+            true
+          )
+          trap cleanup EXIT
+          cleanup
+
+          printf '%s\n' \
+            'p:frl_refill_stock refill_stock memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_pc_uncharge_owner page_counter_uncharge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+          printf '%s\n' \
+            'p:frl_pc_try64 page_counter_try_charge counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm' \
+            | sudo tee -a "$TRACE/kprobe_events" >/dev/null
+
+          echo 'nr_pages == 64' \
+            | sudo tee "$TRACE/events/kprobes/frl_pc_try64/filter" >/dev/null
+          echo 'counter == 0' \
+            | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/filter" >/dev/null
+          echo 'memcg == 0' \
+            | sudo tee "$TRACE/events/kprobes/frl_refill_stock/filter" >/dev/null
+
+          echo 1 | sudo tee "$TRACE/events/kprobes/frl_pc_try64/enable" >/dev/null
+          echo 0 | sudo tee "$TRACE/events/kprobes/frl_pc_uncharge_owner/enable" >/dev/null
+          echo 0 | sudo tee "$TRACE/events/kprobes/frl_refill_stock/enable" >/dev/null
+
+          for ev in frl_refill_stock frl_pc_uncharge_owner frl_pc_try64; do
+            sudo cat "$TRACE/events/kprobes/$ev/format" > "$OUT/$ev.format"
+          done
+
+          RUNNER_UID="$(id -u)"
+          PYTHON_BIN="$(command -v python)"
+          echo 32768 | sudo tee "$TRACE/buffer_size_kb" >/dev/null
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          echo | sudo tee "$TRACE/trace" >/dev/null
+          echo 1 | sudo tee "$TRACE/tracing_on" >/dev/null
+
+          sudo -E "$PYTHON_BIN" \
+            -m finite_ram_lab.owner_refill_hist_pilot \
+            --spec "$GITHUB_WORKSPACE/specs/TX-OWNER-REFILL-HIST-PILOT-v1.json" \
+            --worker "$GITHUB_WORKSPACE/build/tx_perturbation_worker" \
+            --out-root "$OUT" \
+            --trace-marker "$TRACE/trace_marker" \
+            --trace-path "$TRACE/trace" \
+            --worker-uid "$RUNNER_UID" \
+            | tee "$OUT/summary.json"
+
+          echo 0 | sudo tee "$TRACE/tracing_on" >/dev/null
+          sudo cat "$TRACE/trace" > "$OUT/trace.log"
+          sudo cat "$TRACE/kprobe_profile" > "$OUT/kprobe-profile.txt" || true
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: TX-OWNER-REFILL-HIST-PILOT-${{ github.run_id }}
+          path: evidence/OWNER-REFILL-HIST-PILOT/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Assert pilot
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path("evidence/OWNER-REFILL-HIST-PILOT/summary.json")
+          result = json.loads(p.read_text())
+          print(json.dumps({
+              "pilot_pass": result["pilot_pass"],
+              "hist_activity_observed": result["hist_activity_observed"],
+              "by_mode": result["by_mode"],
+          }, sort_keys=True))
+          if not result["pilot_pass"]:
+              raise SystemExit("owner refill histogram pilot did not pass")
+          PY
