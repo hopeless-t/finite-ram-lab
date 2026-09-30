@@ -476,7 +476,7 @@ x-1 [000] ... 27.500000030: tracing_mark_write: FRL_TX trial=0:0 epoch=0 phase=O
         self.assertEqual(receipt["drain_stock_count"], 1)
         self.assertEqual(receipt["other_memcg_drain_count"], 1)
         event = receipt["target_drain_events"][0]
-        self.assertEqual(event["slot"], 1)
+        self.assertIn("slot=1", event["line"])
         self.assertEqual(
             event["paired_page_counter_uncharge"]["nr_pages"],
             31,
