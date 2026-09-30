@@ -35,6 +35,65 @@ def window(*, q64: int = 0, counter: str = "0xaaa", cpu: int = 7):
 
 
 class AmbientStockSessionTests(unittest.TestCase):
+    def test_quiescence_clean(self):
+        result = session._ambient_quiescence(
+            touched_before=100,
+            touched_after=100,
+            worker_error_after=0,
+            vmpte_before_kib=44,
+            vmpte_after_kib=44,
+            cpu_before=7,
+            cpu_after=7,
+            stock_cpu=7,
+        )
+        self.assertEqual(result["target_touch_delta"], 0)
+        self.assertTrue(result["worker_ok"])
+        self.assertTrue(result["cpu_stable"])
+        self.assertTrue(result["pte_stable"])
+
+    def test_quiescence_detects_target_touch(self):
+        result = session._ambient_quiescence(
+            touched_before=100,
+            touched_after=101,
+            worker_error_after=0,
+            vmpte_before_kib=44,
+            vmpte_after_kib=44,
+            cpu_before=7,
+            cpu_after=7,
+            stock_cpu=7,
+        )
+        self.assertEqual(result["target_touch_delta"], 1)
+
+    def test_quiescence_counter_regression_fails_closed(self):
+        result = session._ambient_quiescence(
+            touched_before=101,
+            touched_after=100,
+            worker_error_after=0,
+            vmpte_before_kib=44,
+            vmpte_after_kib=44,
+            cpu_before=7,
+            cpu_after=7,
+            stock_cpu=7,
+        )
+        self.assertFalse(result["touch_counter_valid"])
+        self.assertFalse(result["worker_ok"])
+        self.assertEqual(result["target_touch_delta"], 0)
+
+    def test_quiescence_detects_cpu_and_pte_change(self):
+        result = session._ambient_quiescence(
+            touched_before=100,
+            touched_after=100,
+            worker_error_after=0,
+            vmpte_before_kib=44,
+            vmpte_after_kib=48,
+            cpu_before=7,
+            cpu_after=6,
+            stock_cpu=7,
+        )
+        self.assertFalse(result["cpu_stable"])
+        self.assertFalse(result["pte_stable"])
+        self.assertEqual(result["vmpte_delta_kib"], 4)
+
     def test_preverify_rows_reduce_to_preverify_hold(self):
         rows = session._preverify_rows(
             session_id="s1",
