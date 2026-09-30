@@ -16,11 +16,10 @@ from finite_ram_lab.tx_perturbation_matrix import (
 
 
 PROFILE_OK = """
-frl_refill_stock 100 0
+frl_refill_stock 100 12
 frl_pc_try64 100 0
-frl_pc_uncharge17 20 0
-frl_drain_stock 20 0
-frl_memcg_uncharge 20 0
+frl_pc_uncharge_any 80 0
+frl_drain_stock 20 2
 """
 
 class TxPerturbationMatrixTests(unittest.TestCase):
@@ -109,8 +108,8 @@ class TxPerturbationMatrixTests(unittest.TestCase):
                     )
             (root / "kprobe-profile.txt").write_text(
                 PROFILE_OK.replace(
-                    "frl_drain_stock 20 0",
-                    "frl_drain_stock 20 1",
+                    "frl_pc_uncharge_any 80 0",
+                    "frl_pc_uncharge_any 80 1",
                 ),
                 encoding="utf-8",
             )
