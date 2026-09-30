@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B418
-> Stage: AGE STAGE-A R2 BOUNDED RESULT / SLOT-PRESSURE HYPOTHESIS
-> Stop: DESIGN NEXT CAUSAL INTERVENTION; DO NOT AUTO-LAUNCH STAGE B
+> Latest bounce: B419
+> Stage: SAME-CPU STOCK-SLOT PRESSURE PILOT IMPLEMENTATION
+> Stop: IMPLEMENT 4-IDENTITY SAMECPU PILOT; DO NOT LAUNCH FULL 3-ARM PANEL
 
 ## Chapter II frontier
 
@@ -225,3 +225,48 @@ No paid larger runner.
 No local-PC execution.
 No automatic sample expansion.
 No reliability certification.
+
+
+## B419 observer pilot and next bounded intervention
+
+Owner-refill histogram pilot run 36705123852 completed SUCCESS.
+
+Frozen result:
+
+- LOG n=4, valid=4, refill misses=0, owner refill counts=[0,0,0,0]
+- HIST n=4, valid=4, refill misses=0
+- HIST owner refill counts=[403,1385,682,596]
+- histogram Dropped=0 for all HIST identities
+- pilot_pass=true
+
+Interpretation:
+
+A soft-disabled tracefs histogram can aggregate owner-memcg refill_stock sizes/counts while ordinary refill event logging is disabled. This establishes observer capability only; it does not prove a lower miss rate than LOG because LOG identities had zero owner refill activity in this small panel.
+
+Frozen evidence:
+
+- analysis/inputs/OWNER-REFILL-HIST-PILOT-R1-RESULT-v1.json
+- artifact ID=11091860816
+- digest=sha256:24fe08ecedf10dcd569515ba98fff2e640319c3b7937c2c9022068e0cf3daaa2
+
+Source derivation:
+
+- docs/MATH-028-CPU-LOCAL-MEMCG-STOCK-SLOT-PRESSURE.md
+- NR_MEMCG_STOCK=7 per CPU
+- <=13 distinct same-CPU helper insertions are a worst-case bound to force selection of the target slot, absent intervening slot changes
+
+Frozen next pilot:
+
+- specs/TX-SAMECPU-STOCK-SLOT-PRESSURE-PILOT-v1.json
+- four identities only
+- VERIFY target R0=63
+- consume 32 -> expected residual31
+- no further target touches during pressure
+- create distinct helper memcgs on target stock CPU with AllowedCPUs restricted from unit creation
+- require each helper insertion to be physically realized by helper direct-Q64 evidence unless target drain occurs earlier
+- stop helper generation immediately when target-owner drain is observed
+- cap=13
+- keep helpers alive through target diagnostic touch
+- predicted clean fingerprint: target drain31 followed by immediate owner Q64 at T=33 / Delta=-31
+
+Do not run the full QUIET/OFFCPU/SAMECPU panel until this four-identity causal pilot passes.
