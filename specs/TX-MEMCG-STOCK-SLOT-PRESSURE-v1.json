@@ -1,0 +1,133 @@
+{
+  "experiment_id": "TX-MEMCG-STOCK-SLOT-PRESSURE-v1",
+  "status": "FROZEN_DESIGN_AUTHORIZED",
+  "chapter": "FINITE-RAM-LAB-II",
+  "role": "CAUSE_VERIFIED_TARGET_STOCK_EVICTION_BY_CPU_LOCAL_SLOT_PRESSURE",
+  "prerequisites": [
+    "Age Stage-A R2 run 36703139110 captured no complete hazard/deviation under quiet HOLD32 at realized F=13.38",
+    "TARGET_STOCK_EVICTION is already source-grounded in natural physical evidence",
+    "Linux source at 551c722f40809618230001baccf219193e22fc5a has NR_MEMCG_STOCK=7 and round-robin drain_idx replacement when no empty slot exists"
+  ],
+  "hypothesis": {
+    "primary": "verified target stock loss is driven by CPU-local memcg stock-slot competition rather than passive wall-clock age alone",
+    "quiet": "with fixed target touch count and no deliberate competitors, boundary remains T=64 absent natural hazard",
+    "offcpu": "13 persistent helper memcgs primed on another CPU do not directly evict the target stock-CPU slot",
+    "samecpu": "13 persistent helper memcgs primed on the target stock CPU force enough slot replacements to include the target slot under controlled occupancy assumptions"
+  },
+  "source_model": {
+    "slots_per_cpu": 7,
+    "target_occupies_one_slot_after_verify": true,
+    "max_initial_empty_slots_after_target_verify": 6,
+    "helpers": 13,
+    "minimum_forced_replacements_after_filling_possible_empties": 7,
+    "replacement_policy": "when no empty slot exists, refill_stock chooses drain_idx, increments modulo NR_MEMCG_STOCK, drains selected slot, then installs new memcg",
+    "predicted_full_target_drain_after_touch32": 31,
+    "predicted_samecpu_first_q64_T": 33,
+    "predicted_samecpu_Delta": -31
+  },
+  "design": {
+    "blocks": 4,
+    "identities_per_block": 3,
+    "total_identities": 12,
+    "arms": [
+      "QUIET",
+      "OFFCPU_SLOT_PRESSURE",
+      "SAMECPU_SLOT_PRESSURE"
+    ],
+    "n_per_arm": 4,
+    "target_arm": "b63 geometry with diagnostic boundary scan rather than transaction commit",
+    "consume_before_intervention": 32,
+    "minimum_intervention_ns": 22077060000,
+    "helper_count": 13,
+    "helper_prime_max_touches": 65,
+    "helper_max_pages": 96,
+    "no_same_identity_reprime": true,
+    "orders": {
+      "0": [
+        "QUIET",
+        "OFFCPU_SLOT_PRESSURE",
+        "SAMECPU_SLOT_PRESSURE"
+      ],
+      "1": [
+        "OFFCPU_SLOT_PRESSURE",
+        "SAMECPU_SLOT_PRESSURE",
+        "QUIET"
+      ],
+      "2": [
+        "SAMECPU_SLOT_PRESSURE",
+        "QUIET",
+        "OFFCPU_SLOT_PRESSURE"
+      ],
+      "3": [
+        "QUIET",
+        "SAMECPU_SLOT_PRESSURE",
+        "OFFCPU_SLOT_PRESSURE"
+      ]
+    }
+  },
+  "helper_contract": {
+    "one_fresh_transient_memcg_per_helper": true,
+    "helpers_remain_alive_until_target_boundary_is_measured": true,
+    "helper_cpu_binding": "AllowedCPUs + CPUAffinity to assigned intervention CPU",
+    "primer": "touch fresh pages until a helper-comm direct Q64 and helper refill63 pair is observed; stop immediately after pair",
+    "require_unique_helper_memcg_pointers": 13,
+    "keep_positive_stock_after_primer": true
+  },
+  "observer_contract": {
+    "target": [
+      "global page_counter_try_charge nr_pages==64",
+      "preverify target-comm refill63 for owner discovery",
+      "postverify refill_stock bound to owner_memcg for all sizes",
+      "page_counter_uncharge bound to owner_counter with stacktrace",
+      "drain_stock enrichment"
+    ],
+    "helper": [
+      "separate helper refill63 probe filtered comm=frltrig and nr_pages==63",
+      "helper Q64 recognized from global Q64 probe with comm=frltrig",
+      "record helper refill memcg pointer and assigned CPU"
+    ],
+    "intervention_window": "single OBSERVE marker window after target touch32",
+    "preserve_unknown": true
+  },
+  "primary_predictions": {
+    "QUIET": {
+      "target_drain_count": 0,
+      "T": 64
+    },
+    "OFFCPU_SLOT_PRESSURE": {
+      "target_drain_count": 0,
+      "T": 64
+    },
+    "SAMECPU_SLOT_PRESSURE": {
+      "target_drain_count_min": 1,
+      "target_drain_nr_pages": 31,
+      "T": 33,
+      "Delta": -31
+    }
+  },
+  "classifications": {
+    "QUIET_CANONICAL": "QUIET, complete zero-miss, no target state change, T=64",
+    "OFFCPU_CANONICAL": "OFFCPU, complete zero-miss, no target state change, T=64",
+    "SAMECPU_EVICTION_FINGERPRINT": "SAMECPU, complete helper panel, owner drain of residual31 during intervention, no owner refill after drain before target resume, first target Q64 T=33",
+    "SAMECPU_EVICTION_WITH_EXTRA_STATE_CHANGE": "target eviction occurs but another named target refill/Q64/unknown event changes the simple T=33 fingerprint",
+    "SLOT_PRESSURE_NOT_REALIZED": "helper priming/uniqueness/persistence receipt incomplete",
+    "UNEXPECTED_CONTROL_HAZARD": "QUIET/OFFCPU has target state-changing event",
+    "UNKNOWN_COMPLETE_EMISSION": "complete trace/probe but semantic owner event unclassified",
+    "INSTRUMENTATION_HOLD": "probe miss, marker gap, CPU/worker fault, incomplete owner identity"
+  },
+  "acceptance": [
+    "at least 3/4 SAMECPU identities produce the complete residual31 -> T33 fingerprint",
+    "zero complete QUIET identities show deliberate-competition target eviction",
+    "zero complete OFFCPU identities show helper-induced target eviction",
+    "all promoted fingerprints have zero critical target-probe misses and complete 13-helper uniqueness receipts"
+  ],
+  "authority": {
+    "physical_run_authorized": true,
+    "authorization_basis": "user explicitly requested continued next research on 2026-09-30",
+    "paid_runner_authorized": false,
+    "larger_runner_authorized": false,
+    "local_pc_execution_authorized": false,
+    "automatic_scale_expansion_authorized": false
+  },
+  "claim_ceiling": "CAUSAL_CPU_LOCAL_STOCK_SLOT_PRESSURE_MECHANISM_ONLY"
+}
