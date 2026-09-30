@@ -250,7 +250,7 @@ def _prime_scrubber_stock(
     baseline = _event_count(
         trace_path,
         "frl_pc_try64:",
-        "frlscrub",
+        helper_comm,
     )
     rows: list[dict[str, Any]] = []
     charge64_touch: int | None = None
@@ -358,17 +358,18 @@ def _postverify_prime_helper_stock(
 
 def _scrub_shared_lru(
     *,
-    scrubber: dict[str, Any],
+    helper: dict[str, Any],
+    helper_comm: str,
     trace_path: Path,
     max_touches: int,
 ) -> dict[str, Any]:
-    baseline = _event_count(trace_path, "frl_lru_flush:", "frlscrub")
+    baseline = _event_count(trace_path, "frl_lru_flush:", helper_comm)
     rows: list[dict[str, Any]] = []
     flush_touch: int | None = None
     for touch in range(1, max_touches + 1):
-        row = _handoff_command(scrubber, CMD_TOUCH)
+        row = _handoff_command(helper, CMD_TOUCH)
         rows.append({"touch": touch, **row})
-        if _event_count(trace_path, "frl_lru_flush:", "frlscrub") > baseline:
+        if _event_count(trace_path, "frl_lru_flush:", helper_comm) > baseline:
             flush_touch = touch
             break
     return {
@@ -381,7 +382,8 @@ def _scrub_shared_lru(
 def _postverify_scrub_reset(
     *,
     archive: EpochArchive,
-    scrubber: dict[str, Any],
+    helper: dict[str, Any],
+    helper_comm: str,
     trace_marker: Path,
     trace_path: Path,
     trial_id: str,
@@ -403,7 +405,8 @@ def _postverify_scrub_reset(
     )
     try:
         scrub = _scrub_shared_lru(
-            scrubber=scrubber,
+            helper=helper,
+            helper_comm=helper_comm,
             trace_path=trace_path,
             max_touches=max_touches,
         )
@@ -420,7 +423,7 @@ def _postverify_scrub_reset(
     charge64_after = _event_count(
         trace_path,
         "frl_pc_try64:",
-        "frlscrub",
+        helper_comm,
     )
     window = _trace_window(
         trace_path,
@@ -766,41 +769,25 @@ def run_trial(
     archive = EpochArchive.start(max_reprimes=int(tx_spec["max_reprimes"]))
     epochs: list[dict[str, Any]] = []
     challenge: dict[str, Any] = {"arm": arm}
-    unit = scrubber = trigger = None
+    unit = helper = None
 
     try:
         if arm == "RELEASE_ONLY":
             setup_root = out_root / f"trial-{block}-{identity}" / "release-setup"
-            for d in [setup_root / "scrubber", setup_root / "trigger"]:
-                d.mkdir(parents=True, exist_ok=True)
-            scrubber = _start_role(
+            (setup_root / "helper").mkdir(parents=True, exist_ok=True)
+            helper = _start_role(
                 worker=handoff_worker,
-                root=setup_root / "scrubber",
+                root=setup_root / "helper",
                 name=(
                     f"fr-b405-{os.getenv('GITHUB_RUN_ID', 'local')}-"
-                    f"{block}-{identity}-s"
-                ),
-                role="scrubber",
-                cpu=stock_cpu,
-                max_pages=max(
-                    192,
-                    int(release_spec["scrubber_prime_max_touches"])
-                    + int(release_spec["scrub_max_touches"]),
-                ),
-                worker_uid=worker_uid,
-            )
-            trigger = _start_role(
-                worker=handoff_worker,
-                root=setup_root / "trigger",
-                name=(
-                    f"fr-b405-{os.getenv('GITHUB_RUN_ID', 'local')}-"
-                    f"{block}-{identity}-t"
+                    f"{block}-{identity}-h"
                 ),
                 role="trigger",
                 cpu=stock_cpu,
                 max_pages=max(
-                    128,
+                    256,
                     int(release_spec["trigger_prime_max_touches"])
+                    + int(release_spec["scrub_max_touches"])
                     + int(release_spec["trigger_pages"]),
                 ),
                 worker_uid=worker_uid,
@@ -854,9 +841,9 @@ def run_trial(
             )
 
         elif arm == "RELEASE_ONLY":
-            trigger_ready = _postverify_prime_helper_stock(
+            helper_ready = _postverify_prime_helper_stock(
                 archive=archive,
-                helper=trigger,
+                helper=helper,
                 helper_comm="frltrig",
                 trace_marker=trace_marker,
                 trace_path=trace_path,
@@ -864,35 +851,17 @@ def run_trial(
                 stock_cpu=stock_cpu,
                 max_touches=int(release_spec["trigger_prime_max_touches"]),
                 touch_number=10,
-                label="POST_VERIFY_TRIGGER_STOCK_PREP",
+                label="POST_VERIFY_HELPER_STOCK_PREP",
             )
-            challenge["postverify_trigger_prime"] = trigger_ready
-            epoch_row["postverify_trigger_prime"] = trigger_ready
+            challenge["postverify_helper_prime"] = helper_ready
+            epoch_row["postverify_helper_prime"] = helper_ready
 
-            scrubber_ready = None
             reset = None
-            if trigger_ready["pass"]:
-                scrubber_ready = _postverify_prime_helper_stock(
-                    archive=archive,
-                    helper=scrubber,
-                    helper_comm="frlscrub",
-                    trace_marker=trace_marker,
-                    trace_path=trace_path,
-                    trial_id=trial_id,
-                    stock_cpu=stock_cpu,
-                    max_touches=int(
-                        release_spec["scrubber_prime_max_touches"]
-                    ),
-                    touch_number=11,
-                    label="POST_VERIFY_SCRUBBER_STOCK_PREP",
-                )
-                challenge["postverify_scrubber_prime"] = scrubber_ready
-                epoch_row["postverify_scrubber_prime"] = scrubber_ready
-
-            if trigger_ready["pass"] and scrubber_ready and scrubber_ready["pass"]:
+            if helper_ready["pass"]:
                 reset = _postverify_scrub_reset(
                     archive=archive,
-                    scrubber=scrubber,
+                    helper=helper,
+                    helper_comm="frltrig",
                     trace_marker=trace_marker,
                     trace_path=trace_path,
                     trial_id=trial_id,
@@ -903,9 +872,7 @@ def run_trial(
                 epoch_row["postverify_lru_reset"] = reset
 
             if (
-                not trigger_ready["pass"]
-                or not scrubber_ready
-                or not scrubber_ready["pass"]
+                not helper_ready["pass"]
                 or not reset
                 or not reset["pass"]
             ):
@@ -940,7 +907,7 @@ def run_trial(
                     epoch_row["discard"] = discard
                     observe = _observe_external_release(
                         archive=archive,
-                        trigger=trigger,
+                        trigger=helper,
                         trigger_pages=int(release_spec["trigger_pages"]),
                         trace_marker=trace_marker,
                         trace_path=trace_path,
@@ -1107,10 +1074,8 @@ def run_trial(
         )
         epochs.append(recovery)
 
-    if trigger is not None:
-        _stop_role(trigger)
-    if scrubber is not None:
-        _stop_role(scrubber)
+    if helper is not None:
+        _stop_role(helper)
 
     packets = archive.as_dict()["packets"]
     fresh_recovery_q64 = (
