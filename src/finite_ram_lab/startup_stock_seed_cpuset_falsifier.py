@@ -820,8 +820,13 @@ def aggregate(
         if row["arm"] == "CPUSET_PREP_ONLY" and row["valid"]
     ]
 
+    valid_trial_count = sum(
+        bool(row["valid"]) for row in trials
+    )
+
     causal_support = (
         len(trials) == int(spec["design"]["total_identities"])
+        and valid_trial_count == len(trials)
         and len(control_seed) >= 1
         and all(
             row["causal_classification"]
@@ -835,9 +840,7 @@ def aggregate(
     return {
         "experiment_id": spec["experiment_id"],
         "trial_count": len(trials),
-        "valid_trial_count": sum(
-            bool(row["valid"]) for row in trials
-        ),
+        "valid_trial_count": valid_trial_count,
         "by_arm": by_arm,
         "control_seed_count": len(control_seed),
         "control_seed_trials": [
@@ -911,6 +914,9 @@ def main() -> None:
         json.dumps(
             {
                 "causal_support": result["causal_support"],
+                "valid_trial_count": result[
+                    "valid_trial_count"
+                ],
                 "control_seed_count": result[
                     "control_seed_count"
                 ],
