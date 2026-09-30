@@ -1,0 +1,16 @@
+TX-NORMALIZE-BOUNDARY-CHASE-v1
+human_authorized_at=2026-09-30
+purpose=physically capture the pre-VERIFY stock boundary
+blocks=4
+identities_per_block=8
+total_identities=32
+primary_bound_touch=65
+diagnostic_max_touch=80
+critical_probe=frl_pc_try64
+require_zero_miss=true
+runner=standard-github-hosted-ubuntu-26.04
+paid_larger_runner=false
+local_pc=false
+automatic_scale_expansion=false
+prerequisite_b405_r8_run=36681393399
+preflight_commit=d0944d4b8865f25358bfd83a79377f34ac52fec9
