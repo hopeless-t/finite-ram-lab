@@ -6,27 +6,29 @@ import re
 from typing import Any
 
 EVENTS = {
-    "refill": "frl_ambient_refill",
-    "consume": "frl_ambient_consume_ret",
-    "uncharge": "frl_ambient_owner_uncharge",
-    "q64": "frl_ambient_owner_q64",
+    "refill": "frl_refill_stock",
+    "consume": "frl_consume_stock_ret",
+    "uncharge": "frl_pc_uncharge_owner",
+    "q64": "frl_pc_try64",
 }
 
+# Reuse the already-qualified probe identities rather than widening the
+# dynamic-probe surface for ambient observation.
 PROBE_DEFINITIONS = {
     "refill": (
-        "p:frl_ambient_refill refill_stock "
+        "p:frl_refill_stock refill_stock "
         "memcg=$arg1:x64 nr_pages=$arg2:u32 comm=$comm"
     ),
     "consume": (
-        "r:frl_ambient_consume_ret consume_stock "
+        "r:frl_consume_stock_ret consume_stock "
         "memcg=$arg1:x64 nr_pages=$arg2:u32 ret=$retval:u8 comm=$comm"
     ),
     "uncharge": (
-        "p:frl_ambient_owner_uncharge page_counter_uncharge "
+        "p:frl_pc_uncharge_owner page_counter_uncharge "
         "counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm"
     ),
     "q64": (
-        "p:frl_ambient_owner_q64 page_counter_try_charge "
+        "p:frl_pc_try64 page_counter_try_charge "
         "counter=$arg1:x64 nr_pages=$arg2:u64 comm=$comm"
     ),
 }
