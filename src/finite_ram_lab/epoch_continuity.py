@@ -7,6 +7,7 @@ from .transaction_trace_observer import (
     TX_MARKER_RE,
     _event_row,
     _lru_release_stack,
+    _stock_drain_stack,
 )
 
 
@@ -77,9 +78,8 @@ def _parse_epoch_timeline(
             or "frl_pc_uncharge_owner:" in line
         ):
             kind = "PC_UNCHARGE_OWNER"
-            if int(row.get("nr_pages", 0)) == 17:
-                row["stack"] = []
-                active_stack = row["stack"]
+            row["stack"] = []
+            active_stack = row["stack"]
         elif "frl_memcg_uncharge:" in line:
             # Legacy/fallback evidence only.
             kind = "MEMCG_UNCHARGE"
@@ -98,10 +98,7 @@ def _parse_epoch_timeline(
         if kind is not None:
             row["kind"] = kind
             events.append(row)
-            if not (
-                kind == "PC_UNCHARGE_OWNER"
-                and int(row.get("nr_pages", 0)) == 17
-            ):
+            if kind != "PC_UNCHARGE_OWNER":
                 active_stack = None
 
     return intervals, events
@@ -198,7 +195,7 @@ def scan_interwindow_continuity(
     )
     if not intervals:
         return {
-            "schema_version": "epoch-gap-continuity-v3",
+            "schema_version": "epoch-gap-continuity-v4",
             "trial_id": trial_id,
             "epoch": int(epoch),
             "coverage": "NO_MARKER_INTERVALS",
@@ -234,17 +231,49 @@ def scan_interwindow_continuity(
         for row in relevant
         if row["kind"] == "PC_UNCHARGE_OWNER"
         and int(row.get("cpu", -1)) == int(stock_cpu)
+        and str(row.get("counter", "")).lower() == owner_counter
+    ]
+
+    target_drain_uncharges = [
+        row
+        for row in counter_uncharges
+        if _stock_drain_stack(list(row.get("stack", [])))
+    ]
+    grounded_releases = [
+        row
+        for row in counter_uncharges
+        if (
+            not _stock_drain_stack(list(row.get("stack", [])))
+            and _matches_grounded_release(
+                row,
+                owner_counter=owner_counter,
+            )
+        )
+    ]
+    owner_uncharge_only = [
+        row
+        for row in counter_uncharges
+        if (
+            list(row.get("stack", []))
+            and not _stock_drain_stack(list(row.get("stack", [])))
+            and not _matches_grounded_release(
+                row,
+                owner_counter=owner_counter,
+            )
+        )
+    ]
+    unknown_owner_uncharges = [
+        row
+        for row in counter_uncharges
+        if not list(row.get("stack", []))
     ]
 
     drain_pairs, paired_uncharge_indices = _pair_nearest_following(
         drains,
-        counter_uncharges,
+        target_drain_uncharges,
     )
-
-    target_drains: list[dict[str, Any]] = []
+    target_drain_by_uncharge_ts: dict[int, dict[str, Any]] = {}
     other_counter_drains: list[dict[str, Any]] = []
-    unresolved_drains: list[dict[str, Any]] = []
-
     for drain, uncharge in drain_pairs:
         if uncharge is None:
             other_counter_drains.append(
@@ -254,34 +283,28 @@ def scan_interwindow_continuity(
                 }
             )
             continue
-        item = {
+        ts = int(uncharge["timestamp_ns"])
+        target_drain_by_uncharge_ts[ts] = {
             "drain": drain,
             "page_counter_uncharge": uncharge,
+            "ownership": "OWNER_STACK_DRAIN_STOCK",
         }
-        target_drains.append(item)
 
-    unpaired_owner_uncharges = [
-        row
-        for i, row in enumerate(counter_uncharges)
-        if i not in paired_uncharge_indices
-        and str(row.get("counter", "")).lower() == owner_counter
-    ]
-    grounded_releases = [
-        row
-        for row in unpaired_owner_uncharges
-        if _matches_grounded_release(
-            row,
-            owner_counter=owner_counter,
+    target_drains: list[dict[str, Any]] = []
+    for uncharge in target_drain_uncharges:
+        ts = int(uncharge["timestamp_ns"])
+        target_drains.append(
+            target_drain_by_uncharge_ts.get(
+                ts,
+                {
+                    "page_counter_uncharge": uncharge,
+                    "ownership": "OWNER_STACK_DRAIN_STOCK",
+                    "drain_probe_seen": False,
+                },
+            )
         )
-    ]
-    unknown_owner_uncharges = [
-        row
-        for row in unpaired_owner_uncharges
-        if not _matches_grounded_release(
-            row,
-            owner_counter=owner_counter,
-        )
-    ]
+
+    unresolved_drains: list[dict[str, Any]] = []
 
     target_charge64 = [
         row
@@ -299,17 +322,14 @@ def scan_interwindow_continuity(
         and str(row.get("memcg", "")).lower() == owner_memcg
     ]
 
-    unknown_count = (
-        len(unresolved_drains)
-        + len(unknown_owner_uncharges)
-    )
+    unknown_count = len(unknown_owner_uncharges)
     state_change_count = (
         len(target_drains)
         + len(target_charge64)
     )
 
     return {
-        "schema_version": "epoch-gap-continuity-v2",
+        "schema_version": "epoch-gap-continuity-v4",
         "trial_id": trial_id,
         "epoch": int(epoch),
         "owner_counter": owner_counter,
@@ -325,6 +345,7 @@ def scan_interwindow_continuity(
         "other_counter_drain_count": len(other_counter_drains),
         "unresolved_drain_count": len(unresolved_drains),
         "grounded_release_only_count": len(grounded_releases),
+        "owner_uncharge_only_count": len(owner_uncharge_only),
         "unknown_owner_uncharge_count": len(unknown_owner_uncharges),
         "state_change_count": state_change_count,
         "unknown_count": unknown_count,
@@ -335,5 +356,6 @@ def scan_interwindow_continuity(
         "other_counter_drains": other_counter_drains,
         "unresolved_drains": unresolved_drains,
         "grounded_releases": grounded_releases,
+        "owner_uncharge_only": owner_uncharge_only,
         "unknown_owner_uncharges": unknown_owner_uncharges,
     }
