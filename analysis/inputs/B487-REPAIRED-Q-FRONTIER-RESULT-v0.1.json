@@ -1,0 +1,38 @@
+{
+  "schema": "finite-ram-lab.b487-result/v0.1",
+  "status": "PASS_WITH_HOLD",
+  "classification": "INTEGRATED_REPAIR_HOLD",
+  "claim_ceiling": "HOSTED_PAIRED_OLD_VS_REPAIRED_Q_FRONTIER",
+  "workflow_run_id": 36941540201,
+  "aggregate_job_id": 110634101889,
+  "execution_head_sha": "d6ddaba6caf54e28ad19e73081e8e9f88e8aa3a6",
+  "aggregate_artifact_id": 11200620177,
+  "aggregate_artifact_zip_sha256": "99f680a3375a8a3eeaec03116df105de6cf2dcae585de8232f18791a9ba0b481",
+  "aggregate_sha256": "6fe3498850d88de869b2dce5c6b8bd1b444b380dfecf4e88637766aef3b7f5af",
+  "runner_block_count": 8,
+  "old_vs_new_rows": [
+    {"q":1,"old_median_peak_bytes":67084288,"new_median_peak_bytes":50667520,"median_peak_savings_bytes":16416768,"old_median_work_seconds":0.413511125000003,"new_median_work_seconds":0.40591740099999285,"median_latency_ratio_new_over_old":0.9871423106129542},
+    {"q":2,"old_median_peak_bytes":67033088,"new_median_peak_bytes":50667520,"median_peak_savings_bytes":16365568,"old_median_work_seconds":0.40117822449999707,"new_median_work_seconds":0.3977700639999995,"median_latency_ratio_new_over_old":0.9866420943560001},
+    {"q":4,"old_median_peak_bytes":71268352,"new_median_peak_bytes":58925056,"median_peak_savings_bytes":12335104,"old_median_work_seconds":0.39396284200000053,"new_median_work_seconds":0.3901925474999999,"median_latency_ratio_new_over_old":0.9918642780808424},
+    {"q":7,"old_median_peak_bytes":71507968,"new_median_peak_bytes":71507968,"median_peak_savings_bytes":0,"old_median_work_seconds":0.3893080995000133,"new_median_work_seconds":0.38803774749999675,"median_latency_ratio_new_over_old":0.9934807573974248}
+  ],
+  "repaired_frontier_rows": [
+    {"q":1,"median_peak_bytes":50667520,"median_work_seconds":0.40591740099999285,"peak_delta_vs_q1_bytes":0,"latency_ratio_vs_q1":1.0},
+    {"q":2,"median_peak_bytes":50667520,"median_work_seconds":0.3977700639999995,"peak_delta_vs_q1_bytes":0,"latency_ratio_vs_q1":0.979928584042167},
+    {"q":4,"median_peak_bytes":58925056,"median_work_seconds":0.3901925474999999,"peak_delta_vs_q1_bytes":8257536,"latency_ratio_vs_q1":0.9612609524468422},
+    {"q":7,"median_peak_bytes":71507968,"median_work_seconds":0.38803774749999675,"peak_delta_vs_q1_bytes":20840448,"latency_ratio_vs_q1":0.9559524832984521}
+  ],
+  "repaired_pareto_q": [2,4,7],
+  "tests": {
+    "q1_repair_saves_peak":{"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true},
+    "q2_repair_saves_peak":{"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true},
+    "q4_repair_saves_peak":{"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true},
+    "q7_repair_saves_peak":{"favorable":1,"n_nonzero":1,"p":0.5,"holm_significant":false}
+  },
+  "summary": {
+    "minimum_median_peak_saving_bytes_across_q":0,
+    "all_q_peak_savings_holm_significant":false,
+    "integrated_repair_qualified":false
+  },
+  "next":"B488_REPAIRED_FRONTIER_CALIBRATION_BUDGET"
+}
