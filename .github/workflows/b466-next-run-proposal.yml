@@ -1,0 +1,43 @@
+name: B466 Offline Next Run Proposal
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/offline-next-run-proposal-b466
+    paths:
+      - "src/finite_ram_lab/next_run_proposer.py"
+      - "tests/test_next_run_proposer.py"
+      - "docs/B466-OFFLINE-NEXT-RUN-PROPOSAL-v0.1.md"
+      - ".github/workflows/b466-next-run-proposal.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  propose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_next_run_proposer -v
+      - name: Freeze next-run proposal
+        run: |
+          mkdir -p runs/B466
+          python -m finite_ram_lab.next_run_proposer \
+            --source analysis/inputs/B465-DOGFOOD-PROBE-RESULT-v0.1.json \
+            --out runs/B466/next-run-proposal.json
+          python -m json.tool runs/B466/next-run-proposal.json >/dev/null
+          sha256sum analysis/inputs/B465-DOGFOOD-PROBE-RESULT-v0.1.json
+          sha256sum runs/B466/next-run-proposal.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b466-next-run-proposal
+          path: runs/B466/next-run-proposal.json
+          if-no-files-found: error
