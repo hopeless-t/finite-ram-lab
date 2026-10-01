@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B427
-> Stage: COMMON LIVE-STATE EXEMPLARS FROZEN
-> Stop: BUILD FRONTIER COMPILER
+> Latest bounce: B428
+> Stage: FRONTIER COMPILER v0.1 FROZEN
+> Stop: TRANSLATE ONE REAL IMPLEMENTATION TRACE
 
 ## Chapter II frontier
 
@@ -745,3 +745,57 @@ For fixed simultaneous residue-pair count r, the B427 streaming Ozaki-II peak mo
 New next action B428:
 
 Build a frontier compiler over annotated state DAGs to emit logical/physical peak, byte-seconds, safe-release opportunities, and bounded placement decisions. Feed identical compiler semantics to Ozaki-I, Ozaki-II, FlashAttention, and a minimal Strata phase trace.
+
+
+## B428 frontier compiler v0.1
+
+Frozen branch:
+
+- research/frontier-compiler-b428
+
+Frozen files:
+
+- src/finite_ram_lab/frontier_compiler.py
+- tests/test_frontier_compiler.py
+- analysis/inputs/B428-NORMALIZED-STRUCTURAL-TRACES-v0.1.json
+- docs/B428-FRONTIER-COMPILER-v0.1.md
+
+The compiler consumes annotated state intervals and emits:
+
+- logical peak bytes;
+- physical peak bytes;
+- logical byte-seconds;
+- physical byte-seconds;
+- peak windows;
+- fail-closed safe release candidates;
+- deduplication savings;
+- capacity-cliff ratio.
+
+Physical state accounts separately for:
+
+- encoded bytes;
+- replicas;
+- per-replica metadata;
+- fragmentation;
+- workspace.
+
+Isolated software validation:
+
+- 7 unit tests PASS;
+- deterministic 20,000-case randomized interval sweep;
+- compiler peak outputs matched independent brute-force segment calculations in all randomized cases.
+
+Normalized structural Ozaki example only:
+
+- materialized Ozaki-I trace: peak=17 normalized state units, exposure=136 unit-seconds;
+- streaming Ozaki-II trace: peak=3 units, exposure=24 unit-seconds.
+
+These are not physical memory or performance ratios. They isolate liveness geometry under equal normalized state sizes and frozen schedule assumptions.
+
+No B425 ambient canary ran.
+No physical GPU/CPU benchmark ran.
+No paid resource was used.
+
+Next B429:
+
+Translate one real implementation source into TraceState records, starting with Ozaki Scheme II / GEMMul8 if source structure is sufficiently visible. Preserve unknown sizes/timings symbolically rather than inventing values.
