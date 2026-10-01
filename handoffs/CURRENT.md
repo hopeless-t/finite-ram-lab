@@ -2553,3 +2553,153 @@ B471 should dogfood the governor decision itself:
 - freeze any miss as calibration evidence
 
 This is the next step from observed-frontier decision to governed execution.
+
+## B471-B475 governor calibration and coverage-aware runtime
+
+### B471 — governor boundary dogfood
+
+Frozen result:
+
+- 16 fresh-process observations
+- exact semantics = 16/16
+- budget compliant = 14/16
+- budget misses = 2/16
+- both misses occurred at q=1
+- old q1 observed-upper budget = 67,022,848 B
+- largest fresh q1 peak = 67,117,056 B
+- max overrun = 94,208 B = 23 pages
+
+q2/q4/q7 each passed 4/4 at the old observed-upper boundaries.
+
+Interpretation:
+
+`observed_upper != guaranteed_upper`
+
+and uncertainty is q-dependent.
+
+### B472 — targeted q1 tail calibration
+
+Added 12 q1 fresh-process observations.
+
+- prior q1 pooled count = 8
+- new q1 count = 12
+- total q1 count = 20
+- prior pooled max = 67,117,056 B
+- new-panel max = 67,014,656 B
+- prior-boundary exceedances = 0/12
+- pooled empirical max remains 67,117,056 B
+
+Under the explicit exchangeability assumption:
+
+- sample-max one-step coverage floor = 20/21 ~= 95.238%
+- next-run strict-new-max probability ceiling = 1/21 ~= 4.762%
+
+This is not a worst-case guarantee.
+
+### B473 — rank coverage experiment budget
+
+For sample-max rank coverage floor n/(n+1):
+
+- 95% requires n>=19
+- 99% requires n>=99
+
+Before B474:
+
+- q1 n=20 -> 95% target met
+- q2/q4/q7 n=8 each -> need +11 each
+
+Frozen additional experiment budget:
+
+- q2 +11
+- q4 +11
+- q7 +11
+- total +33 fresh-process observations
+
+### B474 — spend the 33-run calibration budget
+
+All 33 new observations preserved exact semantics.
+
+Updated pooled empirical maxima / counts:
+
+q1:
+- max 67,117,056 B
+- n=20
+- rank floor ~=95.238%
+
+q2:
+- prior max 67,108,864 B
+- updated max 67,194,880 B
+- moved +86,016 B
+- n=19
+- rank floor=95%
+
+q4:
+- prior max 71,303,168 B
+- updated max 71,389,184 B
+- moved +86,016 B
+- n=19
+- rank floor=95%
+
+q7:
+- prior max 71,507,968 B
+- updated max 71,544,832 B
+- moved +36,864 B
+- n=19
+- rank floor=95%
+
+All q now meet the frozen 95%-class sample-count target.
+
+Important lesson:
+
+Small-panel observed maxima continued to move. Risk contracts should expose
+(empirical maximum, comparable sample count, coverage floor), not only a label
+such as observed_upper.
+
+### B475 — coverage-aware q Governor v1
+
+Qualified software governor.
+
+Selection rule:
+
+```text
+minimize balanced-sweep median latency
+subject to:
+  pooled empirical max peak <= declared peak budget
+  rank-max coverage floor >= declared minimum
+```
+
+95% breakpoints:
+
+- 67,117,056 B -> q1, n20, floor~95.238%
+- 67,194,880 B -> q2, n19, floor95%
+- 71,389,184 B -> q4, n19, floor95%
+- 71,544,832 B -> q7, n19, floor95%
+
+Example:
+
+- budget=67,194,880 B
+- minimum rank coverage=0.95
+- selected q=2
+- decision includes n=19 and floor=0.95
+
+A request for 99% currently fails closed because no q has n>=99.
+
+Governor artifact:
+
+- ID 11198290633
+- SHA256 7727853f56ecf95c265e207adae0318b2aeb0ddccdd8750a24fc8d242914b365
+
+Claim ceiling:
+
+`EXCHANGEABILITY_CONDITIONAL_COVERAGE_AWARE_GOVERNOR_V1`
+
+### Next edge
+
+B476 should dogfood Governor v1 at calibrated boundaries.
+
+Any new exceedance is compatible with the declared ~5%-class one-step risk.
+
+The next research problem is distinguishing:
+
+- ordinary tail exceedance inside an exchangeable population;
+- systematic environment/workload drift that invalidates exchangeability.
