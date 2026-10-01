@@ -2429,3 +2429,127 @@ because it directly interpolates between:
 
 and therefore connects exactness, residency, latency, KMEP-style operating-point
 search, and the future governor.
+
+## B468-B470 axis leverage and q governor
+
+### B468 — axis leverage
+
+Source effect comparison:
+
+- B463 representation/residency median absolute peak effect = 25,155,584 B
+- max tested tile-row median absolute peak effect = 36,864 B
+- ratio = 682.3889x
+
+Decision:
+
+- deprioritize tile_rows for peak-memory research
+- next axis = resident_lane_concurrency_q
+- frozen coarse q sweep = {1,2,4,7}
+
+Artifact:
+
+- ID 11195825236
+- SHA256 51118d5e34af669fa64e38631a7fc88c7907f3f06a08101a6c8fdb1e3bb87ca8
+
+### B469 — physical q frontier
+
+Four balanced fresh-process repetitions.
+
+Each q occupied every execution position exactly once.
+
+All q:
+
+- semantic exact = 4/4
+- shared output digest
+- observed Pareto set = {1,2,4,7}
+
+Median results:
+
+q=1:
+- peak 67,014,656 B
+- work 0.414408 s
+
+q=2:
+- peak delta vs q1 +10,240 B
+- latency ratio 0.966915
+- ~=3.31% lower median work time
+
+q=4:
+- peak delta +4,202,496 B
+- latency ratio 0.946345
+- ~=5.37% lower median work time
+
+q=7:
+- peak delta +4,493,312 B
+- latency ratio 0.937676
+- ~=6.23% lower median work time
+
+q=2 is a strong memory-efficient knee candidate for this hosted implementation,
+not a universal optimum.
+
+Artifact:
+
+- ID 11195606726
+- sweep SHA256 537bbf6304937a7e3864f38ffb0b41f2cd67492d76f5f1064688b8836ef66394
+
+### B470 — budget-aware q governor v0
+
+Executable software component.
+
+Selection rule:
+
+```text
+minimize observed median latency
+subject to:
+  peak model <= declared budget
+  exactness already qualified
+```
+
+No arbitrary weighted memory/latency score.
+
+Median-policy q breakpoints:
+
+- 67,014,656 B -> q1
+- 67,024,896 B -> q2
+- 71,217,152 B -> q4
+- 71,507,968 B -> q7
+
+Observed-upper policy uses the maximum peak from the B469 4-run panel:
+
+- 67,022,848 B -> q1
+- 67,108,864 B -> q2
+- 71,303,168 B -> q4
+- 71,507,968 B -> q7
+
+The upper mode is an observed conservative mode, not a certified worst-case bound.
+
+Artifact:
+
+- ID 11195063591
+- governor SHA256 5442c5cf8abd6910fd231006bab865cd616a4e01d14bb611ddc57181d54b9f89
+
+### Unified research line now demonstrated
+
+```text
+obligation != residency
+-> exact future-sufficient representation
+-> physical peak/latency tradeoff
+-> intentional PROBE runtime
+-> GitHub Actions dogfood intervention
+-> cross-run offline feedback
+-> axis selection
+-> q Pareto surface
+-> budget-aware governor
+```
+
+### Next edge
+
+B471 should dogfood the governor decision itself:
+
+- declare peak budget
+- select q
+- execute selected q
+- compare observed peak against budget
+- freeze any miss as calibration evidence
+
+This is the next step from observed-frontier decision to governed execution.

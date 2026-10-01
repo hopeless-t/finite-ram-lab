@@ -1,0 +1,26 @@
+{
+  "schema": "finite-ram-lab.b470-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "OBSERVED_FRONTIER_CONSTRAINT_GOVERNOR_V0",
+  "workflow_run_id": 36929942407,
+  "workflow_job_id": 110596452138,
+  "execution_head_sha": "6dcced4ce7ef6e793fcbcb182833c73bf158bd1f",
+  "artifact_id": 11195063591,
+  "artifact_zip_sha256": "0eb9233130c972a6805ab87350fb4b5e59538b9343bd7a3cf7d3c6083fcd7e3c",
+  "governor_sha256": "5442c5cf8abd6910fd231006bab865cd616a4e01d14bb611ddc57181d54b9f89",
+  "tests": {"count": 5, "passed": 5, "failed": 0},
+  "source_sweep_sha256": "537bbf6304937a7e3864f38ffb0b41f2cd67492d76f5f1064688b8836ef66394",
+  "median_policy": [
+    {"minimum_peak_budget_bytes": 67014656, "extra_headroom_vs_q1_bytes": 0, "selected_q": 1},
+    {"minimum_peak_budget_bytes": 67024896, "extra_headroom_vs_q1_bytes": 10240, "selected_q": 2},
+    {"minimum_peak_budget_bytes": 71217152, "extra_headroom_vs_q1_bytes": 4202496, "selected_q": 4},
+    {"minimum_peak_budget_bytes": 71507968, "extra_headroom_vs_q1_bytes": 4493312, "selected_q": 7}
+  ],
+  "observed_upper_policy": [
+    {"minimum_peak_budget_bytes": 67022848, "extra_headroom_vs_q1_bytes": 0, "selected_q": 1},
+    {"minimum_peak_budget_bytes": 67108864, "extra_headroom_vs_q1_bytes": 86016, "selected_q": 2},
+    {"minimum_peak_budget_bytes": 71303168, "extra_headroom_vs_q1_bytes": 4280320, "selected_q": 4},
+    {"minimum_peak_budget_bytes": 71507968, "extra_headroom_vs_q1_bytes": 4485120, "selected_q": 7}
+  ],
+  "next": "B471_DOGFOOD_GOVERNOR_BUDGET_COMPLIANCE"
+}
