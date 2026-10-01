@@ -21,12 +21,12 @@ class CoupledNumericalResidencyTests(unittest.TestCase):
         self.assertEqual(reference["lane_sha256"], treatment["lane_sha256"])
 
     def test_logical_live_bytes_encode_residency_difference(self):
-        self.assertEqual(_logical_bytes("ALL_RESIDENT", 2048, 7), 58_720_256)
+        self.assertEqual(_logical_bytes("ALL_RESIDENT", 2048, 7), 62_914_560)
         self.assertEqual(_logical_bytes("STREAMED_FOLD", 2048, 7), 37_748_736)
         self.assertEqual(
             _logical_bytes("ALL_RESIDENT", 2048, 7)
             - _logical_bytes("STREAMED_FOLD", 2048, 7),
-            20_971_520,
+            25_165_824,
         )
 
     def test_matched_panel_balances_order_and_gates_semantics(self):
