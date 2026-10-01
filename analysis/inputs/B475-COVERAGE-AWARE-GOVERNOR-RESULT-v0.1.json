@@ -1,0 +1,19 @@
+{
+  "schema": "finite-ram-lab.b475-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "EXCHANGEABILITY_CONDITIONAL_COVERAGE_AWARE_GOVERNOR_V1",
+  "workflow_run_id": 36935103431,
+  "workflow_job_id": 110613400182,
+  "execution_head_sha": "5952b5f631ebed512431548730be9d51d10bbdd8",
+  "artifact_id": 11198290633,
+  "artifact_zip_sha256": "25ae7c6bfab05237930dd547911f8739a1beb534196a866052402bd84c90406f",
+  "governor_sha256": "7727853f56ecf95c265e207adae0318b2aeb0ddccdd8750a24fc8d242914b365",
+  "minimum_rank_coverage": 0.95,
+  "breakpoints": [
+    {"minimum_peak_budget_bytes": 67117056, "selected_q": 1, "sample_count": 20, "rank_floor": 0.9523809523809523},
+    {"minimum_peak_budget_bytes": 67194880, "selected_q": 2, "sample_count": 19, "rank_floor": 0.95},
+    {"minimum_peak_budget_bytes": 71389184, "selected_q": 4, "sample_count": 19, "rank_floor": 0.95},
+    {"minimum_peak_budget_bytes": 71544832, "selected_q": 7, "sample_count": 19, "rank_floor": 0.95}
+  ],
+  "next": "B476_COVERAGE_AWARE_GOVERNOR_DOGFOOD"
+}
