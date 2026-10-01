@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B433
-> Stage: LIVE-STATE FRONTIER TAXONOMY v0.2 FROZEN
-> Stop: BUILD BOUNDED CONTROLLER
+> Latest bounce: B434
+> Stage: EXACT BOUNDED FRONTIER CONTROLLER v0.1 FROZEN
+> Stop: HEURISTIC VERSUS EXACT ORACLE
 
 ## Chapter II frontier
 
@@ -1179,3 +1179,69 @@ No paid resource was used.
 Next B434:
 
 Build a bounded controller that enumerates safe plans, rejects tier-capacity violations, preserves numerical/error dimensions, and emits a Pareto frontier. Solve tiny cases exactly and use them as an oracle for later heuristics.
+
+
+## B434 exact bounded frontier controller v0.1
+
+Frozen branch:
+
+- research/bounded-frontier-controller-b434
+
+Frozen files:
+
+- src/finite_ram_lab/bounded_frontier_controller.py
+- tests/test_bounded_frontier_controller.py
+- analysis/inputs/B434-BOUNDED-CONTROLLER-NORMALIZED-v0.1.json
+- docs/B434-EXACT-BOUNDED-FRONTIER-CONTROLLER-v0.1.md
+
+Controller order inside a bounded optimization window:
+
+1. enumerate one option per semantic state
+2. reject unproven semantic release
+3. reject unproven owner merge
+4. reject non-zero error without an explicit bound
+5. aggregate resident bytes per tier
+6. reject per-tier capacity violations
+7. compute full objective vector
+8. remove Pareto-dominated plans
+
+Objective vector:
+
+- peak bytes per tier
+- byte-seconds per tier
+- traffic
+- compute/recompute
+- latency
+- error
+
+No scalar weighting is imposed by the exact controller.
+
+Normalized example:
+
+- VRAM capacity=6
+- RAM capacity=16
+- resident option uses VRAM=8 and is infeasible
+- offload option uses VRAM=2/RAM=8 and pays traffic=20, latency=3
+- compressed option uses VRAM=4 and pays bounded error=0.1
+- exact frontier keeps both offload and compression because neither dominates the other
+
+Validation:
+
+- unsafe release gate PASS
+- unsafe share gate PASS
+- unknown lossy-error gate PASS
+- per-tier capacity gate PASS
+- dominated-plan removal PASS
+- memory-exchange frontier retention PASS
+- proven summary release admitted PASS
+- deterministic 10,000 randomized Pareto cases: no dominated point survived
+
+Claim ceiling: EXACT_TINY_WINDOW_MODEL_ONLY.
+
+No physical benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B435:
+
+Build a cheap pressure-aware heuristic and compare it against the B434 exact oracle on small random problems. Measure feasibility, dominated-output rate, and regret/distance from the exact Pareto set, especially near independent VRAM/RAM capacity cliffs.
