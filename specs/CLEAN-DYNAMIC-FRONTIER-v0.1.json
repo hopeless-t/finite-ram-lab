@@ -1,0 +1,92 @@
+{
+  "schema": "finite-ram.clean-dynamic-frontier-study/v0.1",
+  "bounce": "B447",
+  "status": "FROZEN_DESIGN_NOT_LAUNCHED",
+  "authority": "HOSTED_RESEARCH_ONLY_LAUNCH_SEPARATE",
+  "capacity_axis": {
+    "name": "memory.high",
+    "units": "MiB",
+    "points": [144, 160, 176]
+  },
+  "fixed_workload": {
+    "runner_family": "ubuntu-24.04",
+    "python": "3.12",
+    "memory_max_mib": 320,
+    "hot_anon_mib": 64,
+    "cold_file_mib": 96,
+    "read_chunk_mib": 4,
+    "cold_file_prepare": "outside measured trial cgroup where possible"
+  },
+  "arms": [
+    "buffered",
+    "dontneed_32m",
+    "dontneed_48m",
+    "dontneed_64m",
+    "dontneed_80m",
+    "dontneed_96m"
+  ],
+  "independent_unit": "runner_block",
+  "blocks_per_capacity": 8,
+  "expected_trials": 144,
+  "measurement_order": [
+    "before_scan",
+    "scan with identical low-perturbation checkpoint observer at every capacity",
+    "post_scan_pre_observer",
+    "file/hot residency diagnostics",
+    "post_scan_post_observer",
+    "post_retouch"
+  ],
+  "derived_primary_measurements": [
+    "peak_ram_bytes",
+    "clean_floor_bytes",
+    "ephemeral_excess_bytes",
+    "memory_high_events",
+    "pgscan",
+    "advice_calls"
+  ],
+  "descriptive_measurements": [
+    "scan_elapsed_ns",
+    "throughput"
+  ],
+  "diagnostic_measurements": [
+    "observer_current_delta_bytes",
+    "file_post_residency",
+    "hot_retouch",
+    "pgsteal",
+    "swap",
+    "oom"
+  ],
+  "frontier_primary_objectives": [
+    {"name":"peak_ram_bytes","direction":"MINIMIZE"},
+    {"name":"ephemeral_excess_bytes","direction":"MINIMIZE"},
+    {"name":"memory_high_events","direction":"MINIMIZE"},
+    {"name":"pgscan","direction":"MINIMIZE"},
+    {"name":"advice_calls","direction":"MINIMIZE"}
+  ],
+  "frontier_descriptive_objectives": [
+    {"name":"scan_elapsed_ns","direction":"MINIMIZE"}
+  ],
+  "qualification": {
+    "stable_plan_identity_fields": [
+      "source_commit",
+      "arm",
+      "observer_contract_version",
+      "runner_image",
+      "python_version",
+      "hot_anon_mib",
+      "cold_file_mib",
+      "read_chunk_mib",
+      "memory_max_mib"
+    ],
+    "minimum_independent_units_per_cell": 8,
+    "frontier_stability_threshold": 0.90,
+    "missing_data_rule": "FAIL_CLOSED",
+    "raw_receipt_required": true,
+    "claim_ceiling": "HOSTED_DIRECTIONAL_DYNAMIC_FRONTIER_ONLY"
+  },
+  "launch": {
+    "authorized_by_design": false,
+    "paid_resource_authority": false,
+    "retry_authority": false
+  }
+}
