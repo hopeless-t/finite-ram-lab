@@ -1,0 +1,50 @@
+{
+  "schema": "finite-ram.dynamic-frontier-qualification-contract/v0.1",
+  "bounce": "B443",
+  "claim_ceiling": "QUALIFICATION_CONTRACT_ONLY",
+  "required_fields": {
+    "capacity_axis": "one explicitly controlled capacity variable",
+    "capacity_points": "at least two sorted unique points",
+    "stable_plan_identity_fields": "predeclared identity fields that must remain comparable across capacities",
+    "objectives": "each objective must have PRIMARY/DESCRIPTIVE/EXCLUDED role, direction, and measurement semantics",
+    "independent_resampling_unit": "the experimental unit used for uncertainty/stability analysis",
+    "minimum_independent_units_per_cell": "predeclared per-study requirement; no universal default inferred here",
+    "frontier_stability_threshold": "predeclared promotion threshold in (0.5,1]",
+    "missing_data_rule": "FAIL_CLOSED",
+    "claim_ceiling": "maximum inference authority if qualification passes"
+  },
+  "mandatory_guards": [
+    "missing PRIMARY objective -> QUALIFICATION_HOLD",
+    "incomplete capacity matrix -> QUALIFICATION_HOLD",
+    "insufficient independent replication -> QUALIFICATION_HOLD",
+    "unstable plan identity -> QUALIFICATION_HOLD",
+    "unstable workload identity when required -> QUALIFICATION_HOLD",
+    "missing raw receipts when required -> QUALIFICATION_HOLD",
+    "DESCRIPTIVE objectives cannot substitute for missing PRIMARY evidence",
+    "frontier promotion requires measured stability >= the predeclared threshold"
+  ],
+  "historical_strata005_replay": {
+    "capacity_axis": "memory.high",
+    "capacity_points_mib": [144,176],
+    "stable_plan_identity_fields": ["arm"],
+    "primary_objectives": [
+      "peak_ram_bytes",
+      "memory_high_events",
+      "pgscan"
+    ],
+    "descriptive_objectives": [
+      "scan_elapsed_ns"
+    ],
+    "independent_resampling_unit": "runner_block",
+    "independent_units_per_cell": 4,
+    "illustrative_predeclared_stability_threshold": 0.95,
+    "raw_receipts_present": true,
+    "plan_identity_stable": true,
+    "workload_identity_stable": true,
+    "primary_frontier_loss_probability": 0.0,
+    "qualification_status": "QUALIFIED",
+    "frontier_promotion_eligible": false
+  },
+  "important_boundary": "qualification of data completeness and identity does not imply a positive dynamic-frontier claim",
+  "new_physical_run": false
+}
