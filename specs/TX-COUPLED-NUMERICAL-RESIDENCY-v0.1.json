@@ -1,0 +1,43 @@
+{
+  "schema": "finite-ram-lab.experiment/v0.1",
+  "id": "TX-COUPLED-NUMERICAL-RESIDENCY-v0.1",
+  "stage": "B463",
+  "status": "HOSTED_NUMERICAL_IMPLEMENTATION",
+  "claim_ceiling": "HOSTED_NUMPY_RANK1_RESIDUE_CRT_IMPLEMENTATION",
+  "question": "When residue production and incremental CRT reconstruction share the measured memory path, does streamed folding preserve exact output and reduce normalized peak growth without an unacceptable latency penalty?",
+  "reference": "ALL_RESIDENT",
+  "treatment": "STREAMED_FOLD",
+  "pair_count": 6,
+  "fresh_process_per_arm": true,
+  "execution_order": "alternating reference-first / treatment-first",
+  "matrix_geometry": "2048x1 times 1x2048 rank-1 GEMM",
+  "size": 2048,
+  "lane_count": 7,
+  "moduli": [127, 125, 121, 119, 113, 109, 107],
+  "seed": 463,
+  "value_limit": 50,
+  "crt_accumulator_dtype": "int64",
+  "residue_dtype": "uint8",
+  "tile_rows": 64,
+  "hard_gates": [
+    "pairwise-coprime moduli",
+    "CRT product within signed int64",
+    "CRT product > 2x conservative exact-result bound",
+    "reference exact output",
+    "treatment exact output",
+    "reference/treatment output digest equality"
+  ],
+  "primary_endpoint": "normalized VmHWM growth bytes",
+  "secondary_endpoints": [
+    "work_seconds",
+    "treatment/reference latency ratio",
+    "logical live bytes"
+  ],
+  "strict_peak_gate": "treatment_minus_reference_peak_bytes < 0 in every matched pair",
+  "forbidden_claims": [
+    "rank-1 NumPy implementation is representative of all Ozaki kernels",
+    "hosted runner latency generalizes to GPU or accelerator kernels",
+    "lower peak alone proves a net performance win",
+    "ternary or review workloads inherit CRT exactness"
+  ]
+}
