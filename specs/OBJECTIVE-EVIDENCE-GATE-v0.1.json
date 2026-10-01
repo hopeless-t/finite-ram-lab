@@ -1,0 +1,56 @@
+{
+  "schema": "finite-ram.objective-evidence-gate/v0.1",
+  "bounce": "B441",
+  "claim_ceiling": "EVIDENCE_GATING_RULE_WITH_HISTORICAL_REPLAY",
+  "roles": {
+    "PRIMARY": "pre-specified and sufficiently reliable for scientific decision",
+    "DESCRIPTIVE": "recorded for exploration/sensitivity but not authorized to carry the primary claim",
+    "EXCLUDED": "unavailable, contaminated, semantically incomparable, or explicitly out of scope"
+  },
+  "gate": [
+    "require at least one PRIMARY objective",
+    "if any PRIMARY objective is missing from either capacity observation set -> INSTRUMENTATION_HOLD",
+    "compute PRIMARY projection first",
+    "compute PRIMARY + available DESCRIPTIVE sensitivity projection separately",
+    "never silently fill missing objectives with zero",
+    "never add EXCLUDED objectives to sensitivity projection"
+  ],
+  "classifications": {
+    "NO_MEASURED_MONOTONICITY_VIOLATION": "no frontier loss in the primary or descriptive extension",
+    "PROJECTION_FRAGILE": "no primary loss, but a loss appears after adding descriptive objectives",
+    "PRIMARY_VIOLATION_STABLE_TO_DESCRIPTIVE_EXTENSION": "primary frontier loss remains the same after descriptive extension",
+    "PRIMARY_VIOLATION_PROJECTION_SENSITIVE": "a primary loss exists but the lost set changes under descriptive extension",
+    "PRIMARY_OBJECTIVE_MISSING": "fail-closed instrumentation hold"
+  },
+  "strata005_application": {
+    "PRIMARY": [
+      "peak_ram_bytes",
+      "memory_high_events",
+      "pgscan"
+    ],
+    "DESCRIPTIVE": [
+      "scan_elapsed_ns"
+    ],
+    "EXCLUDED": [],
+    "result": "PROJECTION_FRAGILE",
+    "primary_lost_frontier_ids": [],
+    "descriptive_extension_lost_frontier_ids": [
+      "dontneed_80m"
+    ],
+    "original_study_boundary": "hosted scan timing was explicitly noisy, non-monotonic, and descriptive only"
+  },
+  "historical_search": {
+    "strata006": {
+      "status": "NOT_A_B439_CAPACITY_PAIR",
+      "reason": "MemoryHigh is fixed while hot/live semantic workload state changes; this is a live-set causal-axis experiment, not capacity-only expansion"
+    },
+    "stronger_primary_capacity_pair_found": false
+  },
+  "validation": {
+    "strata005_projection_fragile": "PASS",
+    "missing_primary_hold": "PASS",
+    "missing_descriptive_nonfatal": "PASS",
+    "excluded_not_added": "PASS"
+  },
+  "new_physical_run": false
+}
