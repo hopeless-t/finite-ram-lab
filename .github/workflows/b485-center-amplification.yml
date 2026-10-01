@@ -1,0 +1,74 @@
+name: B485 Center Amplification
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/center-amplification-b485
+    paths:
+      - "src/finite_ram_lab/center_amplification_probe.py"
+      - "src/finite_ram_lab/center_amplification_aggregate.py"
+      - "tests/test_center_amplification.py"
+      - "docs/B485-CENTER-AMPLIFICATION-v0.1.md"
+      - ".github/workflows/b485-center-amplification.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run amplification block
+        run: |
+          mkdir -p runs/B485
+          python -m finite_ram_lab.center_amplification_probe \
+            --block-id ${{ matrix.block }} \
+            --out runs/B485/block-${{ matrix.block }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b485-amplification-block-${{ matrix.block }}
+          path: runs/B485/block-${{ matrix.block }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_center_amplification -v
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b485-amplification-block-*
+          path: runs/B485/blocks
+          merge-multiple: true
+      - name: Aggregate amplification series
+        run: |
+          python -m finite_ram_lab.center_amplification_aggregate \
+            --blocks-dir runs/B485/blocks \
+            --out runs/B485/center-amplification.json
+          python -m json.tool runs/B485/center-amplification.json >/dev/null
+          sha256sum runs/B485/center-amplification.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b485-center-amplification
+          path: runs/B485/center-amplification.json
+          if-no-files-found: error
