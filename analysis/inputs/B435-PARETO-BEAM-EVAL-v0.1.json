@@ -1,0 +1,67 @@
+{
+  "schema": "finite-ram.pareto-beam-controller-eval/v0.1",
+  "bounce": "B435",
+  "claim_ceiling": "SYNTHETIC_HEURISTIC_VS_EXACT_ORACLE",
+  "corpus": {
+    "seed": 435300,
+    "generated_instances": 1000,
+    "instances_with_nonempty_exact_frontier": 695,
+    "states_per_instance": "uniform integer 2..5",
+    "options_per_state": "uniform integer 2..5",
+    "options": "all semantically safe for this stress test",
+    "capacity_RAM": "uniform integer 15..50",
+    "capacity_VRAM": "uniform integer 15..50",
+    "exact_frontier_points_total": 11408
+  },
+  "beam_results": [
+    {
+      "beam_width": 8,
+      "exact_point_coverage": 0.35676718092566617,
+      "approx_points_dominated_by_exact_fraction": 0.002206423142927188,
+      "mean_domination_gap": 0.0005799173994659245,
+      "max_domination_gap": 0.66
+    },
+    {
+      "beam_width": 16,
+      "exact_point_coverage": 0.5627629733520336,
+      "approx_points_dominated_by_exact_fraction": 0.0001557389814670612,
+      "mean_domination_gap": 0.00000718795299078744,
+      "max_domination_gap": 0.046153846153846156
+    },
+    {
+      "beam_width": 32,
+      "exact_point_coverage": 0.7601683029453016,
+      "approx_points_dominated_by_exact_fraction": 0.000345821325648415,
+      "mean_domination_gap": 0.00010569757314662006,
+      "max_domination_gap": 0.38461538461538464
+    },
+    {
+      "beam_width": 64,
+      "exact_point_coverage": 0.9133941093969145,
+      "approx_points_dominated_by_exact_fraction": 0.0,
+      "mean_domination_gap": 0.0,
+      "max_domination_gap": 0.0
+    },
+    {
+      "beam_width": 128,
+      "exact_point_coverage": 0.9834326788218793,
+      "approx_points_dominated_by_exact_fraction": 0.0,
+      "mean_domination_gap": 0.0,
+      "max_domination_gap": 0.0
+    },
+    {
+      "beam_width": 256,
+      "exact_point_coverage": 0.9980715287517532,
+      "approx_points_dominated_by_exact_fraction": 0.0,
+      "mean_domination_gap": 0.0,
+      "max_domination_gap": 0.0
+    }
+  ],
+  "interpretation": [
+    "coverage measures how many exact objective vectors survived the beam",
+    "dominated fraction measures whether the approximate output contains plans strictly dominated by the exact frontier",
+    "zero domination gap does not mean full coverage; it means every returned approximate point is itself on the exact frontier",
+    "this synthetic corpus does not establish performance or quality on real workloads"
+  ],
+  "physical_benchmark": false
+}
