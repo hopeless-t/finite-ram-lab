@@ -72,6 +72,13 @@ def symbolic_frontier(
     memory_high_mib: float,
     classes: Sequence[CadenceClass],
 ) -> tuple[int, ...]:
+    """Canonical representatives of distinct Pareto objective vectors.
+
+    This intentionally returns a quotient frontier, not every tied plan ID.
+    Cadences with identical objective vectors may all be Pareto-optimal as
+    plan identities while one canonical representative is sufficient for the
+    optimizer's objective space.
+    """
     if memory_high_mib <= 0:
         raise ValueError("memory_high_invalid")
     if not classes:
@@ -139,7 +146,35 @@ def topology_regimes(
     return tuple(regimes)
 
 
-def brute_frontier(
+def objective_vector(
+    *,
+    file_span_mib: float,
+    cadence_mib: int,
+    transient_base_mib: float,
+    clean_floor_mib: float,
+    memory_high_mib: float,
+) -> tuple[float, ...]:
+    if memory_high_mib < clean_floor_mib:
+        raise ValueError("capacity_below_clean_floor")
+
+    intrinsic = transient_base_mib + cadence_mib
+    peak = min(intrinsic, memory_high_mib)
+    pressure = int(intrinsic > memory_high_mib)
+    return (
+        float(peak),
+        float(peak - clean_floor_mib),
+        float(pressure),
+        float(pressure),
+        float(
+            advice_calls(
+                file_span_mib=file_span_mib,
+                cadence_mib=cadence_mib,
+            )
+        ),
+    )
+
+
+def brute_plan_frontier(
     *,
     file_span_mib: float,
     cadences_mib: Sequence[int],
@@ -147,31 +182,19 @@ def brute_frontier(
     clean_floor_mib: float,
     memory_high_mib: float,
 ) -> tuple[int, ...]:
-    if memory_high_mib < clean_floor_mib:
-        raise ValueError("capacity_below_clean_floor")
-
-    plans = []
-    for cadence in cadences_mib:
-        intrinsic = transient_base_mib + cadence
-        peak = min(intrinsic, memory_high_mib)
-        pressure = int(intrinsic > memory_high_mib)
-        plans.append(
-            (
-                cadence,
-                (
-                    peak,
-                    peak - clean_floor_mib,
-                    float(pressure),
-                    float(pressure),
-                    float(
-                        advice_calls(
-                            file_span_mib=file_span_mib,
-                            cadence_mib=cadence,
-                        )
-                    ),
-                ),
-            )
+    plans = [
+        (
+            cadence,
+            objective_vector(
+                file_span_mib=file_span_mib,
+                cadence_mib=cadence,
+                transient_base_mib=transient_base_mib,
+                clean_floor_mib=clean_floor_mib,
+                memory_high_mib=memory_high_mib,
+            ),
         )
+        for cadence in cadences_mib
+    ]
 
     frontier = []
     for i, (cadence, vector) in enumerate(plans):
@@ -188,6 +211,70 @@ def brute_frontier(
             frontier.append(cadence)
 
     return tuple(sorted(frontier))
+
+
+def brute_objective_frontier(
+    *,
+    file_span_mib: float,
+    cadences_mib: Sequence[int],
+    transient_base_mib: float,
+    clean_floor_mib: float,
+    memory_high_mib: float,
+) -> tuple[int, ...]:
+    """Canonicalize tied Pareto plan IDs by identical objective vector."""
+    plan_frontier = brute_plan_frontier(
+        file_span_mib=file_span_mib,
+        cadences_mib=cadences_mib,
+        transient_base_mib=transient_base_mib,
+        clean_floor_mib=clean_floor_mib,
+        memory_high_mib=memory_high_mib,
+    )
+    representative_by_vector: dict[tuple[float, ...], int] = {}
+    for cadence in plan_frontier:
+        vector = objective_vector(
+            file_span_mib=file_span_mib,
+            cadence_mib=cadence,
+            transient_base_mib=transient_base_mib,
+            clean_floor_mib=clean_floor_mib,
+            memory_high_mib=memory_high_mib,
+        )
+        incumbent = representative_by_vector.get(vector)
+        if incumbent is None or cadence < incumbent:
+            representative_by_vector[vector] = cadence
+    return tuple(sorted(representative_by_vector.values()))
+
+
+def frontier_tie_groups(
+    *,
+    file_span_mib: float,
+    cadences_mib: Sequence[int],
+    transient_base_mib: float,
+    clean_floor_mib: float,
+    memory_high_mib: float,
+) -> tuple[tuple[int, ...], ...]:
+    plan_frontier = brute_plan_frontier(
+        file_span_mib=file_span_mib,
+        cadences_mib=cadences_mib,
+        transient_base_mib=transient_base_mib,
+        clean_floor_mib=clean_floor_mib,
+        memory_high_mib=memory_high_mib,
+    )
+    groups: dict[tuple[float, ...], list[int]] = {}
+    for cadence in plan_frontier:
+        vector = objective_vector(
+            file_span_mib=file_span_mib,
+            cadence_mib=cadence,
+            transient_base_mib=transient_base_mib,
+            clean_floor_mib=clean_floor_mib,
+            memory_high_mib=memory_high_mib,
+        )
+        groups.setdefault(vector, []).append(cadence)
+    return tuple(
+        sorted(
+            (tuple(sorted(values)) for values in groups.values()),
+            key=lambda values: values[0],
+        )
+    )
 
 
 def compilation_summary(
@@ -219,4 +306,5 @@ def compilation_summary(
         "mechanism_only_mib": mechanism_only,
         "classes": classes,
         "regimes": topology_regimes(classes),
+        "frontier_semantics": "canonical objective-vector quotient",
     }
