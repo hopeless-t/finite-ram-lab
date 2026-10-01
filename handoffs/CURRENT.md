@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B425
-> Stage: AMBIENT STOCK CATCHER / EPHEMERAL ONE-CANARY SESSION ORCHESTRATOR FROZEN
-> Stop: WIRE AND SOFTWARE-QUALIFY FIXED LOCAL MCP GATEWAY ACTION
+> Latest bounce: B426
+> Stage: LIVE-STATE FRONTIER FORMAL MODEL v0.1 FROZEN
+> Stop: ENCODE COMMON EXEMPLARS AND MEASURE MODEL DELTAS
 
 ## Chapter II frontier
 
@@ -636,3 +636,65 @@ Next atomic bounce:
 3. qualify the action with local unit tests while preserving unrelated dirty LDC work;
 4. publish only the selected finite-ram gateway files to an isolated mvca-hq research branch;
 5. only after qualification, dispatch one physical 60-second canary session.
+
+
+## B426 Live-State Frontier Formal Model v0.1
+
+A new independent theoretical/software track is frozen on branch:
+
+- research/live-state-frontier-b426
+
+Frozen files:
+
+- specs/TX-LIVE-STATE-FRONTIER-v0.1.json
+- src/finite_ram_lab/live_state_frontier.py
+- tests/test_live_state_frontier.py
+- docs/B426-LIVE-STATE-FRONTIER-FORMAL-MODEL-v0.1.md
+
+Core model:
+
+- optimize the live-state frontier rather than RAM alone;
+- objective vector=(peak live bytes, byte-seconds, memory traffic, compute/recompute, latency, error);
+- rewrite the state graph before schedule/placement/lifetime optimization;
+- release is fail-closed.
+
+Safe release modes:
+
+- REDUCE_AND_RELEASE only with an explicit smaller future-sufficient summary;
+- DROP_REMATERIALIZE only with explicit recomputability;
+- otherwise RETAIN_OR_MOVE.
+
+The model maps Ozaki I/II, EmuGEMM, FlashAttention, PagedAttention, Checkmate/DTR, FlexGen, CUDA/ROCm managed memory, and recent Strata residency/lifetime techniques into six moves:
+
+- COMPRESS
+- REDUCE
+- REMATERIALIZE
+- MOVE
+- SHARE
+- REORDER
+
+Isolated software validation during authoring:
+
+- 11 unit tests PASS;
+- deterministic 20,000-case capacity fuzz: no greedy capacity violation;
+- deterministic 2,000-case small exact-vs-greedy fuzz: exact placement was never worse than greedy.
+
+Claim ceiling remains SOFTWARE_MODEL_ONLY.
+
+No physical RAM/VRAM experiment ran.
+No B425 ambient canary ran.
+No persistent probe/service was installed.
+No paid resource was used.
+
+New hypotheses:
+
+- H426-1 rewrite-before-placement can reduce peak/byte-seconds when transformation overhead does not dominate;
+- H426-2 marginal value of freed memory rises sharply near the effective-capacity cliff;
+- H426-3 phase-dependent state value can make phase-aware residency superior to a globally fixed hot set.
+
+Next bounded bounce B427:
+
+1. encode Ozaki I, Ozaki II, FlashAttention, and Strata as common model inputs;
+2. compute symbolic/model deltas in (P,A,Q,C,T,epsilon);
+3. preserve unknown parameters rather than inventing hardware measurements;
+4. keep this track independent from the pending B425 physical ambient catcher.
