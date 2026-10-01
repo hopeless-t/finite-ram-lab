@@ -1,0 +1,46 @@
+{
+  "schema": "finite-ram.frontier-decomposition/v0.1",
+  "bounce": "B446",
+  "claim_ceiling": "PARTIALLY_IDENTIFIED_HISTORICAL_DECOMPOSITION",
+  "strata005": {
+    "transient_base_mib": 78.609,
+    "legacy_post_observer_total_floor_cells_mib": [
+      76.609375,
+      76.734375,
+      76.609375,
+      76.705078125,
+      76.609375,
+      76.734375,
+      76.732421875,
+      76.736328125
+    ],
+    "legacy_post_observer_floor_median_mib": 76.71875,
+    "transient_excess_over_legacy_floor_mib": 1.89025
+  },
+  "structural_identity": {
+    "equation": "B_peak = B_clean + O_observer + E_transient",
+    "legacy_measurement": "B_legacy_post = B_clean + O_observer",
+    "identified_from_STRATA005": [
+      "B_peak",
+      "B_legacy_post",
+      "E_transient_relative_to_legacy = B_peak - B_legacy_post"
+    ],
+    "not_identified_from_STRATA005": [
+      "B_clean",
+      "O_observer",
+      "E_transient_relative_to_clean"
+    ]
+  },
+  "rec004_context": {
+    "result": "post-observer measurement can add coarse cgroup charge; prospective floor must be sampled pre-observer",
+    "same_substrate_as_STRATA005": false,
+    "allowed_use": "measurement-semantics correction only; do not numerically subtract REC-004 observer delta from STRATA-005"
+  },
+  "interpretation": [
+    "STRATA-005 supports an approximately 1.89025 MiB transient excess relative to its own legacy post-observer floor.",
+    "That number is not a clean ephemeral-state size because the historical floor contains unknown observer contribution.",
+    "The decomposition is partially identified, not fully identified.",
+    "A future clean experiment must sample pre-observer floor and transient peak in the same trial/observer contract."
+  ],
+  "new_physical_run": false
+}
