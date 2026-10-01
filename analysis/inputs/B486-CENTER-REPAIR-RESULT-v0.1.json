@@ -1,0 +1,28 @@
+{
+  "schema": "finite-ram-lab.b486-result/v0.1",
+  "status": "PASS",
+  "classification": "EXACT_TILED_CENTER_REPAIR_QUALIFIED",
+  "claim_ceiling": "ISOLATED_EXACT_CENTER_REPAIR",
+  "workflow_run_id": 36941106290,
+  "aggregate_job_id": 110632845950,
+  "execution_head_sha": "a5882a81ebc18066b4f1f7397fc65063acf15b7d",
+  "aggregate_artifact_id": 11199378740,
+  "aggregate_artifact_zip_sha256": "5ae5eddb436fcbf52d6a5b45c30d515caf3ee099d734abefad8a6cb6ae309937",
+  "aggregate_sha256": "8c61d55ff121a77cb9246350798ad4314ca90d814361b2c270f9aafa1a73f728",
+  "runner_block_count": 8,
+  "summary": {
+    "median_old_content_pair_hwm_delta_bytes": -126976,
+    "median_new_content_pair_hwm_delta_bytes": -4096,
+    "median_peak_savings_at_seed474_count_bytes": 20428800,
+    "median_peak_savings_at_high_count_bytes": 27918336,
+    "median_new_high_over_476_hwm_delta_bytes": 0,
+    "median_latency_ratio_tiled_over_old_high_count": 0.3311305371385661,
+    "repair_qualified": true
+  },
+  "tests": {
+    "old_content_pair_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true},
+    "repair_saves_peak_474": {"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true},
+    "repair_saves_peak_high": {"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true}
+  },
+  "next": "B487_REPAIRED_Q_FRONTIER"
+}
