@@ -1,0 +1,19 @@
+{
+  "schema": "finite-ram-lab.b468-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "OFFLINE_AXIS_LEVERAGE_ANALYSIS",
+  "workflow_run_id": 36929197015,
+  "workflow_job_id": 110593981361,
+  "execution_head_sha": "5e3538fbe89c8b4d21d425c401ea89cfab7724ab",
+  "artifact_id": 11195825236,
+  "artifact_zip_sha256": "a268842f10161db17c187db0d4d192d1db7836b077217fb87634c004c531cdb5",
+  "axis_result_sha256": "51118d5e34af669fa64e38631a7fc88c7907f3f06a08101a6c8fdb1e3bb87ca8",
+  "representation_effect_bytes": 25155584,
+  "max_tested_tile_effect_bytes": 36864,
+  "representation_over_tile_ratio": 682.3888888888889,
+  "deprioritize": "tile_rows_for_peak_memory",
+  "next_axis": "residue_lane_concurrency_q",
+  "coarse_sweep": [1, 2, 4, 7],
+  "execute_now": false,
+  "next": "B469_RESIDUE_LANE_CONCURRENCY_SWEEP"
+}
