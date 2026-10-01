@@ -1,0 +1,119 @@
+{
+  "schema": "finite-ram.historical-dynamic-replay/v0.1",
+  "bounce": "B440",
+  "claim_ceiling": "HISTORICAL_AGGREGATE_REANALYSIS_DESCRIPTIVE_TIMING_ONLY",
+  "source": {
+    "experiment": "STRATA-005-EXTERNAL-VALIDITY-v1",
+    "workflow_run": 36431449193,
+    "artifact_id": 10973632531,
+    "artifact_name": "STRATA-005-EXTERNAL-VALIDITY-36431449193",
+    "artifact_digest": "sha256:8702206b4cb645796f0c2ca17f60bc155898d380225f6216804b790396592554",
+    "trial_count": 40,
+    "capacity_axis": "MemoryHigh",
+    "capacities_mib": [144, 176],
+    "frozen_same_across_pair": [
+      "runner/workload family",
+      "64 MiB hot anonymous allocation",
+      "96 MiB cold file",
+      "4 MiB read chunk",
+      "DONTNEED implementation",
+      "integrity checks",
+      "arm identity"
+    ]
+  },
+  "selected_aggregate_observations": {
+    "144": {
+      "dontneed_48m": {
+        "peak_ram_bytes": 132747264,
+        "memory_high_events": 0,
+        "pgscan": 0,
+        "scan_elapsed_ns": 79322520
+      },
+      "dontneed_64m": {
+        "peak_ram_bytes": 149536768,
+        "memory_high_events": 0,
+        "pgscan": 0,
+        "scan_elapsed_ns": 72180360
+      },
+      "dontneed_80m": {
+        "peak_ram_bytes": 150855680,
+        "memory_high_events": 7,
+        "pgscan": 4096,
+        "scan_elapsed_ns": 42382805.5
+      }
+    },
+    "176": {
+      "dontneed_48m": {
+        "peak_ram_bytes": 132759552,
+        "memory_high_events": 0,
+        "pgscan": 0,
+        "scan_elapsed_ns": 80671924
+      },
+      "dontneed_64m": {
+        "peak_ram_bytes": 149667840,
+        "memory_high_events": 0,
+        "pgscan": 0,
+        "scan_elapsed_ns": 34930647.5
+      },
+      "dontneed_80m": {
+        "peak_ram_bytes": 166313984,
+        "memory_high_events": 0,
+        "pgscan": 0,
+        "scan_elapsed_ns": 63095709
+      }
+    }
+  },
+  "projection_results": {
+    "primary_pressure_projection": {
+      "objectives": [
+        "peak_ram_bytes",
+        "memory_high_events",
+        "pgscan"
+      ],
+      "frontier_144": ["dontneed_48m"],
+      "frontier_176": ["dontneed_48m"],
+      "lost_frontier_ids": [],
+      "monotonicity_violation": false
+    },
+    "extended_timing_projection": {
+      "objectives": [
+        "peak_ram_bytes",
+        "memory_high_events",
+        "pgscan",
+        "scan_elapsed_ns"
+      ],
+      "frontier_144": [
+        "dontneed_48m",
+        "dontneed_64m",
+        "dontneed_80m"
+      ],
+      "frontier_176": [
+        "dontneed_48m",
+        "dontneed_64m"
+      ],
+      "lost_frontier_ids": ["dontneed_80m"],
+      "classification": "LOST_WITH_SELF_AND_DOMINATOR_COST_SHIFT",
+      "dominator": "dontneed_64m",
+      "dontneed_80_changes": {
+        "peak_ram_bytes": 15458304,
+        "memory_high_events": -7,
+        "pgscan": -4096,
+        "scan_elapsed_ns": 20712903.5
+      },
+      "dontneed_64_changes": {
+        "peak_ram_bytes": 131072,
+        "scan_elapsed_ns": -37249712.5
+      }
+    }
+  },
+  "scientific_interpretation": [
+    "The historical artifact is sufficient to exercise B439-style stable-plan dynamic replay.",
+    "The apparent frontier loss is projection-dependent and appears only when scan timing is admitted as an objective.",
+    "The original STRATA-005 result explicitly treated hosted scan timing as noisy, non-monotonic, and descriptive only.",
+    "Therefore B440 does not claim a robust runtime monotonicity violation.",
+    "Primary pressure metrics show no frontier loss under this aggregate projection."
+  ],
+  "physical_run_newly_executed": false,
+  "b425_ambient_canary": false,
+  "paid_resource": false
+}
