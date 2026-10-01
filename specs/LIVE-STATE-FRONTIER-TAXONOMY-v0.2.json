@@ -1,0 +1,83 @@
+{
+  "schema": "finite-ram.live-state-frontier-taxonomy/v0.2",
+  "bounce": "B433",
+  "claim_ceiling": "FORMAL_TAXONOMY_AND_SOURCE_BACKED_CROSS_DOMAIN_MODEL",
+  "planes": {
+    "semantic": [
+      "logical_state",
+      "future_obligation",
+      "future_sufficient_summary",
+      "recomputability",
+      "owner_set",
+      "semantic_live_interval"
+    ],
+    "physical": [
+      "representation",
+      "resident_tier",
+      "backing_tier",
+      "resident_bytes",
+      "replica_count",
+      "phase",
+      "physical_live_interval",
+      "tier_capacity"
+    ]
+  },
+  "semantic_release_rule": {
+    "REDUCE": "explicit smaller future-sufficient summary exists",
+    "REMATERIALIZE": "explicit recomputability exists and no stronger reduction applies",
+    "RETAIN": "default when release proof is absent"
+  },
+  "control_order": [
+    "SEMANTIC_REDUCTION",
+    "OWNERSHIP",
+    "REPRESENTATION",
+    "TEMPORALIZATION",
+    "PLACEMENT",
+    "PHASE_BORROWING",
+    "LIFETIME"
+  ],
+  "actions": {
+    "SEMANTIC_REDUCTION": ["REDUCE", "REMATERIALIZE"],
+    "OWNERSHIP": ["SHARE", "DEDUP_OWNERSHIP"],
+    "REPRESENTATION": ["COMPRESS"],
+    "TEMPORALIZATION": ["REORDER", "TEMPORALIZE"],
+    "PLACEMENT": ["MOVE", "PLACE"],
+    "PHASE_BORROWING": ["BORROW"],
+    "LIFETIME": ["UNLOAD"]
+  },
+  "cross_domain_mappings": {
+    "ozaki_ii": ["REDUCE", "REORDER"],
+    "flashattention": ["REDUCE", "REORDER"],
+    "pagedattention": ["SHARE", "MOVE"],
+    "checkmate_dtr": ["REMATERIALIZE"],
+    "flexgen": ["COMPRESS", "MOVE"],
+    "gemmul8_memory_saving": ["REORDER"],
+    "strata_kv_streaming": ["COMPRESS", "MOVE"],
+    "strata_expert_residency": ["SHARE", "MOVE"],
+    "strata_prompt_cache_lending": ["BORROW"],
+    "strata_idle_unload": ["UNLOAD"]
+  },
+  "optimization_objective": [
+    "peak_live_bytes_by_tier",
+    "byte_seconds_by_tier",
+    "memory_traffic_bytes",
+    "compute_or_recompute_cost",
+    "latency",
+    "numerical_or_semantic_error"
+  ],
+  "invariants": [
+    "semantic state is counted once even when physically replicated",
+    "backing storage size is not resident RAM unless residency is observed",
+    "tier capacities are independent and cannot be collapsed into one physical byte scalar",
+    "unknown recoverability does not authorize release",
+    "ownership is separate from physical copy count",
+    "phase borrowing may repurpose capacity without increasing allocation peak",
+    "idle unload changes byte-seconds even when loaded peak is unchanged"
+  ],
+  "validation": {
+    "cross_domain_unknown_actions": 0,
+    "randomized_control_order_cases": 20000,
+    "result": "PASS"
+  },
+  "physical_benchmark": false
+}
