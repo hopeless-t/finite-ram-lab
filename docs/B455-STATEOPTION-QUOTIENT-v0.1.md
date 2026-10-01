@@ -174,3 +174,38 @@ Questions:
 - does provenance survive approximate search;
 - can the combination-count reduction be predicted from local group entropy/equivalence structure;
 - which workloads benefit most: many exact ties, many local dominations, or capacity-clamped option families?
+
+
+## 11. Software qualification
+
+An isolated research-lane subtree `b455_qual/` was used for qualification.
+
+The first run exposed a real integration bug in the cadence bridge:
+
+- the bridge referenced `TwinPlan.pressure`;
+- the actual field is `memory_high_events_proxy`.
+
+The branch was corrected prospectively and the suite rerun.
+
+Final qualification:
+
+- 6 tests run
+- 6 PASS
+- 0 failures
+- 0 errors
+- runtime 2.017 s
+- return code 0
+- stderr SHA-256: sha256:bebdc76bdbb47a293355ddc418d2aa09ab6dbd072bd6dd3c677da65942a2d531
+
+The lane reported network capability available at qualification time, but the qualification itself used only local Python unittest execution and made no network calls.
+
+Covered checks include:
+
+- unsafe-option elimination;
+- semantic-signature separation;
+- exact-tie provenance;
+- five-to-three cadence reduction;
+- B436+B447 640 -> 384 combination reduction;
+- exact frontier-vector preservation in 2,000 random StateOption systems.
+
+No physical workload ran.
