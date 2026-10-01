@@ -1,0 +1,57 @@
+{
+  "schema": "finite-ram.live-state-frontier/v0.1",
+  "bounce": "B426",
+  "status": "FORMAL_MODEL",
+  "claim_ceiling": "SOFTWARE_MODEL_ONLY",
+  "physical_experiment": false,
+  "objective_vector": [
+    "peak_live_bytes",
+    "byte_seconds",
+    "memory_traffic_bytes",
+    "compute_or_recompute_cost",
+    "latency",
+    "numerical_or_semantic_error"
+  ],
+  "state_actions": [
+    "KEEP",
+    "MOVE",
+    "REDUCE_AND_RELEASE",
+    "DROP_REMATERIALIZE",
+    "SHARE",
+    "COMPRESS"
+  ],
+  "correctness_rule": {
+    "release_requires_one_of": [
+      "future_sufficient_summary",
+      "explicit_recomputability"
+    ],
+    "unknown_recoverability": "RETAIN_OR_MOVE"
+  },
+  "model_layers": [
+    "graph_rewrite",
+    "schedule",
+    "placement",
+    "lifetime"
+  ],
+  "local_exchange_rules": {
+    "summary_release": "integral(shadow_price * freed_bytes dt) > transform_cost",
+    "rematerialize": "integral(shadow_price * state_bytes dt) > expected_recompute_cost",
+    "fast_residency_density": "expected_accesses * max(0, slow_cost-fast_cost) / state_bytes"
+  },
+  "reference_mappings": {
+    "ozaki_I": ["materialize_precision_slices", "high_overlap_frontier"],
+    "ozaki_II": ["future_sufficient_residue_reduction", "ephemeral_residue_state"],
+    "emugemm": ["fusion", "global_memory_traffic_reduction"],
+    "flashattention": ["tiling", "future_sufficient_running_statistics", "HBM_IO_reduction"],
+    "pagedattention": ["paging", "fragmentation_reduction", "state_sharing"],
+    "checkmate_DTR": ["drop", "rematerialize"],
+    "flexgen": ["multi_tier_placement", "compression", "cost_optimization"],
+    "strata": ["multi_tier_residency", "phase_local_borrowing", "ownership_partition", "idle_unload", "sharing"]
+  },
+  "nonclaims": [
+    "no physical RAM or VRAM result",
+    "no performance claim",
+    "no causal claim for ambient memcg observations",
+    "no claim that one scalar objective dominates the Pareto frontier"
+  ]
+}
