@@ -64,6 +64,20 @@ def write_schedule(
         writer.writerows(schedule_rows(spec, pressure=pressure, block=block))
 
 
+def file_post_residency_valid(
+    *,
+    arm: str,
+    resident_fraction: float,
+    max_fraction: float,
+) -> bool:
+    """DONTNEED arms must end cold; buffered is a residency reference."""
+    if arm == "buffered":
+        return True
+    if arm.startswith("dontneed_"):
+        return resident_fraction <= max_fraction
+    raise ValueError("unknown arm family")
+
+
 def run_trial(
     spec: dict[str, Any],
     *,
@@ -169,8 +183,11 @@ def run_trial(
             "content_integrity": digest_before == digest_after,
             "no_oom": no_oom,
             "peak_not_below_clean_floor": ephemeral_excess >= 0,
-            "file_post_residency_bounded": float(file_post["resident_fraction"])
-            <= float(spec["post_observer_file_fraction_max"]),
+            "file_post_residency_bounded": file_post_residency_valid(
+                arm=arm,
+                resident_fraction=float(file_post["resident_fraction"]),
+                max_fraction=float(spec["post_observer_file_fraction_max"]),
+            ),
             "hot_page_count": int(hot_post["total_pages"])
             == hot_size // PAGE_SIZE,
         }
