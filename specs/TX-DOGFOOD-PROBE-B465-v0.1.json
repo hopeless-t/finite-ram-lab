@@ -1,0 +1,13 @@
+{
+  "schema": "finite-ram-lab.dogfood-probe-contract/v0.1",
+  "id": "TX-DOGFOOD-PROBE-B465-v0.1",
+  "decision_receipt_path": "runs/B465/decision-receipt.json",
+  "expected_decision_sha256": "32f9c2967a1ddb88794ec6fdb231de52cfbfded64f4aa89c25fbd062baf42eb9",
+  "pairs": 4,
+  "size": 2048,
+  "seed": 465,
+  "value_limit": 50,
+  "allowlisted_executor": "finite_ram_lab.dogfood_probe_executor",
+  "same_run_model_update": false,
+  "claim_ceiling": "BOUNDED_GITHUB_ACTIONS_DOGFOOD_PROBE"
+}
