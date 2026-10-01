@@ -264,6 +264,32 @@ def summarize(spec: dict[str, Any], root: Path) -> dict[str, Any]:
     arms = [str(x) for x in spec["arms"]]
     blocks = int(spec["runner_blocks_per_pressure"])
 
+    source_commits = {str(row.get("source_commit", "")) for row in trials}
+    if "" in source_commits or len(source_commits) != 1:
+        raise ValueError("source_commit_identity_drift")
+
+    observer_contracts = {
+        str(row.get("observer_contract_version", ""))
+        for row in trials
+    }
+    if observer_contracts != {str(spec["observer_contract_version"])}:
+        raise ValueError("observer_contract_identity_drift")
+
+    fixed_parameter_keys = (
+        "memory_max_mib",
+        "hot_anon_mib",
+        "cold_file_mib",
+        "read_chunk_mib",
+    )
+    for key in fixed_parameter_keys:
+        expected_value = int(spec[key])
+        values = {
+            int(row.get("parameters", {}).get(key, -1))
+            for row in trials
+        }
+        if values != {expected_value}:
+            raise ValueError(f"fixed_parameter_identity_drift:{key}")
+
     seen: set[tuple[int, int, str]] = set()
     by_cell: dict[tuple[int, str], list[dict[str, Any]]] = {}
     for row in trials:
@@ -334,6 +360,7 @@ def summarize(spec: dict[str, Any], root: Path) -> dict[str, Any]:
     return {
         "experiment_id": spec["experiment_id"],
         "observer_contract_version": spec["observer_contract_version"],
+        "source_commit": next(iter(source_commits)),
         "execution_status": "PASS",
         "trial_count": len(trials),
         "cells": cells,
