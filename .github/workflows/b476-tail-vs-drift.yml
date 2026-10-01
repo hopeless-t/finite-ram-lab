@@ -1,0 +1,47 @@
+name: B476 Tail vs Drift
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/tail-vs-drift-b476
+    paths:
+      - "src/finite_ram_lab/tail_vs_drift.py"
+      - "tests/test_tail_vs_drift.py"
+      - "docs/B476-TAIL-VS-DRIFT-v0.1.md"
+      - ".github/workflows/b476-tail-vs-drift.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_tail_vs_drift -v
+      - name: Frozen future batch
+        run: |
+          mkdir -p runs/B476
+          python -m finite_ram_lab.tail_vs_drift \
+            --b469 analysis/inputs/B469-LANE-CONCURRENCY-RESULT-v0.1.json \
+            --b472 analysis/inputs/B472-Q1-TAIL-CALIBRATION-RESULT-v0.1.json \
+            --b474 analysis/inputs/B474-RANK-COVERAGE-EXPANSION-RESULT-v0.1.json \
+            --repetitions 8 \
+            --size 2048 \
+            --seed 476 \
+            --out runs/B476/tail-vs-drift.json
+          python -m json.tool runs/B476/tail-vs-drift.json >/dev/null
+          sha256sum runs/B476/tail-vs-drift.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b476-tail-vs-drift
+          path: runs/B476/tail-vs-drift.json
+          if-no-files-found: error
