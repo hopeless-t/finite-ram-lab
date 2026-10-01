@@ -1,0 +1,24 @@
+{
+  "schema": "finite-ram-lab.b466-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "OFFLINE_NEXT_RUN_PROPOSAL_ONLY",
+  "workflow_run_id": 36928453853,
+  "workflow_job_id": 110591497629,
+  "execution_head_sha": "20c526ec16b8bc1e65fc08136adc8bbe0cd4a52f",
+  "artifact_id": 11194409030,
+  "artifact_zip_sha256": "34009876c6b10696abeccc11602ad42c4da30395dc0fe3a3e10019106440abc9",
+  "source_b465_result_sha256": "2d2b3d2253f5d0d7ead46c741ac54c577c611fdace371a206d1741e1fbb37a32",
+  "source_b465_telemetry_sha256": "3d02cd3269e21b14b2d7a7a6291a59308be106c7860af5013b647f4a7512f92f",
+  "proposal_sha256": "64672a290dc46e40f5db021baeb9e02b86303da61100d0bc2fc90d6f8b97463f",
+  "tests": {"count": 4, "passed": 4, "failed": 0},
+  "proposal_action": "PROBE_OPPOSITE_TILE_DIRECTION",
+  "execute_now": false,
+  "requires_new_frozen_decision": true,
+  "changed_variables": [["tile_rows", 64, 128]],
+  "held_constant_variables": [
+    ["lane_count", 7],
+    ["strategy", "STREAMED_FOLD"]
+  ],
+  "hypothesis_id": "H466_TILE_GRANULARITY_OTHER_SIDE",
+  "next": "B467_FREEZE_AND_EXECUTE_128_PROBE"
+}
