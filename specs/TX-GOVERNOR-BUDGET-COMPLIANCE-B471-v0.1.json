@@ -1,0 +1,34 @@
+{
+  "schema": "finite-ram-lab.experiment/v0.1",
+  "id": "TX-GOVERNOR-BUDGET-COMPLIANCE-B471-v0.1",
+  "stage": "B471",
+  "claim_ceiling": "HOSTED_OBSERVED_FRONTIER_GOVERNOR_CALIBRATION",
+  "source": "analysis/inputs/B469-LANE-CONCURRENCY-RESULT-v0.1.json",
+  "risk_mode": "observed_upper",
+  "profiles": [
+    {"name": "upper_q1_boundary", "peak_budget_bytes": 67022848, "expected_q": 1},
+    {"name": "upper_q2_boundary", "peak_budget_bytes": 67108864, "expected_q": 2},
+    {"name": "upper_q4_boundary", "peak_budget_bytes": 71303168, "expected_q": 4},
+    {"name": "upper_q7_boundary", "peak_budget_bytes": 71507968, "expected_q": 7}
+  ],
+  "repetitions": 4,
+  "balanced_profile_orders": [
+    [0, 1, 2, 3],
+    [3, 2, 1, 0],
+    [1, 0, 3, 2],
+    [2, 3, 0, 1]
+  ],
+  "size": 2048,
+  "lane_count": 7,
+  "seed": 471,
+  "value_limit": 50,
+  "tile_rows": 64,
+  "hard_gates": [
+    "governor selects expected q for every frozen boundary profile",
+    "fresh process per observation",
+    "semantic exactness for every observation",
+    "one shared output digest across profiles"
+  ],
+  "primary_endpoint": "budget compliance against observed normalized VmHWM growth",
+  "interpretation": "A boundary miss is calibration evidence, not discarded noise."
+}
