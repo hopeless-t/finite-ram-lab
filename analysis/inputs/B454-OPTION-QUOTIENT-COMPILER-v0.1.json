@@ -1,0 +1,36 @@
+{
+  "schema": "finite-ram.option-quotient-compiler/v0.1",
+  "bounce": "B454",
+  "claim_ceiling": "EXACT_ADDITIVE_OBJECTIVE_QUOTIENT_MODEL",
+  "theorem": {
+    "name": "Local Quotient Preservation",
+    "assumptions": [
+      "global objective vector is the componentwise sum of one option chosen from each group",
+      "all objective coordinates are minimized",
+      "local option objective vectors are capacity/selection-independent within the compiled decision window"
+    ],
+    "compiler": [
+      "remove locally dominated choices inside each group",
+      "collapse exact local objective-vector ties to one canonical representative",
+      "retain all tied physical choice IDs as provenance on that representative"
+    ],
+    "result": "the set of distinct global Pareto objective vectors is unchanged"
+  },
+  "fixed_example": {
+    "raw_group_sizes": [5,4],
+    "quotient_group_sizes": [2,3],
+    "raw_combination_count": 20,
+    "quotient_combination_count": 6,
+    "combination_reduction_fraction": 0.7
+  },
+  "b453_bridge": {
+    "physical_tie_group_example": [18,21,23],
+    "canonical_representative": 18,
+    "provenance_preserved": true
+  },
+  "validation": {
+    "random_additive_systems": 5000,
+    "distinct_global_pareto_vectors_preserved": "PASS"
+  },
+  "physical_run": false
+}
