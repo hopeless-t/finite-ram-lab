@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B441
-> Stage: OBJECTIVE EVIDENCE GATE v0.1 FROZEN
-> Stop: RESAMPLE HISTORICAL FRONTIER STABILITY
+> Latest bounce: B442
+> Stage: STRATA-005 FRONTIER RESAMPLING v0.1 FROZEN
+> Stop: FREEZE DYNAMIC FRONTIER QUALIFICATION CONTRACT
 
 ## Chapter II frontier
 
@@ -1756,3 +1756,57 @@ No paid resource.
 Next B442:
 
 Use the still-available four STRATA-005 block artifacts to resample frontier membership and quantify how stable the descriptive timing-only transition actually is.
+
+
+## B442 STRATA-005 frontier resampling v0.1
+
+Frozen branch:
+
+- research/frontier-resampling-b442
+
+Recovered all eight original STRATA-005 block artifacts and froze the selected 40 trial-level values needed for frontier replay.
+
+Because there are four independent blocks per capacity:
+
+- exact block-bootstrap resamples per capacity = 4^4 = 256
+- independent capacity-pair resamples = 65,536
+
+No Monte Carlo approximation is required.
+
+PRIMARY pressure projection:
+
+- peak RAM
+- MemoryHigh events
+- pgscan
+
+Exact bootstrap result:
+
+- any frontier-loss probability = 0
+- dontneed_80m loss probability = 0
+
+Extended descriptive timing projection adds scan_elapsed_ns.
+
+Exact bootstrap membership/loss:
+
+- dontneed_48m: membership 1.0 / 1.0, loss 0
+- dontneed_64m: membership 1.0 / 0.6875, loss 0.3125
+- dontneed_80m: membership 0.6875 / 0.3125, loss 0.47265625
+- dontneed_96m: membership 0.3125 / 0, loss 0.3125
+
+Any timing-projection frontier loss occurs in 93.27545166015625% of independent resample pairs, which indicates unstable frontier topology under the noisy timing coordinate rather than strong evidence for one specific reversal.
+
+Leave-one-block-out frontiers remain identical to the aggregate median frontiers, showing that jackknife-style deletion can look stable while bootstrap membership remains unstable in a four-block heavy-tailed sample.
+
+New H442 Frontier Stability Gate:
+
+A frontier transition is no stronger than the stability of the frontier-membership relation generating it. Promotion requires PRIMARY evidence plus stability under the correct independent resampling unit.
+
+Claim ceiling: HISTORICAL_BLOCK_RESAMPLING.
+
+No new physical run.
+No B425 ambient canary.
+No paid resource.
+
+Next B443:
+
+Freeze a Dynamic Frontier Qualification Contract before any new physical capacity sweep. It must predeclare capacity axis, stable plan identities, PRIMARY/DESCRIPTIVE objectives, independent resampling unit, missing-data rules, minimum replication, frontier-stability criterion, and claim ceiling.
