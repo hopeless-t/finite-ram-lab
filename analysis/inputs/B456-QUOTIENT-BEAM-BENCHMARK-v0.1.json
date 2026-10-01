@@ -1,0 +1,97 @@
+{
+  "schema": "finite-ram.quotient-before-beam/v0.1",
+  "bounce": "B456",
+  "claim_ceiling": "SYNTHETIC_BEAM_BENCHMARK_WITH_FIXED_MIXED_CHECK",
+  "fixed_mixed_panel": {
+    "raw_combination_count": 640,
+    "compiled_combination_count": 384,
+    "combination_reduction_fraction": 0.4,
+    "exact_frontier_points": 240,
+    "beam_widths": [4,8,16,32,64,96],
+    "raw_and_quotient_coverage_identical": true,
+    "coverage": {
+      "4": 0.016666666666666666,
+      "8": 0.03333333333333333,
+      "16": 0.06666666666666667,
+      "32": 0.13333333333333333,
+      "64": 0.26666666666666666,
+      "96": 0.4
+    }
+  },
+  "synthetic_redundancy_panel": {
+    "cases": 200,
+    "seed": 45602,
+    "structure": "3 groups; each group 2-3 random base choices + one exact duplicate + one locally dominated choice",
+    "mean_combination_reduction": 0.8458775,
+    "minimum_combination_reduction": 0.784,
+    "maximum_combination_reduction": 0.9375,
+    "coverage": {
+      "4": {
+        "raw_mean": 0.34413921616041676,
+        "quotient_mean": 0.34413921616041676,
+        "better_cases": 0,
+        "worse_cases": 0,
+        "equal_cases": 200
+      },
+      "8": {
+        "raw_mean": 0.5422048688730439,
+        "quotient_mean": 0.6705165275589289,
+        "better_cases": 159,
+        "worse_cases": 0,
+        "equal_cases": 41
+      },
+      "16": {
+        "raw_mean": 0.6667926841424705,
+        "quotient_mean": 0.9520471521319542,
+        "better_cases": 182,
+        "worse_cases": 0,
+        "equal_cases": 18
+      },
+      "32": {
+        "raw_mean": 0.8740458262871275,
+        "quotient_mean": 1.0,
+        "better_cases": 114,
+        "worse_cases": 0,
+        "equal_cases": 86
+      },
+      "64": {
+        "raw_mean": 1.0,
+        "quotient_mean": 1.0,
+        "better_cases": 0,
+        "worse_cases": 0,
+        "equal_cases": 200
+      }
+    },
+    "beam_width_for_mean_coverage_at_least_0_9": {
+      "raw": 64,
+      "quotient": 16,
+      "observed_width_reduction_factor": 4
+    }
+  },
+  "interpretation": [
+    "Local quotienting does not automatically improve beam coverage in every scenario; the fixed B436+cadence example shows identical coverage at every tested width despite 40% fewer full combinations.",
+    "In a synthetic panel with deliberate local duplicates and local domination, quotienting substantially improves low-width beam coverage.",
+    "Within the frozen 200-case panel no quotient-induced coverage regression was observed, but this is not promoted to a theorem.",
+    "The benefit mechanism is primarily removal of plan multiplicity and locally redundant prefixes before the bounded beam must spend capacity on them.",
+    "B435 already losslessly Pareto-prunes each prefix depth, so workloads whose local redundancy is naturally removed there may see little beam-quality improvement even when total Cartesian combinations fall."
+  ],
+  "software_qualification": {
+    "lane": "research",
+    "temporary_subtree": "b456_qual",
+    "unit_tests": {
+      "run": 3,
+      "passed": 3,
+      "runtime_seconds": 4.316,
+      "stderr_sha256": "sha256:33f9c7ecd288307c749b17f9c661a2c4300103b56c56455984185c43c9072d13"
+    },
+    "panel_stdout_sha256": "sha256:395bee2f83fa2aef1a40e20d164b6a703740a892b956ae5e2cf299fcf9b30c",
+    "high_width_stdout_sha256": "sha256:2951770072c1c3c8ec33fb62c8bde4fb22c142662ee241b78fb634ddfdd1f907",
+    "workspace_only": true,
+    "host_write": false,
+    "canonical_write": false,
+    "promotion": false,
+    "network_used_by_benchmark": false,
+    "physical_workload_executed": false
+  },
+  "physical_run": false
+}
