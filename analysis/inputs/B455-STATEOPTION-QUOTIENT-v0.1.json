@@ -1,0 +1,43 @@
+{
+  "schema": "finite-ram.stateoption-quotient/v0.1",
+  "bounce": "B455",
+  "claim_ceiling": "SAFE_STATEOPTION_QUOTIENT_MODEL",
+  "compiler_order": [
+    "drop options rejected by B434 option_is_safe",
+    "partition remaining options by semantic/safety signature",
+    "within each signature remove locally dominated objective vectors",
+    "within each signature quotient exact objective-vector ties",
+    "retain tied option names as provenance"
+  ],
+  "semantic_signature": [
+    "releases_semantic_state",
+    "release_proven",
+    "merges_owners",
+    "sharing_proven",
+    "error_bound_known"
+  ],
+  "safety_boundary": "options with different semantic/safety signatures are not quotiented even when their modeled objective vectors are identical",
+  "b447_cadence_bridge": {
+    "raw_options": 5,
+    "compiled_options": 3,
+    "compiled_names": [
+      "dontneed_32m",
+      "dontneed_48m",
+      "dontneed_96m"
+    ],
+    "mapping_note": "advice_calls -> traffic proxy; pressure/pgscan proxies -> compute/latency proxy for integration testing only"
+  },
+  "b436_plus_b447_fixed_example": {
+    "raw_group_sizes": [2,4,2,2,2,2,5],
+    "compiled_group_sizes_expected": [2,4,2,2,2,2,3],
+    "raw_combination_count": 640,
+    "compiled_combination_count": 384,
+    "combination_reduction_fraction": 0.4,
+    "exact_frontier_vectors_preserved": true
+  },
+  "validation": {
+    "random_stateoption_systems": 2000,
+    "exact_frontier_vectors_preserved": "PASS"
+  },
+  "physical_run": false
+}
