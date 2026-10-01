@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B444
-> Stage: OBSERVER SEMANTICS IDENTITY v0.1 FROZEN
-> Stop: MODEL QUALIFIED STRATA-005 CAPACITY RESPONSE
+> Latest bounce: B446
+> Stage: PARTIALLY IDENTIFIED FRONTIER DECOMPOSITION v0.1 FROZEN
+> Stop: FREEZE CLEAN DYNAMIC FRONTIER EXPERIMENT
 
 ## Chapter II frontier
 
@@ -1919,3 +1919,74 @@ No paid resource.
 Next B445:
 
 Use only the internally stable STRATA-005 144/176 MiB pair to model the source-observed peak response as intrinsic plan demand plus a capacity clamp.
+
+
+## B445 intrinsic demand + capacity clamp
+
+Frozen branch predecessor:
+
+- research/intrinsic-capacity-clamp-b445
+
+Qualified STRATA-005-only result:
+
+- robust transient base B_peak = 78.609 MiB
+- model P_peak(H,K) ~= min(B_peak + K, H)
+- pressure prediction when B_peak + K > H
+- 8/8 STRATA-005 DONTNEED cells pressure/no-pressure correctly classified
+- 7/8 median peak cells within 0.133001 MiB
+- H176/K96 is the lone peak-amplitude outlier at -1.873 MiB residual
+
+STRATA-004 H160 is contextual only due B444 observer drift, but its K80 safe / K88 pressure bracket matches the B445 threshold prediction.
+
+## B446 partially identified frontier decomposition v0.1
+
+Frozen branch:
+
+- research/frontier-decomposition-b446
+
+Frozen files:
+
+- src/finite_ram_lab/frontier_decomposition.py
+- tests/test_frontier_decomposition.py
+- analysis/inputs/B446-FRONTIER-DECOMPOSITION-v0.1.json
+- docs/B446-FRONTIER-DECOMPOSITION-v0.1.md
+
+STRATA-005 historical DONTNEED post-scan total floor:
+
+- 8 cell medians span 76.609375 .. 76.736328125 MiB
+- median B_legacy_post = 76.71875 MiB
+
+Relative to B445:
+
+- B_peak = 78.609 MiB
+- B_peak - B_legacy_post = 1.89025 MiB
+
+However historical post_scan occurs after residency observation.
+
+Therefore the correct decomposition is:
+
+B_peak = B_clean + O_observer + E_transient
+
+while historical STRATA-005 identifies only:
+
+B_legacy_post = B_clean + O_observer
+
+and therefore:
+
+E_transient relative to legacy post-observer floor = 1.89025 MiB.
+
+B_clean, O_observer, and clean E_transient remain separately unidentified from STRATA-005.
+
+REC-004 is used only to establish the measurement-semantics correction; its observer delta is not numerically subtracted from STRATA-005 because substrate/contract differ.
+
+New H446 Frontier Separability:
+
+Persistent workload state, measurement state, and phase-local ephemeral state are separable only when the measurement ordering exposes them in the same trial.
+
+No new physical run.
+No B425 ambient canary.
+No paid resource.
+
+Next B447:
+
+Freeze a clean paired dynamic-frontier experiment that captures scan peak, immediate post-scan pre-observer floor, post-observer floor, observer delta, and independent block replication at several MemoryHigh values under one source/observer contract. Implementation may be prepared, but launch remains a separate authority boundary.
