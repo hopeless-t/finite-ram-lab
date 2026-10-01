@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B426
-> Stage: LIVE-STATE FRONTIER FORMAL MODEL v0.1 FROZEN
-> Stop: ENCODE COMMON EXEMPLARS AND MEASURE MODEL DELTAS
+> Latest bounce: B427
+> Stage: COMMON LIVE-STATE EXEMPLARS FROZEN
+> Stop: BUILD FRONTIER COMPILER
 
 ## Chapter II frontier
 
@@ -698,3 +698,50 @@ Next bounded bounce B427:
 2. compute symbolic/model deltas in (P,A,Q,C,T,epsilon);
 3. preserve unknown parameters rather than inventing hardware measurements;
 4. keep this track independent from the pending B425 physical ambient catcher.
+
+
+## B427 common live-state exemplars
+
+Frozen branch:
+
+- research/live-state-exemplars-b427
+
+Frozen files:
+
+- src/finite_ram_lab/live_state_exemplars.py
+- tests/test_live_state_exemplars.py
+- specs/LIVE-STATE-EXEMPLARS-v0.1.json
+- docs/B427-COMMON-LIVE-STATE-EXEMPLARS.md
+
+The B426 model now distinguishes:
+
+- logical frontier: information future computation still requires;
+- physical frontier: encoded/replicated/fragmented/runtime-reserved bytes;
+- placement/lifetime frontier: where and how long physical state remains resident.
+
+Mapped exemplars:
+
+- Ozaki I -> wider materialized precision frontier;
+- Ozaki II -> REDUCE + REORDER with streamed residues;
+- EmuGEMM -> fusion / traffic reduction;
+- FlashAttention -> tiled exact state and avoided N^2 score materialization;
+- PagedAttention -> SHARE/MOVE reducing fragmentation/duplication;
+- Checkmate/DTR -> REMATERIALIZE;
+- FlexGen -> MOVE + COMPRESS;
+- Strata -> mixed COMPRESS/MOVE/SHARE/REORDER and lifetime control.
+
+Software validation during authoring:
+
+- 9 unit tests PASS;
+- deterministic 10,000-case randomized Ozaki invariant pass;
+- no physical benchmark;
+- no B425 ambient canary;
+- no paid resources.
+
+Key structural invariant:
+
+For fixed simultaneous residue-pair count r, the B427 streaming Ozaki-II peak model is independent of total modulus count s, while compute count grows linearly with s. In the simplified materialized Ozaki-I model, peak grows linearly with slice count k and GEMM count grows as k(k+1)/2.
+
+New next action B428:
+
+Build a frontier compiler over annotated state DAGs to emit logical/physical peak, byte-seconds, safe-release opportunities, and bounded placement decisions. Feed identical compiler semantics to Ozaki-I, Ozaki-II, FlashAttention, and a minimal Strata phase trace.
