@@ -1,0 +1,46 @@
+name: B472 q1 Tail Calibration
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/q1-tail-calibration-b472
+    paths:
+      - "src/finite_ram_lab/q1_tail_calibration.py"
+      - "tests/test_q1_tail_calibration.py"
+      - "docs/B472-Q1-TAIL-CALIBRATION-v0.1.md"
+      - ".github/workflows/b472-q1-tail-calibration.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  calibrate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_q1_tail_calibration -v
+      - name: Frozen q1 tail panel
+        run: |
+          mkdir -p runs/B472
+          python -m finite_ram_lab.q1_tail_calibration \
+            --b469 analysis/inputs/B469-LANE-CONCURRENCY-RESULT-v0.1.json \
+            --b471 analysis/inputs/B471-GOVERNOR-COMPLIANCE-RESULT-v0.1.json \
+            --additional-samples 12 \
+            --size 2048 \
+            --seed 472 \
+            --out runs/B472/q1-tail-calibration.json
+          python -m json.tool runs/B472/q1-tail-calibration.json >/dev/null
+          sha256sum runs/B472/q1-tail-calibration.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b472-q1-tail-calibration
+          path: runs/B472/q1-tail-calibration.json
+          if-no-files-found: error
