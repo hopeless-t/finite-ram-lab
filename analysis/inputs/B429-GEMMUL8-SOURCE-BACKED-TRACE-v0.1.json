@@ -1,0 +1,66 @@
+{
+  "schema": "finite-ram.gemmul8-source-trace/v0.1",
+  "bounce": "B429",
+  "claim_ceiling": "SOURCE_BACKED_STATIC_MODEL",
+  "upstream": {
+    "repository": "RIKEN-RCCS/GEMMul8",
+    "commit": "603b52363715796a0af5e4aa1ed8d386349b4251",
+    "paths": [
+      "src/oz2/common/table.hpp",
+      "src/oz2/common/template_type.hpp",
+      "src/oz2/common/crt_group_plan.hpp",
+      "src/oz2/core/product_workspace.hpp",
+      "src/oz2/core/worksize.hpp",
+      "src/oz2/core/oz2_core.hpp",
+      "src/oz2/core/crt_groups.hpp",
+      "src/oz2/core/block_size.hpp",
+      "src/oz2/gemm/gemm_core.hpp",
+      "src/oz2/gemm/worksize.hpp",
+      "src/oz2/undo_scaling/final_reduction.hpp",
+      "include/config.hpp"
+    ]
+  },
+  "source_facts": {
+    "pad_size": 256,
+    "blas_workspace_bytes": 33554432,
+    "grouped_crt_output_element_threshold": 67108864,
+    "int8_real_types": {
+      "low": "int8_t",
+      "mid": "int8_t",
+      "hi": "int32_t"
+    },
+    "int8_real_num_mat": "NUM_MODULI",
+    "input_residue_policy": "A_lo and B_lo allocate all num_mat planes before the product loop",
+    "product_policy": "C_hi product planes are temporary by modulus batch/CRT group",
+    "reduction_policy": "earlier products are reduced to C_mid residue planes or grouped uint32 CRT planes before final reduction",
+    "final_tail_policy": "last modulus/group can remain as high product tail for fused final CRT",
+    "memory_saving_policy": "if full worksize exceeds max_worksize, GEMM searches m/n/k block sizes while NUM_MODULI stays fixed"
+  },
+  "derived_example": {
+    "operation": "real INT8 GEMM",
+    "m": 4096,
+    "n": 4096,
+    "k": 4096,
+    "num_moduli": 8,
+    "fastmode": true,
+    "skip_scaling": false,
+    "grouped_crt": true,
+    "crt_groups": [[0, 4], [4, 8]],
+    "work_a_bytes": 134226175,
+    "work_b_bytes": 134226175,
+    "work_c_bytes": 402653439,
+    "total_workspace_bytes": 671105789,
+    "total_workspace_mib_approx": 640.016
+  },
+  "correction_to_b428_synthetic_model": {
+    "old_assumption": "one residue pair can represent the implementation peak",
+    "status": "REJECTED_FOR_CURRENT_GEMMUL8_IMPLEMENTATION",
+    "reason": "current GEMMul8 materializes all A_lo/B_lo planes and retains reduced product state until final CRT",
+    "retained_value": "one-residue streaming remains an algorithmic design point, not a source-backed description of current GEMMul8"
+  },
+  "new_hypothesis": {
+    "id": "H429-AXIS-TEMPORALIZATION",
+    "statement": "finite-memory optimization can choose which computation axis to temporalize; current GEMMul8 memory-saving temporalizes matrix m/n/k axes while holding the modulus axis fixed"
+  },
+  "physical_measurement": false
+}
