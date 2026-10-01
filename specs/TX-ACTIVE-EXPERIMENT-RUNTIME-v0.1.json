@@ -1,0 +1,74 @@
+{
+  "schema": "finite-ram-lab.active-runtime-spec/v0.1",
+  "mode": "PROBE",
+  "baseline_plan_id": "streamed_7_t64",
+  "hypothesis_id": "H464_TILE_GRANULARITY_INFORMATION",
+  "constraints": {
+    "max_peak_bytes": 67108864,
+    "max_latency_seconds": 2.0,
+    "min_useful_work": 1.0
+  },
+  "probe_envelope": {
+    "allowed_variables": ["tile_rows"],
+    "numeric_bounds": {
+      "tile_rows": [32, 128]
+    },
+    "allowed_values": {
+      "tile_rows": [32, 64, 128]
+    }
+  },
+  "candidates": [
+    {
+      "plan_id": "streamed_7_t64",
+      "variables": {
+        "strategy": "STREAMED_FOLD",
+        "lane_count": 7,
+        "tile_rows": 64
+      },
+      "fidelity_gate": true,
+      "predicted_peak_bytes": 37748736,
+      "predicted_latency_seconds": 1.0,
+      "useful_work": 1.0,
+      "expected_information_gain": 0.0
+    },
+    {
+      "plan_id": "streamed_7_t32",
+      "variables": {
+        "strategy": "STREAMED_FOLD",
+        "lane_count": 7,
+        "tile_rows": 32
+      },
+      "fidelity_gate": true,
+      "predicted_peak_bytes": 36700160,
+      "predicted_latency_seconds": 1.05,
+      "useful_work": 1.0,
+      "expected_information_gain": 0.85
+    },
+    {
+      "plan_id": "streamed_7_t128",
+      "variables": {
+        "strategy": "STREAMED_FOLD",
+        "lane_count": 7,
+        "tile_rows": 128
+      },
+      "fidelity_gate": true,
+      "predicted_peak_bytes": 39845888,
+      "predicted_latency_seconds": 0.92,
+      "useful_work": 1.0,
+      "expected_information_gain": 0.62
+    },
+    {
+      "plan_id": "all_resident_7_t64",
+      "variables": {
+        "strategy": "ALL_RESIDENT",
+        "lane_count": 7,
+        "tile_rows": 64
+      },
+      "fidelity_gate": true,
+      "predicted_peak_bytes": 62914560,
+      "predicted_latency_seconds": 0.95,
+      "useful_work": 1.0,
+      "expected_information_gain": 5.0
+    }
+  ]
+}
