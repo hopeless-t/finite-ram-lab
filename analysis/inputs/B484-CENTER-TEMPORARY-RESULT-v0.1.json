@@ -1,0 +1,27 @@
+{
+  "schema": "finite-ram-lab.b484-result/v0.1",
+  "status": "PASS_WITH_HOLD",
+  "classification": "CENTERING_MECHANISM_NOT_YET_RESOLVED",
+  "claim_ceiling": "ISOLATED_NUMPY_BOOLEAN_INDEX_CENTERING",
+  "workflow_run_id": 36940274240,
+  "aggregate_job_id": 110630073977,
+  "execution_head_sha": "d1bf06d26100fea6ef727f67cafdbbc2b3f06319",
+  "aggregate_artifact_id": 11199422802,
+  "aggregate_artifact_zip_sha256": "8ba620466cfc99899ee8176a9368a2ae6dfbba8313a775fbbde836010062fdfd",
+  "aggregate_sha256": "3df194625a368df9bb69f9ca8cf91f31fe62ebac470110b609559ebd38f8c4de",
+  "runner_block_count": 8,
+  "expected_actual_pair_payload_delta_bytes": -135520,
+  "summary": {
+    "median_actual_pair_hwm_delta_bytes": -129024,
+    "median_actual_pair_rss_delta_bytes": 0,
+    "median_bytes_hwm_per_selected_element": 7.998464,
+    "median_abs_prediction_error_bytes": 44032,
+    "median_relative_payload_prediction_error": 0.32491145218417944,
+    "mechanism_supported": false
+  },
+  "tests": {
+    "actual_pair_hwm_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true},
+    "span_hwm_positive": {"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true}
+  },
+  "next": "B485_CENTER_TEMPORARY_AMPLIFICATION_SERIES"
+}
