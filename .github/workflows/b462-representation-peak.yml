@@ -1,0 +1,45 @@
+name: B462 Representation Peak Proxy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/representation-peak-b462
+    paths:
+      - "src/finite_ram_lab/representation_peak_probe.py"
+      - "tests/test_representation_peak_probe.py"
+      - "specs/TX-REPRESENTATION-PEAK-v0.1.json"
+      - "docs/B462-REPRESENTATION-SCHEDULE-PEAK-PROXY-v0.1.md"
+      - ".github/workflows/b462-representation-peak.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  matched-peak-panel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_representation_peak_probe -v
+      - name: Frozen matched panel
+        run: |
+          mkdir -p runs/B462
+          python -m finite_ram_lab.representation_peak_probe \
+            --pairs 6 \
+            --elements 4194304 \
+            --lanes 7 \
+            --out runs/B462/representation-peak-panel.json
+          python -m json.tool runs/B462/representation-peak-panel.json >/dev/null
+          sha256sum runs/B462/representation-peak-panel.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b462-representation-peak
+          path: runs/B462/representation-peak-panel.json
+          if-no-files-found: error
