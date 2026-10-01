@@ -1,0 +1,44 @@
+name: B461 Obligation Residency
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/obligation-residency-b461
+    paths:
+      - "src/finite_ram_lab/obligation_residency.py"
+      - "tests/test_obligation_residency.py"
+      - "specs/TX-OBLIGATION-RESIDENCY-v0.1.json"
+      - "docs/B461-OBLIGATION-RESIDENCY-UNIFICATION-v0.1.md"
+      - ".github/workflows/b461-obligation-residency.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  software-panel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_obligation_residency -v
+      - name: Frozen software panel
+        run: |
+          mkdir -p runs/B461
+          python -m finite_ram_lab.obligation_residency \
+            --seed 461 \
+            --size 32 \
+            --out runs/B461/obligation-residency-panel.json
+          python -m json.tool runs/B461/obligation-residency-panel.json >/dev/null
+          sha256sum runs/B461/obligation-residency-panel.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b461-obligation-residency
+          path: runs/B461/obligation-residency-panel.json
+          if-no-files-found: error
