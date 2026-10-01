@@ -1,0 +1,86 @@
+{
+  "schema": "finite-ram.static-dynamic-frontier-comparator/v0.1",
+  "bounce": "B439",
+  "claim_ceiling": "SOFTWARE_COMPARATOR_WITH_SYNTHETIC_DYNAMIC_EXAMPLES",
+  "purpose": "compare the static capacity-monotonicity prediction with capacity-dependent measured objective vectors",
+  "input": {
+    "per_capacity_observation": [
+      "plan_id",
+      "peak resident bytes by tier",
+      "byte-seconds by tier",
+      "traffic",
+      "compute",
+      "latency",
+      "error"
+    ],
+    "requirement": "use stable plan identities across capacities when claiming a cost shift"
+  },
+  "outputs": [
+    "measured frontier before and after",
+    "lost frontier plan IDs",
+    "added frontier plan IDs",
+    "monotonicity violation flag",
+    "per-lost-plan explanation class",
+    "changed objective coordinates",
+    "measured dominators"
+  ],
+  "explanation_classes": [
+    "LOST_WITH_SELF_COST_SHIFT",
+    "LOST_WITH_DOMINATOR_COST_SHIFT",
+    "LOST_WITH_NEW_OR_PREVIOUSLY_UNOBSERVED_DOMINATOR",
+    "MISSING_LARGER_OBSERVATION",
+    "UNEXPLAINED_STATIC_MONOTONICITY_VIOLATION"
+  ],
+  "synthetic_examples": [
+    {
+      "name": "self_cost_shift",
+      "small": {
+        "p_latency": 1,
+        "q_latency": 2,
+        "same_RAM_VRAM": true
+      },
+      "large": {
+        "p_latency": 3,
+        "q_latency": 2,
+        "same_RAM_VRAM": true
+      },
+      "result": {
+        "lost": ["p"],
+        "dominator": ["q"],
+        "classification": "LOST_WITH_SELF_COST_SHIFT",
+        "changed_coordinate": ["latency", 2]
+      }
+    },
+    {
+      "name": "dominator_cost_shift",
+      "small": {
+        "p_latency": 2,
+        "q_latency": 3,
+        "same_RAM_VRAM": true
+      },
+      "large": {
+        "p_latency": 2,
+        "q_latency": 1,
+        "same_RAM_VRAM": true
+      },
+      "result": {
+        "lost": ["p"],
+        "dominator": ["q"],
+        "classification": "LOST_WITH_DOMINATOR_COST_SHIFT",
+        "dominator_changed_coordinate": ["latency", -2]
+      }
+    }
+  ],
+  "validation": {
+    "static_identity_replay": "PASS",
+    "self_cost_shift_detection": "PASS",
+    "dominator_cost_shift_detection": "PASS",
+    "new_or_unobserved_dominator_detection": "PASS",
+    "missing_observation_detection": "PASS",
+    "tolerance_filter": "PASS",
+    "random_static_replays": 5000,
+    "random_static_result": "PASS"
+  },
+  "physical_measurements_ingested": 0,
+  "b425_ambient_canary": false
+}
