@@ -1,0 +1,102 @@
+{
+  "schema": "finite-ram.strata-physical-frontier/v0.1",
+  "bounce": "B432",
+  "claim_ceiling": "SOURCE_BACKED_STATIC_AND_STRUCTURAL_MODEL",
+  "upstream": {
+    "repository": "Niko1221/Strata",
+    "commit": "9259cad4cfa3543cd3b8decab5962672b968c649",
+    "observed_engine_floor_in_setup": "0.1.31",
+    "paths": [
+      "include/strata/core/layer.hpp",
+      "include/strata/core/session.hpp",
+      "src/core/session.cpp",
+      "src/core/conversation_state.cpp",
+      "include/strata/core/expert_source.hpp",
+      "src/core/expert_source.cpp",
+      "include/strata/prefill/prefill.hpp",
+      "src/prefill/prefill.cpp",
+      "docs/DETAILS.md",
+      "docs/MULTI_GPU.md",
+      "setup.py",
+      "bench/results/2026-09-30-community-rtx-5090/engine.log"
+    ]
+  },
+  "source_facts": {
+    "kv_bytes_per_cell": {
+      "fp16": 2048,
+      "int8": 1056,
+      "q4_0": 576,
+      "k8v4": 816
+    },
+    "kv_streaming": {
+      "authoritative_state": "host copy",
+      "gpu_state": "resident page/window subset",
+      "same_encoded_values": true,
+      "k8v4_streaming_supported": false
+    },
+    "experts": {
+      "host_arena": "canonical expert source or mapped backing",
+      "gpu_cache": "resident subset",
+      "resident_low_ram": "RAM complement of GPU cache when budget permits",
+      "budgeted_low_ram": "RAM subset plus mapped/file fallback",
+      "multi_gpu_host_arena": "one shared host arena"
+    },
+    "prefill": {
+      "cache_lending": "prompt path can borrow expert-cache slots and refill them after prompt",
+      "effect": "phase-local repurposing of already allocated VRAM"
+    },
+    "multi_gpu_session": {
+      "current_code": "session owns only its layer range for QSA/GDN state, with a required primary QSA state when needed",
+      "optimization": "ownership partition"
+    },
+    "idle_unload": {
+      "server_policy": "model process may be unloaded after configured idle interval and reloaded on next request",
+      "optimization": "resident lifetime contraction"
+    }
+  },
+  "structural_example": {
+    "kv": {
+      "mode": "int8",
+      "qsa_layers": 12,
+      "max_cells": 131072,
+      "gpu_resident_cells": 32768,
+      "full_encoded_kv_bytes": 1660944384,
+      "gpu_resident_kv_bytes": 415236096,
+      "host_authoritative_kv_bytes": 1660944384,
+      "freed_vram_bytes_vs_full_residency": 1245708288,
+      "note": "pool bytes only; excludes page maps, indexer state, runtime scratch and other session state"
+    },
+    "prompt_cache_borrow_observation": {
+      "source": "2026-09-30 community RTX 5090 engine log",
+      "expert_cache_gib_rounded": 23.44,
+      "borrowed_slots": 3421,
+      "borrowed_gib_rounded": 4.62,
+      "interpretation": "prompt scratch reuses cache allocation while temporarily reducing expert residency"
+    }
+  },
+  "taxonomy_mapping": {
+    "kv_q4_or_int8": ["COMPRESS"],
+    "kv_streaming": ["MOVE"],
+    "expert_gpu_cache": ["MOVE"],
+    "shared_host_expert_arena": ["SHARE"],
+    "resident_ram_complement": ["MOVE", "SHARE"],
+    "prompt_cache_lending": ["REORDER"],
+    "multi_gpu_session_carve": ["SHARE", "REORDER"],
+    "idle_unload": ["MOVE"]
+  },
+  "compiler_result": {
+    "semantic_categories_changed": false,
+    "b428_flat_physical_bytes_sufficient": false,
+    "required_extension": "tier-aware resident frontier",
+    "tiers_minimum": ["VRAM", "RAM"],
+    "backing_storage_rule": "mapped file size is not resident RAM; page-cache residency must be observed separately"
+  },
+  "validation": {
+    "fixed_assertions": "PASS",
+    "randomized_tier_cases": 20000,
+    "randomized_result": "PASS"
+  },
+  "physical_benchmark": false,
+  "b425_ambient_canary": false,
+  "paid_resource": false
+}
