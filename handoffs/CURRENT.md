@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B436
-> Stage: MIXED CAPACITY-CLIFF SCENARIO v0.1 FROZEN
-> Stop: COMPUTE CAPACITY ACTIVATION FRONTIER
+> Latest bounce: B437
+> Stage: CAPACITY ACTIVATION FRONTIER v0.1 FROZEN
+> Stop: BUILD CAPACITY PHASE DIAGRAM
 
 ## Chapter II frontier
 
@@ -1385,3 +1385,74 @@ No paid resource was used.
 Next B437:
 
 Represent every safe plan by its per-tier capacity requirement vector and compute the minimal antichain (capacity activation frontier). For B436 it should recover the two non-dominated minimum vectors (RAM,VRAM)=(8192,10544) and (9776,9356).
+
+
+## B437 capacity activation frontier v0.1
+
+Frozen branch:
+
+- research/capacity-activation-frontier-b437
+
+Frozen files:
+
+- src/finite_ram_lab/capacity_activation_frontier.py
+- tests/test_capacity_activation_frontier.py
+- analysis/inputs/B437-CAPACITY-ACTIVATION-FRONTIER-v0.1.json
+- docs/B437-CAPACITY-ACTIVATION-FRONTIER-v0.1.md
+
+Core formalization:
+
+Each safe plan p has a tier-capacity requirement vector r(p).
+
+The plan is feasible exactly when:
+
+C >= r(p)
+
+componentwise.
+
+Therefore plan feasibility is an upper orthant in capacity space, and scenario feasibility is a union of upper orthants.
+
+The minimal safe capacity boundary is the componentwise antichain of plan requirement vectors.
+
+For the B436 mixed scenario this antichain is exactly:
+
+- (RAM,VRAM)=(8192,10544) MiB
+- (RAM,VRAM)=(9776,9356) MiB
+
+No single minimum-memory scalar exists because neither point dominates the other.
+
+Option activation frontiers were also frozen, including:
+
+- full INT8 KV: (8192,10544)
+- streamed INT8 KV: (9776,9356)
+- materialized semantic state: (8192,11312), (9776,10124)
+- future-sufficient summary: (8192,10544), (9776,9356)
+- wide temporalization: (8192,12080), (9776,10892)
+- blocked temporalization: (8192,10544), (9776,9356)
+- dedicated prompt scratch: (8192,15275), (9776,14087)
+- borrowed expert-cache capacity: (8192,10544), (9776,9356)
+
+New distinction:
+
+- combinatorial activation cliff: a plan becomes legal when a capacity threshold is crossed
+- runtime pressure cliff: an already-legal plan suffers reclaim/paging/migration/latency near capacity
+
+New H437 Activation/Pressure Duality:
+
+The value of added memory capacity combines discrete plan activation with runtime pressure relief. These must be measured separately before synthesis.
+
+Validation:
+
+- fixed B436 activation antichain PASS
+- option-specific activation frontiers PASS
+- deterministic 10,000 randomized capacity-membership checks PASS
+
+Claim ceiling: FORMAL_CAPACITY_GEOMETRY_ON_B436_SCENARIO.
+
+No physical benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B438:
+
+Build a capacity phase diagram over RAM/VRAM cells, label which transformation families appear on the exact Pareto frontier, and derive a transition graph between strategy regimes.
