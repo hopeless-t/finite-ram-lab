@@ -1,0 +1,77 @@
+{
+  "schema": "finite-ram.capacity-phase-diagram/v0.1",
+  "bounce": "B438",
+  "claim_ceiling": "FORMAL_STATIC-COST_FRONTIER_THEOREM_ON_B436_GRID",
+  "theorem": {
+    "name": "Capacity Monotonicity Theorem",
+    "assumptions": [
+      "capacity vectors are ordered componentwise C <= C_prime",
+      "plan resource requirements are capacity-independent",
+      "every capacity-constrained resource coordinate is included as a minimized Pareto objective",
+      "all other objective coordinates are capacity-independent for the compared plans"
+    ],
+    "statement": "Pareto(C) is a subset of Pareto(C_prime)",
+    "proof_sketch": [
+      "let p be Pareto-optimal under C",
+      "assume a newly considered q under C_prime dominates p",
+      "dominance implies every resource requirement of q is <= the corresponding requirement of p",
+      "p is feasible under C, so r(p) <= C",
+      "therefore r(q) <= r(p) <= C, so q was already feasible under C",
+      "q would already have dominated p under C, contradiction"
+    ]
+  },
+  "b436_phase_grid": {
+    "cells_total": 165,
+    "nonempty_strategy_regimes": 19,
+    "neighbor_signature_transitions": 102,
+    "neighbor_transitions_with_removed_options": 0,
+    "unique_nontrivial_transition_types": 36
+  },
+  "representative_additive_transitions": [
+    {
+      "axis": "RAM",
+      "effect": "stream_int8 becomes visible",
+      "interpretation": "host capacity activates KV MOVE arm"
+    },
+    {
+      "axis": "VRAM",
+      "effect": "materialize becomes visible",
+      "interpretation": "semantic reduction is no longer mandatory for feasibility"
+    },
+    {
+      "axis": "VRAM",
+      "effect": "full_int8_vram becomes visible alongside streaming",
+      "interpretation": "the no-host-KV alternative joins the frontier"
+    },
+    {
+      "axis": "VRAM",
+      "effect": "wide_frontier becomes visible",
+      "interpretation": "temporal blocking is no longer mandatory"
+    },
+    {
+      "axis": "VRAM",
+      "effect": "dedicated_prompt_scratch becomes visible",
+      "interpretation": "phase borrowing is no longer mandatory"
+    },
+    {
+      "axis": "RAM_or_VRAM",
+      "effect": "richer expert residency arms become visible",
+      "interpretation": "additional expert placement tradeoffs join the frontier"
+    }
+  ],
+  "important_caveat": {
+    "monotonicity_can_fail_when": [
+      "latency/traffic/error values change as a function of capacity or runtime pressure",
+      "resource peak coordinates are omitted from the Pareto objective",
+      "the candidate plan semantics themselves change with capacity"
+    ],
+    "research_consequence": "static activation topology and runtime-pressure behavior must remain separate evidence planes"
+  },
+  "validation": {
+    "b436_neighbor_transitions_checked": 102,
+    "removed_option_transitions": 0,
+    "random_static_capacity_expansion_cases": 5000,
+    "random_result": "PASS"
+  },
+  "physical_benchmark": false
+}
