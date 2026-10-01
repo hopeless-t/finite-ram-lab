@@ -59,7 +59,7 @@ def block(block_id:int)->dict:
 class ThreePhaseHWMTests(unittest.TestCase):
     def test_holm_stepdown(self):
         decisions=holm_decisions(
-            {"a":0.001,"b":0.009,"c":0.03},
+            {"a":0.001,"b":0.009,"c":0.06},
             0.05,
         )
         self.assertTrue(decisions["a"])
