@@ -28,8 +28,24 @@
     "mapping_note": "advice_calls -> traffic proxy; pressure/pgscan proxies -> compute/latency proxy for integration testing only"
   },
   "b436_plus_b447_fixed_example": {
-    "raw_group_sizes": [2,4,2,2,2,2,5],
-    "compiled_group_sizes_expected": [2,4,2,2,2,2,3],
+    "raw_group_sizes": [
+      2,
+      4,
+      2,
+      2,
+      2,
+      2,
+      5
+    ],
+    "compiled_group_sizes_expected": [
+      2,
+      4,
+      2,
+      2,
+      2,
+      2,
+      3
+    ],
     "raw_combination_count": 640,
     "compiled_combination_count": 384,
     "combination_reduction_fraction": 0.4,
@@ -39,5 +55,30 @@
     "random_stateoption_systems": 2000,
     "exact_frontier_vectors_preserved": "PASS"
   },
-  "physical_run": false
+  "physical_run": false,
+  "software_qualification": {
+    "lane": "research",
+    "temporary_subtree": "b455_qual",
+    "first_run": {
+      "status": "FAILED_ON_BRIDGE_FIELD_BUG",
+      "bug": "cadence bridge referenced TwinPlan.pressure; correct field is memory_high_events_proxy",
+      "fixed_commit": "9f57f3b36c85c7f9b6d2bfca2a282f395cc13727"
+    },
+    "corrected_run": {
+      "tests_run": 6,
+      "tests_passed": 6,
+      "tests_failed": 0,
+      "tests_errored": 0,
+      "runtime_seconds": 2.017,
+      "returncode": 0,
+      "stderr_sha256": "sha256:bebdc76bdbb47a293355ddc418d2aa09ab6dbd072bd6dd3c677da65942a2d531"
+    },
+    "workspace_only": true,
+    "host_write": false,
+    "canonical_write": false,
+    "promotion": false,
+    "network_capability_reported_by_lane": true,
+    "network_used_by_qualification": false,
+    "physical_workload_executed": false
+  }
 }
