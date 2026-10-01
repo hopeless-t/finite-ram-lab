@@ -1,0 +1,33 @@
+{
+  "schema": "finite-ram-lab.b483-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "DESCRIPTIVE_STAGE_HWM_BIOPSY",
+  "workflow_run_id": 36939641405,
+  "aggregate_job_id": 110628073856,
+  "execution_head_sha": "382e4b30bf059c7529a0e2d2ca9d58eff66b881d",
+  "aggregate_artifact_id": 11199421940,
+  "aggregate_artifact_zip_sha256": "53f68a62e35802e337737aec1fc46ef86b2f7ec2a28f6670ead855f17b53c5e8",
+  "aggregate_sha256": "9487db80b292a85cf1c6cad318aa98d20747ea144e580f339c78902ca7aec94c",
+  "runner_block_count": 8,
+  "confirmatory_tests": {
+    "q2_final_hwm_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true},
+    "q4_final_hwm_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true}
+  },
+  "q2": {
+    "first_unanimous_hwm_divergence": "post_center",
+    "first_unanimous_rss_divergence": null,
+    "post_center_median_hwm_delta_bytes": -132096
+  },
+  "q4": {
+    "first_unanimous_hwm_divergence": "post_center",
+    "first_unanimous_rss_divergence": null,
+    "post_center_median_hwm_delta_bytes": -138240
+  },
+  "content_geometry_prediction": {
+    "seed474_negative_outer_products": 2068892,
+    "seed476_negative_outer_products": 2051952,
+    "difference_seed476_minus_seed474": -16940,
+    "int64_selected_payload_difference_bytes": -135520
+  },
+  "next": "B484_CENTER_ADVANCED_INDEX_TEMPORARY"
+}

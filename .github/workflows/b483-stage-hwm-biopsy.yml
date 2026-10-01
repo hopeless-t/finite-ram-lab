@@ -1,0 +1,76 @@
+name: B483 Stage HWM Biopsy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/stage-hwm-biopsy-b483
+    paths:
+      - "src/finite_ram_lab/stage_hwm_biopsy.py"
+      - "src/finite_ram_lab/stage_hwm_biopsy_aggregate.py"
+      - "tests/test_stage_hwm_biopsy.py"
+      - "docs/B483-STAGE-HWM-BIOPSY-v0.1.md"
+      - ".github/workflows/b483-stage-hwm-biopsy.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run biopsy block
+        run: |
+          mkdir -p runs/B483
+          python -m finite_ram_lab.stage_hwm_biopsy \
+            --block-id ${{ matrix.block }} \
+            --work-dir runs/B483/work-${{ matrix.block }} \
+            --size 2048 \
+            --out runs/B483/block-${{ matrix.block }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b483-stage-block-${{ matrix.block }}
+          path: runs/B483/block-${{ matrix.block }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_stage_hwm_biopsy -v
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b483-stage-block-*
+          path: runs/B483/blocks
+          merge-multiple: true
+      - name: Aggregate biopsy
+        run: |
+          python -m finite_ram_lab.stage_hwm_biopsy_aggregate \
+            --blocks-dir runs/B483/blocks \
+            --out runs/B483/stage-hwm-biopsy.json
+          python -m json.tool runs/B483/stage-hwm-biopsy.json >/dev/null
+          sha256sum runs/B483/stage-hwm-biopsy.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b483-stage-hwm-biopsy
+          path: runs/B483/stage-hwm-biopsy.json
+          if-no-files-found: error
