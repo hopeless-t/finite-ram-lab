@@ -1,0 +1,75 @@
+name: B481 Three Phase HWM
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/three-phase-hwm-b481
+    paths:
+      - "src/finite_ram_lab/three_phase_hwm.py"
+      - "src/finite_ram_lab/three_phase_hwm_aggregate.py"
+      - "tests/test_three_phase_hwm.py"
+      - "docs/B481-THREE-PHASE-HWM-v0.1.md"
+      - ".github/workflows/b481-three-phase-hwm.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run three-phase block
+        run: |
+          mkdir -p runs/B481
+          python -m finite_ram_lab.three_phase_hwm \
+            --block-id ${{ matrix.block }} \
+            --size 2048 \
+            --out runs/B481/block-${{ matrix.block }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b481-three-phase-block-${{ matrix.block }}
+          path: runs/B481/block-${{ matrix.block }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_three_phase_hwm -v
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b481-three-phase-block-*
+          path: runs/B481/blocks
+          merge-multiple: true
+      - name: Aggregate phases
+        run: |
+          python -m finite_ram_lab.three_phase_hwm_aggregate \
+            --blocks-dir runs/B481/blocks \
+            --out runs/B481/three-phase-hwm.json
+          python -m json.tool runs/B481/three-phase-hwm.json >/dev/null
+          sha256sum runs/B481/three-phase-hwm.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b481-three-phase-hwm
+          path: runs/B481/three-phase-hwm.json
+          if-no-files-found: error

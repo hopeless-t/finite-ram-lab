@@ -1,0 +1,44 @@
+{
+  "schema": "finite-ram-lab.b481-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "GITHUB_HOSTED_THREE_PHASE_HWM_DECOMPOSITION",
+  "workflow_run_id": 36938559927,
+  "aggregate_job_id": 110624657711,
+  "execution_head_sha": "f637f265071cdfacc24bc35ac0c63feb716a4e38",
+  "aggregate_artifact_id": 11199096801,
+  "aggregate_artifact_zip_sha256": "44a0a173e6eaacf56f5901a4877cc967286b0865c53a065da081f688db1b7b43",
+  "aggregate_sha256": "056db37ecc317fedc9ac772767250ccba5d55b726f1715b9ba21ec864e816039",
+  "runner_block_count": 8,
+  "classifications": {
+    "q2": "WORK_PHASE_TOTAL_EFFECT",
+    "q4": "NO_PHASE_EFFECT_RESOLVED"
+  },
+  "governor_seed_feature_allowed": false,
+  "delta_summaries": {
+    "q2": {
+      "median_input_phase_delta_bytes": -11264,
+      "median_work_phase_delta_bytes": -161792,
+      "median_total_growth_delta_bytes": -177152,
+      "median_absolute_work_peak_delta_bytes": -199680,
+      "median_pre_input_hwm_delta_bytes": -26624,
+      "max_abs_phase_identity_residual_bytes": 0
+    },
+    "q4": {
+      "median_input_phase_delta_bytes": -3072,
+      "median_work_phase_delta_bytes": -112640,
+      "median_total_growth_delta_bytes": -121856,
+      "median_absolute_work_peak_delta_bytes": -126976,
+      "median_pre_input_hwm_delta_bytes": -1024,
+      "max_abs_phase_identity_residual_bytes": 0
+    }
+  },
+  "tests": {
+    "q2_input_two_sided": {"p":0.2890625,"holm_significant":false},
+    "q2_work_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true},
+    "q2_total_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"holm_significant":true},
+    "q4_input_two_sided": {"p":1.0,"holm_significant":false},
+    "q4_work_negative": {"favorable":7,"n_nonzero":8,"p":0.03515625,"holm_significant":false},
+    "q4_total_negative": {"favorable":7,"n_nonzero":8,"p":0.03515625,"holm_significant":false}
+  },
+  "next": "B482_PREMATERIALIZED_INPUT_ISOLATION"
+}
