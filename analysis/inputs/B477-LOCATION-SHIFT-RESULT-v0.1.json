@@ -1,0 +1,20 @@
+{
+  "schema": "finite-ram-lab.b477-result/v0.1",
+  "status": "PASS",
+  "classification": "LOCATION_SHIFT_SUSPECT",
+  "claim_ceiling": "SEED_CONFOUNDED_EXACT_PERMUTATION_LOCATION_DIAGNOSTIC",
+  "workflow_run_id": 36936439619,
+  "workflow_job_id": 110617697326,
+  "execution_head_sha": "fb8e4b42d31fb246db6e7fa44a3f05a0901aa74f",
+  "artifact_id": 11197777515,
+  "artifact_zip_sha256": "0cb448a8bcb859d605fdfbdea1febed4a89958b3c9a50d6d80696ca71b31d051",
+  "result_sha256": "32aceab8fb0a0bc174045c06919b715715effb34a5b23218600fd3a59cf64f0c",
+  "suspect_q": [2,4],
+  "rows": [
+    {"q":1,"reference_median_peak_bytes":66994176,"future_median_peak_bytes":66983936,"median_delta_bytes":-10240,"p":0.8058109073588949,"classification":"LOCATION_COMPATIBLE"},
+    {"q":2,"reference_median_peak_bytes":67100672,"future_median_peak_bytes":66973696,"median_delta_bytes":-126976,"p":0.000039691990156386444,"classification":"LOCATION_SHIFT_DOWN_SUSPECT"},
+    {"q":4,"reference_median_peak_bytes":71303168,"future_median_peak_bytes":71168000,"median_delta_bytes":-135168,"p":0.0001984599507819322,"classification":"LOCATION_SHIFT_DOWN_SUSPECT"},
+    {"q":7,"reference_median_peak_bytes":71507968,"future_median_peak_bytes":71507968,"median_delta_bytes":0,"p":0.3340213278293774,"classification":"LOCATION_COMPATIBLE"}
+  ],
+  "next": "B478_SEED_VS_TEMPORAL_REPLAY"
+}
