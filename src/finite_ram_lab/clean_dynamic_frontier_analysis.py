@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import argparse
+import json
 import random
 import re
 import statistics
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Sequence
 
 from .intrinsic_capacity_clamp import (
@@ -396,3 +399,33 @@ def analyze_postrun(
         "bootstrap_iterations": bootstrap_iterations,
         "seed": seed,
     }
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--spec", required=True)
+    parser.add_argument("--summary", required=True)
+    parser.add_argument("--out", required=True)
+    parser.add_argument("--iterations", type=int, default=100_000)
+    parser.add_argument("--seed", type=int, default=2026100151)
+    args = parser.parse_args()
+
+    spec = json.loads(Path(args.spec).read_text(encoding="utf-8"))
+    summary = json.loads(Path(args.summary).read_text(encoding="utf-8"))
+    result = analyze_postrun(
+        summary,
+        spec,
+        bootstrap_iterations=args.iterations,
+        seed=args.seed,
+    )
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(
+        json.dumps(result, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    print(json.dumps(result, indent=2, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()
