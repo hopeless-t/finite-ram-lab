@@ -200,43 +200,52 @@ def strata_trace_states(
     *,
     kv_plan: KvTierPlan,
     expert_plan: ExpertTierPlan,
-    cache_bytes: int,
     session_state_bytes: int,
 ) -> tuple[TraceState, ...]:
-    """Produce B428-compatible TraceState records without new schema fields.
+    """Produce B428-compatible in-memory TraceState records.
+
+    Semantic state is counted once. Tier mirrors/caches carry logical_bytes=0
+    so replication is visible only in the physical frontier.
+
+    File-backed expert bytes are intentionally excluded here: they are backing
+    storage, not resident RAM/VRAM. OS page-cache residency must be observed
+    separately rather than inferred from mapped file size.
 
     Time coordinates are normalized phases, not wall-clock measurements:
       [0,1): loaded/steady
       [1,2): prompt
       [2,3): decode
     """
-    for name, value in (
-        ("cache_bytes", cache_bytes),
-        ("session_state_bytes", session_state_bytes),
-    ):
-        if type(value) is not int or value < 0:
-            raise ValueError(f"{name}_invalid")
+    if type(session_state_bytes) is not int or session_state_bytes < 0:
+        raise ValueError("session_state_bytes_invalid")
 
-    return (
+    states = [
         TraceState(
-            "strata-kv-gpu",
+            "strata-kv-logical",
             0,
             3,
             logical_bytes=kv_plan.full_vram_bytes,
-            encoded_bytes=kv_plan.gpu_resident_bytes,
+            encoded_bytes=0,
         ),
         TraceState(
-            "strata-kv-host",
+            "strata-kv-gpu-resident",
             0,
             3,
             logical_bytes=0,
-            encoded_bytes=kv_plan.host_authoritative_bytes,
+            encoded_bytes=kv_plan.gpu_resident_bytes,
+        ),
+        TraceState(
+            "strata-expert-logical",
+            0,
+            3,
+            logical_bytes=expert_plan.logical_expert_bytes,
+            encoded_bytes=0,
         ),
         TraceState(
             "strata-expert-gpu-cache",
             0,
             3,
-            logical_bytes=expert_plan.logical_expert_bytes,
+            logical_bytes=0,
             encoded_bytes=expert_plan.gpu_resident_bytes,
         ),
         TraceState(
@@ -247,24 +256,21 @@ def strata_trace_states(
             encoded_bytes=expert_plan.ram_complement_bytes,
         ),
         TraceState(
-            "strata-expert-file-fallback",
-            0,
-            3,
-            logical_bytes=0,
-            encoded_bytes=expert_plan.file_fallback_bytes,
-        ),
-        TraceState(
-            "strata-cache-allocation",
-            0,
-            3,
-            logical_bytes=0,
-            encoded_bytes=cache_bytes,
-        ),
-        TraceState(
             "strata-session-state",
             0,
             3,
             logical_bytes=session_state_bytes,
             encoded_bytes=session_state_bytes,
         ),
-    )
+    ]
+    if kv_plan.host_authoritative_bytes:
+        states.append(
+            TraceState(
+                "strata-kv-host-authoritative",
+                0,
+                3,
+                logical_bytes=0,
+                encoded_bytes=kv_plan.host_authoritative_bytes,
+            )
+        )
+    return tuple(states)
