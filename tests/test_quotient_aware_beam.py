@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 import unittest
 
 from finite_ram_lab.bounded_frontier_controller import StateOption
@@ -165,6 +166,89 @@ class QuotientAwareBeamTests(unittest.TestCase):
         mapping = dict(result.provenance[0].provenance_by_state)
         self.assertEqual(mapping["x"], ("a", "b", "c"))
         self.assertEqual(result.provenance[0].equivalent_path_count, 3)
+
+
+    def test_500_random_stateoption_systems_match_precompiled_beam(self):
+        rng = random.Random(457)
+        capacities = {"RAM": 40, "VRAM": 40}
+
+        for case in range(500):
+            groups = []
+            for group_index in range(rng.randint(1, 4)):
+                state = f"s{case}_{group_index}"
+                group = [
+                    option(
+                        state,
+                        "safe0",
+                        (
+                            rng.randint(0, 20),
+                            rng.randint(0, 20),
+                            rng.randint(0, 10),
+                            rng.randint(0, 10),
+                            rng.randint(0, 10),
+                        ),
+                    )
+                ]
+                for option_index in range(1, rng.randint(2, 5)):
+                    release = bool(rng.randrange(2))
+                    release_proven = (not release) or bool(rng.randrange(2))
+                    group.append(
+                        option(
+                            state,
+                            f"o{option_index}",
+                            (
+                                rng.randint(0, 20),
+                                rng.randint(0, 20),
+                                rng.randint(0, 10),
+                                rng.randint(0, 10),
+                                rng.randint(0, 10),
+                            ),
+                            release=release,
+                            release_proven=release_proven,
+                        )
+                    )
+
+                # Add a same-signature exact tie often enough to exercise
+                # factorized provenance and canonicalization.
+                if rng.random() < 0.7:
+                    source = rng.choice(group)
+                    group.append(
+                        StateOption(
+                            state_name=state,
+                            option_name=f"dup{group_index}",
+                            resident_by_tier=source.resident_by_tier,
+                            byte_seconds_by_tier=source.byte_seconds_by_tier,
+                            traffic_bytes=source.traffic_bytes,
+                            compute_cost=source.compute_cost,
+                            latency_cost=source.latency_cost,
+                            error_cost=source.error_cost,
+                            releases_semantic_state=source.releases_semantic_state,
+                            release_proven=source.release_proven,
+                            merges_owners=source.merges_owners,
+                            sharing_proven=source.sharing_proven,
+                            error_bound_known=source.error_bound_known,
+                        )
+                    )
+                groups.append(tuple(group))
+
+            groups = tuple(groups)
+            compiled = compiled_raw_groups(groups, capacities)
+
+            for width in (4, 8, 16):
+                aware = quotient_aware_beam_controller(
+                    groups,
+                    capacities,
+                    beam_width=width,
+                )
+                precompiled = beam_pareto_controller(
+                    compiled,
+                    capacities,
+                    beam_width=width,
+                )
+                self.assertEqual(
+                    vectors(aware.frontier),
+                    vectors(precompiled),
+                )
 
 
 if __name__ == "__main__":
