@@ -1,0 +1,75 @@
+name: B487 Repaired q Frontier
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/repaired-q-frontier-b487
+    paths:
+      - "src/finite_ram_lab/repaired_q_frontier.py"
+      - "src/finite_ram_lab/repaired_q_frontier_aggregate.py"
+      - "tests/test_repaired_q_frontier.py"
+      - "docs/B487-REPAIRED-Q-FRONTIER-v0.1.md"
+      - ".github/workflows/b487-repaired-q-frontier.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run paired q block
+        run: |
+          mkdir -p runs/B487
+          python -m finite_ram_lab.repaired_q_frontier \
+            --block-id ${{ matrix.block }} \
+            --size 2048 \
+            --out runs/B487/block-${{ matrix.block }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b487-q-block-${{ matrix.block }}
+          path: runs/B487/block-${{ matrix.block }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_repaired_q_frontier -v
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b487-q-block-*
+          path: runs/B487/blocks
+          merge-multiple: true
+      - name: Aggregate repaired frontier
+        run: |
+          python -m finite_ram_lab.repaired_q_frontier_aggregate \
+            --blocks-dir runs/B487/blocks \
+            --out runs/B487/repaired-q-frontier.json
+          python -m json.tool runs/B487/repaired-q-frontier.json >/dev/null
+          sha256sum runs/B487/repaired-q-frontier.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b487-repaired-q-frontier
+          path: runs/B487/repaired-q-frontier.json
+          if-no-files-found: error
