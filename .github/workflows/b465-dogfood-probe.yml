@@ -1,0 +1,51 @@
+name: B465 Dogfood Probe Executor
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/dogfood-probe-executor-b465
+    paths:
+      - "src/finite_ram_lab/dogfood_probe_executor.py"
+      - "tests/test_dogfood_probe_executor.py"
+      - "specs/TX-DOGFOOD-PROBE-B465-v0.1.json"
+      - "docs/B465-GITHUB-ACTIONS-DOGFOOD-PROBE-v0.1.md"
+      - ".github/workflows/b465-dogfood-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  dogfood-probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_dogfood_probe_executor -v
+      - name: Recreate immutable B464 decision
+        run: |
+          mkdir -p runs/B465
+          python -m finite_ram_lab.active_experiment_runtime \
+            --spec specs/TX-ACTIVE-EXPERIMENT-RUNTIME-v0.1.json \
+            --out runs/B465/decision-receipt.json
+          sha256sum runs/B465/decision-receipt.json
+      - name: Execute bounded dogfood probe
+        run: |
+          python -m finite_ram_lab.dogfood_probe_executor \
+            --contract specs/TX-DOGFOOD-PROBE-B465-v0.1.json \
+            --out runs/B465/telemetry.json
+          python -m json.tool runs/B465/telemetry.json >/dev/null
+          sha256sum runs/B465/telemetry.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b465-dogfood-probe
+          path: |
+            runs/B465/decision-receipt.json
+            runs/B465/telemetry.json
+          if-no-files-found: error

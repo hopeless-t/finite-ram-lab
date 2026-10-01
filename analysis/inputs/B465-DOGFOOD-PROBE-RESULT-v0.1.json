@@ -1,0 +1,40 @@
+{
+  "schema": "finite-ram-lab.b465-result/v0.1",
+  "status": "PASS",
+  "execution_classification": "DOGFOOD_PROBE_EXECUTED",
+  "effect_classification": "PEAK_EFFECT_UNRESOLVED_WITH_LATENCY_COST",
+  "claim_ceiling": "BOUNDED_GITHUB_ACTIONS_DOGFOOD_PROBE",
+  "workflow_run_id": 36928124977,
+  "workflow_job_id": 110590394552,
+  "execution_head_sha": "7cc8389f4cb6efc2429e84e9b9a1f95fa8dd6982",
+  "artifact_id": 11195280298,
+  "artifact_zip_sha256": "6f0d257c38c37d16469d5cb464bc1c341fa3fdc58a20b0178ce14c0f1c438334",
+  "decision_receipt_sha256": "32f9c2967a1ddb88794ec6fdb231de52cfbfded64f4aa89c25fbd062baf42eb9",
+  "telemetry_sha256": "3d02cd3269e21b14b2d7a7a6291a59308be106c7860af5013b647f4a7512f92f",
+  "tests": {"count": 5, "passed": 5, "failed": 0},
+  "mode": "PROBE",
+  "dataset_partition": "EXPERIMENTAL_INTERVENTION",
+  "hypothesis_id": "H464_TILE_GRANULARITY_INFORMATION",
+  "changed_variables": [["tile_rows", 64, 32]],
+  "held_constant_variables": [
+    ["lane_count", 7],
+    ["strategy", "STREAMED_FOLD"]
+  ],
+  "pair_count": 4,
+  "semantic_match_count": 4,
+  "peak_deltas_bytes": [0, 4096, -81920, -4096],
+  "negative_peak_count": 2,
+  "positive_peak_count": 1,
+  "zero_peak_count": 1,
+  "median_selected_minus_baseline_peak_bytes": -2048,
+  "latency_ratios_selected_over_baseline": [
+    1.019881535020977,
+    1.0117946824010116,
+    1.024422277429091,
+    1.0074084175805655
+  ],
+  "median_latency_ratio_selected_over_baseline": 1.0158381087109942,
+  "median_latency_penalty_percent": 1.58381087109942,
+  "same_run_model_update": false,
+  "next": "B466_OFFLINE_NEXT_RUN_PROPOSAL"
+}
