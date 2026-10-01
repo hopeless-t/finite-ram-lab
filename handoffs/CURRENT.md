@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B450
-> Stage: PRELAUNCH IMPLEMENTATION AUDIT v0.1 PASS
-> Stop: FREEZE POST-RUN ANALYZER / LAUNCH REMAINS SEPARATE
+> Latest bounce: B451
+> Stage: POST-RUN ANALYZER v0.1 FROZEN / SOFTWARE QUALIFIED
+> Stop: DERIVE INTERVENTION-AWARE FRONTIER / PHYSICAL LAUNCH REMAINS SEPARATE
 
 ## Chapter II frontier
 
@@ -2130,3 +2130,92 @@ No paid resource.
 Next B451:
 
 Freeze the post-run analyzer before any physical execution: PRIMARY frontier construction, block-resampling stability, descriptive sensitivity, and B445 clamp residuals must be computed by predeclared code rather than chosen after seeing the physical result.
+
+
+## B451 clean dynamic frontier post-run analyzer v0.1
+
+Frozen branch:
+
+- research/postrun-analyzer-b451
+
+Frozen files:
+
+- src/finite_ram_lab/clean_dynamic_frontier_analysis.py
+- tests/test_clean_dynamic_frontier_analysis.py
+- analysis/inputs/B451-POSTRUN-ANALYZER-QUALIFICATION-v0.1.json
+- docs/B451-CLEAN-DYNAMIC-FRONTIER-POSTRUN-ANALYZER-v0.1.md
+
+Spec now explicitly freezes:
+
+- candidate arms = DONTNEED 32/48/64/80/96
+- reference arms = buffered
+
+PRIMARY objectives:
+
+- peak_ram_bytes
+- ephemeral_excess_bytes
+- memory_high_events
+- pgscan
+- advice_calls
+
+DESCRIPTIVE:
+
+- scan_elapsed_ns
+
+Resampling semantics:
+
+- runner block is the independent unit
+- within a capacity, the same sampled block IDs apply jointly to every candidate arm
+- capacity-pair block resamples are independent
+- stability threshold = 0.90
+- default bootstrap iterations = 100000
+- default seed = 2026100151
+
+Post-run analyzer also:
+
+- replays B445 intrinsic-capacity clamp using the frozen estimator
+- estimates clean floor and clean ephemeral-base excess
+- compares observed PRIMARY frontiers with the B449 digital twin
+- computes PRIMARY and DESCRIPTIVE frontier-loss probabilities separately
+
+Isolated research-lane qualification:
+
+- temporary b451_qual subtree
+- 4/4 pure analyzer tests PASS
+- runtime ~0.425 s
+- test digest sha256:d1a18fbeda8a1f2f70e0bc00db2b8015674466555158283b56d2e3831b8664c0
+
+CLI file-input qualification:
+
+- return code 0
+- 500 iterations, seed 451
+- H144/H160/H176 PRIMARY frontier all {32,48,96}
+- adjacent-capacity any-loss probability 0
+- clamp accuracy 1.0
+- transient base ~= 78.609 MiB
+- clean floor ~= 76.7 MiB
+- clean ephemeral base excess ~= 1.909 MiB
+- output digest sha256:77c351e12391838d5ba372aaf3c92d2b3020c167b178d1f572ece4fd736479f3
+
+The initial direct python -m invocation failed only because the temporary qualification subtree was not installed/on PYTHONPATH. The same branch module imported and tested successfully; explicit qualification sys.path then exercised main() successfully.
+
+Qualification subtree was removed afterward.
+
+Post-cleanup research lane retained only the pre-existing:
+
+- ?? rich59_staging/
+
+New H451 Analysis Freeze Before Observation:
+
+The objective projection and resampling semantics are part of the experimental contract and are executable before physical observations exist.
+
+Claim ceiling: ANALYSIS_PLANE_FROZEN_PRE_OBSERVATION.
+
+No physical Clean Dynamic Frontier run.
+No GitHub Actions launch.
+No B425 ambient canary.
+No paid resource.
+
+Next B452:
+
+Formalize the intervention-aware frontier implied by advice_calls. Distinguish memory saved by more frequent state release from intervention frequency itself, and derive the expected cadence frontier analytically without using noisy wall-clock timing.
