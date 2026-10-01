@@ -1,0 +1,23 @@
+{
+  "schema": "finite-ram-lab.b472-result/v0.1",
+  "status": "PASS",
+  "classification": "Q1_EMPIRICAL_MAX_STABLE_IN_TARGETED_PANEL",
+  "claim_ceiling": "EXCHANGEABILITY_CONDITIONAL_EMPIRICAL_MAX_CALIBRATION",
+  "workflow_run_id": 36934277076,
+  "workflow_job_id": 110610746354,
+  "execution_head_sha": "d86f0fec9b16e434b551e41dfa8e94f7b4814502",
+  "artifact_id": 11196744741,
+  "artifact_zip_sha256": "41d31af50ef14f76359628debe64c5fd1396ab391f8938f06e979a291851542c",
+  "panel_sha256": "824d0c067b44a2f2229fe3207e3076fb7519433249a4daa606b0fdc576532f95",
+  "q": 1,
+  "prior_sample_count": 8,
+  "additional_sample_count": 12,
+  "total_sample_count": 20,
+  "prior_union_max_peak_bytes": 67117056,
+  "new_panel_max_peak_bytes": 67014656,
+  "prior_boundary_exceed_count": 0,
+  "union_empirical_max_peak_bytes": 67117056,
+  "rank_max_one_step_predictive_coverage_floor": 0.9523809523809523,
+  "rank_max_one_step_exceedance_ceiling": 0.04761904761904767,
+  "next": "B473_COVERAGE_SAMPLE_BUDGET"
+}
