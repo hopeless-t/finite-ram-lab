@@ -1,0 +1,39 @@
+{
+  "schema": "finite-ram-lab.b467-result/v0.1",
+  "status": "PASS",
+  "cycle_classification": "CROSS_RUN_FEEDBACK_CYCLE_COMPLETE",
+  "effect_classification": "SMALL_PEAK_COST_WITH_SMALL_LATENCY_GAIN",
+  "claim_ceiling": "BOUNDED_CROSS_RUN_FEEDBACK_EXECUTION",
+  "workflow_run_id": 36928740134,
+  "workflow_job_id": 110592447170,
+  "execution_head_sha": "ae7d39b72d4ea3ed3b08b919105ff8a06da72aef",
+  "artifact_id": 11195476012,
+  "artifact_zip_sha256": "c097a110f96041109f68249faf3140f510a563879b5c62d0e12f061636911708",
+  "source_proposal_sha256": "64672a290dc46e40f5db021baeb9e02b86303da61100d0bc2fc90d6f8b97463f",
+  "decision_sha256": "f5b75645570c1308b1fabfe98089da85dce40f3bfdee9e4352a852fb4b5448f1",
+  "execution_contract_sha256": "8c98800859fe01afce49397d743d08b03f9288a0bdc75dd52d073559a830613d",
+  "telemetry_sha256": "0f4f3aa9fc4057d02ccf2b81e2f071dff5a7156bc5d044ecd257a06fc5e26deb",
+  "tests": {"count": 4, "passed": 4, "failed": 0},
+  "changed_variables": [["tile_rows", 64, 128]],
+  "held_constant_variables": [
+    ["lane_count", 7],
+    ["strategy", "STREAMED_FOLD"]
+  ],
+  "pair_count": 4,
+  "semantic_match_count": 4,
+  "peak_deltas_bytes": [73728, 28672, 45056, 4096],
+  "negative_peak_count": 0,
+  "positive_peak_count": 4,
+  "zero_peak_count": 0,
+  "median_selected_minus_baseline_peak_bytes": 36864,
+  "latency_ratios_selected_over_baseline": [
+    1.023483807114337,
+    0.9949905788851205,
+    0.9893830128996095,
+    0.9823513239471015
+  ],
+  "median_latency_ratio_selected_over_baseline": 0.992186795892365,
+  "median_latency_change_percent": -0.7813204107635,
+  "same_run_model_update": false,
+  "next": "B468_AXIS_LEVERAGE_SELECTION"
+}

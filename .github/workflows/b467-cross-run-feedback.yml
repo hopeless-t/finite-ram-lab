@@ -1,0 +1,61 @@
+name: B467 Cross Run Feedback
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/cross-run-feedback-b467
+    paths:
+      - "src/finite_ram_lab/cross_run_feedback.py"
+      - "tests/test_cross_run_feedback.py"
+      - "docs/B467-FIRST-CROSS-RUN-FEEDBACK-v0.1.md"
+      - ".github/workflows/b467-cross-run-feedback.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  feedback-cycle:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_cross_run_feedback -v
+      - name: Regenerate frozen B466 proposal
+        run: |
+          mkdir -p runs/B467
+          python -m finite_ram_lab.next_run_proposer \
+            --source analysis/inputs/B465-DOGFOOD-PROBE-RESULT-v0.1.json \
+            --out runs/B467/proposal.json
+          sha256sum runs/B467/proposal.json
+      - name: Freeze new decision and execution contract
+        run: |
+          python -m finite_ram_lab.cross_run_feedback \
+            --proposal runs/B467/proposal.json \
+            --expected-proposal-sha256 64672a290dc46e40f5db021baeb9e02b86303da61100d0bc2fc90d6f8b97463f \
+            --decision-out runs/B467/decision-receipt.json \
+            --contract-out runs/B467/execution-contract.json
+          sha256sum runs/B467/decision-receipt.json
+          sha256sum runs/B467/execution-contract.json
+      - name: Execute next bounded probe
+        run: |
+          python -m finite_ram_lab.dogfood_probe_executor \
+            --contract runs/B467/execution-contract.json \
+            --out runs/B467/telemetry.json
+          python -m json.tool runs/B467/telemetry.json >/dev/null
+          sha256sum runs/B467/telemetry.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b467-cross-run-feedback
+          path: |
+            runs/B467/proposal.json
+            runs/B467/decision-receipt.json
+            runs/B467/execution-contract.json
+            runs/B467/telemetry.json
+          if-no-files-found: error
