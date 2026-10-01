@@ -1,0 +1,42 @@
+{
+  "schema": "finite-ram-lab.experiment/v0.1",
+  "id": "TX-LANE-CONCURRENCY-SWEEP-B469-v0.1",
+  "stage": "B469",
+  "status": "HOSTED_NUMERICAL_IMPLEMENTATION",
+  "claim_ceiling": "HOSTED_NUMPY_GROUPED_RESIDUE_CONCURRENCY_SWEEP",
+  "hypothesis_id": "H468_RESIDUE_LANE_CONCURRENCY_FRONTIER",
+  "variable": "resident_lane_concurrency_q",
+  "q_values": [1, 2, 4, 7],
+  "repetitions": 4,
+  "balanced_orders": [
+    [1, 2, 4, 7],
+    [7, 4, 2, 1],
+    [2, 1, 7, 4],
+    [4, 7, 1, 2]
+  ],
+  "size": 2048,
+  "lane_count": 7,
+  "seed": 469,
+  "value_limit": 50,
+  "tile_rows": 64,
+  "hard_gates": [
+    "semantic_exact for every child",
+    "one shared output digest across all q",
+    "fresh process per q observation"
+  ],
+  "primary_endpoints": [
+    "median normalized VmHWM growth by q",
+    "median work seconds by q"
+  ],
+  "analysis": [
+    "delta peak versus q=1",
+    "latency ratio versus q=1",
+    "two-objective Pareto q set"
+  ],
+  "forbidden_claims": [
+    "hosted NumPy q frontier generalizes to GPU kernels",
+    "q optimum is universal",
+    "logical live bytes equal exact VmHWM",
+    "a single scalar score is sufficient for memory and latency tradeoffs"
+  ]
+}
