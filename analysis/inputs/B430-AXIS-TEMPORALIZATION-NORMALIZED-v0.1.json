@@ -1,0 +1,41 @@
+{
+  "schema": "finite-ram.axis-temporalization-normalized/v0.1",
+  "bounce": "B430",
+  "claim_ceiling": "NORMALIZED_OPTIMIZATION_MODEL_ONLY",
+  "physical_measurement": false,
+  "model": {
+    "extents": {"m": 16, "n": 16, "k": 16, "p": 8},
+    "memory_limit_units": 100,
+    "bytes_per_normalized_cell": {
+      "A_low": 1,
+      "B_low": 1,
+      "reduced_product": 1,
+      "active_product": 4,
+      "carried_precision_summary": 4
+    }
+  },
+  "exact_search_examples": {
+    "mnk_only": {
+      "precision_streaming_proven": false,
+      "best_block": {"bm": 1, "bn": 3, "bk": 2, "bp": 8},
+      "workspace_units": 100,
+      "normalized_invocations": 768
+    },
+    "mnkp_allowed": {
+      "precision_streaming_proven": true,
+      "best_block": {"bm": 2, "bn": 2, "bk": 16, "bp": 1},
+      "workspace_units": 100,
+      "normalized_invocations": 512
+    }
+  },
+  "interpretation": [
+    "This is a synthetic geometry experiment, not a GEMMul8 performance claim.",
+    "Precision-axis blocking is forbidden unless future-sufficient reconstruction is explicitly proven.",
+    "Adding a legally temporalizable axis enlarges the feasible scheduling space and can improve the normalized optimum.",
+    "Real benefit must account for traffic, launch overhead, kernel efficiency, CRT/reduction cost, and numerical correctness."
+  ],
+  "theory_connection": {
+    "communication_lower_bound": "matrix multiplication communication grows as fast-memory capacity shrinks; memory blocking is not free",
+    "flashattention": "I/O-aware tiling similarly optimizes a memory-capacity/communication trade-off"
+  }
+}
