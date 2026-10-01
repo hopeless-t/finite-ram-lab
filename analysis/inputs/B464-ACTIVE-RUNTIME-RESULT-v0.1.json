@@ -1,0 +1,23 @@
+{
+  "schema": "finite-ram-lab.b464-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "SOFTWARE_DECISION_CONTRACT_ONLY",
+  "workflow_run_id": 36927679468,
+  "workflow_job_id": 110588927238,
+  "execution_head_sha": "40e66ba66a920616b7c1d07c45fd404524143c44",
+  "artifact_id": 11195100311,
+  "artifact_zip_sha256": "2465be374997cebd57367a271d352bc4104d815f58dae0a8cc37821c6aea2607",
+  "decision_receipt_sha256": "32f9c2967a1ddb88794ec6fdb231de52cfbfded64f4aa89c25fbd062baf42eb9",
+  "tests": {"count": 6, "passed": 6, "failed": 0},
+  "selected_plan_id": "streamed_7_t32",
+  "baseline_plan_id": "streamed_7_t64",
+  "mode": "PROBE",
+  "dataset_partition": "EXPERIMENTAL_INTERVENTION",
+  "hypothesis_id": "H464_TILE_GRANULARITY_INFORMATION",
+  "changed_variables": [["tile_rows", 64, 32]],
+  "held_constant_variables": [
+    ["lane_count", 7],
+    ["strategy", "STREAMED_FOLD"]
+  ],
+  "next": "B465_DECISION_TO_INTERVENTION_DOGFOOD"
+}

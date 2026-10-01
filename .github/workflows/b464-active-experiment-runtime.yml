@@ -1,0 +1,43 @@
+name: B464 Active Experiment Runtime
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/active-experiment-runtime-b464
+    paths:
+      - "src/finite_ram_lab/active_experiment_runtime.py"
+      - "tests/test_active_experiment_runtime.py"
+      - "specs/TX-ACTIVE-EXPERIMENT-RUNTIME-v0.1.json"
+      - "docs/B464-ACTIVE-EXPERIMENT-RUNTIME-CONTRACT-v0.1.md"
+      - ".github/workflows/b464-active-experiment-runtime.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify-runtime:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_active_experiment_runtime -v
+      - name: Freeze probe decision receipt
+        run: |
+          mkdir -p runs/B464
+          python -m finite_ram_lab.active_experiment_runtime \
+            --spec specs/TX-ACTIVE-EXPERIMENT-RUNTIME-v0.1.json \
+            --out runs/B464/probe-decision-receipt.json
+          python -m json.tool runs/B464/probe-decision-receipt.json >/dev/null
+          sha256sum runs/B464/probe-decision-receipt.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b464-active-experiment-runtime
+          path: runs/B464/probe-decision-receipt.json
+          if-no-files-found: error
