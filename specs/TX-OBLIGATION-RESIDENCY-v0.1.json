@@ -1,0 +1,35 @@
+{
+  "schema": "finite-ram-lab.experiment/v0.1",
+  "id": "TX-OBLIGATION-RESIDENCY-v0.1",
+  "stage": "B461",
+  "status": "SOFTWARE_MODEL",
+  "claim_ceiling": "SOFTWARE_EXACT_LOGICAL_RESIDENCY_ONLY",
+  "question": "Can an exact decomposed computation preserve its information obligation while reducing simultaneous resident representation through a future-sufficient fold state?",
+  "hypothesis": "For pairwise-coprime CRT residue GEMMs with a proven uniqueness bound, streamed residue folding preserves the exact integer result while reducing logical peak intermediate residency versus retaining every residue result simultaneously.",
+  "reference": "ALL_RESIDENT",
+  "treatment": "STREAMED_FOLD",
+  "fixed_moduli": [127, 125, 121, 119, 113, 109, 107],
+  "panel_lane_counts": [2, 3, 4, 5, 6, 7],
+  "matrix_size": 32,
+  "seed": 461,
+  "primary_endpoints": [
+    "bit_exact_integer_gemm_match",
+    "logical_peak_intermediate_bytes"
+  ],
+  "gates": [
+    "pairwise_coprime_moduli",
+    "modulus_product_gt_2x_conservative_output_bound",
+    "reference_treatment_exact_output_equality"
+  ],
+  "cross_domain_mapping": {
+    "ozaki_crt": "EXACT",
+    "ternary_model": "EMPIRICAL_CAPABILITY",
+    "kitten_review": "EMPIRICAL_CAPABILITY"
+  },
+  "forbidden_claims": [
+    "logical bytes are measured RSS",
+    "ternary weights are exact equivalents of BF16 weights",
+    "review shards have CRT-like mathematical reconstruction guarantees",
+    "one universal residency policy is optimal across domains"
+  ]
+}
