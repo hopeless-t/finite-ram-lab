@@ -4,7 +4,13 @@
   "claim_ceiling": "ANALYTIC_DIGITAL_TWIN_RESULT",
   "frozen_inputs": {
     "file_span_mib": 96,
-    "cadences_mib": [32,48,64,80,96],
+    "cadences_mib": [
+      32,
+      48,
+      64,
+      80,
+      96
+    ],
     "transient_base_mib": 78.609,
     "clean_floor_proxy_mib": 76.7,
     "advice_calls_formula": "ceil(file_span_mib / cadence_mib)"
@@ -30,29 +36,64 @@
   "frontier_regimes": [
     {
       "condition": "H < 110.609 MiB",
-      "frontier_cadences_mib": [96],
+      "frontier_cadences_mib": [
+        96
+      ],
       "reason": "all tested cadences are capacity-clamped/pressured; one-call arm dominates"
     },
     {
       "condition": "110.609 MiB <= H < 126.609 MiB",
-      "frontier_cadences_mib": [32,96],
+      "frontier_cadences_mib": [
+        32,
+        96
+      ],
       "reason": "32 MiB becomes pressure-free and trades memory/pressure against the one-call arm"
     },
     {
       "condition": "H >= 126.609 MiB",
-      "frontier_cadences_mib": [32,48,96],
+      "frontier_cadences_mib": [
+        32,
+        48,
+        96
+      ],
       "reason": "48 MiB becomes the minimal two-call pressure-free tradeoff; 64/80 remain dominated within the same two-call intervention class"
     }
   ],
   "b447_capacity_points": {
-    "144": [32,48,96],
-    "160": [32,48,96],
-    "176": [32,48,96]
+    "144": [
+      32,
+      48,
+      96
+    ],
+    "160": [
+      32,
+      48,
+      96
+    ],
+    "176": [
+      32,
+      48,
+      96
+    ]
   },
   "main_result": "The expected B447 frontier invariance is an analytic consequence of both 32- and 48-MiB tradeoff arms already being activated below the lowest planned capacity.",
   "validation": {
     "random_capacity_cases": 10000,
     "closed_form_equals_bruteforce": "PASS"
   },
-  "physical_run": false
+  "physical_run": false,
+  "software_qualification": {
+    "lane": "research",
+    "temporary_subtree": "b452_qual",
+    "tests_run": 5,
+    "tests_passed": 5,
+    "returncode": 0,
+    "stderr_sha256": "sha256:c103040c8f2722bfc9c934b306407f9b1412b88ee354a590bc18804dbba9e895",
+    "workspace_only": true,
+    "host_write": false,
+    "canonical_write": false,
+    "promotion": false,
+    "physical_workload_executed": false,
+    "cleanup": "b452_qual removed; pre-existing rich59_staging preserved"
+  }
 }
