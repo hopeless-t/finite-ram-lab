@@ -9,7 +9,11 @@
   "python": "3.12",
   "runner_blocks_per_pressure": 8,
   "base_schedule_seed": 2026100101,
-  "memory_high_mib": [144, 160, 176],
+  "memory_high_mib": [
+    144,
+    160,
+    176
+  ],
   "memory_max_mib": 320,
   "hot_anon_mib": 64,
   "cold_file_mib": 96,
@@ -55,14 +59,32 @@
     "oom"
   ],
   "frontier_primary_objectives": [
-    {"name":"peak_ram_bytes","direction":"MINIMIZE"},
-    {"name":"ephemeral_excess_bytes","direction":"MINIMIZE"},
-    {"name":"memory_high_events","direction":"MINIMIZE"},
-    {"name":"pgscan","direction":"MINIMIZE"},
-    {"name":"advice_calls","direction":"MINIMIZE"}
+    {
+      "name": "peak_ram_bytes",
+      "direction": "MINIMIZE"
+    },
+    {
+      "name": "ephemeral_excess_bytes",
+      "direction": "MINIMIZE"
+    },
+    {
+      "name": "memory_high_events",
+      "direction": "MINIMIZE"
+    },
+    {
+      "name": "pgscan",
+      "direction": "MINIMIZE"
+    },
+    {
+      "name": "advice_calls",
+      "direction": "MINIMIZE"
+    }
   ],
   "frontier_descriptive_objectives": [
-    {"name":"scan_elapsed_ns","direction":"MINIMIZE"}
+    {
+      "name": "scan_elapsed_ns",
+      "direction": "MINIMIZE"
+    }
   ],
   "qualification": {
     "stable_plan_identity_fields": [
@@ -77,7 +99,7 @@
       "memory_max_mib"
     ],
     "minimum_independent_units_per_cell": 8,
-    "frontier_stability_threshold": 0.90,
+    "frontier_stability_threshold": 0.9,
     "missing_data_rule": "FAIL_CLOSED",
     "raw_receipt_required": true,
     "claim_ceiling": "HOSTED_DIRECTIONAL_DYNAMIC_FRONTIER_ONLY"
@@ -85,16 +107,34 @@
   "predictions_not_acceptance_criteria": {
     "B445_transient_base_mib": 78.609,
     "H144": {
-      "pressure_free_expected": ["dontneed_32m","dontneed_48m","dontneed_64m"],
-      "pressure_expected": ["dontneed_80m","dontneed_96m"]
+      "pressure_free_expected": [
+        "dontneed_32m",
+        "dontneed_48m",
+        "dontneed_64m"
+      ],
+      "pressure_expected": [
+        "dontneed_80m",
+        "dontneed_96m"
+      ]
     },
     "H160": {
-      "pressure_free_expected": ["dontneed_32m","dontneed_48m","dontneed_64m","dontneed_80m"],
-      "pressure_expected": ["dontneed_96m"]
+      "pressure_free_expected": [
+        "dontneed_32m",
+        "dontneed_48m",
+        "dontneed_64m",
+        "dontneed_80m"
+      ],
+      "pressure_expected": [
+        "dontneed_96m"
+      ]
     },
     "H176": {
       "pressure_free_expected": [
-        "dontneed_32m","dontneed_48m","dontneed_64m","dontneed_80m","dontneed_96m"
+        "dontneed_32m",
+        "dontneed_48m",
+        "dontneed_64m",
+        "dontneed_80m",
+        "dontneed_96m"
       ],
       "pressure_expected": []
     }
@@ -104,5 +144,15 @@
     "workflow_auto_trigger": false,
     "paid_resource_authority": false,
     "retry_authority": false
-  }
+  },
+  "candidate_arms": [
+    "dontneed_32m",
+    "dontneed_48m",
+    "dontneed_64m",
+    "dontneed_80m",
+    "dontneed_96m"
+  ],
+  "reference_arms": [
+    "buffered"
+  ]
 }
