@@ -1,0 +1,27 @@
+{
+  "schema": "finite-ram-lab.b461-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "SOFTWARE_EXACT_LOGICAL_RESIDENCY_ONLY",
+  "workflow_run_id": 36923780897,
+  "workflow_job_id": 110575961631,
+  "head_sha": "456c129e7c093a4953230cdc50c43e81a83bc0fd",
+  "artifact_id": 11193330348,
+  "artifact_zip_digest": "sha256:1595f8e1b236a443f92f3a12a462185944fd9dc7f720264cb5ab186c3c1332e8",
+  "panel_json_sha256": "4810bd6e5cb11f36fe3c328a6acad64c9720ddaead2ece35eb2021361f493ef6",
+  "tests": {"count": 6, "passed": 6, "failed": 0},
+  "conservative_abs_bound": 934,
+  "rows": [
+    {"lane_count": 2, "all_resident_peak_bytes": 4096, "streamed_peak_bytes": 3072, "reduction_fraction": 0.25, "exact_match": true},
+    {"lane_count": 3, "all_resident_peak_bytes": 6144, "streamed_peak_bytes": 4096, "reduction_fraction": 0.3333333333333333, "exact_match": true},
+    {"lane_count": 4, "all_resident_peak_bytes": 8192, "streamed_peak_bytes": 5120, "reduction_fraction": 0.375, "exact_match": true},
+    {"lane_count": 5, "all_resident_peak_bytes": 10240, "streamed_peak_bytes": 6144, "reduction_fraction": 0.4, "exact_match": true},
+    {"lane_count": 6, "all_resident_peak_bytes": 12288, "streamed_peak_bytes": 7168, "reduction_fraction": 0.4166666666666667, "exact_match": true},
+    {"lane_count": 7, "all_resident_peak_bytes": 14336, "streamed_peak_bytes": 8192, "reduction_fraction": 0.42857142857142855, "exact_match": true}
+  ],
+  "cross_domain_fidelity": {
+    "ozaki_crt": "EXACT",
+    "ternary_model": "EMPIRICAL_CAPABILITY",
+    "kitten_review": "EMPIRICAL_CAPABILITY"
+  },
+  "next": "B462_REPRESENTATION_SCHEDULE_PEAK_TEST"
+}
