@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B432
-> Stage: STRATA PHYSICAL FRONTIER v0.1 FROZEN
-> Stop: FREEZE LIVE-STATE FRONTIER TAXONOMY v0.2
+> Latest bounce: B433
+> Stage: LIVE-STATE FRONTIER TAXONOMY v0.2 FROZEN
+> Stop: BUILD BOUNDED CONTROLLER
 
 ## Chapter II frontier
 
@@ -1090,3 +1090,92 @@ No paid resource was used.
 Next B433:
 
 Freeze Live-State Frontier Taxonomy v0.2 with explicit semantic and physical planes, owner sets, resident tiers, backing tiers, phases, and a controller ordering from semantic-liveness reduction through placement/lifetime.
+
+
+## B433 Live-State Frontier Taxonomy v0.2
+
+Frozen branch:
+
+- research/live-state-taxonomy-v02-b433
+
+Frozen files:
+
+- src/finite_ram_lab/live_state_taxonomy_v02.py
+- tests/test_live_state_taxonomy_v02.py
+- specs/LIVE-STATE-FRONTIER-TAXONOMY-v0.2.json
+- docs/B433-LIVE-STATE-FRONTIER-TAXONOMY-v0.2.md
+
+v0.2 explicitly separates two planes.
+
+Semantic plane:
+
+- logical state
+- future obligation
+- future-sufficient summary
+- recomputability
+- owner set
+- semantic live interval
+
+Physical plane:
+
+- representation
+- resident tier
+- backing tier
+- resident bytes
+- replica count
+- phase
+- physical live interval
+- per-tier capacity
+
+Fail-closed semantic release:
+
+1. REDUCE only with an explicit smaller future-sufficient summary
+2. else REMATERIALIZE only with explicit recomputability
+3. else RETAIN
+
+Controller order:
+
+1. SEMANTIC_REDUCTION
+2. OWNERSHIP
+3. REPRESENTATION
+4. TEMPORALIZATION
+5. PLACEMENT
+6. PHASE_BORROWING
+7. LIFETIME
+
+Cross-domain mappings remain inside the same action vocabulary:
+
+- Ozaki II -> REDUCE + REORDER
+- FlashAttention -> REDUCE + REORDER
+- PagedAttention -> SHARE + MOVE
+- Checkmate/DTR -> REMATERIALIZE
+- FlexGen -> COMPRESS + MOVE
+- current GEMMul8 memory-saving -> REORDER
+- Strata KV streaming -> COMPRESS + MOVE
+- Strata expert residency -> SHARE + MOVE
+- Strata prompt cache lending -> BORROW
+- Strata idle unload -> UNLOAD
+
+New frozen invariants:
+
+- semantic owner count is not physical replica count
+- backing size is not resident memory
+- tier capacities are a vector, not one flat byte pool
+- unknown recoverability does not authorize release
+- phase borrowing can change use of capacity without raising allocation peak
+- idle unload primarily reduces byte-seconds, not loaded peak
+
+Validation:
+
+- cross-domain unknown action count = 0
+- deterministic 20,000 randomized action-order cases PASS
+
+Claim ceiling: FORMAL_TAXONOMY_AND_SOURCE_BACKED_CROSS_DOMAIN_MODEL.
+
+No physical benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B434:
+
+Build a bounded controller that enumerates safe plans, rejects tier-capacity violations, preserves numerical/error dimensions, and emits a Pareto frontier. Solve tiny cases exactly and use them as an oracle for later heuristics.
