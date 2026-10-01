@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B446
-> Stage: PARTIALLY IDENTIFIED FRONTIER DECOMPOSITION v0.1 FROZEN
-> Stop: FREEZE CLEAN DYNAMIC FRONTIER EXPERIMENT
+> Latest bounce: B449
+> Stage: CLEAN DYNAMIC FRONTIER PRELAUNCH TWIN v0.1 FROZEN
+> Stop: PRELAUNCH IMPLEMENTATION AUDIT
 
 ## Chapter II frontier
 
@@ -1990,3 +1990,81 @@ No paid resource.
 Next B447:
 
 Freeze a clean paired dynamic-frontier experiment that captures scan peak, immediate post-scan pre-observer floor, post-observer floor, observer delta, and independent block replication at several MemoryHigh values under one source/observer contract. Implementation may be prepared, but launch remains a separate authority boundary.
+
+
+## B447/B448 clean dynamic frontier design + implementation
+
+Frozen design branch:
+
+- research/clean-dynamic-frontier-b447
+
+Implementation branch:
+
+- research/clean-dynamic-frontier-impl-b448
+
+B447 design:
+
+- MemoryHigh 144 / 160 / 176 MiB
+- six arms: buffered + DONTNEED 32/48/64/80/96
+- eight independent runner blocks per capacity
+- 144 trials total
+- immediate post_scan_pre_observer floor
+- file/hot residency diagnostics
+- post_scan_post_observer
+- clean ephemeral excess = scan peak - pre-observer floor
+- timing DESCRIPTIVE
+- advice_calls PRIMARY intervention cost
+- launch explicitly separate
+
+B448 implementation:
+
+- clean_dynamic_frontier_study.py runner/aggregator
+- executable CLEAN-DYNAMIC-FRONTIER-v0.1 spec
+- guarded workflow_dispatch-only workflow
+- no push auto-trigger
+- launch_ack must equal EXPLICITLY_AUTHORIZED
+- scan uses checkpoint_hook=None
+- cold preparation/verification runs outside measured cgroup
+- aggregate preserves per-block metric rows for later resampling
+
+No workflow was launched.
+
+## B449 prelaunch digital twin v0.1
+
+Frozen branch:
+
+- research/prelaunch-digital-twin-b449
+
+Expected DONTNEED PRIMARY frontier under B445 model:
+
+- H144: {32,48,96}
+- H160: {32,48,96}
+- H176: {32,48,96}
+
+Expected pressure:
+
+- H144: 80,96 pressured
+- H160: 96 pressured
+- H176: no tested DONTNEED arm pressured
+
+Arm roles:
+
+- frontier arms: 32 / 48 / 96
+- mechanism arms: 64 / 80
+- buffered: reference only, not part of DONTNEED candidate frontier
+
+New design principle:
+
+Pareto irrelevance is not mechanism irrelevance. Dominated 64/80 arms remain useful for clamp-model continuity and threshold localization.
+
+The expected null topology is constant frontier membership with capacity-dependent objective vectors. A frontier-arm disappearance under capacity expansion would be a B438/B439 runtime signal.
+
+Prelaunch static review then found one implementation defect:
+
+- B448 currently applies post-observer file-residency <=0.1 validity check to all arms
+- buffered is expected to retain file residency and could be invalidated incorrectly
+- check must apply only to DONTNEED arms
+
+Next B450:
+
+Patch the buffered residency validity bug, add an explicit arm-family validity helper/test, and perform a bounded source audit before any launch.
