@@ -1,0 +1,65 @@
+{
+  "schema": "finite-ram-lab.b471-result/v0.1",
+  "status": "PASS",
+  "classification": "BOUNDARY_BUDGET_CALIBRATION_REQUIRED",
+  "claim_ceiling": "HOSTED_OBSERVED_FRONTIER_GOVERNOR_CALIBRATION",
+  "workflow_run_id": 36933903103,
+  "workflow_job_id": 110609522931,
+  "execution_head_sha": "c5e59c089e670503b7de9fcb542aabf6651381f7",
+  "artifact_id": 11196898737,
+  "artifact_zip_sha256": "72379809277115cc3299a76871cd87e89edf9af5c8d092f32f1b4ced6c435179",
+  "panel_sha256": "b1b1b11b0ba50753a2673db2c776d4732c7a53dd1a8bc35cb8e40604600b8022",
+  "tests": {"count": 4, "passed": 4, "failed": 0},
+  "overall": {
+    "samples": 16,
+    "budget_compliant_count": 14,
+    "budget_miss_count": 2
+  },
+  "summary_rows": [
+    {
+      "profile_name": "upper_q1_boundary",
+      "selected_q": 1,
+      "peak_budget_bytes": 67022848,
+      "observed_peak_bytes": [67022848, 67108864, 67022848, 67117056],
+      "budget_compliant_count": 2,
+      "budget_miss_count": 2,
+      "max_observed_peak_bytes": 67117056,
+      "max_budget_overrun_bytes": 94208,
+      "median_work_seconds": 0.41788394099998527
+    },
+    {
+      "profile_name": "upper_q2_boundary",
+      "selected_q": 2,
+      "peak_budget_bytes": 67108864,
+      "observed_peak_bytes": [66850816, 67031040, 67018752, 67043328],
+      "budget_compliant_count": 4,
+      "budget_miss_count": 0,
+      "max_observed_peak_bytes": 67043328,
+      "min_budget_margin_bytes": 65536,
+      "median_work_seconds": 0.4061148905000209
+    },
+    {
+      "profile_name": "upper_q4_boundary",
+      "selected_q": 4,
+      "peak_budget_bytes": 71303168,
+      "observed_peak_bytes": [71208960, 71168000, 71217152, 71213056],
+      "budget_compliant_count": 4,
+      "budget_miss_count": 0,
+      "max_observed_peak_bytes": 71217152,
+      "min_budget_margin_bytes": 86016,
+      "median_work_seconds": 0.4006625399999848
+    },
+    {
+      "profile_name": "upper_q7_boundary",
+      "selected_q": 7,
+      "peak_budget_bytes": 71507968,
+      "observed_peak_bytes": [71507968, 71507968, 71507968, 71507968],
+      "budget_compliant_count": 4,
+      "budget_miss_count": 0,
+      "max_observed_peak_bytes": 71507968,
+      "min_budget_margin_bytes": 0,
+      "median_work_seconds": 0.39560478650000164
+    }
+  ],
+  "next": "B472_Q1_TARGETED_BOUNDARY_CALIBRATION"
+}
