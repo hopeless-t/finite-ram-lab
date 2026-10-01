@@ -1,0 +1,45 @@
+{
+  "schema": "finite-ram.observer-identity/v0.1",
+  "bounce": "B444",
+  "claim_ceiling": "HISTORICAL_CROSS-STUDY_IDENTITY_AUDIT",
+  "candidate_merge": {
+    "study_left": "STRATA-004-KNEE-v1",
+    "capacity_mib": 160,
+    "launch_commit": "4d22de0570030c987db3e76416c009e67c58341a",
+    "study_right": "STRATA-005-EXTERNAL-VALIDITY-v1",
+    "capacity_mib": [144, 176],
+    "launch_commit": "9f0ed686406a49b42e14d855e3d941970e55c94d"
+  },
+  "matching_identity_fields": {
+    "runner": "ubuntu-24.04",
+    "python": "3.12",
+    "memory_max_mib": 320,
+    "hot_anon_mib": 64,
+    "cold_file_mib": 96,
+    "read_chunk_mib": 4,
+    "common_arms": [
+      "buffered",
+      "dontneed_48m",
+      "dontneed_64m",
+      "dontneed_80m",
+      "dontneed_96m"
+    ]
+  },
+  "identity_failures": [
+    {
+      "kind": "WORKLOAD_IMPLEMENTATION_DRIFT",
+      "detail": "strata004_knee_workload.py changed between launch commits; STRATA-005 adds checkpoint_hook support"
+    },
+    {
+      "kind": "OBSERVER_SEMANTICS_DRIFT",
+      "detail": "STRATA-005 invokes recorder.sample(memory.current) from the scan checkpoint hook; STRATA-004 has no in-scan Recorder hook"
+    }
+  ],
+  "decision": "REJECT_THREE_POINT_CAPACITY_MERGE_AS_STABLE_PLAN_DATASET",
+  "allowed_use": [
+    "retain STRATA-004 160 MiB as historical mechanism context",
+    "retain STRATA-005 144/176 MiB as one internally stable capacity-only pair",
+    "do not treat all three points as one B443-qualified stable-plan sweep"
+  ],
+  "new_physical_run": false
+}
