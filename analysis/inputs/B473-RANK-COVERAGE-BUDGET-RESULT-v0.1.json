@@ -1,0 +1,18 @@
+{
+  "schema": "finite-ram-lab.b473-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "EXCHANGEABILITY_CONDITIONAL_SAMPLE_BUDGET",
+  "workflow_run_id": 36934549234,
+  "workflow_job_id": 110611626331,
+  "execution_head_sha": "7f51a6154875b376d997470de2aeceabfe966646",
+  "artifact_id": 11196999524,
+  "artifact_zip_sha256": "dde23945b65b61b39afc39f59d2737d51c82e89105a2fff26603f0b5c7312789",
+  "budget_sha256": "f7bedb95311520e6f6a85133e436863a38c406851597ccb4e9c250715e15bd44",
+  "target_coverage": 0.95,
+  "required_sample_count_per_q": 19,
+  "current_counts": {"q1": 20, "q2": 8, "q4": 8, "q7": 8},
+  "additional_required": {"q1": 0, "q2": 11, "q4": 11, "q7": 11},
+  "total_additional_samples_required": 33,
+  "coverage_0_99_required_n": 99,
+  "next": "B474_SPEND_95_PERCENT_SAMPLE_BUDGET"
+}
