@@ -1,0 +1,46 @@
+{
+  "schema_version": "finite-ram-lab-experiment-v0.1",
+  "experiment_id": "ATLAS-FORK-001",
+  "status": "FROZEN_DESIGN",
+  "source": {
+    "title": "The Atlas Neuron",
+    "author": "Arth Singh",
+    "published": "2026-09-30",
+    "url": "https://www.arthsingh.com/blog/atlas-neuron"
+  },
+  "borrowed_mechanism": {
+    "random_projection_dimensions_in_source": 256,
+    "baseline_batches": 50,
+    "fork_threshold_ratio": 0.85,
+    "consecutive_below_batches": 3,
+    "source_landmarks_per_class": 128,
+    "source_chart_directions": 16,
+    "source_landmark_freeze_after_images": 1000
+  },
+  "catfood_scope": "Fork trigger and familiarity telemetry only; not a reproduction of the Atlas classifier.",
+  "finite_ram_mapping": {
+    "world": "stable memory-pressure / workload regime",
+    "familiarity_input": "normalized telemetry feature code",
+    "suspect": "candidate rare-state onset",
+    "fork": "new regime page candidate",
+    "withheld_batches": "do not update the current regime model while novelty is unresolved"
+  },
+  "candidate_features": [
+    "memory.current",
+    "memory.events.high delta",
+    "pgscan delta",
+    "pgsteal delta",
+    "major_fault delta",
+    "minor_fault delta",
+    "post-advice residual",
+    "latency"
+  ],
+  "acceptance": {
+    "baseline_frozen_after_exactly_50_batches": true,
+    "fork_requires_three_consecutive_below_threshold_batches": true,
+    "threshold_is_85_percent_of_frozen_baseline": true,
+    "suspect_batches_are_withheld": true,
+    "new_world_recalibrates": true
+  },
+  "claim_ceiling": "Atlas-inspired novelty/fork-gate research only. No claim that finite-RAM regimes are equivalent to image worlds, and no reproduction or performance claim for the full Atlas neuron."
+}
