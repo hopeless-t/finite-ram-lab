@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B434
-> Stage: EXACT BOUNDED FRONTIER CONTROLLER v0.1 FROZEN
-> Stop: HEURISTIC VERSUS EXACT ORACLE
+> Latest bounce: B435
+> Stage: PARETO BEAM CONTROLLER v0.1 FROZEN
+> Stop: RUN SOURCE-BACKED MIXED SCENARIO
 
 ## Chapter II frontier
 
@@ -1245,3 +1245,74 @@ No paid resource was used.
 Next B435:
 
 Build a cheap pressure-aware heuristic and compare it against the B434 exact oracle on small random problems. Measure feasibility, dominated-output rate, and regret/distance from the exact Pareto set, especially near independent VRAM/RAM capacity cliffs.
+
+
+## B435 Pareto beam controller v0.1
+
+Frozen branch:
+
+- research/pareto-beam-controller-b435
+
+Frozen files:
+
+- src/finite_ram_lab/pareto_beam_controller.py
+- tests/test_pareto_beam_controller.py
+- analysis/inputs/B435-PARETO-BEAM-EVAL-v0.1.json
+- docs/B435-PARETO-BEAM-CONTROLLER-v0.1.md
+
+Algorithm:
+
+1. expand each partial plan with safe options only
+2. reject per-tier capacity violations
+3. remove dominated partial prefixes (lossless at a fixed prefix depth)
+4. if the partial frontier exceeds beam width:
+   - preserve one extreme per objective
+   - fill remaining slots using a pressure-aware score
+5. return the Pareto frontier of the retained beam
+
+The pressure score includes:
+
+- squared per-tier capacity ratio
+- tier byte-seconds
+- traffic
+- compute
+- latency
+- bounded error
+
+It is used only for beam truncation, not to choose a final winner.
+
+Deterministic all-safe synthetic corpus:
+
+- seed 435300
+- 1,000 generated instances
+- 695 with non-empty exact frontier
+- 11,408 exact frontier objective vectors total
+
+Recovery:
+
+- beam 8: 35.68% exact-point coverage; 0.221% returned points dominated by exact
+- beam 16: 56.28%; 0.0156% dominated
+- beam 32: 76.02%; 0.0346% dominated
+- beam 64: 91.34%; 0% dominated
+- beam 128: 98.34%; 0% dominated
+- beam 256: 99.81%; 0% dominated
+
+At beam>=64 on this corpus the approximation primarily loses coverage rather than returning dominated plans.
+
+Additional validation:
+
+- large beam equals exact on 1,000 deterministic small random problems PASS
+- unsafe-only group returns no plan PASS
+- independent tier capacity filtering PASS
+- exact self-recovery coverage=1, domination gap=0 PASS
+- 5,000 width-64 random outputs feasible and internally non-dominated PASS
+
+Claim ceiling: SYNTHETIC_HEURISTIC_VS_EXACT_ORACLE.
+
+No physical benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B436:
+
+Assemble one mixed source-backed scenario from Strata KV/expert residency plus one proven semantic-reduction option and one temporalization option. Compare exact and beam controllers near RAM/VRAM capacity cliffs.
