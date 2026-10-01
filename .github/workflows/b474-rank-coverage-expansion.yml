@@ -1,0 +1,46 @@
+name: B474 Multi q Rank Coverage Expansion
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/rank-coverage-expand-b474
+    paths:
+      - "src/finite_ram_lab/rank_coverage_expansion.py"
+      - "tests/test_rank_coverage_expansion.py"
+      - "docs/B474-MULTI-Q-RANK-COVERAGE-EXPANSION-v0.1.md"
+      - ".github/workflows/b474-rank-coverage-expansion.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  expand:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_rank_coverage_expansion -v
+      - name: Spend frozen 33-run budget
+        run: |
+          mkdir -p runs/B474
+          python -m finite_ram_lab.rank_coverage_expansion \
+            --b469 analysis/inputs/B469-LANE-CONCURRENCY-RESULT-v0.1.json \
+            --b471 analysis/inputs/B471-GOVERNOR-COMPLIANCE-RESULT-v0.1.json \
+            --additional-per-q 11 \
+            --size 2048 \
+            --seed 474 \
+            --out runs/B474/rank-coverage-expansion.json
+          python -m json.tool runs/B474/rank-coverage-expansion.json >/dev/null
+          sha256sum runs/B474/rank-coverage-expansion.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b474-rank-coverage-expansion
+          path: runs/B474/rank-coverage-expansion.json
+          if-no-files-found: error
