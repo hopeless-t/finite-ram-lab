@@ -1,0 +1,51 @@
+{
+  "schema": "finite-ram.flashattention-source-trace/v0.1",
+  "bounce": "B431",
+  "claim_ceiling": "SOURCE_BACKED_STRUCTURAL_MODEL",
+  "upstream": {
+    "repository": "Dao-AILab/flash-attention",
+    "commit": "616b0e8abab13b87b01525b3916d5a863ab02ae0",
+    "paths": [
+      "flash_attn/cute/softmax.py",
+      "flash_attn/cute/flash_fwd.py",
+      "csrc/flash_attn/src/softmax.h"
+    ]
+  },
+  "source_facts": {
+    "tile_axes": ["query_rows", "key_value_rows"],
+    "score_tile": "acc_S",
+    "running_stats": ["row_max", "row_sum"],
+    "running_output_state": "acc_O",
+    "update": [
+      "online_softmax updates row_max/row_sum from acc_S",
+      "row_scale rescales prior acc_O when row_max changes",
+      "current normalized score tile is multiplied by V and accumulated",
+      "score tile need not survive after its KV block is consumed"
+    ],
+    "global_output": ["O", "softmax_lse"]
+  },
+  "future_sufficient_summary": {
+    "state": ["row_max", "row_sum", "weighted_output_accumulator"],
+    "property": "after any processed KV prefix, all exact information required from that prefix for future softmax continuation is represented by this running state under the standard softmax recurrence"
+  },
+  "structural_example": {
+    "tile_m": 128,
+    "tile_n": 128,
+    "head_dim_v": 128,
+    "score_accum_bytes": 4,
+    "output_accum_bytes": 4,
+    "stat_bytes": 4,
+    "active_score_tile_bytes": 65536,
+    "running_row_stats_bytes": 1024,
+    "running_output_accumulator_bytes": 65536,
+    "modeled_active_frontier_bytes": 132096,
+    "naive_4096x4096_fp32_score_matrix_bytes": 67108864
+  },
+  "validation": {
+    "random_partition_cases": 10000,
+    "result": "PASS",
+    "criterion": "chunked online summary output and log-sum-exp match full stable-softmax reference within floating tolerance"
+  },
+  "schema_result": "B428 TraceState concepts are sufficient; no new semantic state category was required",
+  "physical_benchmark": false
+}
