@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B428
-> Stage: FRONTIER COMPILER v0.1 FROZEN
-> Stop: TRANSLATE ONE REAL IMPLEMENTATION TRACE
+> Latest bounce: B429
+> Stage: GEMMUL8 SOURCE-BACKED LIVE-STATE TRACE v0.1 FROZEN
+> Stop: MODEL AXIS TEMPORALIZATION
 
 ## Chapter II frontier
 
@@ -799,3 +799,74 @@ No paid resource was used.
 Next B429:
 
 Translate one real implementation source into TraceState records, starting with Ozaki Scheme II / GEMMul8 if source structure is sufficiently visible. Preserve unknown sizes/timings symbolically rather than inventing values.
+
+
+## B429 GEMMul8 source-backed live-state trace
+
+Frozen branch:
+
+- research/gemmul8-source-trace-b429
+
+Upstream source pin:
+
+- RIKEN-RCCS/GEMMul8@603b52363715796a0af5e4aa1ed8d386349b4251
+
+Frozen files:
+
+- src/finite_ram_lab/gemmul8_source_trace.py
+- tests/test_gemmul8_source_trace.py
+- analysis/inputs/B429-GEMMUL8-SOURCE-BACKED-TRACE-v0.1.json
+- docs/B429-GEMMUL8-SOURCE-BACKED-LIVE-STATE-TRACE.md
+
+Key correction:
+
+The B428 one-residue-pair trace is an algorithmic streaming extreme, not a valid description of the current GEMMul8 INT8 real GEMM implementation.
+
+Source-backed current behavior:
+
+- INT8 real num_mat = NUM_MODULI;
+- A_lo and B_lo allocate all num_mat planes before the product loop;
+- C_hi is temporary by batch/group;
+- prior products are retained in reduced C_mid or grouped uint32 CRT state;
+- the final modulus/group can remain in high form for fused final CRT;
+- grouped CRT is selected for sizeC <= 8192^2;
+- CRT groups contain at most four moduli subject to uint32 product bound.
+
+Current GEMMul8 memory-saving mode:
+
+- keeps NUM_MODULI fixed;
+- searches smaller m/n/k blocks;
+- invokes the same Ozaki-II core repeatedly on those matrix blocks.
+
+This motivates H429-AXIS-TEMPORALIZATION:
+
+Finite-memory optimization can choose which independent computation axis is temporalized. Current GEMMul8 reduces workspace mainly by temporalizing m/n/k, while the modulus/precision axis remains fully represented in A_lo/B_lo inside each core invocation.
+
+Source-derived static example only:
+
+- real INT8 GEMM
+- 4096^3
+- 8 moduli
+- fastmode
+- no skip scaling
+- WorkA=134,226,175 bytes
+- WorkB=134,226,175 bytes
+- WorkC=402,653,439 bytes
+- total=671,105,789 bytes ~= 640.016 MiB
+
+This is the pinned source workspace formula, not measured VRAM and not total process/GPU memory.
+
+Isolated authoring validation:
+
+- fixed 4096/8192/16384 source-formula vectors PASS;
+- deterministic 20,000-case randomized structural sweep PASS.
+
+Claim ceiling: SOURCE_BACKED_STATIC_MODEL.
+
+No physical GPU benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B430:
+
+Model axis temporalization explicitly. Compare legal m/n/k-only blocking with a hypothetical p/modulus blocking axis and hybrid blocking. The p-axis remains hypothetical until an explicit correctness-preserving incremental CRT state is specified.
