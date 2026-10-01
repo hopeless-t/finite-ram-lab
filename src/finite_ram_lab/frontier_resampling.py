@@ -206,3 +206,82 @@ def bootstrap_any_frontier_loss(
         "loss_size_0_count": loss_sizes[0],
         "loss_size_1plus_count": iterations - loss_sizes[0],
     }
+
+
+def exact_bootstrap_membership(
+    blocks: Mapping[str, Mapping[str, Mapping[str, float]]],
+    objective_names: Sequence[str],
+    *,
+    max_resamples: int = 1_000_000,
+) -> dict[str, object]:
+    keys = tuple(sorted(blocks))
+    if not keys:
+        raise ValueError("blocks_empty")
+
+    total = len(keys) ** len(keys)
+    if total > max_resamples:
+        raise ValueError("exact_bootstrap_too_large")
+
+    counts: Counter[str] = Counter()
+    frontier_size_counts: Counter[int] = Counter()
+
+    for sample in product(keys, repeat=len(keys)):
+        frontier = {
+            p.plan_id
+            for p in projected_frontier(
+                _aggregate_blocks(blocks, sample, objective_names),
+                objective_names,
+            )
+        }
+        frontier_size_counts[len(frontier)] += 1
+        counts.update(frontier)
+
+    return {
+        "resamples": total,
+        "membership_counts": dict(sorted(counts.items())),
+        "membership_probabilities": {
+            plan_id: count / total
+            for plan_id, count in sorted(counts.items())
+        },
+        "frontier_size_counts": dict(sorted(frontier_size_counts.items())),
+    }
+
+
+def exact_independent_target_loss(
+    smaller_blocks: Mapping[str, Mapping[str, Mapping[str, float]]],
+    larger_blocks: Mapping[str, Mapping[str, Mapping[str, float]]],
+    objective_names: Sequence[str],
+    *,
+    target_plan_id: str,
+    max_resamples: int = 1_000_000,
+) -> dict[str, float | int]:
+    small = exact_bootstrap_membership(
+        smaller_blocks,
+        objective_names,
+        max_resamples=max_resamples,
+    )
+    large = exact_bootstrap_membership(
+        larger_blocks,
+        objective_names,
+        max_resamples=max_resamples,
+    )
+
+    small_total = int(small["resamples"])
+    large_total = int(large["resamples"])
+    small_count = int(small["membership_counts"].get(target_plan_id, 0))
+    large_count = int(large["membership_counts"].get(target_plan_id, 0))
+
+    loss_pairs = small_count * (large_total - large_count)
+    pair_total = small_total * large_total
+
+    return {
+        "small_resamples": small_total,
+        "large_resamples": large_total,
+        "independent_resample_pairs": pair_total,
+        "small_membership_count": small_count,
+        "large_membership_count": large_count,
+        "small_membership_probability": small_count / small_total,
+        "large_membership_probability": large_count / large_total,
+        "loss_pair_count": loss_pairs,
+        "loss_probability": loss_pairs / pair_total,
+    }
