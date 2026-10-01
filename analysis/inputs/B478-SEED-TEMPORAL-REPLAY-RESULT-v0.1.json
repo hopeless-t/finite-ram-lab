@@ -1,0 +1,38 @@
+{
+  "schema": "finite-ram-lab.b478-result/v0.1",
+  "status": "PASS",
+  "classification": "FACTOR_SHIFT_SUSPECT",
+  "claim_ceiling": "TWO_FACTOR_BOUNDED_REPLAY_DIAGNOSTIC",
+  "workflow_run_id": 36936705161,
+  "workflow_job_id": 110618539217,
+  "execution_head_sha": "a97e8525ce018317bbbdac2e183a19af6d2522b9",
+  "artifact_id": 11197788009,
+  "artifact_zip_sha256": "692ec4b51194485d4c8a9bb5b479b5f6f32f24ac3757d87c97c2c106bb53eaee",
+  "result_sha256": "d523bdd73da4bb0ad15535278fba28fc93fcfb4018575bd1b049d72b93930f3b",
+  "per_test_bonferroni_alpha": 0.0125,
+  "rows": [
+    {
+      "q": 2,
+      "historical_seed474_median_peak_bytes": 67100672,
+      "current_seed474_median_peak_bytes": 67129344,
+      "current_seed476_median_peak_bytes": 66973696,
+      "temporal_delta_current474_minus_historical474_bytes": 28672,
+      "seed_delta_current476_minus_current474_bytes": -155648,
+      "temporal_exact_two_sided_p": 0.006297795771479982,
+      "seed_exact_two_sided_p": 0.0001554001554001554,
+      "classification": "MIXED_TEMPORAL_AND_SEED_SHIFT_SUSPECT"
+    },
+    {
+      "q": 4,
+      "historical_seed474_median_peak_bytes": 71303168,
+      "current_seed474_median_peak_bytes": 71313408,
+      "current_seed476_median_peak_bytes": 71198720,
+      "temporal_delta_current474_minus_historical474_bytes": 10240,
+      "seed_delta_current476_minus_current474_bytes": -114688,
+      "temporal_exact_two_sided_p": 0.44914132994628353,
+      "seed_exact_two_sided_p": 0.0001554001554001554,
+      "classification": "WORKLOAD_SEED_EFFECT_SUSPECT"
+    }
+  ],
+  "next": "B479_RUNNER_BLOCK_FACTORIAL_REPLICATION"
+}
