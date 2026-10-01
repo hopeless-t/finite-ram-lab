@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from finite_ram_lab.clean_dynamic_frontier_study import (
+    file_post_residency_valid,
     schedule_rows,
     summarize,
 )
@@ -52,9 +53,18 @@ def fake_trial(high: int, block: int, arm: str) -> dict:
     floor = 77 * 1024 * 1024
     return {
         "status": "PASS",
+        "source_commit": "deadbeef",
+        "observer_contract_version": SPEC["observer_contract_version"],
         "pressure_mib": high,
         "block": block,
         "arm": arm,
+        "parameters": {
+            "memory_high_mib": high,
+            "memory_max_mib": SPEC["memory_max_mib"],
+            "hot_anon_mib": SPEC["hot_anon_mib"],
+            "cold_file_mib": SPEC["cold_file_mib"],
+            "read_chunk_mib": SPEC["read_chunk_mib"],
+        },
         "metrics": {
             "peak_ram_bytes": peak,
             "clean_floor_bytes": floor,
@@ -71,6 +81,54 @@ def fake_trial(high: int, block: int, arm: str) -> dict:
 
 
 class CleanDynamicFrontierStudyTests(unittest.TestCase):
+    def test_file_post_residency_validity_is_arm_aware(self):
+        self.assertTrue(
+            file_post_residency_valid(
+                arm="buffered",
+                resident_fraction=1.0,
+                max_fraction=0.1,
+            )
+        )
+        self.assertTrue(
+            file_post_residency_valid(
+                arm="dontneed_64m",
+                resident_fraction=0.0,
+                max_fraction=0.1,
+            )
+        )
+        self.assertFalse(
+            file_post_residency_valid(
+                arm="dontneed_64m",
+                resident_fraction=0.5,
+                max_fraction=0.1,
+            )
+        )
+
+    def test_summary_rejects_source_identity_drift(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            i = 0
+            first_path = None
+            for high in SPEC["memory_high_mib"]:
+                for block in range(SPEC["runner_blocks_per_pressure"]):
+                    for arm in SPEC["arms"]:
+                        path = root / f"trial-{i}.json"
+                        path.write_text(
+                            json.dumps(fake_trial(high, block, arm)),
+                            encoding="utf-8",
+                        )
+                        if first_path is None:
+                            first_path = path
+                        i += 1
+            row = json.loads(first_path.read_text(encoding="utf-8"))
+            row["source_commit"] = "different"
+            first_path.write_text(json.dumps(row), encoding="utf-8")
+            with self.assertRaisesRegex(
+                ValueError,
+                "source_commit_identity_drift",
+            ):
+                summarize(SPEC, root)
+
     def test_schedule_is_complete_and_deterministic(self):
         rows = schedule_rows(SPEC, pressure=144, block=0)
         self.assertEqual(rows, schedule_rows(SPEC, pressure=144, block=0))
