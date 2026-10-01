@@ -1,0 +1,114 @@
+{
+  "schema": "finite-ram.mixed-capacity-cliff-eval/v0.1",
+  "bounce": "B436",
+  "claim_ceiling": "SOURCE_ANCHORED_MIXED_NORMALIZED_CONTROLLER_SCENARIO",
+  "scenario": {
+    "unit": "MiB-equivalent resident-memory units",
+    "source_backed_anchors": {
+      "strata_int8_kv_full_mib": 1584,
+      "strata_int8_kv_gpu_resident_mib": 396,
+      "strata_int8_kv_host_authoritative_mib": 1584,
+      "strata_prompt_borrow_proxy_mib": 4731,
+      "strata_expert_logical_proxy_mib": 34816
+    },
+    "normalized_components": [
+      "expert tier partitions around the ~34-GB source anchor",
+      "traffic/compute/latency penalties",
+      "FlashAttention-pattern semantic reduction footprint",
+      "GEMMul8-pattern temporalization footprint",
+      "idle-unload byte-second proxy"
+    ],
+    "not_a_single_real_application": true
+  },
+  "tight_capacity_cliffs": [
+    {
+      "RAM_mib": 8192,
+      "minimum_VRAM_mib": 10544,
+      "reason": "RAM cannot hold the 8192-MiB expert budget plus 1584-MiB streamed KV host copy, so the exact tight plan must keep INT8 KV fully in VRAM"
+    },
+    {
+      "RAM_mib": 9775,
+      "minimum_VRAM_mib": 10544,
+      "reason": "one MiB below the host-KV threshold"
+    },
+    {
+      "RAM_mib": 9776,
+      "minimum_VRAM_mib": 9356,
+      "reason": "8192-MiB expert RAM budget + 1584-MiB authoritative INT8 KV now fits, opening the streamed-KV frontier arm"
+    }
+  ],
+  "frontier_arm_entry_examples": {
+    "RAM_8192_mib": {
+      "full_int8_vram": 10544,
+      "future_sufficient_summary": 10544,
+      "blocked_frontier": 10544,
+      "materialize": 11312,
+      "wide_frontier": 12080,
+      "dedicated_prompt_scratch": 16811
+    },
+    "RAM_24576_mib": {
+      "stream_int8": 9356,
+      "full_int8_vram": 10544,
+      "gpu12_ram22_experts": 13452,
+      "dedicated_prompt_scratch": 16811,
+      "gpu20_ram14_experts": 21644
+    },
+    "RAM_32768_mib": {
+      "gpu8_ram26_experts": 9356,
+      "gpu12_ram22_experts": 13452,
+      "gpu20_ram14_experts": 21644
+    }
+  },
+  "grid": {
+    "vram_capacities_mib": [
+      9216, 9728, 10240, 10752, 11264,
+      12288, 13312, 14336, 16384, 18432,
+      20480, 22528, 24576, 28672, 32768
+    ],
+    "ram_capacities_mib": [
+      8192, 9216, 10240, 12288, 14336,
+      16384, 20480, 24576, 28672, 32768, 40960
+    ],
+    "points_total": 165,
+    "points_with_nonempty_exact_frontier": 150,
+    "exact_frontier_objective_vectors_total": 3506
+  },
+  "beam_results": [
+    {
+      "beam_width": 16,
+      "approx_frontier_vectors_total": 1880,
+      "mean_exact_point_coverage": 0.7748023888863392,
+      "minimum_exact_point_coverage": 0.2,
+      "maximum_dominated_fraction": 0.0,
+      "grid_points_exactly_recovered": 82
+    },
+    {
+      "beam_width": 32,
+      "approx_frontier_vectors_total": 2688,
+      "mean_exact_point_coverage": 0.9127012368691374,
+      "minimum_exact_point_coverage": 0.4,
+      "maximum_dominated_fraction": 0.0,
+      "grid_points_exactly_recovered": 114
+    },
+    {
+      "beam_width": 64,
+      "approx_frontier_vectors_total": 3392,
+      "mean_exact_point_coverage": 0.9901394025604553,
+      "minimum_exact_point_coverage": 0.8,
+      "maximum_dominated_fraction": 0.0,
+      "grid_points_exactly_recovered": 141
+    },
+    {
+      "beam_width": 96,
+      "approx_frontier_vectors_total": 3506,
+      "mean_exact_point_coverage": 1.0,
+      "minimum_exact_point_coverage": 1.0,
+      "maximum_dominated_fraction": 0.0,
+      "grid_points_exactly_recovered": 150
+    }
+  ],
+  "main_result": "capacity changes do not merely scale one optimum; they activate and deactivate qualitatively different frontier arms",
+  "physical_benchmark": false,
+  "b425_ambient_canary": false,
+  "paid_resource": false
+}
