@@ -1,0 +1,40 @@
+{
+  "schema": "finite-ram.cadence-frontier-compiler/v0.1",
+  "bounce": "B453",
+  "claim_ceiling": "SYMBOLIC_DISCRETE_CADENCE_MODEL",
+  "model_assumptions": [
+    "fixed file/span size F",
+    "candidate cadence K is positive and discrete",
+    "intervention cost N(K)=ceil(F/K)",
+    "peak/ephemeral demand is nondecreasing in K before capacity clamp",
+    "pressure indicator is nondecreasing in K",
+    "all objectives are minimized"
+  ],
+  "compiler": {
+    "step_1": "group cadences by identical intervention count N(K)",
+    "step_2": "keep the smallest K in each intervention class as the frontier representative",
+    "step_3": "retain larger same-class K values as mechanism-only cadences",
+    "step_4": "assign representative activation threshold H=B+K",
+    "step_5": "at capacity H, frontier is all activated representatives plus the minimum-intervention fallback representative"
+  },
+  "b447_compilation": {
+    "file_span_mib": 96,
+    "candidate_cadences_mib": [32,48,64,80,96],
+    "representatives_mib": [32,48,96],
+    "mechanism_only_mib": [64,80],
+    "candidate_count": 5,
+    "representative_count": 3,
+    "search_reduction_fraction": 0.4,
+    "activation_thresholds_mib": {
+      "32": 110.609,
+      "48": 126.609,
+      "96": 174.609
+    },
+    "note": "96 is the minimum-intervention fallback and remains on the frontier even before its pressure-free threshold"
+  },
+  "validation": {
+    "random_discrete_systems": 20000,
+    "symbolic_equals_bruteforce": "PASS"
+  },
+  "physical_run": false
+}
