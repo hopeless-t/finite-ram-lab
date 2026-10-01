@@ -1,0 +1,44 @@
+name: B478 Seed Temporal Replay
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/seed-temporal-replay-b478
+    paths:
+      - "src/finite_ram_lab/seed_temporal_replay.py"
+      - "tests/test_seed_temporal_replay.py"
+      - "docs/B478-SEED-TEMPORAL-REPLAY-v0.1.md"
+      - ".github/workflows/b478-seed-temporal-replay.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_seed_temporal_replay -v
+      - name: Frozen two-factor replay
+        run: |
+          mkdir -p runs/B478
+          python -m finite_ram_lab.seed_temporal_replay \
+            --reference-input analysis/inputs/B477-LOCATION-SHIFT-INPUT-v0.1.json \
+            --repetitions 8 \
+            --size 2048 \
+            --out runs/B478/seed-temporal-replay.json
+          python -m json.tool runs/B478/seed-temporal-replay.json >/dev/null
+          sha256sum runs/B478/seed-temporal-replay.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b478-seed-temporal-replay
+          path: runs/B478/seed-temporal-replay.json
+          if-no-files-found: error
