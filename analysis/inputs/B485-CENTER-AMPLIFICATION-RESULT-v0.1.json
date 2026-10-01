@@ -1,0 +1,25 @@
+{
+  "schema": "finite-ram-lab.b485-result/v0.1",
+  "status": "PASS",
+  "classification": "BOOLEAN_INDEX_TEMPORARY_MECHANISM_CONFIRMED",
+  "claim_ceiling": "ISOLATED_CENTER_SELECTED_COUNT_AMPLIFICATION",
+  "workflow_run_id": 36940679045,
+  "aggregate_job_id": 110631356742,
+  "execution_head_sha": "182011597ceaddb7c5cfaf0a9faa14b513e244b3",
+  "aggregate_artifact_id": 11199493156,
+  "aggregate_artifact_zip_sha256": "8ecb64d96db774f94a17d6ed08184e27d0aa155cef6471ad0bf1d8580612a83c",
+  "aggregate_sha256": "8927cdf38e964690fc26bc89731437c4939f25733a7d369f05d06b58992e2cf2",
+  "runner_block_count": 8,
+  "series": [
+    {"multiplier":1,"expected_hwm_delta_bytes":-135520,"median_hwm_delta_bytes":-135168,"bytes_hwm_per_selected_element":7.979220779220779,"relative_prediction_error":0.0025974025974025974,"median_rss_delta_bytes":0},
+    {"multiplier":2,"expected_hwm_delta_bytes":-271040,"median_hwm_delta_bytes":-266240,"bytes_hwm_per_selected_element":7.858323494687131,"relative_prediction_error":0.01770956316410862,"median_rss_delta_bytes":0},
+    {"multiplier":4,"expected_hwm_delta_bytes":-542080,"median_hwm_delta_bytes":-524288,"bytes_hwm_per_selected_element":7.737426210153483,"relative_prediction_error":0.03282172373081464,"median_rss_delta_bytes":0},
+    {"multiplier":8,"expected_hwm_delta_bytes":-1084160,"median_hwm_delta_bytes":-1046528,"bytes_hwm_per_selected_element":7.722314049586777,"relative_prediction_error":0.03471074380165289,"median_rss_delta_bytes":0}
+  ],
+  "summary": {
+    "median_slope_bytes_per_selected_element": 7.797874852420307,
+    "monotonic_effect_magnitude": true,
+    "mechanism_supported": true
+  },
+  "next": "B486_EXACT_CENTER_REPAIR"
+}
