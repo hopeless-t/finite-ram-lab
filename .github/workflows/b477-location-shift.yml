@@ -1,0 +1,43 @@
+name: B477 Location Shift
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/location-shift-b477
+    paths:
+      - "src/finite_ram_lab/location_shift.py"
+      - "tests/test_location_shift.py"
+      - "analysis/inputs/B477-LOCATION-SHIFT-INPUT-v0.1.json"
+      - "docs/B477-LOCATION-SHIFT-v0.1.md"
+      - ".github/workflows/b477-location-shift.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_location_shift -v
+      - name: Freeze exact location diagnostic
+        run: |
+          mkdir -p runs/B477
+          python -m finite_ram_lab.location_shift \
+            --input analysis/inputs/B477-LOCATION-SHIFT-INPUT-v0.1.json \
+            --out runs/B477/location-shift.json
+          python -m json.tool runs/B477/location-shift.json >/dev/null
+          sha256sum runs/B477/location-shift.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b477-location-shift
+          path: runs/B477/location-shift.json
+          if-no-files-found: error
