@@ -1,15 +1,63 @@
-# B453 — Symbolic Cadence Frontier Compiler v0.1
+# B453 — Symbolic Cadence Frontier Compiler v0.2
 
-Status: **symbolic discrete-cadence model**. No physical experiment ran.
+Status: **corrected symbolic objective-quotient model**. No physical experiment ran.
 
-## 1. Generalizing B452
+## 1. The first generalization failed — usefully
 
-B452 solved one frozen cadence set:
+The first B453 draft claimed:
 
-- file span 96 MiB;
-- cadences 32/48/64/80/96 MiB.
+> one smallest cadence per intervention-count class reproduces the full Pareto plan-ID frontier.
 
-B453 generalizes the same structure.
+Random qualification immediately found a counterexample.
+
+For:
+
+- F=26
+- K={1,3,6,8,18,21,23}
+- B=117.7150528
+- H=86.0395173
+
+the exact plan-ID frontier is:
+
+**{18,21,23}.**
+
+All three cadences:
+
+- are capacity-clamped to the same peak;
+- have the same pressure state;
+- have the same 2-call intervention count.
+
+Therefore they have exactly the same objective vector.
+
+None strictly dominates another as a plan identity.
+
+The original plan-ID claim was too strong.
+
+## 2. Corrected object: the objective-vector quotient
+
+For optimization, exact tied plan identities need not create separate decision points.
+
+Define two plans as equivalent when their complete modeled objective vectors are identical.
+
+Then the quotient frontier contains one canonical representative per distinct Pareto objective vector.
+
+For the counterexample:
+
+plan-ID frontier:
+- 18
+- 21
+- 23
+
+objective-vector quotient:
+- representative 18
+
+with tie group:
+
+{18,21,23}.
+
+This is the corrected B453 claim.
+
+## 3. Intervention classes
 
 Input:
 
@@ -19,143 +67,118 @@ Input:
 
 Intervention cost:
 
-**N(K) = ceil(F / K).**
+**N(K)=ceil(F/K).**
 
-## 2. Intervention classes
+Cadences with equal N(K) form an intervention class.
 
-Cadences are first grouped by identical N(K).
+The compiler selects the smallest K as the canonical optimizer representative.
 
-Within one class, every member has the same modeled intervention count.
+Larger same-class cadences remain available as:
 
-Under the frozen monotonicity assumptions:
+- mechanism probes;
+- exact tied plan identities under clamp;
+- physical continuity checks.
 
-- larger K cannot reduce peak memory;
-- larger K cannot reduce ephemeral state;
-- larger K cannot improve pressure state.
+They are not erased from evidence.
 
-Therefore the smallest K in each intervention-count class is the only cadence that can create a distinct frontier tradeoff.
+## 4. Symbolic activation rule
 
-Larger members are retained as:
+Each canonical class representative k_i has a pressure-free threshold:
 
-**mechanism-only cadences.**
+**T_i=B+k_i.**
 
-They may still be scientifically valuable for:
+At capacity H the canonical objective frontier contains:
 
-- threshold localization;
-- continuity checks;
-- validating the physical model.
+1. every representative whose threshold has been crossed;
+2. the minimum-intervention fallback representative.
 
-They need not remain in the optimizer search surface.
+This compiles the set of **distinct Pareto objective vectors**.
 
-## 3. Symbolic frontier rule
+It does not promise to enumerate every plan ID that ties exactly on one of those vectors.
 
-Let each intervention class have representative cadence k_i.
-
-Each representative has a pressure-free activation threshold:
-
-**T_i = B + k_i.**
-
-At capacity H:
-
-1. every representative with H >= T_i joins the frontier;
-2. the representative with the lowest intervention count remains as the fallback arm even before its own pressure-free threshold.
-
-Therefore the frontier can be compiled without enumerating every plan at every capacity.
-
-## 4. Why the fallback survives
-
-Before a low-intervention representative becomes pressure-free it may be clamped, but it still minimizes intervention count.
-
-When another representative is pressure-free, the tradeoff is:
-
-- smaller K: lower memory/pressure;
-- fallback K: fewer interventions.
-
-Neither dominates the other.
-
-When all smaller representatives are still clamped, the fallback dominates them because their memory/pressure coordinates collapse to the same clamp while they require more interventions.
-
-## 5. B447 compilation
+## 5. B447 remains unchanged
 
 For:
 
-F = 96 MiB
+- F=96
+- K={32,48,64,80,96}
+- B=78.609
 
-candidate K:
+classes are:
 
-32,48,64,80,96
+- 3 calls -> 32
+- 2 calls -> 48 with 64/80 as same-class mechanism cadences
+- 1 call -> 96.
 
-the compiler finds intervention classes:
+Canonical representatives:
 
-- 3 calls -> representative 32
-- 2 calls -> representative 48, mechanism-only 64/80
-- 1 call -> representative 96.
+**{32,48,96}.**
 
-Thus:
+Search-space reduction:
 
-- candidates = 5
-- frontier representatives = 3
-- symbolic search reduction = 40%.
+**40%.**
 
-Activation thresholds from B=78.609:
+For the actual B447 capacity points 144/160/176, 64/80 are not merely exact ties in the expected twin; they are dominated by 48 on the modeled PRIMARY vector.
 
-- 32 -> 110.609 MiB
-- 48 -> 126.609 MiB
-- 96 -> 174.609 MiB.
+## 6. Plan frontier versus decision frontier
 
-The 96 arm remains the one-call fallback across the full capacity range.
+B453 now freezes a distinction.
 
-## 6. Relationship to exact Pareto search
+### Plan-ID Pareto frontier
 
-This is not a generic replacement for B434/B435.
+Preserves every nondominated physical plan identity, including exact objective ties.
 
-It is a domain-specific compiler pass valid only when the cadence monotonicity assumptions hold.
+Useful for:
 
-Its role is:
+- auditability;
+- physical mechanism comparison;
+- provenance.
 
-raw cadence candidates
--> intervention equivalence classes
--> symbolic representative set
--> exact/beam controller on the reduced set if other objectives remain.
+### Objective-quotient frontier
 
-So it is a pre-optimizer reduction.
+Preserves every distinct Pareto objective vector with one canonical representative.
 
-## 7. Random validation
+Useful for:
 
-The compiler was compared against brute-force Pareto evaluation on:
+- optimizer search;
+- controller state compression;
+- exact/beam complexity reduction.
+
+A compiler may compress the second without destroying the first evidence lane.
+
+## 7. Corrected validation
+
+The first random generalization test failed almost immediately and produced the counterexample above.
+
+After correcting the theorem, the compiler was compared against a brute-force **canonical objective frontier** over:
 
 - 20,000 deterministic random discrete cadence systems;
 - random span sizes;
-- random cadence subsets;
+- random candidate subsets;
 - random transient-base values;
 - random clean-floor proxies;
 - random capacities.
 
-Under the frozen model assumptions:
+Result:
 
-**symbolic frontier = brute-force frontier in every case.**
+**symbolic objective quotient = brute-force canonical objective frontier in every case.**
 
-## 8. New principle H453 — Semantic Precompression of Control Choices
+## 8. Revised H453 — Control-Choice Quotienting
 
-> If several control settings differ physically but induce the same intervention-cost class, monotone live-state ordering can collapse them to one optimizer representative while retaining the discarded settings as mechanism probes.
+> Control settings that are distinct physical plans but map to the same Pareto objective vector may be quotient-compressed for optimization, provided their identities remain available in a separate evidence/mechanism lane.
 
-This mirrors the broader Live-State Frontier idea:
+This is a safer and more general statement than the original draft.
 
-do not optimize a larger state space when a smaller sufficient representation is provably equivalent for the decision.
+It also mirrors Live-State Frontier more precisely:
 
-Here the object being compressed is not memory state.
-
-It is the **control-choice state space**.
+- preserve semantic/evidentiary identity;
+- compress only the representation needed for the current decision.
 
 ## 9. Next direction
 
-B454 should integrate the symbolic cadence compiler with B434/B435.
+B454 should integrate the quotient compiler with B434/B435 and explicitly carry both:
 
-Measure:
+- canonical optimizer representative;
+- provenance tie group.
 
-- candidate-count reduction;
-- exact enumeration reduction;
-- beam frontier coverage;
-- whether mechanism-only arms can be excluded from optimization while still retained in a separate experimental evidence lane.
-
-This would connect the cadence theorem back to the general controller architecture.
+Then measure reduction in exact combinations and beam width without losing the ability to map a selected objective point back to every physically equivalent mechanism candidate.
