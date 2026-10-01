@@ -1,0 +1,74 @@
+name: B486 Exact Center Repair
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/exact-center-repair-b486
+    paths:
+      - "src/finite_ram_lab/center_repair.py"
+      - "src/finite_ram_lab/center_repair_aggregate.py"
+      - "tests/test_center_repair.py"
+      - "docs/B486-EXACT-CENTER-REPAIR-v0.1.md"
+      - ".github/workflows/b486-center-repair.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run repair block
+        run: |
+          mkdir -p runs/B486
+          python -m finite_ram_lab.center_repair \
+            --block-id ${{ matrix.block }} \
+            --out runs/B486/block-${{ matrix.block }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b486-repair-block-${{ matrix.block }}
+          path: runs/B486/block-${{ matrix.block }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_center_repair -v
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b486-repair-block-*
+          path: runs/B486/blocks
+          merge-multiple: true
+      - name: Aggregate repair comparison
+        run: |
+          python -m finite_ram_lab.center_repair_aggregate \
+            --blocks-dir runs/B486/blocks \
+            --out runs/B486/center-repair.json
+          python -m json.tool runs/B486/center-repair.json >/dev/null
+          sha256sum runs/B486/center-repair.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b486-center-repair
+          path: runs/B486/center-repair.json
+          if-no-files-found: error
