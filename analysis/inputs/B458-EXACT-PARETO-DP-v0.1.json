@@ -1,0 +1,62 @@
+{
+  "schema": "finite-ram.exact-pareto-dp/v0.1",
+  "bounce": "B458",
+  "claim_ceiling": "EXACT_DYNAMIC_PARETO_WITHIN_B434_MODEL",
+  "theorem": {
+    "name": "Lossless Prefix Pareto Dynamic Program",
+    "assumptions": [
+      "one option is selected from each independent state group",
+      "global objectives are additive",
+      "all objective coordinates are minimized",
+      "resident-capacity usage is included in the compared objective state and feasibility is monotone under smaller resident use",
+      "safety eligibility is local and frozen before/at expansion",
+      "semantic-distinct exact ties are retained separately"
+    ],
+    "statement": "At every prefix depth, dominated prefixes can be discarded without changing the final distinct Pareto objective-vector frontier. Exact same-semantic objective ties may be quotient-canonicalized with provenance. Repeating this without beam truncation yields the same distinct exact frontier as B434 Cartesian enumeration."
+  },
+  "validation": {
+    "unit_tests": {
+      "run": 3,
+      "passed": 3,
+      "runtime_seconds": 10.160,
+      "stderr_sha256": "sha256:c1d0291bbc4c07e28b9c8f245fd472767d4f4149b917ace803e22adf9735836a"
+    },
+    "random_stateoption_systems": 1000,
+    "frontier_vector_mismatches": 0,
+    "synthetic_redundancy_panel": {
+      "cases": 200,
+      "seed": 45602,
+      "mean_expanded_over_cartesian": 0.4500125,
+      "min_expanded_over_cartesian": 0.24,
+      "max_expanded_over_cartesian": 0.56,
+      "mean_expanded_states": 40.685,
+      "mean_max_prefix_frontier_states": 13.29,
+      "mean_final_frontier_states": 13.29,
+      "stdout_sha256": "sha256:ea3db750d7f668c41d361d3d398c3b156f753e408023b51a04ed682f036e0510"
+    }
+  },
+  "fixed_b436_plus_b447": {
+    "raw_cartesian_combinations": 640,
+    "dp_total_expanded_states": 578,
+    "dp_expanded_over_cartesian": 0.903125,
+    "exact_frontier_states": 240,
+    "depth_stats": [
+      {"depth":1,"input_states":1,"expanded_states":2,"pareto_states_before_quotient":2,"quotient_states":2},
+      {"depth":2,"input_states":2,"expanded_states":8,"pareto_states_before_quotient":8,"quotient_states":8},
+      {"depth":3,"input_states":8,"expanded_states":16,"pareto_states_before_quotient":12,"quotient_states":12},
+      {"depth":4,"input_states":12,"expanded_states":24,"pareto_states_before_quotient":24,"quotient_states":24},
+      {"depth":5,"input_states":24,"expanded_states":48,"pareto_states_before_quotient":40,"quotient_states":40},
+      {"depth":6,"input_states":40,"expanded_states":80,"pareto_states_before_quotient":80,"quotient_states":80},
+      {"depth":7,"input_states":80,"expanded_states":400,"pareto_states_before_quotient":240,"quotient_states":240}
+    ],
+    "timing_reference_3reps": {
+      "cartesian_mean_seconds": 1.7868613526419115,
+      "dp_mean_seconds": 1.350593666662462,
+      "cartesian_over_dp_ratio": 1.3230192001844183,
+      "note": "environment-dependent reference only; state-count/exactness is the primary result",
+      "stdout_sha256": "sha256:7fdf9f619aa8b02bf39942e754a5e4c2559408e105a723de5ff8e478622a33e8"
+    }
+  },
+  "important_negative_result": "The fixed mixed scenario receives only modest state-count reduction because its prefix frontier remains broad and the five-option cadence group is last, producing 400 expansions at the final depth.",
+  "physical_run": false
+}
