@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B430
-> Stage: AXIS TEMPORALIZATION v0.1 FROZEN
-> Stop: CROSS-DOMAIN SOURCE TRACE
+> Latest bounce: B431
+> Stage: FLASHATTENTION FUTURE-SUFFICIENT STATE TRACE v0.1 FROZEN
+> Stop: TEST PHYSICAL-RESIDENCY SIDE WITH STRATA
 
 ## Chapter II frontier
 
@@ -932,3 +932,81 @@ No paid resource was used.
 Next B431:
 
 Translate an unrelated real implementation, preferably FlashAttention, into the same Live-State Frontier schema and determine whether the model survives without adding ad-hoc state categories.
+
+
+## B431 FlashAttention source-backed future-state trace
+
+Frozen branch:
+
+- research/flashattention-source-trace-b431
+
+Upstream source pin:
+
+- Dao-AILab/flash-attention@616b0e8abab13b87b01525b3916d5a863ab02ae0
+
+Frozen files:
+
+- src/finite_ram_lab/flashattention_future_state.py
+- tests/test_flashattention_future_state.py
+- analysis/inputs/B431-FLASHATTENTION-SOURCE-TRACE-v0.1.json
+- docs/B431-FLASHATTENTION-SOURCE-BACKED-FUTURE-STATE.md
+
+Source-backed mapping:
+
+- acc_S = ephemeral score tile;
+- row_max + row_sum = online softmax statistics;
+- acc_O = running weighted output state;
+- row_scale rescales prior acc_O when the running max changes;
+- after the current score tile is consumed into the running state and V accumulation, the old score tile need not remain live.
+
+Future-Sufficient State for one query row:
+
+- m = running max
+- l = sum exp(score-m)
+- o = sum exp(score-m) * value
+- retained summary phi=(m,l,o)
+
+This summary can be updated exactly with each future KV block and finalizes to:
+
+- O=o/l
+- LSE=m+log(l)
+
+Isolated recurrence validation:
+
+- deterministic 10,000 randomized partition cases PASS;
+- chunked online result and LSE matched full stable-softmax reference within floating tolerance.
+
+Structural example only:
+
+- tile_m=128
+- tile_n=128
+- head_dim_v=128
+- active score tile=65,536 bytes
+- row stats=1,024 bytes
+- output accumulator=65,536 bytes
+- modeled active frontier=132,096 bytes
+- naive 4096x4096 FP32 score matrix=67,108,864 bytes
+
+Do not interpret this as a total-memory ratio; Q/K/V/O, pipeline state, registers/shared memory and concurrency are outside the simple model.
+
+Cross-domain result:
+
+Both Ozaki/CRT and FlashAttention fit:
+
+EPHEMERAL STATE -> FUTURE-SUFFICIENT STATE -> RELEASE
+
+without adding a new semantic category to the B428 compiler schema.
+
+New H431 Semantic Liveness:
+
+An intermediate can become semantically dead before ordinary implementation/reference lifetime ends once every future-relevant effect has been transferred into a proven sufficient summary.
+
+Claim ceiling: SOURCE_BACKED_STRUCTURAL_MODEL.
+
+No physical GPU benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B432:
+
+Use Strata as the complementary test of the physical frontier: representation, placement, sharing, phase residency, and lifetime. If it also fits without changing the core schema, freeze Live-State Frontier taxonomy v0.2.
