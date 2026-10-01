@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B431
-> Stage: FLASHATTENTION FUTURE-SUFFICIENT STATE TRACE v0.1 FROZEN
-> Stop: TEST PHYSICAL-RESIDENCY SIDE WITH STRATA
+> Latest bounce: B432
+> Stage: STRATA PHYSICAL FRONTIER v0.1 FROZEN
+> Stop: FREEZE LIVE-STATE FRONTIER TAXONOMY v0.2
 
 ## Chapter II frontier
 
@@ -1010,3 +1010,83 @@ No paid resource was used.
 Next B432:
 
 Use Strata as the complementary test of the physical frontier: representation, placement, sharing, phase residency, and lifetime. If it also fits without changing the core schema, freeze Live-State Frontier taxonomy v0.2.
+
+
+## B432 Strata physical frontier v0.1
+
+Frozen branch:
+
+- research/strata-physical-frontier-b432
+
+Upstream source pin:
+
+- Niko1221/Strata@9259cad4cfa3543cd3b8decab5962672b968c649
+- setup.py observed engine floor: 0.1.31
+
+Frozen files:
+
+- src/finite_ram_lab/strata_physical_frontier.py
+- src/finite_ram_lab/tiered_frontier.py
+- tests/test_strata_physical_frontier.py
+- analysis/inputs/B432-STRATA-PHYSICAL-FRONTIER-v0.1.json
+- docs/B432-STRATA-PHYSICAL-FRONTIER-v0.1.md
+
+Source-backed Strata mappings:
+
+- KV INT8/Q4 -> COMPRESS
+- KV host/VRAM residency split -> MOVE
+- GPU expert subset + RAM/file complement -> MOVE + duplicate avoidance
+- one shared host expert arena -> SHARE
+- prompt borrowing expert-cache slots -> phase-local REORDER / capacity lending
+- multi-GPU session layer carve -> ownership partition
+- idle unload -> lifetime contraction / byte-seconds reduction
+
+Important current source facts:
+
+- KV bytes/cell: FP16=2048, INT8=1056, Q4_0=576, K8V4=816
+- K8V4 + KV streaming is rejected in current source
+- current layer-split SessionState carves QSA/GDN state for the owned layer range instead of whole-model state on every stage
+- mapped file size is backing storage, not resident RAM
+
+Structural INT8 KV example only:
+
+- 12 QSA layers
+- max_cells=131072
+- resident_cells=32768
+- full encoded pool if all VRAM=1,660,944,384 B
+- resident GPU pool=415,236,096 B
+- host authoritative pool=1,660,944,384 B
+- VRAM avoided=1,245,708,288 B
+
+This isolates K/V pool bytes only and is not total Strata session memory.
+
+Critical compiler finding:
+
+The B428 semantic taxonomy survives Strata, but flat physical_bytes does not.
+
+VRAM and RAM have independent capacity constraints. B432 therefore adds tier-aware frontier compilation:
+
+- logical peak
+- total resident peak
+- per-tier peaks
+- per-tier byte-seconds
+- per-tier capacity ratios
+
+Semantic state is counted once; host/GPU copies are physical placements only. File backing is excluded from resident RAM until page-cache residency is actually observed.
+
+Validation:
+
+- fixed source-backed arithmetic PASS
+- fail-closed unsupported KV combination PASS
+- complement/borrow/ownership/idle accounting PASS
+- deterministic 20,000 randomized tier traces PASS
+
+Claim ceiling: SOURCE_BACKED_STATIC_AND_STRUCTURAL_MODEL.
+
+No physical Strata benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B433:
+
+Freeze Live-State Frontier Taxonomy v0.2 with explicit semantic and physical planes, owner sets, resident tiers, backing tiers, phases, and a controller ordering from semantic-liveness reduction through placement/lifetime.
