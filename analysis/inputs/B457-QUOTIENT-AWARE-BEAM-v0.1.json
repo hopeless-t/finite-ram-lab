@@ -1,0 +1,55 @@
+{
+  "schema": "finite-ram.quotient-aware-beam/v0.1",
+  "bounce": "B457",
+  "claim_ceiling": "ALGORITHMIC_EQUIVALENCE_WITHIN_B434_B455_MODEL",
+  "algorithm": {
+    "scale_reference": "B455 compiled_raw_groups",
+    "per_depth": [
+      "expand safe feasible raw options",
+      "lossless partial Pareto prune",
+      "canonicalize exact objective-vector ties only within identical semantic paths",
+      "merge factorized provenance",
+      "beam truncate"
+    ],
+    "provenance": "per-state source option union plus equivalent path count; exact path Cartesian enumeration is not retained"
+  },
+  "precompile_equivalence": {
+    "statement": "For the current additive B434/B435 model, quotient-aware beam on raw groups produces the same distinct objective-vector beam result as B435 beam on B455-precompiled groups, at the same width.",
+    "proof_sketch": [
+      "B455 scale reference is used directly, so scalar normalization matches the precompiled pipeline.",
+      "Unsafe raw options never enter either pipeline.",
+      "Locally dominated same-signature options are removed by B455 before expansion, and by lossless prefix Pareto pruning after raw expansion; a dominating option has no greater resident use, so feasibility cannot make the dominated option uniquely survive.",
+      "Exact same-signature ties are canonicalized before truncation in both pipelines.",
+      "Different semantic signatures are retained in both pipelines.",
+      "By induction over prefix depth, the same canonical decision states reach each truncation step."
+    ]
+  },
+  "validation": {
+    "unit_tests": {
+      "run": 5,
+      "passed": 5,
+      "runtime_seconds": 4.340,
+      "stderr_sha256": "sha256:5ad525a67c48e2711cf36df8533039631617ace9a81dff60723db13c84696911"
+    },
+    "random_precompile_equivalence": {
+      "systems": 500,
+      "beam_widths": [4,8,16],
+      "result": "PASS"
+    },
+    "b456_panel_replay": {
+      "cases": 200,
+      "seed": 45602,
+      "widths": [4,8,16,32],
+      "aware_vs_precompiled_vector_set_diff_cases": 0,
+      "aware_worse_than_raw_cases": 0,
+      "coverage": {
+        "4": {"raw":0.34413921616041676,"aware":0.34413921616041676},
+        "8": {"raw":0.5422048688730439,"aware":0.6705165275589289},
+        "16": {"raw":0.6667926841424705,"aware":0.9520471521319542},
+        "32": {"raw":0.8740458262871275,"aware":1.0}
+      },
+      "stdout_sha256": "sha256:2155da43518ebafcbbf7fde98d28ac33d39354fc1190c22cf3d267c00a24d5ba"
+    }
+  },
+  "physical_run": false
+}
