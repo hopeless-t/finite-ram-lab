@@ -2219,3 +2219,93 @@ No paid resource.
 Next B452:
 
 Formalize the intervention-aware frontier implied by advice_calls. Distinguish memory saved by more frequent state release from intervention frequency itself, and derive the expected cadence frontier analytically without using noisy wall-clock timing.
+
+## B461/B462 obligation-residency unification lane
+
+Independent research lane added after the B459/B460 controller-order work.
+
+### B461 — Obligation–Residency Separation
+
+Branch:
+- research/obligation-residency-b461
+
+Draft PR:
+- #7
+
+Core hypothesis H461:
+
+> Obligation is semantic/informational. Residency is physical. Retain the smallest
+> future-sufficient representation whose fidelity contract is actually proven,
+> and no smaller.
+
+Fidelity classes are explicit:
+
+- Ozaki/CRT lane: EXACT
+- ternary-model mapping: EMPIRICAL_CAPABILITY
+- Kitten-review mapping: EMPIRICAL_CAPABILITY
+
+Do not transfer CRT exactness into the empirical domains.
+
+B461 exact software panel:
+
+- workflow run 36923780897
+- 6/6 targeted tests PASS
+- lane counts 2..7 all exact
+- logical peak reduction 25.00% -> 42.86%
+- artifact ID 11193330348
+- panel SHA256 4810bd6e5cb11f36fe3c328a6acad64c9720ddaead2ece35eb2021361f493ef6
+
+### B462 — hosted physical representation-schedule proxy
+
+Branch:
+- research/representation-peak-b462
+
+Frozen contract:
+
+- fresh process per arm
+- 6 matched pairs
+- alternating reference-first / treatment-first
+- exact B461 semantic gate in every child
+- anonymous page-touched mmap buffers
+- primary endpoint = normalized VmHWM growth
+- final RSS remains supporting only
+
+Frozen result:
+
+- workflow run 36924274517
+- classification = PHYSICAL_PEAK_SCHEDULE_EFFECT_REPLICATED
+- treatment-reference peak deltas:
+  [-25165824,-25165824,-25165824,-25165824,-25165824,-25165824]
+- negative = 6/6
+- median = -25,165,824 B = -24 MiB
+- artifact ID 11192913454
+- artifact ZIP SHA256 d44d13d54595aa4b91daed7e07f5f1021094538e7f8c484d423e2f35f6281b14
+- panel JSON SHA256 9f8cbdf2494fedf787c2cbb010ccdde70461c941b644e6ad393bdc9d7cdda0d8
+
+Claim ceiling:
+
+- B461 = SOFTWARE_EXACT_LOGICAL_RESIDENCY_ONLY
+- B462 = HOSTED_LINUX_MMAP_REPRESENTATION_SCHEDULE_PROXY
+
+The mmap proxy is not a production Ozaki kernel and does not establish speedup.
+
+Evidence chain now established in this lane:
+
+```text
+semantic/information obligation
+  -> exact future-sufficient fold invariant
+  -> lower logical simultaneous representation
+  -> lower measured hosted-process peak
+```
+
+Next atomic research edge:
+
+- B463 COUPLED_NUMERICAL_RESIDENCY_TEST
+- couple real residue production/reconstruction to the measured memory path;
+- keep exact output equality as a hard gate;
+- measure normalized peak, latency, and traffic;
+- retain order-balanced fresh-process replication;
+- biopsy any rare contrary pair rather than averaging it away.
+
+This lane does not replace the Chapter-II memcg physical program or authorize a
+cross-domain universal governor.
