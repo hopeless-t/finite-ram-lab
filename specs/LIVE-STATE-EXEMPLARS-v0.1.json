@@ -1,0 +1,60 @@
+{
+  "schema": "finite-ram.live-state-exemplars/v0.1",
+  "bounce": "B427",
+  "claim_ceiling": "SYMBOLIC_AND_SOFTWARE_MODEL_ONLY",
+  "exemplars": [
+    {
+      "name": "Ozaki Scheme I",
+      "moves": ["REORDER"],
+      "frontier": "multiple precision slices may remain simultaneously materialized",
+      "symbolic": {
+        "peak_live_bytes": "base + k*(A_slice+B_slice) + accumulator",
+        "gemm_count": "k*(k+1)/2"
+      }
+    },
+    {
+      "name": "Ozaki Scheme II",
+      "moves": ["REDUCE", "REORDER"],
+      "frontier": "stream one/few residue pairs and fold into reconstruction state",
+      "symbolic": {
+        "peak_live_bytes": "base + r*(A_residue+B_residue) + accumulator",
+        "gemm_count": "s",
+        "note": "for fixed resident residue pairs r, peak is independent of total modulus count s"
+      }
+    },
+    {
+      "name": "FlashAttention",
+      "moves": ["REDUCE", "REORDER"],
+      "frontier": "avoid full N^2 attention-score materialization through tiled exact computation",
+      "symbolic": {
+        "naive_score_bytes": "N^2 * element_bytes",
+        "tile_score_bytes": "Br * Bc * element_bytes"
+      }
+    },
+    {
+      "name": "PagedAttention",
+      "moves": ["SHARE", "MOVE"],
+      "frontier": "retain logical KV state while reducing physical fragmentation and duplicate residency"
+    },
+    {
+      "name": "Checkmate/DTR",
+      "moves": ["REMATERIALIZE"],
+      "frontier": "remove selected intermediates and retain regeneration paths"
+    },
+    {
+      "name": "FlexGen",
+      "moves": ["MOVE", "COMPRESS"],
+      "frontier": "optimize GPU/CPU/disk tensor placement under resource constraints"
+    },
+    {
+      "name": "Strata",
+      "moves": ["COMPRESS", "MOVE", "SHARE", "REORDER"],
+      "frontier": "phase-dependent expert/KV residency, sharing, cache borrowing, and unload"
+    }
+  ],
+  "validation": {
+    "unit_tests": 9,
+    "randomized_ozaki_invariant_cases": 10000,
+    "physical_measurements": 0
+  }
+}
