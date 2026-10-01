@@ -1,0 +1,34 @@
+{
+  "schema": "finite-ram.frontier-compiler-normalized-trace/v0.1",
+  "bounce": "B428",
+  "claim_ceiling": "NORMALIZED_STRUCTURAL_EXAMPLE_ONLY",
+  "physical_measurement": false,
+  "units": "normalized_state_units",
+  "assumptions": {
+    "ozaki_i": "k=8; 8 A slices + 8 B slices + 1 accumulator all live for 8 normalized time units",
+    "ozaki_ii": "s=8; 1 accumulator live for 8 units; exactly one A/B residue pair live per unit",
+    "equal_state_unit_size": true,
+    "transform_compute_cost_ignored": true,
+    "traffic_ignored": true,
+    "accuracy_equivalence_not_asserted": true
+  },
+  "results": {
+    "ozaki_i": {
+      "logical_peak_units": 17,
+      "physical_peak_units": 17,
+      "logical_unit_seconds": 136,
+      "physical_unit_seconds": 136
+    },
+    "ozaki_ii": {
+      "logical_peak_units": 3,
+      "physical_peak_units": 3,
+      "logical_unit_seconds": 24,
+      "physical_unit_seconds": 24
+    }
+  },
+  "interpretation": [
+    "This example isolates live-state geometry only.",
+    "It does not compare real implementations, timing, bandwidth, accuracy, or actual slice/residue byte sizes.",
+    "Under the frozen normalized assumptions, streaming residues reduce simultaneous state overlap and byte-time exposure."
+  ]
+}
