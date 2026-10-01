@@ -14,107 +14,128 @@ A small, reproducible systems research lab for understanding how finite physical
 
 ## Status
 
-**Systems research / experimental software — Chapter II active**
+**Systems research / experimental software — multiple active research lanes**
 
 Current principle:
 
-> **Prove the state before interpreting the outcome.**
+> **Prove state, identity, and evidence authority before optimization.**
 
-Finite RAM Lab has moved from broad finite-memory characterization into a narrower Linux memcg state-transition study.
+Finite RAM Lab began as a broad finite-memory characterization project, then narrowed into a Linux memcg transactional state study. The current repository also carries a second line of work: **Live-State Frontier / decision-space compression**, where the same finite-resource discipline is applied to controller search state.
 
-### Chapter I — what was established
+### Linux memcg transactional lane
 
-The current memcg lane has strong evidence for:
+The physical memcg work established, among other things:
 
 - a source-grounded 64-page memcg charge batch;
-- a resettable Q64 stock phase;
-- controlled PTE preconditioning that removes measured page-table growth from the target sequence;
-- a shared per-CPU LRU release path that can contaminate `memory.current` without consuming the target residual stock;
-- a direct charge-side observer that sees Q64 even when net `memory.current` is masked by a simultaneous release;
-- historical controlled-spawn endpoint 49/72 and primer-qualified terminal pattern 55/55, both kept frozen under their original semantics.
+- a resettable direct-Q64 verification phase;
+- a verified residual invariant after the one-page primer:
+  `R0 = 63, T0 = 64`;
+- a broader natural pre-VERIFY bound:
+  `0 <= S0 <= 64, T = S0 + 1`;
+- source- and trace-grounded named mechanisms including `STARTUP_STOCK_SEED`, `SMALL_RESIDUAL_REFILL`, `TARGET_STOCK_EVICTION`, and `RELEASE_ONLY`;
+- an explicit distinction between pre-VERIFY ecology, verified transactional state, instrumentation invalidation, and genuine target contradiction.
 
-The major semantic correction is that historical SUCCESS/FAIL was too coarse. A first-touch miss, an observer contamination event, an invalidated stock epoch, and a genuine target contradiction are not the same thing.
+Historical `SUCCESS/FAIL` is intentionally no longer treated as a sufficient scientific label.
 
-### Chapter II — current frontier
+The passive **B425 Ambient Stock Catcher** remains designed but paused. No new ambient physical session is implied by the newer controller research.
 
-The largest Chapter-II correction is methodological:
+### Live-State Frontier / controller lane
 
-> **Historical SUCCESS/FAIL was too coarse. The research now asks which named state transition occurred before it asks whether the run "failed."**
+Recent work moved from physical live-state observations into a decision-space model.
 
-The active state model distinguishes natural pre-VERIFY state from verified transactional state:
+Key current results:
 
-```text
-natural pre-VERIFY ecology
-  ├─ PREVERIFY_S64 / MAX_STOCK_BOUNDARY
-  ├─ STARTUP_STOCK_SEED
-  └─ SMALL_RESIDUAL_REFILL
-          |
-          v
-       NORMALIZE
-          |
-     measured direct Q64
-          |
-          v
-     VERIFIED R0 = 63
-          |
-          ├─ source-grounded RELEASE_ONLY
-          ├─ TARGET_STOCK_EVICTION
-          ├─ explicit invalidators
-          └─ TARGET
-                 |
-            SUCCESS / true TARGET_FAIL
-```
+- **B445 intrinsic-demand + capacity-clamp model** — for the frozen STRATA-005 dataset,
+  `P_peak(H,K) ~= min(B_peak + K, H)` with `B_peak ~= 78.609 MiB`; the pressure/no-pressure classification matched all 8 DONTNEED cells.
+- **B446 partial frontier decomposition** — historical data identifies the transient excess over the legacy post-observer floor, but does not falsely split clean persistent state from observer contribution.
+- **B451 analysis freeze** — PRIMARY/DESCRIPTIVE objective roles, block-bootstrap semantics, clamp replay, and frontier-loss analysis were made executable before the prospective physical result exists.
+- **B452 intervention staircase** — `advice_calls = ceil(span / cadence)` gives an analytic cadence-frontier staircase.
+- **B453 corrected cadence quotient** — physical plan IDs may tie exactly; the safe compression target is the set of **distinct Pareto objective vectors**, with tied physical identities retained as provenance.
+- **B454 Local Quotient Preservation** — for additive objectives, local dominance pruning plus exact-vector quotienting preserves the distinct global Pareto objective-vector frontier.
+- **B455 safety-aware StateOption quotient** — safety qualification happens before quotienting; equal cost is not enough to merge options whose semantic contracts differ.
+- **B456 quotient-before-beam benchmark** — in the frozen redundancy panel, mean exact-frontier coverage >=90% required beam width 64 before quotienting and 16 after quotienting; the fixed mixed scenario was neutral, so this is not claimed as a universal monotonic improvement.
+- **B457 quotient-aware beam** — raw-input quotient-aware search matches the objective-space result of B455 precompile followed by the older B435 beam under the current additive model.
+- **B458 exact quotient Pareto DP — candidate / qualification in progress** — removing beam truncation turns the same prefix search into an exact Pareto dynamic program. The candidate already matched B434 Cartesian exact frontier vectors in the fixed mixed case and in 1,000 randomized StateOption systems; complexity/state-count benchmarking is not yet frozen.
 
-After a measured one-page direct-Q64 primer, the verified residual invariant remains:
+The emerging controller stack is:
 
 ```text
-R0 = 63
-T0 = 64
+semantic / safety proof
+        |
+        v
+unsafe-option elimination
+        |
+        v
+semantic-signature partition
+        |
+        v
+local Pareto prune + exact-vector quotient
+        |
+        v
+lossless prefix Pareto DP
+        |
+        +--> no truncation -> exact frontier
+        |
+        +--> beam truncation -> approximate frontier
 ```
 
-But natural pre-VERIFY stock is broader. Source and physical evidence support:
+A central research distinction is now:
 
-```text
-0 <= S0 <= 64
-T = S0 + 1
-```
+> **physical plan multiplicity != decision-state multiplicity**
 
-with the following named mechanisms/states:
+Evidence keeps physical identity; optimization is allowed to operate on a smaller sufficient decision representation only when that quotient is justified.
 
-- **PREVERIFY_S64 / MAX_STOCK_BOUNDARY** — the natural stock can legally begin at 64 before the experiment establishes its own primer;
-- **STARTUP_STOCK_SEED** — transient service / worker startup can leave large inherited stock on the future stock CPU; a cpuset intervention strongly suppresses the large high-T phenotype;
-- **SMALL_RESIDUAL_REFILL — ESTABLISHED** — two zero-miss physical specimens captured `systemd` PID 1 returning exactly one page to the later measured owner memcg on the future stock CPU, followed by `S0=1` and first measured Q64 at `T=2`;
-- **TARGET_STOCK_EVICTION** — verified residual stock can be asynchronously drained, moving the next Q64 boundary earlier;
-- **RELEASE_ONLY** — a positively source-grounded shared-LRU release can change accounting while preserving the target residual.
+### Clean Dynamic Frontier prospective study
 
-Known explicit invalidators still include unexpected refill, relevant stock-CPU drain, PTE growth, CPU mismatch, worker error, and incomplete observer coverage.
+The next prospective hosted study is fully designed but **not launched**:
 
-Across the completed B405 generations, no complete verified target path has produced a genuine `TARGET_FAIL`. That is a current evidence statement, not a reliability guarantee.
+- MemoryHigh: 144 / 160 / 176 MiB;
+- arms: buffered + DONTNEED 32 / 48 / 64 / 80 / 96 MiB;
+- 8 independent runner blocks per capacity;
+- 144 total trials;
+- paired `post_scan_pre_observer` and `post_scan_post_observer` measurements;
+- PRIMARY frontier excludes noisy hosted timing; timing remains DESCRIPTIVE;
+- B450 prelaunch software qualification passed 22/22 tests;
+- B451 post-run analyzer was frozen before observation.
 
-### Current experiment sequence
+The experiment is intentionally separated from its launch authority. This README does not imply that the 144-trial workflow has run.
 
-The physical program is now:
+### Open candidate intake
 
-1. **B404 transactional smoke — COMPLETE / PASS** — 12/12 normal protocol successes plus a forced invalidation/re-prime sentinel;
-2. **B405 causal matrix — mechanism decomposition complete enough to move the frontier** — CLEAN / RELEASE_ONLY / UNEXPECTED_REFILL / PTE_GROWTH plus observer-coverage work exposed named invalidators instead of an undifferentiated FAIL bucket;
-3. **normalize ecology — COMPLETE for the major known states** — R9 confirmed the source-derived `T <= 65` bound in 32/32 identities, and the frozen R8 specimen established `PREVERIFY_S64`;
-4. **STARTUP_STOCK_SEED — ESTABLISHED and causally challenged** — startup Q64/refill63 explains the large inherited-stock cluster, and `AllowedCPUs=prep` suppresses that large phenotype;
-5. **SMALL_RESIDUAL_REFILL — ESTABLISHED** — R13-B1 captured two independent zero-miss `refill_stock(...,1) -> S0=1 -> T=2` specimens;
-6. **current next step: refill1 provenance** — identify the exact caller path behind the systemd PID1 refill1 receipts;
-7. **then return to age-decoupling** — use the already-frozen FAST/HOLD design to study verified-state wall-clock hazards rather than continuing to expand the pre-VERIFY taxonomy indefinitely.
+The repository currently has three distinct intake items. They are not equivalent in readiness.
 
-The project deliberately separates mechanism existence, provenance, prevalence, and transactional reliability. Establishing one does not imply the others.
+- **Issue #1 — LJP41-01 / LLM-jp-4.1 8B local worker**  
+  Experiment contract is useful, but exact 4.1 GGUF artifact identity, size/hash, context limit, and exact compatible llama.cpp/runtime path remain intentionally unbound. No model bytes should be acquired until those are pinned.  
+  See [Issue #1](../../issues/1).
+
+- **PR #4 — Mitsuba ternary runtime catfood v0**  
+  Draft candidate for PQ2_0/PTQ1_0 runtime/resource topology under a pinned PrismML llama.cpp revision. Repository-side compile/test/CI readback is PASS; an independent minimal review here also passed **5/5 unit tests**. The live weight experiment remains **HOLD** until exact artifact/runtime hashes and sufficient resource headroom are bound.  
+  See [PR #4](../../pull/4).
+
+- **PR #5 — Atlas novelty-regime sidecar**  
+  Draft candidate implementing only the familiarity/fork gate, not the full Atlas classifier. Independent minimal review passed **6/6 unit tests**. The important unresolved question is incremental value over the existing transactional state machine:
+  `familiarity_break_time - first_transaction_pivot_time`. If familiarity does not lead the existing invalidating event, the sidecar adds little value for that regime.  
+  See [PR #5](../../pull/5).
+
+### Current evidence boundary
+
+As of this README refresh:
+
+- Clean Dynamic Frontier 144-trial physical run: **NOT RUN**
+- B425 ambient canary: **NOT RUN**
+- Mitsuba live weight experiment: **HOLD**
+- LLM-jp artifact acquisition: **HOLD pending exact identity/runtime binding**
+- Atlas sidecar: **software candidate only; predictive lead-time experiment not yet run**
+- B458 exact-DP complexity/state-count benchmark: **not yet frozen**
 
 See:
 
-- [OBS-011 — SMALL_RESIDUAL_REFILL established](docs/OBS-011-SMALL-RESIDUAL-REFILL-ESTABLISHED.md)
-- [OBS-010 — R13-A refill1 candidate and scope correction](docs/OBS-010-R13A-SMALL-RESIDUAL-REFILL-RESULT.md)
-- [MATH-024 — Pre-VERIFY stock bound and 65-touch theorem](docs/MATH-024-PREVERIFY-STOCK-BOUND-65-TOUCH-THEOREM.md)
-- [B404 R2 — Transactional physical smoke PASS](docs/B404-R2-TRANSACTIONAL-SPAWN-PHYSICAL-PASS.md)
-- [MATH-023 — Monte Carlo age-decoupling design](docs/MATH-023-AGE-DECOUPLING-DESIGN-MONTE-CARLO.md)
 - [Current handoff](handoffs/CURRENT.md)
+- [B451 post-run analyzer](docs/B451-CLEAN-DYNAMIC-FRONTIER-POSTRUN-ANALYZER-v0.1.md)
+- [B456 quotient-before-beam](docs/B456-QUOTIENT-BEFORE-BEAM-v0.1.md)
+- [B457 quotient-aware beam](docs/B457-QUOTIENT-AWARE-BEAM-v0.1.md)
 
-Historical project stages and negative results remain part of the evidence record; this README now tracks the active frontier rather than repeating the full experiment ledger.
+Historical project stages and negative results remain part of the evidence record. The README tracks the current research frontier and deliberately distinguishes **designed**, **software-qualified**, **physically observed**, and **adopted** states.
 
 ## Why this project exists
 
@@ -245,52 +266,36 @@ Later nodes describe research stages, not predetermined mechanisms.
 
 ## Repository structure
 
+The repository is an experiment ledger rather than a single application. The tree below is intentionally selective rather than exhaustive.
+
 ```text
 finite-ram-lab/
 ├── README.md
 ├── pyproject.toml
-├── specs/
-│   ├── ENV-001.json
-│   ├── ENV-002.json
-│   ├── OBS-001.json
-│   ├── CHAR-001.json
-│   ├── MC-001.json
-│   └── MC-QUALITY-001.json
+├── specs/                  # frozen experiment / qualification contracts
+├── analysis/               # frozen inputs, replays, and derived evidence
+├── handoffs/               # resumable multi-bounce state
 ├── src/finite_ram_lab/
-│   ├── env_probe.py
-│   ├── limit_probe.py
-│   ├── obs_workload.py
-│   ├── char_sweep.py
-│   ├── calculators.py
-│   ├── cli.py
-│   ├── sim.py
-│   ├── mc.py
-│   └── aggregate_mc.py
-├── tests/
-├── docs/
-│   ├── RESEARCH_CHARTER.md
-│   ├── REPOSITORY_SPEC.md
-│   ├── EVIDENCE_MODEL.md
-│   ├── ENV-001.md
-│   ├── ENV-002.md
-│   ├── OBS-001.md
-│   ├── CHAR-001.md
-│   ├── AI_WORKER_TOOLBOX.md
-│   ├── MONTE_CARLO.md
-│   ├── EXECUTION_MODEL.md
-│   └── NORTH_STAR.md
-└── .github/workflows/
-    ├── ci.yml
-    ├── env-001.yml
-    ├── env-002.yml
-    ├── obs-001.yml
-    ├── char-001.yml
-    ├── research-calc.yml
-    ├── deep-monte-carlo.yml
-    └── monte-carlo.yml
+│   ├── ... memcg / observer / STRATA experiment code ...
+│   ├── clean_dynamic_frontier.py
+│   ├── clean_dynamic_frontier_study.py
+│   ├── clean_dynamic_frontier_analysis.py
+│   ├── intrinsic_capacity_clamp.py
+│   ├── intervention_staircase.py
+│   ├── cadence_frontier_compiler.py
+│   ├── option_quotient_compiler.py
+│   ├── stateoption_quotient.py
+│   ├── quotient_beam_benchmark.py
+│   ├── quotient_aware_beam.py
+│   └── exact_pareto_dp.py
+├── tests/                  # model, invariant, replay, and experiment tests
+├── docs/                   # research notes and frozen conclusions
+└── .github/workflows/      # hosted experiments; launch authority is separate
 ```
 
-The repository grows only when a real experiment or validation need earns a new component.
+Candidate intake may live on draft PR branches before adoption. A file existing in a draft PR is not automatically part of the canonical research surface.
+
+The repository grows only when a real experiment, validation need, or evidence-preserving analysis earns a new component.
 
 ## Frozen principles
 
@@ -320,3 +325,18 @@ STRATA-001 was inspired by [Niko1221/Strata](https://github.com/Niko1221/Strata)
 See [the Strata inspiration note](docs/STRATA-INSPIRATION.md) and [STRATA-001 Council](docs/STRATA-001-COUNCIL.md).
 
 The initial study is an independent implementation; no Strata source code is copied into Finite RAM Lab.
+
+### Atlas novelty-regime sidecar — draft intake
+
+[PR #5](../../pull/5) borrows only the source-described familiarity/fork gate as a finite-RAM novelty sidecar. It does not reproduce the Atlas classifier and does not claim that image-task worlds and memory regimes are equivalent.
+
+The useful research question is predictive lead time versus the existing transaction validator, not duplication of the validator itself.
+
+### Mitsuba ternary runtime topology — draft intake
+
+[PR #4](../../pull/4) freezes a reproducible comparison surface for Mitsuba PQ2_0/PTQ1_0 packing/runtime behavior. Live weights remain gated on artifact identity, runtime identity, and resource headroom.
+
+### LLM-jp 4.1 local-worker experiment — issue intake
+
+[Issue #1](../../issues/1) defines a Japanese-first local-worker experiment that explicitly keeps model behavior separate from runtime/template compatibility. Exact 4.1 artifact/runtime identity must be pinned before acquisition or performance testing.
+
