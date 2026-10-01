@@ -237,7 +237,7 @@ def cadence_state_options(
                 resident_by_tier=(("RAM", int(round(plan.peak_mib))), ("VRAM", 0)),
                 byte_seconds_by_tier=(("RAM", float(plan.peak_mib)), ("VRAM", 0.0)),
                 traffic_bytes=float(plan.advice_calls),
-                compute_cost=float(plan.pressure),
+                compute_cost=float(plan.memory_high_events_proxy),
                 latency_cost=float(plan.pgscan_proxy),
                 error_cost=0.0,
             )
