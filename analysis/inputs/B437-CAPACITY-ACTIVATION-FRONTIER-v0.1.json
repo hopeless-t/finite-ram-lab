@@ -1,0 +1,74 @@
+{
+  "schema": "finite-ram.capacity-activation-frontier/v0.1",
+  "bounce": "B437",
+  "claim_ceiling": "FORMAL_CAPACITY_GEOMETRY_ON_B436_SCENARIO",
+  "tiers": ["RAM", "VRAM"],
+  "scenario_activation_frontier": [
+    {"RAM_mib": 8192, "VRAM_mib": 10544},
+    {"RAM_mib": 9776, "VRAM_mib": 9356}
+  ],
+  "interpretation": {
+    "feasible_region": "union of upper orthants rooted at the minimal activation points",
+    "single_minimum_memory_scalar": false,
+    "frontier_type": "componentwise antichain"
+  },
+  "option_activation_frontiers": {
+    "strata_kv.full_int8_vram": [
+      {"RAM_mib": 8192, "VRAM_mib": 10544}
+    ],
+    "strata_kv.stream_int8": [
+      {"RAM_mib": 9776, "VRAM_mib": 9356}
+    ],
+    "semantic_reduction.materialize": [
+      {"RAM_mib": 8192, "VRAM_mib": 11312},
+      {"RAM_mib": 9776, "VRAM_mib": 10124}
+    ],
+    "semantic_reduction.future_sufficient_summary": [
+      {"RAM_mib": 8192, "VRAM_mib": 10544},
+      {"RAM_mib": 9776, "VRAM_mib": 9356}
+    ],
+    "temporalization.wide_frontier": [
+      {"RAM_mib": 8192, "VRAM_mib": 12080},
+      {"RAM_mib": 9776, "VRAM_mib": 10892}
+    ],
+    "temporalization.blocked_frontier": [
+      {"RAM_mib": 8192, "VRAM_mib": 10544},
+      {"RAM_mib": 9776, "VRAM_mib": 9356}
+    ],
+    "strata_prefill.dedicated_prompt_scratch": [
+      {"RAM_mib": 8192, "VRAM_mib": 15275},
+      {"RAM_mib": 9776, "VRAM_mib": 14087}
+    ],
+    "strata_prefill.borrow_expert_cache": [
+      {"RAM_mib": 8192, "VRAM_mib": 10544},
+      {"RAM_mib": 9776, "VRAM_mib": 9356}
+    ],
+    "strata_experts.gpu20_ram14": [
+      {"RAM_mib": 14336, "VRAM_mib": 22832},
+      {"RAM_mib": 15920, "VRAM_mib": 21644}
+    ],
+    "strata_experts.gpu12_ram22": [
+      {"RAM_mib": 22528, "VRAM_mib": 14640},
+      {"RAM_mib": 24112, "VRAM_mib": 13452}
+    ],
+    "strata_experts.gpu8_ram26": [
+      {"RAM_mib": 26624, "VRAM_mib": 10544},
+      {"RAM_mib": 28208, "VRAM_mib": 9356}
+    ],
+    "strata_experts.gpu8_ram8_file_backing": [
+      {"RAM_mib": 8192, "VRAM_mib": 10544},
+      {"RAM_mib": 9776, "VRAM_mib": 9356}
+    ]
+  },
+  "formal_result": {
+    "plan_activation_condition": "C >= r(plan) componentwise",
+    "scenario_feasibility": "exists plan p such that C >= r(p)",
+    "minimal_frontier": "non-dominated requirement vectors under componentwise <= relation"
+  },
+  "validation": {
+    "fixed_frontier_assertions": "PASS",
+    "randomized_capacity_membership_cases": 10000,
+    "randomized_result": "PASS"
+  },
+  "physical_benchmark": false
+}
