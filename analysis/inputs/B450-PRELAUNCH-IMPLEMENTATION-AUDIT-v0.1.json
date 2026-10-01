@@ -1,0 +1,47 @@
+{
+  "schema": "finite-ram.prelaunch-implementation-audit/v0.1",
+  "bounce": "B450",
+  "claim_ceiling": "SOFTWARE_QUALIFIED_NOT_PHYSICALLY_EXECUTED",
+  "branch": "research/prelaunch-audit-b450",
+  "defects_found_and_fixed": [
+    {
+      "id": "B450-D1",
+      "problem": "post-observer file residency <= 0.1 validity check applied to buffered reference",
+      "risk": "buffered reference could be invalidated merely because buffered I/O correctly retains file residency",
+      "fix": "file_post_residency_valid() applies cold-residency threshold only to DONTNEED arms; buffered always passes this specific check",
+      "commit": "9039d09f7878008be7ac2ff80d4f872cac90a048"
+    },
+    {
+      "id": "B450-D2",
+      "problem": "aggregate did not fail closed on source/observer/fixed-parameter identity drift",
+      "risk": "non-identical trials could be merged into one dynamic capacity dataset",
+      "fix": "summarize() now requires one source_commit, exact observer_contract_version, and fixed memory_max/hot/cold/read-chunk parameters",
+      "commit": "ea79c77000314697c933ef4d4624b1a6d80a1932"
+    }
+  ],
+  "software_qualification": {
+    "lane": "product_sales",
+    "workspace_subtree": "b450_qual",
+    "workspace_only": true,
+    "network_allowed": false,
+    "host_write": false,
+    "canonical_write": false,
+    "promotion": false,
+    "tests_run": 22,
+    "tests_passed": 22,
+    "tests_failed": 0,
+    "tests_errored": 0,
+    "returncode": 0,
+    "stderr_sha256": "sha256:63f2a28376977a5444db766122d1b7e188353f667de114352b95c02499e1d707"
+  },
+  "qualification_note": "The first isolated run had one ImportError caused by a qualification-only dependency stub containing literal backslash-n text. The branch code had 16 passing tests in that run. After fixing the stub, the unchanged branch qualification suite passed 22/22.",
+  "cleanup": {
+    "b450_qual_removed": true,
+    "post_cleanup_product_sales_status": "?? finite_ram_lab/ ; ?? tests/",
+    "preexisting_temp_residue_preserved": true
+  },
+  "physical_workload_run": false,
+  "github_actions_launched": false,
+  "b425_ambient_canary": false,
+  "paid_resource": false
+}
