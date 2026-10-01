@@ -1,0 +1,61 @@
+{
+  "schema": "finite-ram-lab.b476-result/v0.1",
+  "status": "PASS",
+  "classification": "TAIL_COMPATIBLE_EXCEEDANCES",
+  "claim_ceiling": "IID_CONTINUOUS_REFERENCE_TAIL_VS_DRIFT_DIAGNOSTIC",
+  "workflow_run_id": 36935922386,
+  "workflow_job_id": 110616052777,
+  "execution_head_sha": "073ca34765c893998d86f9914f8df9d62835bce2",
+  "artifact_id": 11198247150,
+  "artifact_zip_sha256": "09c3a3550b7aaf0adf7fb48f1e7fe846cfd899d513f0a40d52fb1efc318aaa3b",
+  "panel_sha256": "1675a7ecacbdcef3af9421df7e34ba1ebc519cc3e699b6c75249b1b72756e8df",
+  "future_samples_per_q": 8,
+  "total_future_observations": 32,
+  "family_alpha": 0.05,
+  "per_q_bonferroni_alpha": 0.0125,
+  "q_rows": [
+    {
+      "q": 1,
+      "calibration_boundary_bytes": 67117056,
+      "calibration_sample_count": 20,
+      "new_max_exceed_count": 0,
+      "max_observed_peak_bytes": 67059712,
+      "max_boundary_overrun_bytes": 0,
+      "beta_binomial_upper_tail_probability": 1.0,
+      "classification": "NO_NEW_MAX"
+    },
+    {
+      "q": 2,
+      "calibration_boundary_bytes": 67194880,
+      "calibration_sample_count": 19,
+      "new_max_exceed_count": 0,
+      "max_observed_peak_bytes": 67059712,
+      "max_boundary_overrun_bytes": 0,
+      "beta_binomial_upper_tail_probability": 1.0,
+      "classification": "NO_NEW_MAX"
+    },
+    {
+      "q": 4,
+      "calibration_boundary_bytes": 71389184,
+      "calibration_sample_count": 19,
+      "new_max_exceed_count": 0,
+      "max_observed_peak_bytes": 71262208,
+      "max_boundary_overrun_bytes": 0,
+      "beta_binomial_upper_tail_probability": 1.0,
+      "classification": "NO_NEW_MAX"
+    },
+    {
+      "q": 7,
+      "calibration_boundary_bytes": 71544832,
+      "calibration_sample_count": 19,
+      "new_max_exceed_count": 2,
+      "max_observed_peak_bytes": 71610368,
+      "max_boundary_overrun_bytes": 65536,
+      "beta_binomial_upper_tail_probability": 0.07977207977207948,
+      "classification": "TAIL_COMPATIBLE_EXCEEDANCE"
+    }
+  ],
+  "suspect_q": [],
+  "total_new_max_exceedances": 2,
+  "next": "B477_LOCATION_SHIFT_DIAGNOSTIC"
+}
