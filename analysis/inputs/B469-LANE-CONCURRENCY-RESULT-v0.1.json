@@ -1,0 +1,46 @@
+{
+  "schema": "finite-ram-lab.b469-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "HOSTED_NUMPY_GROUPED_RESIDUE_CONCURRENCY_SWEEP",
+  "workflow_run_id": 36929489065,
+  "workflow_job_id": 110594945828,
+  "execution_head_sha": "81e1c3951b097bddba991633383489389f85132c",
+  "artifact_id": 11195606726,
+  "artifact_zip_sha256": "81bc983bc90a7cc6e880c372ae6bfeb95845acf9ea28a55b75ae2a3ea0e37db4",
+  "sweep_sha256": "537bbf6304937a7e3864f38ffb0b41f2cd67492d76f5f1064688b8836ef66394",
+  "tests": {"count": 4, "passed": 4, "failed": 0},
+  "q_values": [1, 2, 4, 7],
+  "semantic_exact_count_per_q": 4,
+  "pareto_q": [1, 2, 4, 7],
+  "summary_rows": [
+    {
+      "q": 1,
+      "median_peak_bytes": 67014656,
+      "peak_delta_vs_q1_bytes": 0,
+      "median_work_seconds": 0.4144076034999955,
+      "latency_ratio_vs_q1": 1.0
+    },
+    {
+      "q": 2,
+      "median_peak_bytes": 67024896,
+      "peak_delta_vs_q1_bytes": 10240,
+      "median_work_seconds": 0.4006967259999925,
+      "latency_ratio_vs_q1": 0.9669145127063212
+    },
+    {
+      "q": 4,
+      "median_peak_bytes": 71217152,
+      "peak_delta_vs_q1_bytes": 4202496,
+      "median_work_seconds": 0.39217257449999465,
+      "latency_ratio_vs_q1": 0.9463450264613663
+    },
+    {
+      "q": 7,
+      "median_peak_bytes": 71507968,
+      "peak_delta_vs_q1_bytes": 4493312,
+      "median_work_seconds": 0.388580012999995,
+      "latency_ratio_vs_q1": 0.937675876885785
+    }
+  ],
+  "next": "B470_BUDGET_AWARE_Q_GOVERNOR"
+}
