@@ -1,0 +1,39 @@
+{
+  "schema": "finite-ram-lab.b480-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "GITHUB_HOSTED_BLOCK_NORMALIZATION_DECOMPOSITION",
+  "workflow_run_id": 36937797467,
+  "aggregate_job_id": 110622236430,
+  "execution_head_sha": "0a02e9ddf0bb40c53773dadd353c67a9ce1b844d",
+  "aggregate_artifact_id": 11198677989,
+  "aggregate_artifact_zip_sha256": "420a5bb640b520499b1df073a15d59de74d9070646dfd3d364e120ffb426123d",
+  "aggregate_sha256": "1272235cb678e43ecc0a505c4b444f189470f7345e7af6d834e46fc18def972f",
+  "runner_block_count": 8,
+  "classifications": {
+    "q2": "NORMALIZED_EFFECT_COMPONENT_UNRESOLVED",
+    "q4": "NORMALIZED_EFFECT_COMPONENT_UNRESOLVED"
+  },
+  "delta_summaries": {
+    "q2": {
+      "median_baseline_delta_bytes": -17408,
+      "median_absolute_work_peak_delta_bytes": -130048,
+      "median_normalized_peak_delta_bytes": -128000,
+      "max_abs_identity_residual_bytes": 0
+    },
+    "q4": {
+      "median_baseline_delta_bytes": 38912,
+      "median_absolute_work_peak_delta_bytes": -78848,
+      "median_normalized_peak_delta_bytes": -105472,
+      "max_abs_identity_residual_bytes": 0
+    }
+  },
+  "tests": {
+    "q2_normalized_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"significant":true},
+    "q2_baseline_two_sided": {"positive":3,"n_nonzero":8,"p":0.7265625,"significant":false},
+    "q2_absolute_work_two_sided": {"positive":1,"n_nonzero":8,"p":0.0703125,"significant":false},
+    "q4_normalized_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"significant":true},
+    "q4_baseline_two_sided": {"positive":6,"n_nonzero":8,"p":0.2890625,"significant":false},
+    "q4_absolute_work_two_sided": {"positive":2,"n_nonzero":8,"p":0.2890625,"significant":false}
+  },
+  "next": "B481_THREE_PHASE_HWM_DECOMPOSITION"
+}
