@@ -1,0 +1,82 @@
+{
+  "schema": "finite-ram.dp-group-order/v0.1",
+  "bounce": "B459",
+  "claim_ceiling": "EXACT_SMALL-N_GROUP_ORDER_OPTIMIZATION",
+  "theorem": {
+    "name": "Order Invariance / Cost Variance",
+    "statement": "For the current additive independent-group model, permuting option-group order preserves the final distinct Pareto objective-vector frontier, while changing cumulative prefix expansion cost.",
+    "reason": "Objective addition is commutative, but intermediate Pareto frontier widths depend on which groups have already been composed."
+  },
+  "optimizer": {
+    "method": "subset dynamic programming over 2^n subset frontiers",
+    "subset_count_for_7_groups": 128,
+    "transition_count_for_7_groups": 448,
+    "edge_cost": "number of safe feasible prefix states expanded by adding one group",
+    "optimality": "exact for the frozen expansion-count objective"
+  },
+  "validation": {
+    "unit_tests": {
+      "run": 3,
+      "passed": 3,
+      "runtime_seconds": 36.087,
+      "stderr_sha256": "sha256:c3ee9457abe59d61a5139142a53df40d8f679da8fec1550d0c740078c6b9791e"
+    },
+    "random_four_group_systems": 100,
+    "frontier_order_mismatches": 0
+  },
+  "fixed_b436_plus_b447": {
+    "frontier_points_all_orders": 240,
+    "original": {
+      "order_names": [
+        "strata_kv",
+        "strata_experts",
+        "strata_prefill",
+        "semantic_reduction",
+        "temporalization",
+        "idle_lifetime",
+        "release_cadence"
+      ],
+      "total_expanded_states": 578
+    },
+    "greedy": {
+      "order_names": [
+        "idle_lifetime",
+        "semantic_reduction",
+        "strata_kv",
+        "strata_prefill",
+        "temporalization",
+        "strata_experts",
+        "release_cadence"
+      ],
+      "total_expanded_states": 534,
+      "savings_fraction_vs_original": 0.07612456747404839
+    },
+    "optimal": {
+      "order_names": [
+        "strata_kv",
+        "strata_prefill",
+        "temporalization",
+        "release_cadence",
+        "idle_lifetime",
+        "semantic_reduction",
+        "strata_experts"
+      ],
+      "total_expanded_states": 367,
+      "savings_fraction_vs_original": 0.3650519031141869
+    },
+    "key_transition": {
+      "original_release_cadence_input_states": 80,
+      "original_release_cadence_expansions": 400,
+      "optimal_release_cadence_input_states": 5,
+      "optimal_release_cadence_expansions": 25
+    },
+    "stdout_sha256": "sha256:50a913227537ea2cc4dd14ca02c3fd7ee421f3a1e0cde21b8fe1c97edbe52288"
+  },
+  "interpretation": [
+    "Exact prefix-DP complexity is not only a property of the final problem; it is strongly affected by group composition order.",
+    "A locally cheap greedy choice can be globally poor because it ignores how a group reshapes future frontier width.",
+    "High-cardinality groups are not necessarily expensive when moved earlier; if the current prefix frontier is narrow, their immediate expansion cost can be much smaller.",
+    "The exact order oracle is exponential in group count and is therefore a research oracle/small-n optimizer, not yet a large-n production heuristic."
+  ],
+  "physical_run": false
+}
