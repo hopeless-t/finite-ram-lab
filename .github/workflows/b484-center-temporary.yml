@@ -1,0 +1,74 @@
+name: B484 Center Temporary
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/center-temporary-b484
+    paths:
+      - "src/finite_ram_lab/center_temporary_probe.py"
+      - "src/finite_ram_lab/center_temporary_aggregate.py"
+      - "tests/test_center_temporary.py"
+      - "docs/B484-CENTER-TEMPORARY-v0.1.md"
+      - ".github/workflows/b484-center-temporary.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run center block
+        run: |
+          mkdir -p runs/B484
+          python -m finite_ram_lab.center_temporary_probe \
+            --block-id ${{ matrix.block }} \
+            --out runs/B484/block-${{ matrix.block }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b484-center-block-${{ matrix.block }}
+          path: runs/B484/block-${{ matrix.block }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_center_temporary -v
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b484-center-block-*
+          path: runs/B484/blocks
+          merge-multiple: true
+      - name: Aggregate primitive test
+        run: |
+          python -m finite_ram_lab.center_temporary_aggregate \
+            --blocks-dir runs/B484/blocks \
+            --out runs/B484/center-temporary.json
+          python -m json.tool runs/B484/center-temporary.json >/dev/null
+          sha256sum runs/B484/center-temporary.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b484-center-temporary
+          path: runs/B484/center-temporary.json
+          if-no-files-found: error
