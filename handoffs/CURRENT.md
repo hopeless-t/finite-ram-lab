@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B439
-> Stage: STATIC-vs-DYNAMIC FRONTIER COMPARATOR v0.1 FROZEN
-> Stop: ACQUIRE FIRST REAL DYNAMIC OBSERVATION PAIR
+> Latest bounce: B440
+> Stage: STRATA-005 HISTORICAL DYNAMIC REPLAY v0.1 FROZEN
+> Stop: FORMALIZE OBJECTIVE EVIDENCE GATE
 
 ## Chapter II frontier
 
@@ -1611,3 +1611,81 @@ Next high-value research move:
 Acquire one real dynamic observation pair with stable workload and plan identity, freeze raw receipts first, then pass them through B439.
 
 Do not resume the paused B425 physical ambient canary until its software/host-action qualification path is explicitly resumed.
+
+
+## B440 STRATA-005 historical dynamic replay v0.1
+
+Frozen branch:
+
+- research/historical-dynamic-replay-b440
+
+Recovered historical artifact:
+
+- workflow run 36431449193
+- artifact id 10973632531
+- digest sha256:8702206b4cb645796f0c2ca17f60bc155898d380225f6216804b790396592554
+- 40/40 trials PASS
+
+This is the first real historical capacity pair ingested by the B439 framework without launching a new physical experiment.
+
+Same-plan comparison:
+
+- MemoryHigh=144 MiB
+- MemoryHigh=176 MiB
+- frozen workload/runner family and arm identities preserved
+
+Primary pressure projection:
+
+- peak RAM
+- MemoryHigh events
+- pgscan
+
+Projected frontier:
+
+- H=144: dontneed_48m only
+- H=176: dontneed_48m only
+
+Therefore no primary-projection monotonicity violation is observed.
+
+Extended timing projection adds scan_elapsed_ns.
+
+Projected frontier:
+
+- H=144: dontneed_48m, dontneed_64m, dontneed_80m
+- H=176: dontneed_48m, dontneed_64m
+
+dontneed_80m disappears and is dominated by dontneed_64m at H=176.
+
+Observed same-plan changes for dontneed_80m:
+
+- peak RAM +15,458,304 B
+- MemoryHigh events -7
+- pgscan -4096
+- scan elapsed +20,712,903.5 ns
+
+Observed dominator changes for dontneed_64m:
+
+- peak RAM +131,072 B
+- scan elapsed -37,249,712.5 ns
+
+Classifier refinement:
+
+- LOST_WITH_SELF_AND_DOMINATOR_COST_SHIFT
+
+However the original STRATA-005 study explicitly marked hosted timing as noisy, non-monotonic, and descriptive only.
+
+Therefore the apparent frontier loss is not promoted to robust dynamic evidence.
+
+New H440 Projection Fragility:
+
+A measured Pareto transition should not be promoted when it disappears after removing coordinates already classified as descriptive/noisy.
+
+Claim ceiling: HISTORICAL_AGGREGATE_REANALYSIS_DESCRIPTIVE_TIMING_ONLY.
+
+No new physical run.
+No B425 ambient canary.
+No paid resource.
+
+Next B441:
+
+Formalize PRIMARY / DESCRIPTIVE / EXCLUDED objective evidence roles and automatically classify descriptive-only frontier transitions as PROJECTION_FRAGILE. Then search historical evidence for a stronger primary-projection dynamic pair.
