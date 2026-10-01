@@ -1,0 +1,122 @@
+{
+  "schema": "finite-ram.strata005-block-frontier-resampling/v0.1",
+  "bounce": "B442",
+  "claim_ceiling": "HISTORICAL_BLOCK_RESAMPLING",
+  "source": {
+    "workflow_run": 36431449193,
+    "aggregate_artifact_id": 10973632531,
+    "aggregate_digest": "sha256:8702206b4cb645796f0c2ca17f60bc155898d380225f6216804b790396592554",
+    "block_artifacts": [
+      {"high":144,"block":0,"id":10973567639,"digest":"sha256:a80612e734f45fabf29ff90269f3995ddcea9ec9d1cc79a1b4d15f771fa5a0ec"},
+      {"high":144,"block":1,"id":10974356225,"digest":"sha256:cc71f467b7023796c722d86d5f53ebe0fa5cbfd08d56f6441e17ad9743af70ef"},
+      {"high":144,"block":2,"id":10973253251,"digest":"sha256:ee645fc4192c87fb10bf98fb2a6809e4989edc1f66e0b8d59f78a862c8431ed5"},
+      {"high":144,"block":3,"id":10973736566,"digest":"sha256:488b35b2e2c40b7fec153caa79dc854b82f4e66a1af8a78d8354bf5d7dbcbdcc"},
+      {"high":176,"block":0,"id":10973318014,"digest":"sha256:681790f926ddeeddedd73eb50fa8560c89a9f84dea5316bb204f1bbcf85be098"},
+      {"high":176,"block":1,"id":10973303133,"digest":"sha256:adbe47d96bd40800128975cae79db09818335b07bb81682bc28a6b222d05f2a0"},
+      {"high":176,"block":2,"id":10974246362,"digest":"sha256:f3c358a3d8f2f6d244c0015df3685f742bcc10721e4715c96e0a0fa4f553d452"},
+      {"high":176,"block":3,"id":10973906595,"digest":"sha256:c3154c0e8fb7c254e5faf6a1c57a33d5d1a843e8953dddd9e69da83a45b26934"}
+    ]
+  },
+  "block_matrix": {
+    "144": {
+      "buffered": {
+        "peak_ram_bytes":[150847488,150863872,150990848,150990848],
+        "memory_high_events":[59,14,14,14],
+        "pgscan":[7488,7680,7680,7680],
+        "scan_elapsed_ns":[572274216,77846371,160368298,43697842]
+      },
+      "dontneed_48m": {
+        "peak_ram_bytes":[130924544,132734976,132759552,132759552],
+        "memory_high_events":[0,0,0,0],
+        "pgscan":[0,0,0,0],
+        "scan_elapsed_ns":[1379678269,34435966,84593705,74051335]
+      },
+      "dontneed_64m": {
+        "peak_ram_bytes":[147963904,149536768,149536768,149798912],
+        "memory_high_events":[0,0,0,0],
+        "pgscan":[0,0,0,0],
+        "scan_elapsed_ns":[278492880,30408299,74385883,69974837]
+      },
+      "dontneed_80m": {
+        "peak_ram_bytes":[150847488,150863872,149803008,150863872],
+        "memory_high_events":[26,7,7,7],
+        "pgscan":[3328,4096,4096,4096],
+        "scan_elapsed_ns":[538688056,30411825,39285060,45480551]
+      },
+      "dontneed_96m": {
+        "peak_ram_bytes":[150851584,150863872,150802432,150863872],
+        "memory_high_events":[59,14,14,14],
+        "pgscan":[7488,7680,7680,7680],
+        "scan_elapsed_ns":[230651932,66130357,86629318,42609943]
+      }
+    },
+    "176": {
+      "buffered": {
+        "peak_ram_bytes":[180989952,181256192,180994048,181260288],
+        "memory_high_events":[0,0,0,0],
+        "pgscan":[0,0,0,0],
+        "scan_elapsed_ns":[2725745425,72691451,87927327,92598561]
+      },
+      "dontneed_48m": {
+        "peak_ram_bytes":[130924544,132759552,132759552,132759552],
+        "memory_high_events":[0,0,0,0],
+        "pgscan":[0,0,0,0],
+        "scan_elapsed_ns":[899515322,82797584,78546264,29643458]
+      },
+      "dontneed_64m": {
+        "peak_ram_bytes":[147701760,149803008,149536768,149798912],
+        "memory_high_events":[0,0,0,0],
+        "pgscan":[0,0,0,0],
+        "scan_elapsed_ns":[2164393277,28830856,37364713,32496582]
+      },
+      "dontneed_80m": {
+        "peak_ram_bytes":[164474880,166313984,166313984,166518784],
+        "memory_high_events":[0,0,0,0],
+        "pgscan":[0,0,0,0],
+        "scan_elapsed_ns":[422311782,28311816,81386736,44804682]
+      },
+      "dontneed_96m": {
+        "peak_ram_bytes":[180989952,180994048,181518336,181260288],
+        "memory_high_events":[0,0,0,0],
+        "pgscan":[0,0,0,0],
+        "scan_elapsed_ns":[2140488986,29098283,383970022,69055663]
+      }
+    }
+  },
+  "exact_finite_bootstrap": {
+    "resamples_per_capacity": 256,
+    "independent_resample_pairs": 65536,
+    "extended_timing_projection": {
+      "objectives":["peak_ram_bytes","memory_high_events","pgscan","scan_elapsed_ns"],
+      "membership_probability": {
+        "dontneed_48m":{"high144":1.0,"high176":1.0,"loss_probability":0.0},
+        "dontneed_64m":{"high144":1.0,"high176":0.6875,"loss_probability":0.3125},
+        "dontneed_80m":{"high144":0.6875,"high176":0.3125,"loss_probability":0.47265625},
+        "dontneed_96m":{"high144":0.3125,"high176":0.0,"loss_probability":0.3125}
+      },
+      "any_frontier_loss_probability": 0.9327545166015625
+    },
+    "primary_pressure_projection": {
+      "objectives":["peak_ram_bytes","memory_high_events","pgscan"],
+      "dontneed_80_loss_probability":0.0,
+      "any_frontier_loss_probability":0.0
+    }
+  },
+  "leave_one_block_out": {
+    "extended_timing_projection": {
+      "high144_frontier_all_omissions":["dontneed_48m","dontneed_64m","dontneed_80m"],
+      "high176_frontier_all_omissions":["dontneed_48m","dontneed_64m"]
+    },
+    "primary_pressure_projection": {
+      "high144_frontier_all_omissions":["dontneed_48m"],
+      "high176_frontier_all_omissions":["dontneed_48m"]
+    }
+  },
+  "interpretation": [
+    "The median descriptive-timing frontier transition survives leave-one-block-out but is not stable under exact block bootstrap resampling.",
+    "dontneed_80 timing-projection loss probability is 47.265625%, not close to a robust one-sided transition.",
+    "primary pressure projection has zero frontier-loss probability in the exact finite bootstrap.",
+    "The strong any-loss probability in the timing projection reflects broad instability of frontier membership under the noisy timing dimension, not strong evidence for one specific physical reversal."
+  ],
+  "new_physical_run": false
+}
