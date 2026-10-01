@@ -109,9 +109,9 @@ For N=2048:
 
 Frozen logical live-state accounting:
 
-- ALL_RESIDENT = 56 MiB
+- ALL_RESIDENT = 60 MiB
 - STREAMED_FOLD = 36 MiB
-- difference = 20 MiB
+- difference = 24 MiB
 
 The value differs from B462 because B463 uses an 8-byte int64 accumulator rather
 than the earlier abstract 7-byte packed fold-state model.
