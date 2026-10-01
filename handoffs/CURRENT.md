@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B429
-> Stage: GEMMUL8 SOURCE-BACKED LIVE-STATE TRACE v0.1 FROZEN
-> Stop: MODEL AXIS TEMPORALIZATION
+> Latest bounce: B430
+> Stage: AXIS TEMPORALIZATION v0.1 FROZEN
+> Stop: CROSS-DOMAIN SOURCE TRACE
 
 ## Chapter II frontier
 
@@ -870,3 +870,65 @@ No paid resource was used.
 Next B430:
 
 Model axis temporalization explicitly. Compare legal m/n/k-only blocking with a hypothetical p/modulus blocking axis and hybrid blocking. The p-axis remains hypothetical until an explicit correctness-preserving incremental CRT state is specified.
+
+
+## B430 axis temporalization v0.1
+
+Frozen branch:
+
+- research/axis-temporalization-b430
+
+Frozen files:
+
+- src/finite_ram_lab/axis_temporalization.py
+- tests/test_axis_temporalization.py
+- analysis/inputs/B430-AXIS-TEMPORALIZATION-NORMALIZED-v0.1.json
+- docs/B430-AXIS-TEMPORALIZATION-v0.1.md
+
+Core refinement:
+
+Finite-memory scheduling must choose not only block size, but which semantically independent axis is allowed to be temporalized.
+
+For a GEMM-like workload the model uses block vector:
+
+- (b_m, b_n, b_k, b_p)
+
+where p is precision/modulus work.
+
+Fail-closed rule:
+
+- b_p < p is rejected unless precision_streaming_proven=true.
+
+This prevents a memory optimizer from inventing an invalid incremental CRT/reconstruction path.
+
+Normalized exact-search example:
+
+- extents m=n=k=16, p=8
+- memory limit=100 units
+- m/n/k-only best normalized invocation count=768
+- with hypothetical proven p-axis streaming, best count=512
+
+This is scheduling geometry only, not GEMMul8 performance.
+
+New distinction:
+
+- PARETO_IMPROVEMENT: modeled peak falls with no increase in modeled Q/C/T/epsilon;
+- MEMORY_EXCHANGE: modeled peak falls while at least one other cost rises.
+
+Classic communication lower bounds explain why ordinary tiling/blocking is generally an exchange rather than a free memory reduction.
+
+Isolated authoring validation:
+
+- proof gate PASS;
+- fixed examples PASS;
+- deterministic 10,000-case randomized feasible-plan sweep PASS.
+
+Claim ceiling: NORMALIZED_OPTIMIZATION_MODEL_ONLY.
+
+No physical benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B431:
+
+Translate an unrelated real implementation, preferably FlashAttention, into the same Live-State Frontier schema and determine whether the model survives without adding ad-hoc state categories.
