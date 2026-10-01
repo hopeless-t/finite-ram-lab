@@ -1,0 +1,56 @@
+{
+  "schema_version": "finite-ram-lab-experiment-v0.1",
+  "experiment_id": "MITSUBA-TERNARY-RUNTIME-001",
+  "status": "FROZEN_DESIGN",
+  "question": "For the same ternary Mitsuba weight semantics, how do PQ2_0 and PTQ1_0 change resident-memory, cache, latency, and failure topology under an exact pinned runtime?",
+  "source": {
+    "model_repo": "isichan-ai/Mitsuba-ComfyUI-27B-GGUF",
+    "model_files": {
+      "PQ2_0": "Mitsuba-ComfyUI-27B-v1.18-PQ2_0.gguf",
+      "PTQ1_0": "Mitsuba-ComfyUI-27B-v1.18-PTQ1_0.gguf",
+      "mmproj": "mmproj-Q8_0.gguf"
+    },
+    "runtime_repo": "PrismML-Eng/llama.cpp",
+    "runtime_branch": "prism",
+    "runtime_commit": "88c4bc60b9c9578f134385be9535e853f2db9b9f",
+    "model_sha256": "MUST_BE_BOUND_AT_LOCAL_QUALIFICATION",
+    "runtime_binary_sha256": "MUST_BE_BOUND_AT_LOCAL_QUALIFICATION"
+  },
+  "packing_geometry": {
+    "PQ2_0": {"group_size": 128, "block_bytes": 34, "bits_per_weight": 2.125},
+    "PTQ1_0": {"group_size": 128, "block_bytes": 28, "bits_per_weight": 1.75}
+  },
+  "frozen_inference": {
+    "reasoning": "off",
+    "cache_type_k": "q4_0",
+    "cache_type_v": "q4_0",
+    "contexts": [8192, 32768, 65536, 131072],
+    "temperature": 0.6,
+    "top_k": 20,
+    "top_p": 0.95
+  },
+  "arms": ["PQ2_0", "PTQ1_0"],
+  "measurements": [
+    "model_file_bytes",
+    "projector_file_bytes",
+    "peak_rss_bytes",
+    "memory_current_bytes",
+    "memory_peak_bytes",
+    "major_faults",
+    "minor_faults",
+    "prefill_ns",
+    "decode_ns_per_token",
+    "tokens_per_second",
+    "exit_status",
+    "failure_class"
+  ],
+  "controls": {
+    "same_prompt_corpus": true,
+    "same_vision_inputs": true,
+    "same_decoded_ternary_weight_semantics": true,
+    "same_runtime_commit": true,
+    "same_reasoning_mode": true,
+    "same_kv_cache_format": true
+  },
+  "claim_ceiling": "Resource and runtime-topology evidence only. Do not infer model-quality superiority from memory or latency differences."
+}
