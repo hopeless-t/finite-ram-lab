@@ -109,7 +109,7 @@ def run_child(
             ))
             global_lane += 1
 
-        first_global=global_lane-len(group_lanes)
+        first_global=global_lane-len(lanes)
         for offset,(lane,modulus) in enumerate(zip(lanes,group_moduli,strict=True)):
             current_modulus=_fold_lane_in_place(
                 accumulator,
