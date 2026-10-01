@@ -2309,3 +2309,123 @@ Next atomic research edge:
 
 This lane does not replace the Chapter-II memcg physical program or authorize a
 cross-domain universal governor.
+
+## B463-B467 obligation-residency dogfood loop
+
+### B463 — coupled numerical residency
+
+Frozen result:
+
+- exact semantic match = 6/6
+- treatment-reference normalized peak median = -25,155,584 B ~= -23.99 MiB
+- peak direction = 6/6 negative
+- median streamed/reference latency ratio = 1.05799
+- median latency cost ~= +5.80%
+- classification = COUPLED_EXACT_PEAK_EFFECT_REPLICATED
+- artifact ID = 11195070024
+- panel SHA256 = c78b60339f7ff9e0ad2d202e0c90864333049430287c099a4d8b245cf02c7e3d
+
+Interpretation:
+
+The exact numerical implementation preserves the result while exposing a real
+memory/latency Pareto specimen. Do not collapse it into one scalar score.
+
+### B464 — active experiment runtime contract
+
+Qualified runtime modes:
+
+- OBSERVE -> OBSERVATIONAL
+- OPTIMIZE -> OPTIMIZATION
+- PROBE -> EXPERIMENTAL_INTERVENTION
+
+PROBE requires a hypothesis and explicit mutation envelope.
+
+Frozen software receipt:
+
+- baseline streamed_7_t64
+- selected streamed_7_t32
+- changed only tile_rows 64 -> 32
+- strategy/lane_count held
+- decision SHA256 = 32f9c2967a1ddb88794ec6fdb231de52cfbfded64f4aa89c25fbd062baf42eb9
+
+### B465 — first bounded Actions dogfood probe
+
+Physical probe:
+
+- tile_rows 64 -> 32
+- semantic match 4/4
+- peak deltas = [0, +4096, -81920, -4096] B
+- median peak delta = -2048 B
+- median latency ratio = 1.01584 (~+1.58%)
+- effect = PEAK_EFFECT_UNRESOLVED_WITH_LATENCY_COST
+- same_run_model_update = false
+- telemetry SHA256 = 3d02cd3269e21b14b2d7a7a6291a59308be106c7860af5013b647f4a7512f92f
+
+### B466 — offline next-run proposal
+
+Consumes frozen B465 result only after B465 has ended.
+
+Frozen proposal:
+
+- action = PROBE_OPPOSITE_TILE_DIRECTION
+- tile_rows 64 -> 128
+- strategy/lane_count held
+- execute_now = false
+- requires_new_frozen_decision = true
+- proposal SHA256 = 64672a290dc46e40f5db021baeb9e02b86303da61100d0bc2fc90d6f8b97463f
+
+### B467 — first complete cross-run feedback cycle
+
+B467 verifies the B466 proposal digest, freezes a new decision, binds its digest,
+then executes the next physical probe.
+
+Frozen chain:
+
+- proposal SHA256 = 64672a290dc46e40f5db021baeb9e02b86303da61100d0bc2fc90d6f8b97463f
+- decision SHA256 = f5b75645570c1308b1fabfe98089da85dce40f3bfdee9e4352a852fb4b5448f1
+- contract SHA256 = 8c98800859fe01afce49397d743d08b03f9288a0bdc75dd52d073559a830613d
+- telemetry SHA256 = 0f4f3aa9fc4057d02ccf2b81e2f071dff5a7156bc5d044ecd257a06fc5e26deb
+
+Physical result:
+
+- tile_rows 64 -> 128
+- semantic match 4/4
+- peak deltas = [+73728,+28672,+45056,+4096] B
+- positive peak = 4/4
+- median peak delta = +36,864 B = +36 KiB
+- median latency ratio = 0.99219 (~-0.78%)
+
+Interpretation:
+
+Within the tested 32/64/128 window, tile granularity is low leverage for peak
+memory compared with the ~24 MiB representation-schedule effect.
+
+First full loop established:
+
+```text
+frozen decision
+-> physical intervention
+-> telemetry
+-> later offline proposal
+-> new frozen decision
+-> next physical intervention
+-> new telemetry
+```
+
+No same-run model update is allowed.
+
+### Next edge
+
+B468 should quantify axis leverage and choose the next bounded research axis.
+
+Strong candidate:
+
+- residue-lane concurrency / grouped streaming q
+
+because it directly interpolates between:
+
+- q=1 streamed fold
+- q=7 all-resident
+
+and therefore connects exactness, residency, latency, KMEP-style operating-point
+search, and the future governor.
