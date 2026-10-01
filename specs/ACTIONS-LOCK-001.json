@@ -1,0 +1,19 @@
+{
+  "schema_version":"finite-ram-lab-experiment-v0.1",
+  "experiment_id":"ACTIONS-LOCK-001",
+  "status":"FROZEN_PREFLIGHT",
+  "sources":[
+    "github/actions-lockfile public preview schema v0.0.3",
+    "github/gh-actions-lock technical/public preview",
+    "2026-09-22 Qiita field report"
+  ],
+  "question":"Which GitHub Actions dependencies in this repository remain mutable external references, before any lockfile rewrite is attempted?",
+  "rules":[
+    "owner/repo@40hex is pinned",
+    "owner/repo@tag-or-branch is mutable",
+    "local ./.github/actions paths are local rather than remote dependencies",
+    "docker tags are mutable unless digest-pinned",
+    "preview lockfile recognition never authorizes workflow rewrite"
+  ],
+  "claim_ceiling":"Direct workflow-reference audit only. It does not resolve or verify transitive dependencies and is not a replacement for GitHub's official actions-lock tooling."
+}
