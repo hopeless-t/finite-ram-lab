@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B443
-> Stage: DYNAMIC FRONTIER QUALIFICATION CONTRACT v0.1 FROZEN
-> Stop: ACQUIRE ONE QUALIFIED PHYSICAL DYNAMIC DATASET
+> Latest bounce: B444
+> Stage: OBSERVER SEMANTICS IDENTITY v0.1 FROZEN
+> Stop: MODEL QUALIFIED STRATA-005 CAPACITY RESPONSE
 
 ## Chapter II frontier
 
@@ -1866,3 +1866,56 @@ No paid resource.
 Next highest-value move:
 
 Acquire exactly one qualified physical dynamic dataset with stable plan/workload identity and a controlled capacity/residency axis. Freeze raw receipts before interpretation, then apply B439 + B441 + B442 under this contract.
+
+
+## B444 observer semantics identity v0.1
+
+Frozen branch:
+
+- research/observer-identity-b444
+
+Frozen files:
+
+- src/finite_ram_lab/observer_identity.py
+- tests/test_observer_identity.py
+- analysis/inputs/B444-OBSERVER-IDENTITY-AUDIT-v0.1.json
+- docs/B444-OBSERVER-SEMANTICS-IDENTITY-v0.1.md
+
+Attempted historical merge:
+
+- STRATA-005 H=144
+- STRATA-004 H=160
+- STRATA-005 H=176
+
+was rejected as a B443 stable-plan capacity sweep.
+
+Matched contextual fields include:
+
+- ubuntu-24.04 runner family
+- Python 3.12
+- MemoryMax 320 MiB
+- hot anon 64 MiB
+- cold file 96 MiB
+- read chunk 4 MiB
+- common buffered/DONTNEED arms
+
+Identity failures:
+
+- workload implementation bytes changed between launch commits
+- STRATA-005 added checkpoint_hook support
+- STRATA-005 calls recorder.sample(memory.current) inside scan checkpoints
+- STRATA-004 has no equivalent in-scan Recorder hook
+
+Frozen invariant:
+
+Observer semantics are part of plan identity.
+
+Therefore the 160 MiB point remains independent historical/mechanism context and must not be silently merged into the STRATA-005 144/176 pair for dynamic objective deltas.
+
+No new physical run.
+No B425 ambient canary.
+No paid resource.
+
+Next B445:
+
+Use only the internally stable STRATA-005 144/176 MiB pair to model the source-observed peak response as intrinsic plan demand plus a capacity clamp.
