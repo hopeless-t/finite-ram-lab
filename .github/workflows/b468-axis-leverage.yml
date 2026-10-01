@@ -9,6 +9,9 @@ on:
       - "src/finite_ram_lab/axis_leverage.py"
       - "tests/test_axis_leverage.py"
       - "docs/B468-AXIS-LEVERAGE-v0.1.md"
+      - "analysis/inputs/B463-COUPLED-NUMERICAL-RESULT-v0.1.json"
+      - "analysis/inputs/B465-DOGFOOD-PROBE-RESULT-v0.1.json"
+      - "analysis/inputs/B467-CROSS-RUN-FEEDBACK-RESULT-v0.1.json"
       - ".github/workflows/b468-axis-leverage.yml"
 
 permissions:
