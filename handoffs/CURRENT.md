@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B437
-> Stage: CAPACITY ACTIVATION FRONTIER v0.1 FROZEN
-> Stop: BUILD CAPACITY PHASE DIAGRAM
+> Latest bounce: B438
+> Stage: CAPACITY PHASE DIAGRAM v0.1 FROZEN
+> Stop: COMPARE STATIC PREDICTION WITH DYNAMIC MEASUREMENTS
 
 ## Chapter II frontier
 
@@ -1456,3 +1456,76 @@ No paid resource was used.
 Next B438:
 
 Build a capacity phase diagram over RAM/VRAM cells, label which transformation families appear on the exact Pareto frontier, and derive a transition graph between strategy regimes.
+
+
+## B438 capacity phase diagram v0.1
+
+Frozen branch:
+
+- research/capacity-phase-diagram-b438
+
+Frozen files:
+
+- src/finite_ram_lab/capacity_phase_diagram.py
+- tests/test_capacity_phase_diagram.py
+- analysis/inputs/B438-CAPACITY-PHASE-DIAGRAM-v0.1.json
+- docs/B438-CAPACITY-PHASE-DIAGRAM-v0.1.md
+
+Capacity Monotonicity Theorem:
+
+For componentwise capacity expansion C <= C_prime, if:
+
+- plan resource requirements are capacity-independent
+- every constrained resource coordinate is included as a minimized Pareto objective
+- all other compared objective coordinates are capacity-independent
+
+then:
+
+Pareto(C) is a subset of Pareto(C_prime).
+
+Proof sketch:
+
+If a new plan q under C_prime dominated an old Pareto plan p, then dominance on every resource coordinate implies r(q) <= r(p) <= C. Therefore q was already feasible under C and would already have dominated p, contradiction.
+
+B436 grid result:
+
+- 165 total capacity cells
+- 19 non-empty strategy regimes
+- 102 neighboring cells with changed exact-frontier signatures
+- 0 transitions with removed visible options
+
+Thus the static phase diagram is a monotone additive strategy DAG: extra capacity adds tradeoff arms rather than replacing old ones.
+
+Examples of newly visible arms as capacity grows:
+
+- streamed KV after RAM expansion
+- materialized semantic state after VRAM expansion
+- full-VRAM KV
+- wide temporalization
+- dedicated prompt scratch
+- richer expert-residency placements
+
+Important caveat:
+
+The theorem is static. It can fail for measured runtime when latency/traffic/error depends on capacity through reclaim, migration, cache behavior, page residency, or other pressure effects.
+
+New H438 Monotonicity Violation as Runtime Signal:
+
+If only capacity increases but a previously Pareto-relevant strategy disappears from the measured frontier, at least one non-memory objective is capacity-dependent, effective plan semantics changed, or the measurement/classification pipeline changed.
+
+Validation:
+
+- 19 B436 regimes PASS
+- 102 changed-neighbor transitions checked
+- zero removed-option transitions
+- deterministic 5000 randomized static capacity-expansion instances preserve exact frontier inclusion
+
+Claim ceiling: FORMAL_STATIC-COST_FRONTIER_THEOREM_ON_B436_GRID.
+
+No physical benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B439:
+
+Build a static-versus-dynamic frontier comparator that can ingest measured objective vectors at multiple capacities, detect monotonicity violations, and identify which objective coordinate changed enough to explain the measured reversal.
