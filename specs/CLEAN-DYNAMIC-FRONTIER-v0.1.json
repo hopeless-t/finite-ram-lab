@@ -1,22 +1,19 @@
 {
   "schema": "finite-ram.clean-dynamic-frontier-study/v0.1",
-  "bounce": "B447",
-  "status": "FROZEN_DESIGN_NOT_LAUNCHED",
+  "bounce": "B448",
+  "status": "IMPLEMENTED_NOT_LAUNCHED",
   "authority": "HOSTED_RESEARCH_ONLY_LAUNCH_SEPARATE",
-  "capacity_axis": {
-    "name": "memory.high",
-    "units": "MiB",
-    "points": [144, 160, 176]
-  },
-  "fixed_workload": {
-    "runner_family": "ubuntu-24.04",
-    "python": "3.12",
-    "memory_max_mib": 320,
-    "hot_anon_mib": 64,
-    "cold_file_mib": 96,
-    "read_chunk_mib": 4,
-    "cold_file_prepare": "outside measured trial cgroup where possible"
-  },
+  "experiment_id": "CLEAN-DYNAMIC-FRONTIER-v0.1",
+  "observer_contract_version": "clean-prepost-v1",
+  "runner": "ubuntu-24.04",
+  "python": "3.12",
+  "runner_blocks_per_pressure": 8,
+  "base_schedule_seed": 2026100101,
+  "memory_high_mib": [144, 160, 176],
+  "memory_max_mib": 320,
+  "hot_anon_mib": 64,
+  "cold_file_mib": 96,
+  "read_chunk_mib": 4,
   "arms": [
     "buffered",
     "dontneed_32m",
@@ -25,12 +22,13 @@
     "dontneed_80m",
     "dontneed_96m"
   ],
-  "independent_unit": "runner_block",
-  "blocks_per_capacity": 8,
   "expected_trials": 144,
+  "external_cold_fraction_max": 0.1,
+  "post_observer_file_fraction_max": 0.1,
   "measurement_order": [
+    "external cold verification outside measured trial cgroup",
     "before_scan",
-    "scan with identical low-perturbation checkpoint observer at every capacity",
+    "scan with _scan checkpoint snapshots and checkpoint_hook=None",
     "post_scan_pre_observer",
     "file/hot residency diagnostics",
     "post_scan_post_observer",
@@ -45,14 +43,14 @@
     "advice_calls"
   ],
   "descriptive_measurements": [
-    "scan_elapsed_ns",
-    "throughput"
+    "scan_elapsed_ns"
   ],
   "diagnostic_measurements": [
     "observer_current_delta_bytes",
-    "file_post_residency",
-    "hot_retouch",
     "pgsteal",
+    "file_post_residency",
+    "hot_post_residency",
+    "hot_retouch_ns",
     "swap",
     "oom"
   ],
@@ -71,8 +69,8 @@
       "source_commit",
       "arm",
       "observer_contract_version",
-      "runner_image",
-      "python_version",
+      "runner",
+      "python",
       "hot_anon_mib",
       "cold_file_mib",
       "read_chunk_mib",
@@ -84,8 +82,26 @@
     "raw_receipt_required": true,
     "claim_ceiling": "HOSTED_DIRECTIONAL_DYNAMIC_FRONTIER_ONLY"
   },
+  "predictions_not_acceptance_criteria": {
+    "B445_transient_base_mib": 78.609,
+    "H144": {
+      "pressure_free_expected": ["dontneed_32m","dontneed_48m","dontneed_64m"],
+      "pressure_expected": ["dontneed_80m","dontneed_96m"]
+    },
+    "H160": {
+      "pressure_free_expected": ["dontneed_32m","dontneed_48m","dontneed_64m","dontneed_80m"],
+      "pressure_expected": ["dontneed_96m"]
+    },
+    "H176": {
+      "pressure_free_expected": [
+        "dontneed_32m","dontneed_48m","dontneed_64m","dontneed_80m","dontneed_96m"
+      ],
+      "pressure_expected": []
+    }
+  },
   "launch": {
     "authorized_by_design": false,
+    "workflow_auto_trigger": false,
     "paid_resource_authority": false,
     "retry_authority": false
   }
