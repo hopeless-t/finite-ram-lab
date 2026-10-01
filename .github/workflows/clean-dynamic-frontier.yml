@@ -1,0 +1,135 @@
+name: Clean Dynamic Frontier v0.1
+
+on:
+  workflow_dispatch:
+    inputs:
+      launch_ack:
+        description: "Explicit research launch authorization"
+        required: true
+        type: choice
+        default: "NO"
+        options:
+          - "NO"
+          - "EXPLICITLY_AUTHORIZED"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    if: ${{ inputs.launch_ack == 'EXPLICITLY_AUTHORIZED' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        pressure: [144, 160, 176]
+        block: [0, 1, 2, 3, 4, 5, 6, 7]
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+
+      - name: Prepare cold file
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          from finite_ram_lab.strata001_probe import _prepare_file
+          p = Path(os.environ["RUNNER_TEMP"]) / "clean-dynamic-frontier-cold.bin"
+          _prepare_file(p, 96 * 1024 * 1024, 4 * 1024 * 1024)
+          print(p)
+          PY
+
+      - name: Build schedule and capture environment
+        env:
+          PRESSURE: ${{ matrix.pressure }}
+          BLOCK: ${{ matrix.block }}
+        run: |
+          ROOT="evidence/CLEAN-DYNAMIC-FRONTIER/high-${PRESSURE}/block-${BLOCK}"
+          mkdir -p "${ROOT}/raw"
+          python -m finite_ram_lab.clean_dynamic_frontier_study schedule             --spec specs/CLEAN-DYNAMIC-FRONTIER-v0.1.json             --pressure "${PRESSURE}"             --block "${BLOCK}"             --out "${ROOT}/schedule.csv"
+          {
+            echo "kernel_release=$(uname -r)"
+            echo "systemd_version=$(systemd-run --version | head -n1)"
+            echo "cgroup_fs_type=$(stat -fc %T /sys/fs/cgroup)"
+            echo "image_os=${ImageOS:-}"
+            echo "image_version=${ImageVersion:-}"
+            python --version
+            cat /etc/os-release
+          } > "${ROOT}/environment.txt"
+
+      - name: Run clean paired trials
+        env:
+          PRESSURE: ${{ matrix.pressure }}
+          BLOCK: ${{ matrix.block }}
+        run: |
+          set -euo pipefail
+          PY="$(command -v python)"
+          SPEC="$GITHUB_WORKSPACE/specs/CLEAN-DYNAMIC-FRONTIER-v0.1.json"
+          FILE="$RUNNER_TEMP/clean-dynamic-frontier-cold.bin"
+          ROOT="$GITHUB_WORKSPACE/evidence/CLEAN-DYNAMIC-FRONTIER/high-${PRESSURE}/block-${BLOCK}"
+          HIGH_BYTES=$((PRESSURE * 1024 * 1024))
+          MAX_BYTES=$((320 * 1024 * 1024))
+
+          tail -n +2 "${ROOT}/schedule.csv" | while IFS=, read -r ORDER ARM; do
+            # Cold preparation/verification is deliberately outside measured cgroup.
+            "$PY" - <<PY
+          import json
+          import time
+          from pathlib import Path
+          from finite_ram_lab.strata001_probe import _fadvise_dontneed, _file_residency
+          p = Path("$FILE")
+          _fadvise_dontneed(p)
+          time.sleep(0.05)
+          r = _file_residency(p)
+          spec = json.load(open("$SPEC"))
+          assert r["resident_fraction"] <= spec["external_cold_fraction_max"], r
+          PY
+
+            UNIT="finite-ram-clean-frontier-${GITHUB_RUN_ID}-${PRESSURE}-${BLOCK}-${ORDER}"
+            OUT="${ROOT}/raw/trial-${ORDER}-${ARM}.json"
+
+            sudo systemd-run               --pipe --wait --collect --quiet               --unit="${UNIT}"               -p MemoryAccounting=yes               -p MemoryHigh="${HIGH_BYTES}"               -p MemoryMax="${MAX_BYTES}"               "$PY" -m finite_ram_lab.clean_dynamic_frontier_study trial                 --spec "$SPEC"                 --pressure "${PRESSURE}"                 --block "${BLOCK}"                 --order "${ORDER}"                 --arm "${ARM}"                 --file "$FILE"                 --source-commit "$GITHUB_SHA"                 --out "$OUT"
+          done
+
+          sudo chown -R "$(id -u):$(id -g)" "${ROOT}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: clean-frontier-h${{ matrix.pressure }}-b${{ matrix.block }}
+          path: evidence/CLEAN-DYNAMIC-FRONTIER/high-${{ matrix.pressure }}/block-${{ matrix.block }}/
+          if-no-files-found: error
+          retention-days: 90
+
+  aggregate:
+    if: ${{ inputs.launch_ack == 'EXPLICITLY_AUTHORIZED' }}
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: clean-frontier-h*
+          path: evidence/CLEAN-DYNAMIC-FRONTIER/input
+      - name: Aggregate
+        run: |
+          mkdir -p evidence/CLEAN-DYNAMIC-FRONTIER/aggregate
+          python -m finite_ram_lab.clean_dynamic_frontier_study aggregate             --spec specs/CLEAN-DYNAMIC-FRONTIER-v0.1.json             --input-root evidence/CLEAN-DYNAMIC-FRONTIER/input             --out evidence/CLEAN-DYNAMIC-FRONTIER/aggregate/summary.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: CLEAN-DYNAMIC-FRONTIER-${{ github.run_id }}
+          path: evidence/CLEAN-DYNAMIC-FRONTIER/aggregate/
+          if-no-files-found: error
+          retention-days: 90
