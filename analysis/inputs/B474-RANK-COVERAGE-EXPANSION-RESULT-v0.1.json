@@ -1,0 +1,39 @@
+{
+  "schema": "finite-ram-lab.b474-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "EXCHANGEABILITY_CONDITIONAL_MULTI_Q_CALIBRATION",
+  "workflow_run_id": 36934779258,
+  "workflow_job_id": 110612361898,
+  "execution_head_sha": "ee4d80ac4f9adbc4f4e2e23b977a5e5a3eab07ac",
+  "artifact_id": 11197503134,
+  "artifact_zip_sha256": "8f99c18ab6a58172c2551624a9d69daa45574462e2114a4ca4169b60de92949f",
+  "panel_sha256": "f4bf5bffd95d7ebef026de112c895cb4ac3a8f42953120a439f2a4e08a296846",
+  "all_q_at_least_95pct_rank_floor": true,
+  "summary_rows": [
+    {
+      "q": 2,
+      "union_sample_count": 19,
+      "union_empirical_max_peak_bytes": 67194880,
+      "union_max_moved_bytes": 86016,
+      "prior_boundary_exceed_count": 2,
+      "rank_max_one_step_predictive_coverage_floor": 0.95
+    },
+    {
+      "q": 4,
+      "union_sample_count": 19,
+      "union_empirical_max_peak_bytes": 71389184,
+      "union_max_moved_bytes": 86016,
+      "prior_boundary_exceed_count": 5,
+      "rank_max_one_step_predictive_coverage_floor": 0.95
+    },
+    {
+      "q": 7,
+      "union_sample_count": 19,
+      "union_empirical_max_peak_bytes": 71544832,
+      "union_max_moved_bytes": 36864,
+      "prior_boundary_exceed_count": 1,
+      "rank_max_one_step_predictive_coverage_floor": 0.95
+    }
+  ],
+  "next": "B475_COVERAGE_AWARE_GOVERNOR_V1"
+}
