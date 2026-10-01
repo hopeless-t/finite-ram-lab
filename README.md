@@ -106,16 +106,16 @@ The repository currently has three distinct intake items. They are not equivalen
 
 - **Issue #1 — LJP41-01 / LLM-jp-4.1 8B local worker**  
   Experiment contract is useful, but exact 4.1 GGUF artifact identity, size/hash, context limit, and exact compatible llama.cpp/runtime path remain intentionally unbound. No model bytes should be acquired until those are pinned.  
-  See [Issue #1](../../issues/1).
+  See [Issue #1](https://github.com/hopeless-t/finite-ram-lab/issues/1).
 
 - **PR #4 — Mitsuba ternary runtime catfood v0**  
   Draft candidate for PQ2_0/PTQ1_0 runtime/resource topology under a pinned PrismML llama.cpp revision. Repository-side compile/test/CI readback is PASS; an independent minimal review here also passed **5/5 unit tests**. The live weight experiment remains **HOLD** until exact artifact/runtime hashes and sufficient resource headroom are bound.  
-  See [PR #4](../../pull/4).
+  See [PR #4](https://github.com/hopeless-t/finite-ram-lab/pull/4).
 
 - **PR #5 — Atlas novelty-regime sidecar**  
   Draft candidate implementing only the familiarity/fork gate, not the full Atlas classifier. Independent minimal review passed **6/6 unit tests**. The important unresolved question is incremental value over the existing transactional state machine:
   `familiarity_break_time - first_transaction_pivot_time`. If familiarity does not lead the existing invalidating event, the sidecar adds little value for that regime.  
-  See [PR #5](../../pull/5).
+  See [PR #5](https://github.com/hopeless-t/finite-ram-lab/pull/5).
 
 ### Current evidence boundary
 
@@ -328,15 +328,15 @@ The initial study is an independent implementation; no Strata source code is cop
 
 ### Atlas novelty-regime sidecar — draft intake
 
-[PR #5](../../pull/5) borrows only the source-described familiarity/fork gate as a finite-RAM novelty sidecar. It does not reproduce the Atlas classifier and does not claim that image-task worlds and memory regimes are equivalent.
+[PR #5](https://github.com/hopeless-t/finite-ram-lab/pull/5) borrows only the source-described familiarity/fork gate as a finite-RAM novelty sidecar. It does not reproduce the Atlas classifier and does not claim that image-task worlds and memory regimes are equivalent.
 
 The useful research question is predictive lead time versus the existing transaction validator, not duplication of the validator itself.
 
 ### Mitsuba ternary runtime topology — draft intake
 
-[PR #4](../../pull/4) freezes a reproducible comparison surface for Mitsuba PQ2_0/PTQ1_0 packing/runtime behavior. Live weights remain gated on artifact identity, runtime identity, and resource headroom.
+[PR #4](https://github.com/hopeless-t/finite-ram-lab/pull/4) freezes a reproducible comparison surface for Mitsuba PQ2_0/PTQ1_0 packing/runtime behavior. Live weights remain gated on artifact identity, runtime identity, and resource headroom.
 
 ### LLM-jp 4.1 local-worker experiment — issue intake
 
-[Issue #1](../../issues/1) defines a Japanese-first local-worker experiment that explicitly keeps model behavior separate from runtime/template compatibility. Exact 4.1 artifact/runtime identity must be pinned before acquisition or performance testing.
+[Issue #1](https://github.com/hopeless-t/finite-ram-lab/issues/1) defines a Japanese-first local-worker experiment that explicitly keeps model behavior separate from runtime/template compatibility. Exact 4.1 artifact/runtime identity must be pinned before acquisition or performance testing.
 
