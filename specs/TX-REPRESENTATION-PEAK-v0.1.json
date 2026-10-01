@@ -1,0 +1,34 @@
+{
+  "schema": "finite-ram-lab.experiment/v0.1",
+  "id": "TX-REPRESENTATION-PEAK-v0.1",
+  "stage": "B462",
+  "status": "HOSTED_PHYSICAL_PROXY",
+  "claim_ceiling": "HOSTED_LINUX_MMAP_REPRESENTATION_SCHEDULE_PROXY",
+  "question": "Does the B461 all-resident versus streamed representation schedule produce a measurable difference in normalized process peak RSS on a hosted Linux runner?",
+  "reference": "ALL_RESIDENT",
+  "treatment": "STREAMED_FOLD",
+  "pair_count": 6,
+  "execution_order": "alternating reference-first / treatment-first",
+  "fresh_process_per_arm": true,
+  "element_count": 4194304,
+  "lane_count": 7,
+  "moduli": [127, 125, 121, 119, 113, 109, 107],
+  "memory_backend": "anonymous mmap, page-touched",
+  "semantic_gate": "B461 exact CRT toy must match in every child before physical interpretation",
+  "primary_endpoint": "normalized VmHWM growth bytes",
+  "supporting_endpoints": [
+    "VmRSS at observation point",
+    "VmRSS after cleanup",
+    "expected logical live bytes"
+  ],
+  "acceptance": {
+    "semantic_exact_all_children": true,
+    "strict_peak_gate": "treatment_minus_reference_peak_bytes < 0 for every matched pair"
+  },
+  "forbidden_claims": [
+    "proxy mmap buffers are an Ozaki production kernel",
+    "hosted-runner VmHWM results generalize to arbitrary systems",
+    "final RSS is a substitute for normalized peak growth",
+    "a physical peak reduction proves speedup"
+  ]
+}
