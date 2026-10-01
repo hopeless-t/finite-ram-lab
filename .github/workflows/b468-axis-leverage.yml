@@ -1,0 +1,47 @@
+name: B468 Axis Leverage
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/axis-leverage-b468
+    paths:
+      - "src/finite_ram_lab/axis_leverage.py"
+      - "tests/test_axis_leverage.py"
+      - "docs/B468-AXIS-LEVERAGE-v0.1.md"
+      - "analysis/inputs/B463-COUPLED-NUMERICAL-RESULT-v0.1.json"
+      - "analysis/inputs/B465-DOGFOOD-PROBE-RESULT-v0.1.json"
+      - "analysis/inputs/B467-CROSS-RUN-FEEDBACK-RESULT-v0.1.json"
+      - ".github/workflows/b468-axis-leverage.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_axis_leverage -v
+      - name: Freeze axis proposal
+        run: |
+          mkdir -p runs/B468
+          python -m finite_ram_lab.axis_leverage \
+            --b463 analysis/inputs/B463-COUPLED-NUMERICAL-RESULT-v0.1.json \
+            --b465 analysis/inputs/B465-DOGFOOD-PROBE-RESULT-v0.1.json \
+            --b467 analysis/inputs/B467-CROSS-RUN-FEEDBACK-RESULT-v0.1.json \
+            --out runs/B468/axis-leverage.json
+          python -m json.tool runs/B468/axis-leverage.json >/dev/null
+          sha256sum runs/B468/axis-leverage.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b468-axis-leverage
+          path: runs/B468/axis-leverage.json
+          if-no-files-found: error

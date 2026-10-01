@@ -1,0 +1,39 @@
+{
+  "schema": "finite-ram-lab.b463-result/v0.1",
+  "status": "PASS",
+  "classification": "COUPLED_EXACT_PEAK_EFFECT_REPLICATED",
+  "claim_ceiling": "HOSTED_NUMPY_RANK1_RESIDUE_CRT_IMPLEMENTATION",
+  "workflow_run_id": 36927364546,
+  "workflow_job_id": 110587892643,
+  "execution_head_sha": "2cd2ea672ede6906900c28c853cc4bb6b4c4f50c",
+  "artifact_id": 11195070024,
+  "artifact_zip_sha256": "a440e6602157607cdb22417266e05432ce8dd0d951d6548ab7bda1f8c4356ca2",
+  "panel_json_sha256": "c78b60339f7ff9e0ad2d202e0c90864333049430287c099a4d8b245cf02c7e3d",
+  "tests": {"count": 3, "passed": 3, "failed": 0},
+  "pair_count": 6,
+  "semantic_match_count": 6,
+  "negative_peak_count": 6,
+  "positive_peak_count": 0,
+  "zero_peak_count": 0,
+  "peak_deltas_bytes": [
+    -25153536,
+    -25194496,
+    -25157632,
+    -24989696,
+    -25112576,
+    -25190400
+  ],
+  "median_treatment_minus_reference_peak_bytes": -25155584,
+  "median_treatment_minus_reference_peak_mib": -23.990234375,
+  "latency_ratios_treatment_over_reference": [
+    1.0619358628268984,
+    1.066570636633577,
+    1.0607119593308396,
+    1.04911702659963,
+    1.0552715710366631,
+    1.0438713017615522
+  ],
+  "median_latency_ratio_treatment_over_reference": 1.0579917651837514,
+  "median_latency_penalty_percent": 5.79917651837514,
+  "next": "B464_ACTIVE_EXPERIMENT_RUNTIME"
+}
