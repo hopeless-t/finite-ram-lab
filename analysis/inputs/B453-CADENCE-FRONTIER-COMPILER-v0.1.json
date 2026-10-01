@@ -78,5 +78,27 @@
     "corrected_random_discrete_systems": 20000,
     "symbolic_equals_canonical_objective_frontier": "PASS"
   },
-  "physical_run": false
+  "physical_run": false,
+  "software_qualification": {
+    "lane": "research",
+    "temporary_subtree": "b453_qual",
+    "first_run": {
+      "status": "FAILED_AS_RESEARCH_COUNTEREXAMPLE",
+      "failure": "plan-ID frontier overclaim",
+      "stderr_sha256": "sha256:3a9a23a6843989aa72a56b5d4ab942edc2230fb74f1b16d53146962d78565127"
+    },
+    "corrected_run": {
+      "tests_run": 4,
+      "tests_passed": 4,
+      "runtime_seconds": 1.734,
+      "returncode": 0,
+      "stderr_sha256": "sha256:42f36ba5e3bda7a60b554e7cd72ac54ce69eed43f46165b39521e26bb653dd88"
+    },
+    "workspace_only": true,
+    "host_write": false,
+    "canonical_write": false,
+    "promotion": false,
+    "physical_workload_executed": false,
+    "cleanup": "b453_qual removed"
+  }
 }
