@@ -1,0 +1,54 @@
+name: B475 Coverage Aware Governor
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/coverage-aware-governor-b475
+    paths:
+      - "src/finite_ram_lab/coverage_aware_governor.py"
+      - "tests/test_coverage_aware_governor.py"
+      - "docs/B475-COVERAGE-AWARE-GOVERNOR-v0.1.md"
+      - ".github/workflows/b475-coverage-aware-governor.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_coverage_aware_governor -v
+      - name: Freeze 95 percent governor
+        run: |
+          mkdir -p runs/B475
+          python -m finite_ram_lab.coverage_aware_governor \
+            --b469 analysis/inputs/B469-LANE-CONCURRENCY-RESULT-v0.1.json \
+            --b472 analysis/inputs/B472-Q1-TAIL-CALIBRATION-RESULT-v0.1.json \
+            --b474 analysis/inputs/B474-RANK-COVERAGE-EXPANSION-RESULT-v0.1.json \
+            --minimum-rank-coverage 0.95 \
+            --out runs/B475/governor-v1.json
+          python -m json.tool runs/B475/governor-v1.json >/dev/null
+          sha256sum runs/B475/governor-v1.json
+      - name: Freeze q2 example decision
+        run: |
+          python -m finite_ram_lab.coverage_aware_governor \
+            --b469 analysis/inputs/B469-LANE-CONCURRENCY-RESULT-v0.1.json \
+            --b472 analysis/inputs/B472-Q1-TAIL-CALIBRATION-RESULT-v0.1.json \
+            --b474 analysis/inputs/B474-RANK-COVERAGE-EXPANSION-RESULT-v0.1.json \
+            --minimum-rank-coverage 0.95 \
+            --peak-budget-bytes 67194880 \
+            --out runs/B475/q2-decision.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b475-coverage-aware-governor
+          path: runs/B475
+          if-no-files-found: error
