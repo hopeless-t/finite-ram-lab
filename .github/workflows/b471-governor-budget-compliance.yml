@@ -1,0 +1,46 @@
+name: B471 Governor Budget Compliance
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/governor-budget-compliance-b471
+    paths:
+      - "src/finite_ram_lab/governor_dogfood.py"
+      - "tests/test_governor_dogfood.py"
+      - "specs/TX-GOVERNOR-BUDGET-COMPLIANCE-B471-v0.1.json"
+      - "docs/B471-GOVERNOR-BUDGET-COMPLIANCE-v0.1.md"
+      - ".github/workflows/b471-governor-budget-compliance.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  dogfood:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_governor_dogfood -v
+      - name: Frozen boundary compliance panel
+        run: |
+          mkdir -p runs/B471
+          python -m finite_ram_lab.governor_dogfood \
+            --source analysis/inputs/B469-LANE-CONCURRENCY-RESULT-v0.1.json \
+            --repetitions 4 \
+            --size 2048 \
+            --seed 471 \
+            --out runs/B471/governor-budget-compliance.json
+          python -m json.tool runs/B471/governor-budget-compliance.json >/dev/null
+          sha256sum runs/B471/governor-budget-compliance.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b471-governor-budget-compliance
+          path: runs/B471/governor-budget-compliance.json
+          if-no-files-found: error
