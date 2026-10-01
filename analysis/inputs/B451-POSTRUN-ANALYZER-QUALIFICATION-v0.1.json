@@ -1,0 +1,86 @@
+{
+  "schema": "finite-ram.postrun-analyzer-qualification/v0.1",
+  "bounce": "B451",
+  "claim_ceiling": "ANALYSIS_PLANE_FROZEN_PRE_OBSERVATION",
+  "branch": "research/postrun-analyzer-b451",
+  "frozen_analysis_rules": {
+    "candidate_arms": [
+      "dontneed_32m",
+      "dontneed_48m",
+      "dontneed_64m",
+      "dontneed_80m",
+      "dontneed_96m"
+    ],
+    "reference_arms": ["buffered"],
+    "primary_objectives": [
+      "peak_ram_bytes",
+      "ephemeral_excess_bytes",
+      "memory_high_events",
+      "pgscan",
+      "advice_calls"
+    ],
+    "descriptive_objectives": [
+      "scan_elapsed_ns"
+    ],
+    "block_resampling_rule": "within each capacity, one sampled runner-block ID is applied jointly across all candidate arms",
+    "capacity_transition_rule": "lower and upper capacity block resamples are independent",
+    "frontier_stability_threshold": 0.90,
+    "default_bootstrap_iterations": 100000,
+    "default_seed": 2026100151,
+    "clamp_replay": true,
+    "prelaunch_twin_comparison": true
+  },
+  "software_qualification": {
+    "lane": "research",
+    "temporary_subtree": "b451_qual",
+    "workspace_only": true,
+    "host_write": false,
+    "canonical_write": false,
+    "promotion": false,
+    "physical_workload_executed": false,
+    "unit_tests": {
+      "run": 4,
+      "passed": 4,
+      "failed": 0,
+      "errored": 0,
+      "runtime_seconds": 0.425,
+      "stderr_sha256": "sha256:d1a18fbeda8a1f2f70e0bc00db2b8015674466555158283b56d2e3831b8664c0"
+    },
+    "cli_synthetic_run": {
+      "returncode": 0,
+      "bootstrap_iterations": 500,
+      "seed": 451,
+      "stdout_sha256": "sha256:77c351e12391838d5ba372aaf3c92d2b3020c167b178d1f572ece4fd736479f3",
+      "primary_frontier_144": [
+        "dontneed_32m",
+        "dontneed_48m",
+        "dontneed_96m"
+      ],
+      "primary_frontier_160": [
+        "dontneed_32m",
+        "dontneed_48m",
+        "dontneed_96m"
+      ],
+      "primary_frontier_176": [
+        "dontneed_32m",
+        "dontneed_48m",
+        "dontneed_96m"
+      ],
+      "primary_transition_any_loss_probability_144_to_160": 0.0,
+      "primary_transition_any_loss_probability_160_to_176": 0.0,
+      "clamp_pressure_classification_accuracy": 1.0,
+      "transient_base_mib": 78.60900020599365,
+      "clean_floor_median_mib": 76.69999980926514,
+      "clean_ephemeral_base_excess_mib": 1.9090003967285156
+    },
+    "cleanup": {
+      "temporary_subtree_removed": true,
+      "post_cleanup_research_status": "?? rich59_staging/",
+      "preexisting_residue_preserved": true
+    }
+  },
+  "important_boundary": "The analyzer is frozen before physical observation. Future interpretation must use these predeclared rules unless a separately versioned sensitivity analysis is created.",
+  "github_actions_launched": false,
+  "b425_ambient_canary": false,
+  "paid_resource": false
+}
