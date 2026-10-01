@@ -1,0 +1,49 @@
+{
+  "schema": "finite-ram.intrinsic-capacity-clamp/v0.1",
+  "bounce": "B445",
+  "claim_ceiling": "QUALIFIED_STRATA005_STRUCTURAL_RESPONSE_MODEL",
+  "qualified_dataset": {
+    "experiment": "STRATA-005-EXTERNAL-VALIDITY-v1",
+    "capacity_points_mib": [144, 176],
+    "common_dontneed_arms_mib": [48, 64, 80, 96],
+    "observer_semantics_stable_within_dataset": true
+  },
+  "model": {
+    "transient_base_estimator": "median(peak_mib - release_interval_mib) over zero-MemoryHigh-event cells",
+    "transient_base_mib": 78.609,
+    "peak_equation": "P_peak(H,K) ~= min(B_peak + K, H)",
+    "pressure_rule": "predict pressure when B_peak + K > H"
+  },
+  "fit": {
+    "cells": 8,
+    "pressure_classification_correct": 8,
+    "pressure_classification_accuracy": 1.0,
+    "peak_cells_abs_residual_le_0_133001_mib": 7,
+    "largest_peak_residual_mib": -1.873,
+    "largest_residual_cell": {
+      "memory_high_mib": 176,
+      "release_interval_mib": 96
+    }
+  },
+  "contextual_external_check": {
+    "study": "STRATA-004-KNEE-v1",
+    "identity_status": "NOT_MERGED_DUE_TO_B444_OBSERVER_DRIFT",
+    "prediction": {
+      "H160_K80": "NO_PRESSURE",
+      "H160_K88": "PRESSURE"
+    },
+    "observed": {
+      "H160_K80_median_high_events": 0,
+      "H160_K88_median_high_events": 2
+    },
+    "classification_match": true,
+    "use": "qualitative independent mechanism check only"
+  },
+  "interpretation": [
+    "For pressure-free cells, release cadence behaves like an additive transient-state width over an approximately stable base.",
+    "When B_peak + K exceeds MemoryHigh, observed peak becomes capacity-clamped and MemoryHigh events appear.",
+    "The 176/96 cell is a peak-amplitude outlier but does not break the pressure/no-pressure classification.",
+    "The model is descriptive for the frozen hosted workload and is not an OSS cadence formula."
+  ],
+  "new_physical_run": false
+}
