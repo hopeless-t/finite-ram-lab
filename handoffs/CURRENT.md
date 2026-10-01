@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B442
-> Stage: STRATA-005 FRONTIER RESAMPLING v0.1 FROZEN
-> Stop: FREEZE DYNAMIC FRONTIER QUALIFICATION CONTRACT
+> Latest bounce: B443
+> Stage: DYNAMIC FRONTIER QUALIFICATION CONTRACT v0.1 FROZEN
+> Stop: ACQUIRE ONE QUALIFIED PHYSICAL DYNAMIC DATASET
 
 ## Chapter II frontier
 
@@ -1810,3 +1810,59 @@ No paid resource.
 Next B443:
 
 Freeze a Dynamic Frontier Qualification Contract before any new physical capacity sweep. It must predeclare capacity axis, stable plan identities, PRIMARY/DESCRIPTIVE objectives, independent resampling unit, missing-data rules, minimum replication, frontier-stability criterion, and claim ceiling.
+
+
+## B443 dynamic frontier qualification contract v0.1
+
+Frozen branch:
+
+- research/dynamic-frontier-contract-b443
+
+Frozen files:
+
+- src/finite_ram_lab/dynamic_frontier_contract.py
+- tests/test_dynamic_frontier_contract.py
+- specs/DYNAMIC-FRONTIER-QUALIFICATION-v0.1.json
+- docs/B443-DYNAMIC-FRONTIER-QUALIFICATION-CONTRACT-v0.1.md
+
+The contract freezes before launch:
+
+- one explicit capacity axis
+- sorted unique capacity points
+- stable plan identity fields
+- workload identity
+- PRIMARY/DESCRIPTIVE/EXCLUDED objective roles
+- independent resampling unit
+- per-study minimum independent units
+- predeclared frontier-stability threshold
+- FAIL_CLOSED missing-data rule
+- raw receipt requirement
+- claim ceiling
+
+QUALIFICATION_HOLD conditions include:
+
+- incomplete capacity matrix
+- missing PRIMARY objective
+- insufficient independent replication
+- unstable plan identity
+- unstable workload identity where required
+- missing required raw receipts
+
+No universal replication count or universal 0.95 threshold is declared. Each physical study must freeze its own values before observation.
+
+Retrospective STRATA-005 application:
+
+- data completeness/identity qualification: QUALIFIED
+- primary frontier loss probability: 0
+- frontier promotion eligible: false
+
+This is an important distinction: a valid dataset need not support the target effect.
+
+B425 remains paused and is not authorized by this contract.
+
+No new physical run.
+No paid resource.
+
+Next highest-value move:
+
+Acquire exactly one qualified physical dynamic dataset with stable plan/workload identity and a controlled capacity/residency axis. Freeze raw receipts before interpretation, then apply B439 + B441 + B442 under this contract.
