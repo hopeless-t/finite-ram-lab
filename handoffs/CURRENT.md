@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B438
-> Stage: CAPACITY PHASE DIAGRAM v0.1 FROZEN
-> Stop: COMPARE STATIC PREDICTION WITH DYNAMIC MEASUREMENTS
+> Latest bounce: B439
+> Stage: STATIC-vs-DYNAMIC FRONTIER COMPARATOR v0.1 FROZEN
+> Stop: ACQUIRE FIRST REAL DYNAMIC OBSERVATION PAIR
 
 ## Chapter II frontier
 
@@ -1529,3 +1529,85 @@ No paid resource was used.
 Next B439:
 
 Build a static-versus-dynamic frontier comparator that can ingest measured objective vectors at multiple capacities, detect monotonicity violations, and identify which objective coordinate changed enough to explain the measured reversal.
+
+
+## B439 static-vs-dynamic frontier comparator v0.1
+
+Frozen branch:
+
+- research/static-dynamic-frontier-b439
+
+Frozen files:
+
+- src/finite_ram_lab/static_dynamic_frontier.py
+- tests/test_static_dynamic_frontier.py
+- analysis/inputs/B439-STATIC-DYNAMIC-FRONTIER-COMPARATOR-v0.1.json
+- docs/B439-STATIC-DYNAMIC-FRONTIER-COMPARATOR-v0.1.md
+
+Purpose:
+
+Turn violations of the B438 static Capacity Monotonicity Theorem into targeted diagnostics once real measured objective vectors are available.
+
+Input per measured plan/capacity:
+
+- stable plan_id
+- resident bytes by tier
+- byte-seconds by tier
+- traffic
+- compute
+- latency
+- error
+
+Comparator output:
+
+- measured frontier before/after
+- lost/added frontier plan IDs
+- monotonicity violation flag
+- changed objective coordinates
+- measured dominators
+- explanation class
+
+Explanation classes:
+
+- LOST_WITH_SELF_COST_SHIFT
+- LOST_WITH_DOMINATOR_COST_SHIFT
+- LOST_WITH_NEW_OR_PREVIOUSLY_UNOBSERVED_DOMINATOR
+- MISSING_LARGER_OBSERVATION
+- UNEXPLAINED_STATIC_MONOTONICITY_VIOLATION
+
+Synthetic validation examples:
+
+1. p latency 1 -> 3 while q remains 2:
+   - p disappears
+   - q dominates
+   - classification SELF_COST_SHIFT
+   - changed coordinate latency +2
+
+2. p remains latency 2 while q improves 3 -> 1:
+   - p disappears
+   - classification DOMINATOR_COST_SHIFT
+   - q changed coordinate latency -2
+
+Additional validation:
+
+- identical static replay -> no violation PASS
+- new/unobserved dominator distinguished PASS
+- missing larger observation distinguished PASS
+- tolerance filtering PASS
+- deterministic 5000 random static replays -> zero false monotonicity violations
+
+New H439 Frontier Loss is an Instrumentation Target:
+
+Under B438 static assumptions, disappearance of a Pareto plan indicates that at least one assumption changed. Treat the event as an investigation trigger rather than silently accepting it as optimizer behavior.
+
+Claim ceiling: SOFTWARE_COMPARATOR_WITH_SYNTHETIC_DYNAMIC_EXAMPLES.
+
+No physical measurements were ingested.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next high-value research move:
+
+Acquire one real dynamic observation pair with stable workload and plan identity, freeze raw receipts first, then pass them through B439.
+
+Do not resume the paused B425 physical ambient canary until its software/host-action qualification path is explicitly resumed.
