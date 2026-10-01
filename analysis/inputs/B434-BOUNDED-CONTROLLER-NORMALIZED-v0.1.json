@@ -1,0 +1,73 @@
+{
+  "schema": "finite-ram.bounded-frontier-controller/v0.1",
+  "bounce": "B434",
+  "claim_ceiling": "EXACT_TINY_WINDOW_MODEL_ONLY",
+  "controller_pipeline": [
+    "enumerate one option per semantic state",
+    "reject unsafe semantic release",
+    "reject unsafe owner merge",
+    "reject lossy options without an explicit error bound",
+    "aggregate resident bytes by tier",
+    "reject per-tier capacity violations",
+    "compute objective vector",
+    "remove dominated plans"
+  ],
+  "objective_vector": [
+    "peak_bytes_per_tier",
+    "byte_seconds_per_tier",
+    "traffic_bytes",
+    "compute_cost",
+    "latency_cost",
+    "error_cost"
+  ],
+  "normalized_example": {
+    "capacities": {
+      "VRAM": 6,
+      "RAM": 16
+    },
+    "one_state_options": [
+      {
+        "name": "resident",
+        "VRAM": 8,
+        "RAM": 0,
+        "traffic": 0,
+        "latency": 0,
+        "error": 0,
+        "feasible": false
+      },
+      {
+        "name": "offload",
+        "VRAM": 2,
+        "RAM": 8,
+        "traffic": 20,
+        "latency": 3,
+        "error": 0,
+        "feasible": true,
+        "pareto": true
+      },
+      {
+        "name": "compress",
+        "VRAM": 4,
+        "RAM": 0,
+        "traffic": 0,
+        "latency": 0,
+        "error": 0.1,
+        "error_bound_known": true,
+        "feasible": true,
+        "pareto": true
+      }
+    ],
+    "interpretation": "under a 6-unit VRAM cap the zero-cost resident plan is infeasible; offload and bounded-loss compression remain incomparable trade-offs"
+  },
+  "validation": {
+    "unsafe_release_gate": "PASS",
+    "unsafe_share_gate": "PASS",
+    "unknown_error_gate": "PASS",
+    "per_tier_capacity_gate": "PASS",
+    "dominated_plan_removal": "PASS",
+    "exchange_frontier_retention": "PASS",
+    "randomized_pareto_cases": 10000,
+    "randomized_result": "PASS"
+  },
+  "physical_benchmark": false
+}
