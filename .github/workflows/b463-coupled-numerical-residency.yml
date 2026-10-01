@@ -1,0 +1,48 @@
+name: B463 Coupled Numerical Residency
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/coupled-numerical-residency-b463
+    paths:
+      - "src/finite_ram_lab/coupled_numerical_residency.py"
+      - "tests/test_coupled_numerical_residency.py"
+      - "specs/TX-COUPLED-NUMERICAL-RESIDENCY-v0.1.json"
+      - "docs/B463-COUPLED-NUMERICAL-RESIDENCY-v0.1.md"
+      - ".github/workflows/b463-coupled-numerical-residency.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  coupled-panel:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_coupled_numerical_residency -v
+      - name: Frozen matched panel
+        run: |
+          mkdir -p runs/B463
+          python -m finite_ram_lab.coupled_numerical_residency \
+            --pairs 6 \
+            --size 2048 \
+            --lanes 7 \
+            --seed 463 \
+            --value-limit 50 \
+            --tile-rows 64 \
+            --out runs/B463/coupled-numerical-panel.json
+          python -m json.tool runs/B463/coupled-numerical-panel.json >/dev/null
+          sha256sum runs/B463/coupled-numerical-panel.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b463-coupled-numerical-residency
+          path: runs/B463/coupled-numerical-panel.json
+          if-no-files-found: error
