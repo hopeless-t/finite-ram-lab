@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B435
-> Stage: PARETO BEAM CONTROLLER v0.1 FROZEN
-> Stop: RUN SOURCE-BACKED MIXED SCENARIO
+> Latest bounce: B436
+> Stage: MIXED CAPACITY-CLIFF SCENARIO v0.1 FROZEN
+> Stop: COMPUTE CAPACITY ACTIVATION FRONTIER
 
 ## Chapter II frontier
 
@@ -1316,3 +1316,72 @@ No paid resource was used.
 Next B436:
 
 Assemble one mixed source-backed scenario from Strata KV/expert residency plus one proven semantic-reduction option and one temporalization option. Compare exact and beam controllers near RAM/VRAM capacity cliffs.
+
+
+## B436 mixed capacity-cliff scenario v0.1
+
+Frozen branch:
+
+- research/mixed-capacity-cliff-b436
+
+Frozen files:
+
+- src/finite_ram_lab/mixed_capacity_cliff.py
+- tests/test_mixed_capacity_cliff.py
+- analysis/inputs/B436-MIXED-CAPACITY-CLIFF-EVAL-v0.1.json
+- docs/B436-MIXED-CAPACITY-CLIFF-SCENARIO-v0.1.md
+
+Scenario composition:
+
+- source-backed Strata INT8 KV pool sizes from B432
+- source-anchored Strata expert placement proxy
+- source-observed prompt cache lending size proxy
+- normalized FlashAttention-pattern future-sufficient reduction
+- normalized GEMMul8-pattern temporalization
+- normalized idle-unload byte-second exchange
+
+This is not one executable application. It is a mixed controller stress scenario.
+
+Main exact capacity result:
+
+- with RAM=8192 MiB, minimum VRAM=10544 MiB
+- with RAM=9775 MiB, minimum VRAM remains 10544 MiB
+- with RAM=9776 MiB, streamed INT8 KV becomes feasible and minimum VRAM drops to 9356 MiB
+
+The 1188-MiB VRAM discontinuity exactly matches the B432 INT8 KV resident reduction:
+
+1584 - 396 = 1188 MiB.
+
+Thus B436 demonstrates a combinatorial policy cliff: one tier crossing a minimum requirement can activate a legal MOVE plan and sharply reduce another tier's minimum requirement.
+
+Capacity grid:
+
+- 15 VRAM capacities x 11 RAM capacities = 165 points
+- 150 points with non-empty exact frontier
+- 3506 exact frontier objective vectors total
+
+Beam recovery on those 150 points:
+
+- width 16: mean coverage 77.48%, min 20%, exact recovery 82/150, dominated fraction 0
+- width 32: mean coverage 91.27%, min 40%, exact recovery 114/150, dominated fraction 0
+- width 64: mean coverage 99.01%, min 80%, exact recovery 141/150, dominated fraction 0
+- width 96: exact coverage 100%, exact recovery 150/150, dominated fraction 0
+
+New H436 Capacity-Activated Strategy:
+
+The marginal value of added capacity can be discontinuous when it crosses the minimum requirement of a previously infeasible transformation.
+
+Distinguish:
+
+- combinatorial activation cliffs: plan feasibility changes discretely
+- runtime pressure cliffs: performance changes sharply near a tier limit
+
+Claim ceiling: SOURCE_ANCHORED_MIXED_NORMALIZED_CONTROLLER_SCENARIO.
+
+No physical benchmark ran.
+No B425 ambient canary ran.
+No paid resource was used.
+
+Next B437:
+
+Represent every safe plan by its per-tier capacity requirement vector and compute the minimal antichain (capacity activation frontier). For B436 it should recover the two non-dominated minimum vectors (RAM,VRAM)=(8192,10544) and (9776,9356).
