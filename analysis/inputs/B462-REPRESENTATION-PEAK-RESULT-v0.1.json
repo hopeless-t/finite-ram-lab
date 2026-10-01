@@ -1,0 +1,28 @@
+{
+  "schema": "finite-ram-lab.b462-result/v0.1",
+  "status": "PASS",
+  "classification": "PHYSICAL_PEAK_SCHEDULE_EFFECT_REPLICATED",
+  "claim_ceiling": "HOSTED_LINUX_MMAP_REPRESENTATION_SCHEDULE_PROXY",
+  "workflow_run_id": 36924274517,
+  "workflow_job_id": 110577608824,
+  "execution_head_sha": "29672bd7793fb24747ead7ef8379aa9ecb859c02",
+  "tests": {"count": 3, "passed": 3, "failed": 0},
+  "artifact_id": 11192913454,
+  "artifact_zip_sha256": "d44d13d54595aa4b91daed7e07f5f1021094538e7f8c484d423e2f35f6281b14",
+  "panel_json_sha256": "9f8cbdf2494fedf787c2cbb010ccdde70461c941b644e6ad393bdc9d7cdda0d8",
+  "pair_count": 6,
+  "negative_count": 6,
+  "positive_count": 0,
+  "zero_count": 0,
+  "treatment_minus_reference_peak_bytes": [
+    -25165824,
+    -25165824,
+    -25165824,
+    -25165824,
+    -25165824,
+    -25165824
+  ],
+  "median_treatment_minus_reference_peak_bytes": -25165824,
+  "median_treatment_minus_reference_peak_mib": -24.0,
+  "next": "B463_COUPLED_NUMERICAL_RESIDENCY_TEST"
+}
