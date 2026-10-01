@@ -1,0 +1,68 @@
+{
+  "schema": "finite-ram.clean-dynamic-frontier-digital-twin/v0.1",
+  "bounce": "B449",
+  "claim_ceiling": "PRELAUNCH_MODEL_CHECK_ONLY",
+  "source_model": {
+    "transient_base_mib": 78.609,
+    "clean_floor_proxy_mib": 76.7,
+    "peak_rule": "min(B_peak + K, MemoryHigh)",
+    "pressure_proxy": "1 if B_peak + K > MemoryHigh else 0"
+  },
+  "candidate_arms": [
+    "dontneed_32m",
+    "dontneed_48m",
+    "dontneed_64m",
+    "dontneed_80m",
+    "dontneed_96m"
+  ],
+  "reference_arms": ["buffered"],
+  "primary_objective_proxy": [
+    "peak_mib",
+    "ephemeral_excess_mib",
+    "memory_high_events_proxy",
+    "pgscan_proxy",
+    "advice_calls"
+  ],
+  "expected_frontier_by_capacity": {
+    "144": ["dontneed_32m","dontneed_48m","dontneed_96m"],
+    "160": ["dontneed_32m","dontneed_48m","dontneed_96m"],
+    "176": ["dontneed_32m","dontneed_48m","dontneed_96m"]
+  },
+  "expected_pressure_by_capacity": {
+    "144": {
+      "dontneed_32m": false,
+      "dontneed_48m": false,
+      "dontneed_64m": false,
+      "dontneed_80m": true,
+      "dontneed_96m": true
+    },
+    "160": {
+      "dontneed_32m": false,
+      "dontneed_48m": false,
+      "dontneed_64m": false,
+      "dontneed_80m": false,
+      "dontneed_96m": true
+    },
+    "176": {
+      "dontneed_32m": false,
+      "dontneed_48m": false,
+      "dontneed_64m": false,
+      "dontneed_80m": false,
+      "dontneed_96m": false
+    }
+  },
+  "design_interpretation": {
+    "frontier_arms": {
+      "dontneed_32m": "minimum-memory / highest intervention-frequency arm",
+      "dontneed_48m": "middle tradeoff; same call count as 64/80 but smaller frontier",
+      "dontneed_96m": "minimum actual advice-call count arm"
+    },
+    "mechanism_only_arms": {
+      "dontneed_64m": "clamp-model interpolation / historical comparability",
+      "dontneed_80m": "capacity-threshold mechanism arm"
+    },
+    "buffered": "reference only, excluded from candidate Pareto membership"
+  },
+  "prelaunch_conclusion": "study is informative even if no arm membership changes; stable candidate frontier plus capacity-dependent objective shifts is the expected null/topology result",
+  "new_physical_run": false
+}
