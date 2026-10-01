@@ -1,8 +1,8 @@
 # CURRENT
 
-> Latest bounce: B440
-> Stage: STRATA-005 HISTORICAL DYNAMIC REPLAY v0.1 FROZEN
-> Stop: FORMALIZE OBJECTIVE EVIDENCE GATE
+> Latest bounce: B441
+> Stage: OBJECTIVE EVIDENCE GATE v0.1 FROZEN
+> Stop: RESAMPLE HISTORICAL FRONTIER STABILITY
 
 ## Chapter II frontier
 
@@ -1689,3 +1689,70 @@ No paid resource.
 Next B441:
 
 Formalize PRIMARY / DESCRIPTIVE / EXCLUDED objective evidence roles and automatically classify descriptive-only frontier transitions as PROJECTION_FRAGILE. Then search historical evidence for a stronger primary-projection dynamic pair.
+
+
+## B441 objective evidence gate v0.1
+
+Frozen branch:
+
+- research/objective-evidence-gate-b441
+
+Frozen files:
+
+- src/finite_ram_lab/objective_evidence_gate.py
+- tests/test_objective_evidence_gate.py
+- specs/OBJECTIVE-EVIDENCE-GATE-v0.1.json
+- docs/B441-OBJECTIVE-EVIDENCE-GATE-v0.1.md
+
+Objective roles:
+
+- PRIMARY
+- DESCRIPTIVE
+- EXCLUDED
+
+Gate rules:
+
+- at least one PRIMARY objective is required
+- missing PRIMARY evidence -> INSTRUMENTATION_HOLD
+- PRIMARY projection is evaluated before any descriptive sensitivity projection
+- missing objectives are never zero-filled
+- EXCLUDED objectives never enter the frontier
+
+Frozen classifications:
+
+- NO_MEASURED_MONOTONICITY_VIOLATION
+- PROJECTION_FRAGILE
+- PRIMARY_VIOLATION_STABLE_TO_DESCRIPTIVE_EXTENSION
+- PRIMARY_VIOLATION_PROJECTION_SENSITIVE
+- PRIMARY_OBJECTIVE_MISSING
+
+STRATA-005 replay:
+
+PRIMARY:
+- peak_ram_bytes
+- memory_high_events
+- pgscan
+
+DESCRIPTIVE:
+- scan_elapsed_ns
+
+Result:
+- PRIMARY projection: no frontier loss
+- PRIMARY+DESCRIPTIVE: dontneed_80m disappears
+- gate classification: PROJECTION_FRAGILE
+
+STRATA-006 was reviewed but is not a B439 capacity-only pair because it changes hot/live state while holding MemoryHigh fixed.
+
+No stronger historical primary-projection capacity pair has yet been identified.
+
+New H441:
+
+Evidence authority must precede admission of a metric into the primary Pareto dimension set.
+
+No new physical run.
+No B425 ambient canary.
+No paid resource.
+
+Next B442:
+
+Use the still-available four STRATA-005 block artifacts to resample frontier membership and quantify how stable the descriptive timing-only transition actually is.
