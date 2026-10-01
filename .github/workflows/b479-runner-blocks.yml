@@ -1,0 +1,77 @@
+name: B479 Runner Block Factorial
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/runner-blocks-b479
+    paths:
+      - "src/finite_ram_lab/runner_block_probe.py"
+      - "src/finite_ram_lab/runner_block_aggregate.py"
+      - "tests/test_runner_blocks.py"
+      - "docs/B479-RUNNER-BLOCKS-v0.1.md"
+      - ".github/workflows/b479-runner-blocks.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run block
+        run: |
+          mkdir -p runs/B479
+          python -m finite_ram_lab.runner_block_probe \
+            --block-id ${{ matrix.block }} \
+            --size 2048 \
+            --out runs/B479/block-${{ matrix.block }}.json
+          python -m json.tool runs/B479/block-${{ matrix.block }}.json >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b479-runner-block-${{ matrix.block }}
+          path: runs/B479/block-${{ matrix.block }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_runner_blocks -v
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b479-runner-block-*
+          path: runs/B479/blocks
+          merge-multiple: true
+      - name: Aggregate runner blocks
+        run: |
+          python -m finite_ram_lab.runner_block_aggregate \
+            --blocks-dir runs/B479/blocks \
+            --reference-input analysis/inputs/B477-LOCATION-SHIFT-INPUT-v0.1.json \
+            --out runs/B479/runner-block-aggregate.json
+          python -m json.tool runs/B479/runner-block-aggregate.json >/dev/null
+          sha256sum runs/B479/runner-block-aggregate.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b479-runner-block-aggregate
+          path: runs/B479/runner-block-aggregate.json
+          if-no-files-found: error

@@ -1,0 +1,33 @@
+{
+  "schema": "finite-ram-lab.b479-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "GITHUB_HOSTED_JOB_BLOCK_FACTORIAL_REPLICATION",
+  "workflow_run_id": 36937300214,
+  "aggregate_job_id": 110620735672,
+  "execution_head_sha": "7150fa9bccdf0e81f425ca370bfd650cda3afd25",
+  "aggregate_artifact_id": 11198013652,
+  "aggregate_artifact_zip_sha256": "3ad4394fc5a5801c51a2d27dc27205655d1fa19b4bceef6feedeb52af717e8b8",
+  "aggregate_sha256": "0b667783ef34e100b2fa5530d8fbc44d6f51c9cef534290d18c6433d1858be8e",
+  "runner_block_count": 8,
+  "classifications": {
+    "q2_seed_effect_replicated": true,
+    "q4_seed_effect_replicated": true,
+    "q2_temporal_shift_replicated": false,
+    "q4_temporal_shift_detected": false
+  },
+  "delta_summaries": {
+    "q2_seed_delta_median_bytes": -146432,
+    "q4_seed_delta_median_bytes": -128000,
+    "q2_temporal_delta_median_bytes": 22528,
+    "q4_temporal_delta_median_bytes": 33792,
+    "q2_seed474_block_median_range_bytes": 98304,
+    "q4_seed474_block_median_range_bytes": 83968
+  },
+  "tests": {
+    "q2_seed_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"significant":true},
+    "q4_seed_negative": {"favorable":8,"n_nonzero":8,"p":0.00390625,"significant":true},
+    "q2_temporal_positive": {"favorable":7,"n_nonzero":8,"p":0.03515625,"significant":false},
+    "q4_temporal_two_sided": {"positive":7,"n_nonzero":8,"p":0.0703125,"significant":false}
+  },
+  "next": "B480_BASELINE_NORMALIZATION_DECOMPOSITION"
+}
