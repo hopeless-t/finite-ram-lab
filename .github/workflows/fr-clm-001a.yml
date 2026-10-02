@@ -1,0 +1,50 @@
+name: FR-CLM-001A Semantic Working Set
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-clm-001a-semantic-working-set
+    paths:
+      - "src/finite_ram_lab/semantic_working_set.py"
+      - "specs/FR-CLM-001A.json"
+      - "tests/test_semantic_working_set.py"
+      - "docs/FR-CLM-001A-SYNTHETIC-WORKING-SET.md"
+      - ".github/workflows/fr-clm-001a.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_working_set -v
+      - name: Run synthetic panel
+        run: |
+          mkdir -p runs/FR-CLM-001A
+          python -m finite_ram_lab.semantic_working_set \
+            > runs/FR-CLM-001A/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-CLM-001A/result.json"))
+          assert r["status"] == "PASS"
+          assert r["knees"]["APPEND_TRUNCATE"] == 8
+          assert r["knees"]["KEY_AWARE"] == 2
+          assert r["empirical_model_claim"] is False
+          PY
+          sha256sum specs/FR-CLM-001A.json
+          sha256sum runs/FR-CLM-001A/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-clm-001a-semantic-working-set
+          path: runs/FR-CLM-001A/result.json
+          if-no-files-found: error
