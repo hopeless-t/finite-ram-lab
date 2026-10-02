@@ -143,6 +143,49 @@ def cmd_governor_select(args: argparse.Namespace) -> None:
     _dump(receipt)
 
 
+def cmd_local_policy_promote(args: argparse.Namespace) -> None:
+    from .local_policy_adapter import promote_local_policy
+
+    calibration = json.loads(Path(args.calibration).read_text())
+    policy = promote_local_policy(
+        calibration,
+        target_rank_coverage=args.target_rank_coverage,
+    )
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(policy, indent=2, sort_keys=True) + "\n")
+    _dump({
+        "status": "PROMOTED",
+        "policy_id": policy["policy_id"],
+        "pareto_q": policy["pareto_q"],
+        "environment_fingerprint_sha256": policy[
+            "environment_binding"
+        ]["environment_fingerprint_sha256"],
+        "out": str(out),
+    })
+
+
+def cmd_local_governor_select(args: argparse.Namespace) -> None:
+    from .local_policy_adapter import select_local_configuration
+    from .app_surface import load_policy
+
+    policy = load_policy(args.policy)
+    try:
+        receipt = select_local_configuration(
+            policy,
+            peak_budget_bytes=args.peak_budget_bytes,
+            minimum_rank_coverage=args.minimum_rank_coverage,
+        )
+    except NoEligibleConfiguration as exc:
+        _dump({
+            "status": "NO_ELIGIBLE_CONFIGURATION",
+            "error": str(exc),
+        })
+        raise SystemExit(2)
+    write_receipt(receipt, args.out)
+    _dump(receipt)
+
+
 def cmd_local_calibrate(args: argparse.Namespace) -> None:
     from .local_calibration_explore import run_local_exploration
 
@@ -285,6 +328,25 @@ def main() -> None:
     p.add_argument("--minimum-rank-coverage", type=float, default=0.95)
     p.add_argument("--out", required=True)
     p.set_defaults(func=cmd_governor_select)
+
+    p = sub.add_parser(
+        "local-policy-promote",
+        help="Promote sufficient host-bound local calibration into a Governor policy",
+    )
+    p.add_argument("--calibration", required=True)
+    p.add_argument("--target-rank-coverage", type=float, default=0.95)
+    p.add_argument("--out", required=True)
+    p.set_defaults(func=cmd_local_policy_promote)
+
+    p = sub.add_parser(
+        "local-governor-select",
+        help="Select q from a fingerprint-bound local Governor policy",
+    )
+    p.add_argument("--policy", required=True)
+    p.add_argument("--peak-budget-bytes", type=int, required=True)
+    p.add_argument("--minimum-rank-coverage", type=float, default=0.95)
+    p.add_argument("--out", required=True)
+    p.set_defaults(func=cmd_local_governor_select)
 
     p = sub.add_parser(
         "local-calibrate",
