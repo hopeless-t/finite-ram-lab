@@ -63,7 +63,7 @@ class SemanticOomEventTimeDaemonTests(
         )
         self.assertEqual(
             row["switch_count"],
-            6,
+            8,
         )
         self.assertEqual(
             row[
