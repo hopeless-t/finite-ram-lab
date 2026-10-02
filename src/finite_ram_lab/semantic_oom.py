@@ -61,7 +61,7 @@ def corpus() -> tuple[ProcessFixture, ...]:
         ),
         ProcessFixture(
             name="model-worker",
-            rss_mib=2500,
+            rss_mib=1200,
             oom_score=820,
             task_value=35,
             reconstruction_cost=20,
@@ -69,7 +69,7 @@ def corpus() -> tuple[ProcessFixture, ...]:
         ),
         ProcessFixture(
             name="batch-compressor",
-            rss_mib=2200,
+            rss_mib=1400,
             oom_score=700,
             task_value=8,
             reconstruction_cost=5,
@@ -77,7 +77,7 @@ def corpus() -> tuple[ProcessFixture, ...]:
         ),
         ProcessFixture(
             name="background-indexer",
-            rss_mib=1600,
+            rss_mib=900,
             oom_score=650,
             task_value=3,
             reconstruction_cost=2,
