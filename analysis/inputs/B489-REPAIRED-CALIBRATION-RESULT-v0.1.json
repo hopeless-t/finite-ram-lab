@@ -1,0 +1,48 @@
+{
+  "schema": "finite-ram-lab.b489-result/v0.1",
+  "status": "PASS",
+  "classification": "REPAIRED_95P_CALIBRATION_COMPLETE",
+  "claim_ceiling": "EXCHANGEABILITY_CONDITIONAL_REPAIRED_95P_CALIBRATION",
+  "workflow_run_id": 36952934068,
+  "aggregate_job_id": 110669736366,
+  "execution_head_sha": "294aecd68b3d5c6fc662d50bffb915b70189d0e3",
+  "artifact_id": 11204389942,
+  "artifact_zip_sha256": "6271694f819f7cc2a2777c8cc702482fc63ef216f2fa18eaaad14974816446ad",
+  "calibration_sha256": "9c78c95f69be26de60ef22332c03fa9261d7fc30e204382d53781935aff36e09",
+  "implementation": "TILED_WHERE",
+  "new_runner_block_count": 11,
+  "new_physical_observations": 33,
+  "summary_rows": [
+    {
+      "q": 2,
+      "pooled_sample_count": 19,
+      "pooled_empirical_max_peak_bytes": 50696192,
+      "new_panel_max_peak_bytes": 50688000,
+      "new_exceedances_over_old_max": 0,
+      "empirical_max_moved_bytes": 0,
+      "rank_max_one_step_predictive_coverage_floor": 0.95,
+      "median_new_work_seconds": 0.3956389410000014
+    },
+    {
+      "q": 4,
+      "pooled_sample_count": 19,
+      "pooled_empirical_max_peak_bytes": 58941440,
+      "new_panel_max_peak_bytes": 58925056,
+      "new_exceedances_over_old_max": 0,
+      "empirical_max_moved_bytes": 0,
+      "rank_max_one_step_predictive_coverage_floor": 0.95,
+      "median_new_work_seconds": 0.38782265300000063
+    },
+    {
+      "q": 7,
+      "pooled_sample_count": 19,
+      "pooled_empirical_max_peak_bytes": 71507968,
+      "new_panel_max_peak_bytes": 71507968,
+      "new_exceedances_over_old_max": 0,
+      "empirical_max_moved_bytes": 0,
+      "rank_max_one_step_predictive_coverage_floor": 0.95,
+      "median_new_work_seconds": 0.38639202799999595
+    }
+  ],
+  "next": "B490_REPAIRED_COVERAGE_AWARE_GOVERNOR_V2"
+}
