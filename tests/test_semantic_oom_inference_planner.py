@@ -57,11 +57,11 @@ class SemanticOomInferencePlannerTests(
 
         self.assertEqual(
             naive["deadline_failures"],
-            1,
+            7,
         )
         self.assertEqual(
             aware["deadline_failures"],
-            1,
+            7,
         )
         self.assertTrue(
             aware["reliability_qualified"]
@@ -78,14 +78,14 @@ class SemanticOomInferencePlannerTests(
 
         self.assertEqual(
             row["deadline_failures"],
-            82,
+            164,
         )
         self.assertFalse(
             row["reliability_qualified"]
         )
         self.assertEqual(
             row["current_task_loss_count"],
-            82,
+            164,
         )
         self.assertEqual(
             row["p99_semantic_loss"],
@@ -144,7 +144,7 @@ class SemanticOomInferencePlannerTests(
         )
         self.assertEqual(
             kill["current_task_loss_count"],
-            8192,
+            16384,
         )
 
     def test_claim_ceiling_is_synthetic(self):
