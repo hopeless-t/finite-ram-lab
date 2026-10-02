@@ -1,0 +1,29 @@
+{
+  "schema": "finite-ram-lab.fr-clm-001a/v0.1",
+  "status": "FROZEN_SYNTHETIC_HARNESS_SPEC",
+  "question": "Can a task-aware finite semantic working set preserve exact synthetic task state at a smaller resident budget than append/truncate?",
+  "arms": [
+    "FULL",
+    "APPEND_TRUNCATE",
+    "KEY_AWARE"
+  ],
+  "budgets": [1, 2, 4, 6, 8],
+  "primary_endpoint": "exact_rate",
+  "secondary_endpoints": [
+    "mean_resident_count",
+    "mean_interference_events",
+    "failure_biopsy"
+  ],
+  "acceptance": {
+    "full_reference_exact_rate": 1.0,
+    "append_truncate_first_full_success_budget": 8,
+    "key_aware_first_full_success_budget": 2
+  },
+  "claim_ceiling": "SYNTHETIC_SEMANTIC_WORKING_SET_HARNESS_ONLY",
+  "nonclaims": [
+    "No real CLM model is evaluated",
+    "No provider or LLM performance claim is made",
+    "No universal context knee is claimed",
+    "KEY_AWARE is a deterministic research heuristic, not a learned context manager"
+  ]
+}
