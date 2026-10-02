@@ -1,0 +1,78 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002g/v0.1",
+  "status": "FROZEN_SYNTHETIC_INFERENCE_INFORMED_PLANNING_SPEC",
+  "source_experiment": "FR-SOOM-002F",
+  "seed": "FR-SOOM-002G-v0.1",
+  "history_inference": "Use FR-SOOM-002F observable-only dependence analyzer. No latent BAD labels or generating-arm labels are available to the planner.",
+  "future_episodes_per_regime": 16384,
+  "future_tail_count_per_cluster_action": 164,
+  "relief_target_mib": 3000,
+  "reliability_qualification": {
+    "point_rate_min": 0.999,
+    "wilson95_lower_min": 0.999
+  },
+  "future_cooperative_plan": {
+    "actions": [
+      "CHROME_CACHE",
+      "MODEL_SHRINK",
+      "INDEXER_EXIT",
+      "DISTINCT_SPARE"
+    ],
+    "relief_mib_each": 1000,
+    "total_relief_mib": 4000,
+    "semantic_loss": 10,
+    "deadline_success_condition": "At most one clustered action is late. DISTINCT_SPARE is frozen timely."
+  },
+  "dependence_aware_rule": {
+    "IID_COMPATIBLE": "COOPERATIVE_REDUNDANCY",
+    "CROSS_ACTION_DEPENDENCE_EVIDENCE": "BACKGROUND_SACRIFICE",
+    "INCONCLUSIVE": "BACKGROUND_SACRIFICE"
+  },
+  "fallback_plans": {
+    "BACKGROUND_SACRIFICE": {
+      "timely_relief_mib": 3500,
+      "semantic_loss": 73,
+      "current_task_lost": false
+    },
+    "ACTIVE_TASK_KILL": {
+      "timely_relief_mib": 3200,
+      "semantic_loss": 280,
+      "current_task_lost": true
+    }
+  },
+  "deadline_miss_model": {
+    "cooperative_semantic_loss": 10,
+    "emergency_active_task_loss": 280,
+    "total_loss_on_miss": 290,
+    "current_task_lost": true
+  },
+  "frozen_reference": {
+    "INDEPENDENT": {
+      "history_classification": "IID_COMPATIBLE",
+      "naive_deadline_failures": 7,
+      "dependence_aware_plan": "COOPERATIVE_REDUNDANCY",
+      "dependence_aware_deadline_failures": 7,
+      "dependence_aware_reliability_qualified": true
+    },
+    "SHARED_BAD": {
+      "history_classification": "CROSS_ACTION_DEPENDENCE_EVIDENCE",
+      "naive_deadline_failures": 164,
+      "naive_current_task_loss_count": 164,
+      "naive_p99_semantic_loss": 290,
+      "dependence_aware_plan": "BACKGROUND_SACRIFICE",
+      "dependence_aware_deadline_failures": 0,
+      "dependence_aware_current_task_loss_count": 0,
+      "dependence_aware_p99_semantic_loss": 73
+    }
+  },
+  "primary_finding": "DEPENDENCE_INFERENCE_CAN_TRADE_MEAN_COST_FOR_TAIL_TASK_SURVIVAL",
+  "claim_ceiling": "SYNTHETIC_INFERENCE_INFORMED_PLANNING_ONLY",
+  "nonclaims": [
+    "The synthetic background-sacrifice plan is not a recommended real-host action set",
+    "The reliability target is a controlled experiment threshold, not a host setting",
+    "The deadline-miss active-task-loss model is synthetic",
+    "IID_COMPATIBLE does not prove future independence",
+    "No live process receives a signal"
+  ],
+  "reproducibility_note": "Initial 8192-episode pilot used a mistyped draw-domain tag and then lacked enough Wilson95 power at the frozen 0.999 lower-bound target. The target was not loosened; the future panel was expanded to 16384 episodes while preserving the ~1% marginal tail rate."
+}

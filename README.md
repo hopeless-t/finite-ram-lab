@@ -650,9 +650,35 @@ See:
 - [FR-SOOM-002F protocol](docs/FR-SOOM-002F-OBSERVABLE-DEPENDENCE.md)
 - [FR-SOOM-002F receipt](docs/FR-SOOM-002F-RECEIPT.md)
 
-The next synthetic step is FR-SOOM-002G: feed inferred dependence back into the
-planner and measure deadline-safe semantic loss rather than detector accuracy
-alone.
+FR-SOOM-002G closes the loop by feeding FR-SOOM-002F dependence inference
+back into future policy selection.
+
+The future qualification uses 16,384 episodes per regime and keeps the 0.999
+point/Wilson95 reliability floor fixed.
+
+| future regime / policy | deadline failures | qualified | current-task losses | mean semantic loss | p99 loss |
+|---|---:|---|---:|---:|---:|
+| INDEPENDENT / DEPENDENCE_AWARE | 7 | yes | 7 | 10.11963 | 10 |
+| SHARED / NAIVE_COOPERATIVE | 164 | no | 164 | 12.80273 | 290 |
+| SHARED / DEPENDENCE_AWARE | 0 | yes | 0 | 73 | 73 |
+| SHARED / KILL_FIRST | 0 | yes | 16384 | 280 | 280 |
+
+The shared-regime dependence-aware policy intentionally accepts higher mean cost
+than naive cooperation in order to satisfy the reliability constraint and cut
+p99 active-task loss.
+
+Thus:
+
+`expected semantic loss alone is not a sufficient controller objective`.
+
+See:
+
+- [FR-SOOM-002G protocol](docs/FR-SOOM-002G-INFERENCE-PLANNER.md)
+- [FR-SOOM-002G receipt](docs/FR-SOOM-002G-RECEIPT.md)
+
+The next synthetic step is FR-SOOM-002H: regime drift, confidence decay, and
+hysteresis so stale failure-domain evidence does not cause permanent
+over-escalation.
 
 
 ## Cross-repository transfer
