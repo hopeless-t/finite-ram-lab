@@ -1,0 +1,71 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002a/v0.1",
+  "status": "SOURCE_GROUNDED_CONTROLLER_TAXONOMY",
+  "verified_date": "2026-10-02",
+  "systems": [
+    {
+      "name": "earlyoom",
+      "class": "emergency_process_killer",
+      "signals": ["MemAvailable", "free_swap"],
+      "semantic_channel": "static_prefer_avoid_ignore_plus_oom_score"
+    },
+    {
+      "name": "nohang",
+      "class": "configurable_low_memory_handler",
+      "signals": ["memory", "swap", "PSI"],
+      "semantic_channel": "regex_configurable_badness_and_custom_actions"
+    },
+    {
+      "name": "Meta oomd",
+      "class": "plugin_policy_engine",
+      "signals": ["PSI", "cgroup_v2"],
+      "semantic_channel": "workload_protection_rules_and_plugins"
+    },
+    {
+      "name": "systemd-oomd",
+      "class": "cgroup_oom_controller",
+      "signals": ["PSI", "cgroup_v2", "memory_and_swap_state"],
+      "semantic_channel": "cgroup_hierarchy_and_managed_oom_preferences"
+    },
+    {
+      "name": "systemd pressure protocol",
+      "class": "cooperative_pressure_notification",
+      "signals": ["per_service_PSI"],
+      "semantic_channel": "application_local_reclaim_knowledge"
+    },
+    {
+      "name": "low-memory-monitor",
+      "class": "desktop_low_memory_notification",
+      "signals": ["Linux_memory_pressure"],
+      "semantic_channel": "application_decides_reclaim"
+    },
+    {
+      "name": "Android lmkd",
+      "class": "importance_aware_mobile_oom_controller",
+      "signals": ["PSI", "swap", "thrashing", "resource_use"],
+      "semantic_channel": "oom_adj_process_importance"
+    },
+    {
+      "name": "Senpai",
+      "class": "adaptive_working_set_sizer",
+      "signals": ["PSI", "cgroup_v2_memory_high"],
+      "semantic_channel": "workload_progress_under_pressure"
+    },
+    {
+      "name": "Intel Memory Usage Analyzer",
+      "class": "memory_pressure_experiment_harness",
+      "signals": ["cgroup_stats", "page_fault_rate", "PSI"],
+      "semantic_channel": "pluggable_reclaimer_and_benchmark_context"
+    }
+  ],
+  "derived_architecture": [
+    "pressure_observer",
+    "semantic_registry",
+    "cooperative_action_planner",
+    "emergency_victim_planner",
+    "hard_fallback"
+  ],
+  "new_hypothesis": "Cross-process importance is insufficient; useful semantic OOM control also needs intra-application reclaimability.",
+  "next": "deadline_constrained_action_ladder",
+  "claim_ceiling": "SOURCE_GROUNDED_CONTROLLER_TAXONOMY_ONLY"
+}

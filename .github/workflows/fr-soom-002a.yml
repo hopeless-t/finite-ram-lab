@@ -1,0 +1,29 @@
+name: FR-SOOM-002A Controller Taxonomy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-soom-002a-controller-taxonomy
+    paths:
+      - "docs/FR-SOOM-002A-CONTROLLER-TAXONOMY.md"
+      - "specs/FR-SOOM-002A.json"
+      - "tests/test_semantic_oom_controller_taxonomy.py"
+      - ".github/workflows/fr-soom-002a.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Run taxonomy tests
+        run: python -m unittest tests.test_semantic_oom_controller_taxonomy -v
+      - name: Freeze spec digest
+        run: sha256sum specs/FR-SOOM-002A.json
