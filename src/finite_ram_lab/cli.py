@@ -7,6 +7,7 @@ import platform
 from pathlib import Path
 
 from .calculators import CATALOG, run_spec, template
+from .app_surface import NoEligibleConfiguration, select_from_policy_path, write_receipt
 from .recorder import ingest_many
 from .evidence_residency import (
     parse_storage_ref,
@@ -115,6 +116,25 @@ def _version(name: str) -> str | None:
         return None
 
 
+def cmd_governor_select(args: argparse.Namespace) -> None:
+    try:
+        receipt = select_from_policy_path(
+            args.policy,
+            peak_budget_bytes=args.peak_budget_bytes,
+            minimum_rank_coverage=args.minimum_rank_coverage,
+        )
+    except NoEligibleConfiguration as exc:
+        _dump({
+            "status": "NO_ELIGIBLE_CONFIGURATION",
+            "error": str(exc),
+            "peak_budget_bytes": args.peak_budget_bytes,
+            "minimum_rank_coverage": args.minimum_rank_coverage,
+        })
+        raise SystemExit(2)
+    write_receipt(receipt, args.out)
+    _dump(receipt)
+
+
 def cmd_doctor(args: argparse.Namespace) -> None:
     data = {
         "python": platform.python_version(),
@@ -217,6 +237,16 @@ def main() -> None:
         help="Allow unmanifested files while still verifying all manifested files",
     )
     p.set_defaults(func=cmd_evidence_verify)
+
+    p = sub.add_parser(
+        "governor-select",
+        help="Select a repaired q from a frozen Governor policy and write an evidence receipt",
+    )
+    p.add_argument("--policy", required=True)
+    p.add_argument("--peak-budget-bytes", type=int, required=True)
+    p.add_argument("--minimum-rank-coverage", type=float, default=0.95)
+    p.add_argument("--out", required=True)
+    p.set_defaults(func=cmd_governor_select)
 
     p = sub.add_parser(
         "doctor",
