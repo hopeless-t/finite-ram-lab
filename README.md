@@ -564,9 +564,35 @@ See:
 - [FR-SOOM-002C protocol](docs/FR-SOOM-002C-RARE-TAIL-POLICY.md)
 - [FR-SOOM-002C receipt](docs/FR-SOOM-002C-RECEIPT.md)
 
-The next safe synthetic step is FR-SOOM-002D: add a shared BAD pressure state so
-multiple cooperative actions become slow together and test whether matched
-marginal tail rates still produce different controller risk shapes.
+FR-SOOM-002D then holds every action's finite-sample tail rate exactly fixed
+while changing only cross-action dependence.
+
+With 16,384 replicates and exactly 164 tail events per action:
+
+| metric | INDEPENDENT | SHARED_BAD |
+|---|---:|---:|
+| affected episodes | 484 | 164 |
+| multi-action tail episodes | 8 | 164 |
+| conditional p95 relief deficit | 1500 MiB | 3000 MiB |
+
+The shared arm affects fewer episodes because the same tail events overlap, but
+when it hits the full relief target can disappear at the deadline.
+
+Therefore:
+
+`matched marginal action tails != matched controller risk shape`.
+
+The controller architecture now needs an explicit failure-domain / correlation
+concept rather than assuming parallel actions fail independently.
+
+See:
+
+- [FR-SOOM-002D protocol](docs/FR-SOOM-002D-CORRELATED-TAIL-SHAPE.md)
+- [FR-SOOM-002D receipt](docs/FR-SOOM-002D-RECEIPT.md)
+
+The next safe synthetic step is FR-SOOM-002E: infer a latent shared-pressure
+state from observable pressure/action-response traces without receiving the
+generating arm as ground truth.
 
 
 ## Cross-repository transfer
