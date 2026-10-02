@@ -1,0 +1,53 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002b/v0.1",
+  "status": "FROZEN_SYNTHETIC_DEADLINE_ACTION_LADDER_SPEC",
+  "source_experiment": "FR-SOOM-002A",
+  "question": "How does a response-time bound change the least-semantic-loss way to obtain the same emergency memory relief?",
+  "relief_target_mib": 3000,
+  "deadlines_ms": [25, 100, 200, 600],
+  "planner_objective_order": [
+    "minimize current-task damage",
+    "minimize semantic loss",
+    "minimize hard kills",
+    "minimize excess relief",
+    "minimize action count",
+    "deterministic action-name tie break"
+  ],
+  "parallel_action_model": "Selected actions may proceed concurrently; response latency is the maximum selected action latency.",
+  "frozen_expected_plans": {
+    "25": {
+      "actions": ["MODEL_KILL", "BATCH_KILL", "INDEXER_KILL"],
+      "semantic_loss": 73,
+      "hard_kill_count": 3
+    },
+    "100": {
+      "actions": ["CHROME_TRIM_CACHE", "BATCH_KILL", "INDEXER_GRACEFUL_EXIT"],
+      "semantic_loss": 14,
+      "hard_kill_count": 1
+    },
+    "200": {
+      "actions": ["CHROME_TRIM_AND_IDLE_RENDERERS", "MODEL_SHRINK", "INDEXER_GRACEFUL_EXIT"],
+      "semantic_loss": 9,
+      "hard_kill_count": 0
+    },
+    "600": {
+      "actions": ["CHROME_TRIM_CACHE", "TERMINAL_TRIM", "MODEL_SHRINK", "BATCH_CHECKPOINT_EXIT"],
+      "semantic_loss": 3,
+      "hard_kill_count": 0
+    }
+  },
+  "kill_first_baseline": {
+    "actions": ["CHROME_KILL"],
+    "semantic_loss": 280,
+    "current_task_survives": false,
+    "response_latency_ms": 20
+  },
+  "claim_ceiling": "SYNTHETIC_DEADLINE_ACTION_LADDER_ONLY",
+  "nonclaims": [
+    "Action relief and latency values are synthetic controls",
+    "No live process receives a signal",
+    "No claim is made that 600ms is safe under real host pressure",
+    "No real browser reclaim API is invoked",
+    "No earlyoom or systemd-oomd replacement is deployed"
+  ]
+}
