@@ -14,7 +14,7 @@ A small, reproducible systems research lab for understanding how finite physical
 
 ## Status
 
-**Systems research / experimental software — Chapter II active + adaptive Governor application lane qualified through B500**
+**Systems research / experimental software — Chapter II active + adaptive Governor application lane qualified through B501**
 
 Current principle:
 
@@ -151,6 +151,8 @@ B495  downstream consumer workflow drives real numerical execution
   ↓
 B496-B500  local/LDC bootstrap, calibration, Pareto extension,
            host-bound promotion, and one-shot adaptive qualifier
+  ↓
+B501  bounded MVCA/LDC admission contract for first real local run
 ```
 
 ### Repaired hosted Governor v2.1
@@ -259,6 +261,32 @@ Web ChatGPT -> MVCA -> LDC -> development machine
 GitHub-hosted B497-B500 runs are harness qualification only and are not claimed as development-machine calibration.
 
 Current local execution is waiting on an appropriate LDC operator binding / action for this calibration lane; unrelated authority is not reused.
+
+### B501 bounded local admission
+
+B501 freezes the one local action that may be admitted once the LDC binding is available:
+
+`finite_ram.local_qualify_v1`
+
+The admission contract fixes:
+
+- network access = false;
+- external effects = false;
+- authority effect = NONE;
+- exact checkout commit recording;
+- clean working tree;
+- run-specific output directory;
+- maximum 76 physical observations at the 95% target;
+- `UNKNOWN -> DO_NOT_RETRY`.
+
+The last point is scientific as well as operational: a blind duplicate execution could add an untracked measurement population and invalidate the local calibration ledger.
+
+B501 qualifies the request contract only. The first actual development-machine execution is deferred until a matching MVCA/LDC binding/admission exists.
+
+See:
+
+- [B501 admission contract](docs/B501-LOCAL-EXECUTION-ADMISSION-v0.1.md)
+- [B501 qualification receipt](docs/B501-LOCAL-EXECUTION-ADMISSION-RECEIPT.md)
 
 See:
 
