@@ -102,13 +102,13 @@ is allowed quickly.
 
 | metric | STATIC | RAW_SLIDING | HYSTERESIS |
 |---|---:|---:|---:|
-| current-task losses | 104 | 43 | 63 |
+| current-task losses | 101 | 41 | 61 |
 | unnecessary background-sacrifice windows | 0 | 2 | 1 |
 | plan switches | 0 | 4 | 2 |
 | sustained-SHARED detection delay | never | 1 window | 2 windows |
 | recovery release delay | 0 | 1 window | 1 window |
 | post-burst stale escalation | no | yes | no |
-| mean semantic loss | 11.18490 | 36.73991 | 26.46777 |
+| mean semantic loss | 11.15072 | 36.71712 | 26.44499 |
 | p99.9 semantic loss | 290 | 290 | 290 |
 
 ## Primary finding
@@ -137,7 +137,7 @@ as another controller tradeoff.
 STATIC has the lowest mean semantic loss in this synthetic sequence because
 background sacrifice is expensive and active-task losses are rare.
 
-But it also loses the current task 104 times.
+But it also loses the current task 101 times.
 
 Again:
 
@@ -197,3 +197,30 @@ The next lane should model:
 
 That moves the design from batch adaptation toward an actual daemon state
 machine.
+
+
+## Qualification correction
+
+The scratch pilot used abstract action identifiers `A/B/C` as part of the
+deterministic hash domains.
+
+The committed harness uses the canonical action identifiers:
+
+- `CHROME_CACHE`;
+- `MODEL_SHRINK`;
+- `INDEXER_EXIT`.
+
+Because draw-domain identity is part of a deterministic stochastic fixture, the
+IID overlap specimens differ even though all marginal tail counts and control
+parameters are unchanged.
+
+The committed stream yields:
+
+- STATIC current-task losses: 101;
+- RAW_SLIDING: 41;
+- HYSTERESIS: 61.
+
+No evidence threshold, strategy rule, tail count, or regime sequence was changed.
+
+The evidence sequence and the primary stability/responsiveness conclusion remain
+unchanged.
