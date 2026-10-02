@@ -1,0 +1,53 @@
+name: FR-SOOM-002D Correlated Tail Shape
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-soom-002d-correlated-tail-shape
+    paths:
+      - "src/finite_ram_lab/semantic_oom_correlated_tail.py"
+      - "specs/FR-SOOM-002D.json"
+      - "tests/test_semantic_oom_correlated_tail.py"
+      - "docs/FR-SOOM-002D-CORRELATED-TAIL-SHAPE.md"
+      - ".github/workflows/fr-soom-002d.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_oom_correlated_tail -v
+      - name: Run correlated-tail panel
+        run: |
+          mkdir -p runs/FR-SOOM-002D
+          python -m finite_ram_lab.semantic_oom_correlated_tail \
+            > runs/FR-SOOM-002D/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-SOOM-002D/result.json"))
+          assert r["status"] == "PASS"
+          a=r["arms"]
+          assert a["INDEPENDENT"]["affected_replicates"] == 484
+          assert a["SHARED_BAD"]["affected_replicates"] == 164
+          assert a["INDEPENDENT"]["conditional_p95_relief_deficit_mib"] == 1500
+          assert a["SHARED_BAD"]["conditional_p95_relief_deficit_mib"] == 3000
+          assert r["primary_finding"] == "MATCHED_MARGINAL_TAILS_DO_NOT_IMPLY_MATCHED_CONTROLLER_RISK"
+          PY
+          sha256sum specs/FR-SOOM-002D.json
+          sha256sum runs/FR-SOOM-002D/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-soom-002d-correlated-tail-shape
+          path: runs/FR-SOOM-002D/result.json
+          if-no-files-found: error
