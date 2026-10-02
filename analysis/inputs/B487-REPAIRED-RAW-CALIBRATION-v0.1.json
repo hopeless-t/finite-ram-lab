@@ -1,0 +1,147 @@
+{
+  "schema": "finite-ram-lab.b487-repaired-raw-calibration/v0.1",
+  "source_workflow_run_id": 36941540201,
+  "source_aggregate_sha256": "6fe3498850d88de869b2dce5c6b8bd1b444b380dfecf4e88637766aef3b7f5af",
+  "implementation": "TILED_WHERE",
+  "seed": 469,
+  "size": 2048,
+  "runner_block_count": 8,
+  "rows": [
+    {
+      "block_id": 0,
+      "runner_name": "GitHub Actions 1000009154",
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "q2": {
+        "normalized_peak_growth_bytes": 50667520,
+        "work_seconds": 0.50388698200004
+      },
+      "q4": {
+        "normalized_peak_growth_bytes": 58925056,
+        "work_seconds": 0.5187343179999857
+      },
+      "q7": {
+        "normalized_peak_growth_bytes": 71507968,
+        "work_seconds": 0.4954723220000119
+      }
+    },
+    {
+      "block_id": 1,
+      "runner_name": "GitHub Actions 1000009156",
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "q2": {
+        "normalized_peak_growth_bytes": 50696192,
+        "work_seconds": 0.3280638840000023
+      },
+      "q4": {
+        "normalized_peak_growth_bytes": 58925056,
+        "work_seconds": 0.315802724000001
+      },
+      "q7": {
+        "normalized_peak_growth_bytes": 71507968,
+        "work_seconds": 0.31563482299999635
+      }
+    },
+    {
+      "block_id": 2,
+      "runner_name": "GitHub Actions 1000009155",
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "q2": {
+        "normalized_peak_growth_bytes": 50667520,
+        "work_seconds": 0.3940280700000187
+      },
+      "q4": {
+        "normalized_peak_growth_bytes": 58925056,
+        "work_seconds": 0.38843196899998134
+      },
+      "q7": {
+        "normalized_peak_growth_bytes": 71507968,
+        "work_seconds": 0.38459832000000915
+      }
+    },
+    {
+      "block_id": 3,
+      "runner_name": "GitHub Actions 1000009152",
+      "cpu_model": "Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz",
+      "q2": {
+        "normalized_peak_growth_bytes": 50667520,
+        "work_seconds": 0.5443165119999094
+      },
+      "q4": {
+        "normalized_peak_growth_bytes": 58941440,
+        "work_seconds": 0.5796760819999918
+      },
+      "q7": {
+        "normalized_peak_growth_bytes": 71507968,
+        "work_seconds": 0.5321143180000263
+      }
+    },
+    {
+      "block_id": 4,
+      "runner_name": "GitHub Actions 1000009159",
+      "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+      "q2": {
+        "normalized_peak_growth_bytes": 50667520,
+        "work_seconds": 0.3295322729999981
+      },
+      "q4": {
+        "normalized_peak_growth_bytes": 58925056,
+        "work_seconds": 0.3209174079999997
+      },
+      "q7": {
+        "normalized_peak_growth_bytes": 71507968,
+        "work_seconds": 0.31903222900000117
+      }
+    },
+    {
+      "block_id": 5,
+      "runner_name": "GitHub Actions 1000009158",
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "q2": {
+        "normalized_peak_growth_bytes": 50667520,
+        "work_seconds": 0.399351700000004
+      },
+      "q4": {
+        "normalized_peak_growth_bytes": 58925056,
+        "work_seconds": 0.3898674040000003
+      },
+      "q7": {
+        "normalized_peak_growth_bytes": 71507968,
+        "work_seconds": 0.3883308289999974
+      }
+    },
+    {
+      "block_id": 6,
+      "runner_name": "GitHub Actions 1000009153",
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "q2": {
+        "normalized_peak_growth_bytes": 50667520,
+        "work_seconds": 0.40804306300000803
+      },
+      "q4": {
+        "normalized_peak_growth_bytes": 58925056,
+        "work_seconds": 0.39164751999999226
+      },
+      "q7": {
+        "normalized_peak_growth_bytes": 71507968,
+        "work_seconds": 0.38811571799999456
+      }
+    },
+    {
+      "block_id": 7,
+      "runner_name": "GitHub Actions 1000009157",
+      "cpu_model": "AMD EPYC 7763 64-Core Processor",
+      "q2": {
+        "normalized_peak_growth_bytes": 50667520,
+        "work_seconds": 0.396188427999995
+      },
+      "q4": {
+        "normalized_peak_growth_bytes": 58925056,
+        "work_seconds": 0.39051769099999945
+      },
+      "q7": {
+        "normalized_peak_growth_bytes": 71507968,
+        "work_seconds": 0.38795977699999895
+      }
+    }
+  ]
+}
