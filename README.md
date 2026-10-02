@@ -590,9 +590,42 @@ See:
 - [FR-SOOM-002D protocol](docs/FR-SOOM-002D-CORRELATED-TAIL-SHAPE.md)
 - [FR-SOOM-002D receipt](docs/FR-SOOM-002D-RECEIPT.md)
 
-The next safe synthetic step is FR-SOOM-002E: infer a latent shared-pressure
-state from observable pressure/action-response traces without receiving the
-generating arm as ground truth.
+FR-SOOM-002E adds an early latent failure-domain detector.
+
+The synthetic detector sees only features available by 50 ms:
+
+- PSI level and slope;
+- reclaim progress;
+- refault;
+- cooperative progress;
+- swap velocity.
+
+Thresholds are fitted on 4096 training episodes and evaluated on 4096 held-out
+episodes.
+
+Both PSI_ONLY and MULTI_SIGNAL detect exactly 287 / 305 held-out BAD episodes,
+but their false-positive surfaces differ sharply:
+
+| detector | held-out FP | false-positive rate | precision |
+|---|---:|---:|---:|
+| PSI_ONLY | 2447 | 0.645476 | 0.104974 |
+| MULTI_SIGNAL | 152 | 0.040095 | 0.653759 |
+
+Thus, at matched held-out detection count, the multi-signal detector avoids
+2295 unnecessary escalations.
+
+This supports the synthetic distinction:
+
+`pressure severity signal != shared failure-domain signal`.
+
+See:
+
+- [FR-SOOM-002E protocol](docs/FR-SOOM-002E-LATENT-PRESSURE-DETECTOR.md)
+- [FR-SOOM-002E receipt](docs/FR-SOOM-002E-RECEIPT.md)
+
+The next safe synthetic step is FR-SOOM-002F: remove direct latent BAD labels
+from training and infer shared-domain evidence from observable co-failure and
+pressure traces.
 
 
 ## Cross-repository transfer
