@@ -303,7 +303,10 @@ def qualify_local_governor(
     }
     total_observations = sum(final_counts.values())
     max_possible = (
-        minimum_samples_for_rank_max_coverage(target_rank_coverage)
+        max(
+            minimum_samples_for_rank_max_coverage(target_rank_coverage),
+            exploration_samples_per_q,
+        )
         * len(CANDIDATE_Q)
     )
     if total_observations > max_possible:
