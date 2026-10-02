@@ -1,0 +1,78 @@
+name: B498 Local Policy Promoter
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/local-policy-promoter-b498
+    paths:
+      - "src/finite_ram_lab/local_policy_adapter.py"
+      - "src/finite_ram_lab/app_surface.py"
+      - "src/finite_ram_lab/cli.py"
+      - "tests/test_local_policy_adapter.py"
+      - "docs/B498-LOCAL-POLICY-PROMOTER-v0.1.md"
+      - ".github/workflows/b498-local-policy-promoter.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install dependency-light package
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_local_policy_adapter -v
+      - name: Exercise promoter and bound selector on current CI host
+        run: |
+          mkdir -p runs/B498
+          python - <<'PY'
+          import json
+          from finite_ram_lab.local_adapter_bootstrap import local_host_fingerprint, fingerprint_sha256
+          fp=local_host_fingerprint()
+          sha=fingerprint_sha256(fp)
+          n=19
+          cov=n/(n+1)
+          state={
+            "schema":"finite-ram-lab.local-calibration-state/v0.1",
+            "implementation":"TILED_WHERE",
+            "host_binding":{"environment_fingerprint":fp,"environment_fingerprint_sha256":sha},
+            "sample_unit":"fresh_local_process_on_bound_host",
+            "pareto_q":[1,2,4],
+            "rows":[
+              {"q":1,"sample_count":n,"empirical_max_peak_bytes":100000000,"median_work_seconds":0.90,"rank_max_one_step_predictive_coverage_floor":cov},
+              {"q":2,"sample_count":n,"empirical_max_peak_bytes":90000000,"median_work_seconds":1.00,"rank_max_one_step_predictive_coverage_floor":cov},
+              {"q":4,"sample_count":n,"empirical_max_peak_bytes":120000000,"median_work_seconds":0.80,"rank_max_one_step_predictive_coverage_floor":cov},
+              {"q":7,"sample_count":8,"empirical_max_peak_bytes":140000000,"median_work_seconds":0.70,"rank_max_one_step_predictive_coverage_floor":8/9},
+            ],
+          }
+          json.dump(state,open("runs/B498/synthetic-local-state.json","w"),indent=2,sort_keys=True)
+          PY
+          frl local-policy-promote \
+            --calibration runs/B498/synthetic-local-state.json \
+            --target-rank-coverage 0.95 \
+            --out runs/B498/local-policy.json
+          frl local-governor-select \
+            --policy runs/B498/local-policy.json \
+            --peak-budget-bytes 100000000 \
+            --minimum-rank-coverage 0.95 \
+            --out runs/B498/local-decision.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/B498/local-decision.json"))
+          assert r["decision"]["selected_q"] == 1
+          assert r["environment_binding"]["validated"] is True
+          PY
+          sha256sum runs/B498/local-policy.json
+          sha256sum runs/B498/local-decision.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b498-local-policy-promoter
+          path: runs/B498
+          if-no-files-found: error

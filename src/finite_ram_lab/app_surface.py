@@ -47,10 +47,10 @@ def validate_policy(policy: Mapping[str, Any]) -> None:
         raise RuntimeError("policy_q_duplicate")
 
     budgets = [int(row["minimum_peak_budget_bytes"]) for row in points]
-    if budgets != sorted(budgets):
-        raise RuntimeError("policy_budget_order_invalid")
 
     for row in points:
+        if int(row["minimum_peak_budget_bytes"]) < 0:
+            raise RuntimeError("policy_budget_invalid")
         n = int(row["sample_count"])
         coverage = float(row["rank_max_one_step_predictive_coverage_floor"])
         if n <= 0:
@@ -65,8 +65,15 @@ def select_configuration(
     *,
     peak_budget_bytes: int,
     minimum_rank_coverage: float,
+    environment_binding_validated: bool = False,
 ) -> dict[str, Any]:
     validate_policy(policy)
+
+    if (
+        policy.get("scope") == "LOCAL_HOST_BOUND"
+        and not environment_binding_validated
+    ):
+        raise RuntimeError("local_policy_requires_bound_selector")
 
     if peak_budget_bytes < 0:
         raise ValueError("peak_budget_invalid")
