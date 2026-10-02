@@ -1,0 +1,16 @@
+{
+  "schema": "finite-ram-lab.b499-result/v0.1",
+  "status": "PASS",
+  "classification": "LOCAL_PARETO_EXTENSION_PATH_QUALIFIED",
+  "claim_ceiling": "HOST_SCOPED_LOCAL_PARETO_EXTENSION",
+  "workflow_run_id": 36966654754,
+  "workflow_job_id": 110711765322,
+  "execution_head_sha": "96fcccd23012cdb306e69b25be038fe3a58bb260",
+  "artifact_id": 11210471072,
+  "artifact_zip_sha256": "e1cee8a8a901f95cf2e89f9620a03b57b7149a3ed5d5929de7a92a95d9e50ba0",
+  "merged_state_sha256": "0c8486c261446eb60baae5f04687d8da32d3e08d7e56e65775a65030884d5d27",
+  "qualification_scope": "HOSTED_HARNESS_SMOKE_ONLY",
+  "policy_promotion_allowed": false,
+  "development_machine_calibration_claimed": false,
+  "next": "B500_LOCAL_ONE_SHOT_QUALIFIER"
+}
