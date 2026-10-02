@@ -1,0 +1,63 @@
+name: B499 Local Pareto Extension
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/local-pareto-extension-b499
+    paths:
+      - "src/finite_ram_lab/local_calibration_extend.py"
+      - "src/finite_ram_lab/cli.py"
+      - "tests/test_local_calibration_extend.py"
+      - "docs/B499-LOCAL-PARETO-EXTENSION-v0.1.md"
+      - ".github/workflows/b499-local-pareto-extension.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install analysis runtime
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_local_calibration_extend -v
+      - name: Build small same-host exploration
+        run: |
+          mkdir -p runs/B499
+          frl local-calibrate \
+            --samples-per-q 2 \
+            --size 64 \
+            --target-rank-coverage 0.95 \
+            --out runs/B499/exploration.json
+      - name: Extend only observed Pareto q
+        run: |
+          frl local-calibration-extend \
+            --exploration runs/B499/exploration.json \
+            --additional-samples-per-q 1 \
+            --size 64 \
+            --target-rank-coverage 0.95 \
+            --out runs/B499/local-calibration-state.json
+          python - <<'PY'
+          import json
+          e=json.load(open("runs/B499/exploration.json"))
+          s=json.load(open("runs/B499/local-calibration-state.json"))
+          assert s["schema"] == "finite-ram-lab.local-calibration-state/v0.1"
+          assert s["extension_q"] == e["local_pareto_q"]
+          assert s["physical_observations_added"] == len(e["local_pareto_q"])
+          assert s["policy_promotion_allowed"] is False
+          assert s["hosted_threshold_imported"] is False
+          PY
+          sha256sum runs/B499/exploration.json
+          sha256sum runs/B499/local-calibration-state.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b499-local-pareto-extension
+          path: runs/B499
+          if-no-files-found: error
