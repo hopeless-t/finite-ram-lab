@@ -40,6 +40,8 @@ omission probability for each selected required-latest event.
 The random-looking draw is generated from SHA256 over the frozen experiment
 identity, so every omission is reproducible across runs.
 
+No ambient RNG state or external entropy source participates in the fixture.
+
 When a required event is omitted:
 
 1. that exact event is blocked from immediate reselection;
