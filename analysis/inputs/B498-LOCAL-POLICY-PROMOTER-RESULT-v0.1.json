@@ -1,0 +1,16 @@
+{
+  "schema": "finite-ram-lab.b498-result/v0.1",
+  "status": "PASS",
+  "classification": "LOCAL_POLICY_PROMOTER_QUALIFIED",
+  "claim_ceiling": "HOST_BOUND_LOCAL_GOVERNOR",
+  "workflow_run_id": 36966361523,
+  "workflow_job_id": 110710878352,
+  "execution_head_sha": "16b89fae677dc0ec7e1316c14944721a1e8563d1",
+  "artifact_id": 11210111750,
+  "artifact_zip_sha256": "ff72012f591a26c2f64f146568a86095010e36d5e4798c5012f2e24341d44cef",
+  "synthetic_policy_sha256": "8340b85271f56ee15b5c84d113d42b89261f84b8a73b54927fcec1ef0375d79f",
+  "synthetic_decision_sha256": "f1425f388b4302bfd0786e877f6b3596ff14af908c71f935625a2247997c1bc5",
+  "generic_selector_local_bypass_blocked": true,
+  "fingerprint_bound_selector_qualified": true,
+  "next": "B499_LOCAL_PARETO_EXTENSION_AND_MERGE"
+}
