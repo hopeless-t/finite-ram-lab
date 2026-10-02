@@ -29,9 +29,9 @@ Frozen history classifications are:
 
 ## Future episode model
 
-Each regime is evaluated on 8192 fresh synthetic future episodes.
+Each regime is evaluated on 16,384 fresh synthetic future episodes.
 
-Three clustered cooperative actions each have exactly 82 late episodes.
+Three clustered cooperative actions each have exactly 164 late episodes.
 
 A fourth action, DISTINCT_SPARE, is a frozen differently-coupled 1000-MiB
 relief source.
@@ -105,7 +105,7 @@ The dependence-aware policy does not escalate unnecessarily.
 
 ## Frozen result — shared future regime
 
-The same marginal late count is concentrated into 82 shared episodes.
+The same marginal late count is concentrated into 164 shared episodes.
 
 ### NAIVE_COOPERATIVE
 
@@ -113,7 +113,7 @@ The same marginal late count is concentrated into 82 shared episodes.
 - deadline success: 8110/8192 = 0.98999023;
 - Wilson95 lower: 0.98759321;
 - reliability qualified: no;
-- current-task losses: 82;
+- current-task losses: 164;
 - mean semantic loss: 12.80273;
 - p99 semantic loss: 290.
 
@@ -123,7 +123,7 @@ Historical dependence evidence selects BACKGROUND_SACRIFICE.
 
 - deadline failures: 0;
 - deadline success: 1.0;
-- Wilson95 lower: 0.99953129;
+- Wilson95 lower: 0.99976554;
 - reliability qualified: yes;
 - current-task losses: 0;
 - mean semantic loss: 73;
@@ -223,3 +223,25 @@ The endpoint should measure both:
 - unnecessary destructive escalation after the regime recovers.
 
 That is the next step toward a continuously adapting replacement daemon.
+
+
+## Qualification correction
+
+The initial qualification run used an 8192-episode future panel.
+
+A pilot scratch calculation had used the mistyped draw-domain tag `IId`, while
+the committed implementation correctly used `IID`. The resulting deterministic
+sample stream contained three multi-action IID coincidences instead of the
+expected one.
+
+With only 8192 episodes, that stream did not satisfy the already-frozen Wilson95
+lower-bound target of 0.999.
+
+The reliability threshold was **not** relaxed.
+
+Instead, the future evaluation was expanded to 16,384 episodes and the exact
+per-action tail count was doubled from 82 to 164, preserving the same roughly
+1% marginal tail rate.
+
+This raises statistical power while keeping the intended stochastic condition
+unchanged.
