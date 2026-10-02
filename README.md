@@ -623,9 +623,36 @@ See:
 - [FR-SOOM-002E protocol](docs/FR-SOOM-002E-LATENT-PRESSURE-DETECTOR.md)
 - [FR-SOOM-002E receipt](docs/FR-SOOM-002E-RECEIPT.md)
 
-The next safe synthetic step is FR-SOOM-002F: remove direct latent BAD labels
-from training and infer shared-domain evidence from observable co-failure and
-pressure traces.
+FR-SOOM-002F removes latent BAD labels from the analyzer entirely.
+
+The analyzer sees only per-action late/timely outcome traces, with exact
+per-action marginal tail counts matched across synthetic arms.
+
+Frozen result:
+
+| metric | INDEPENDENT | SHARED_BAD |
+|---|---:|---:|
+| pair co-failure total | 5 | 492 |
+| multi-action late episodes | 5 | 164 |
+| permutation upper p | 0.587 | 0.001 |
+| classification | IID_COMPATIBLE | CROSS_ACTION_DEPENDENCE_EVIDENCE |
+
+The permutation null uses 999 independent circular shifts that preserve each
+action's exact marginal tail count and within-action trace shape while breaking
+cross-action alignment.
+
+Thus:
+
+`shared failure-domain evidence can be recovered from observable co-failure traces`.
+
+See:
+
+- [FR-SOOM-002F protocol](docs/FR-SOOM-002F-OBSERVABLE-DEPENDENCE.md)
+- [FR-SOOM-002F receipt](docs/FR-SOOM-002F-RECEIPT.md)
+
+The next synthetic step is FR-SOOM-002G: feed inferred dependence back into the
+planner and measure deadline-safe semantic loss rather than detector accuracy
+alone.
 
 
 ## Cross-repository transfer
