@@ -1,0 +1,50 @@
+name: B490 Repaired Governor v2
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/repaired-governor-v2-b490
+    paths:
+      - "src/finite_ram_lab/repaired_governor_v2.py"
+      - "tests/test_repaired_governor_v2.py"
+      - "docs/B490-REPAIRED-GOVERNOR-v0.1.md"
+      - ".github/workflows/b490-repaired-governor-v2.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_repaired_governor_v2 -v
+      - name: Freeze repaired Governor v2
+        run: |
+          mkdir -p runs/B490
+          python -m finite_ram_lab.repaired_governor_v2 \
+            --b489 analysis/inputs/B489-REPAIRED-CALIBRATION-RESULT-v0.1.json \
+            --minimum-rank-coverage 0.95 \
+            --out runs/B490/repaired-governor-v2.json
+          python -m json.tool runs/B490/repaired-governor-v2.json >/dev/null
+          sha256sum runs/B490/repaired-governor-v2.json
+      - name: Freeze q4 example decision
+        run: |
+          python -m finite_ram_lab.repaired_governor_v2 \
+            --b489 analysis/inputs/B489-REPAIRED-CALIBRATION-RESULT-v0.1.json \
+            --minimum-rank-coverage 0.95 \
+            --peak-budget-bytes 58941440 \
+            --out runs/B490/q4-decision.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b490-repaired-governor-v2
+          path: runs/B490
+          if-no-files-found: error
