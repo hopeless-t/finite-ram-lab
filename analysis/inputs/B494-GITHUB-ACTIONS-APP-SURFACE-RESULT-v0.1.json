@@ -1,0 +1,29 @@
+{
+  "schema": "finite-ram-lab.b494-result/v0.1",
+  "status": "PASS",
+  "classification": "GITHUB_ACTIONS_APPLICATION_SURFACE_QUALIFIED",
+  "claim_ceiling": "REPAIRED_GOVERNOR_APPLICATION_SURFACE",
+  "workflow_run_id": 36965047048,
+  "workflow_job_id": 110706855653,
+  "execution_head_sha": "a8fc644cc53b9a9a77889efcca66bdf670a878d0",
+  "artifact_id": 11209625678,
+  "artifact_zip_sha256": "f7cf90ea29cd2c1c8879511cb2d62138d6caa922ea34c711be1ea4250e670e5d",
+  "policy_file_sha256": "6c85f45d814a2c7f4c1b54d34410676ee7bc3479a760a3ddf70d4ab8013b7e9a",
+  "policy_canonical_sha256": "4b84f3c99d347b75e2a5deff527626784c71728474de72ba7e6bf7f9dbf23e8a",
+  "cli_receipt_sha256": "701a48b86929d3102eeb4c2aca47a8ac69a7a903e1ecf94ee6c01f242454c3b0",
+  "action_receipt_sha256": "31bbbefac4e17e6b1888a6d302bd1f0e9390232869cbf1efec9f310f350e2a87",
+  "application_contract": {
+    "inputs": ["peak_budget_bytes","minimum_rank_coverage"],
+    "outputs": ["selected_q","selected_empirical_max_peak_bytes","sample_count","rank_coverage_floor","policy_version","implementation","receipt_path"],
+    "receipt_schema": "finite-ram-lab.governor-decision-receipt/v0.1"
+  },
+  "qualification_example": {
+    "peak_budget_bytes": 58941440,
+    "minimum_rank_coverage": 0.95,
+    "selected_q": 4,
+    "sample_count": 27,
+    "rank_floor": 0.9642857142857143,
+    "implementation": "TILED_WHERE"
+  },
+  "next": "B495_APPLICATION_CONSUMER_DOGFOOD"
+}

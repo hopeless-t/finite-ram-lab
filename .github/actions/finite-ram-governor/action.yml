@@ -1,0 +1,74 @@
+name: Finite RAM Governor
+description: Select a repaired finite-RAM execution point from the frozen Governor v2.1 policy.
+inputs:
+  peak-budget-bytes:
+    description: Maximum accepted empirical peak budget in bytes.
+    required: true
+  minimum-rank-coverage:
+    description: Minimum sample-max rank coverage floor.
+    required: false
+    default: "0.95"
+  receipt-path:
+    description: Path in the calling workspace where the decision receipt is written.
+    required: false
+    default: "finite-ram-governor-receipt.json"
+outputs:
+  selected-q:
+    description: Selected q value.
+    value: ${{ steps.select.outputs.selected-q }}
+  selected-empirical-max-peak-bytes:
+    description: Calibrated empirical maximum associated with selected q.
+    value: ${{ steps.select.outputs.selected-empirical-max-peak-bytes }}
+  sample-count:
+    description: Independent runner sample count supporting the selected point.
+    value: ${{ steps.select.outputs.sample-count }}
+  rank-coverage-floor:
+    description: Sample-max one-step rank coverage floor.
+    value: ${{ steps.select.outputs.rank-coverage-floor }}
+  policy-version:
+    description: Governor policy version.
+    value: ${{ steps.select.outputs.policy-version }}
+  implementation:
+    description: Numerical implementation selected by the policy.
+    value: ${{ steps.select.outputs.implementation }}
+  receipt-path:
+    description: Decision receipt path.
+    value: ${{ steps.select.outputs.receipt-path }}
+runs:
+  using: composite
+  steps:
+    - id: select
+      shell: bash
+      env:
+        FRL_PEAK_BUDGET_BYTES: ${{ inputs.peak-budget-bytes }}
+        FRL_MINIMUM_RANK_COVERAGE: ${{ inputs.minimum-rank-coverage }}
+        FRL_RECEIPT_PATH: ${{ inputs.receipt-path }}
+      run: |
+        set -euo pipefail
+
+        repo_root="$(cd "$GITHUB_ACTION_PATH/../../.." && pwd)"
+        policy="$repo_root/policies/repaired-governor-v2.1.json"
+
+        PYTHONPATH="$repo_root/src" python -m finite_ram_lab.app_surface           --policy "$policy"           --peak-budget-bytes "$FRL_PEAK_BUDGET_BYTES"           --minimum-rank-coverage "$FRL_MINIMUM_RANK_COVERAGE"           --out "$FRL_RECEIPT_PATH"
+
+        python - "$FRL_RECEIPT_PATH" "$GITHUB_OUTPUT" <<'PY'
+        import json
+        import sys
+
+        receipt_path, output_path = sys.argv[1:3]
+        receipt = json.load(open(receipt_path))
+        decision = receipt["decision"]
+
+        outputs = {
+            "selected-q": decision["selected_q"],
+            "selected-empirical-max-peak-bytes": decision["selected_empirical_max_peak_bytes"],
+            "sample-count": decision["sample_count"],
+            "rank-coverage-floor": decision["rank_max_one_step_predictive_coverage_floor"],
+            "policy-version": receipt["policy_version"],
+            "implementation": receipt["implementation"],
+            "receipt-path": receipt_path,
+        }
+        with open(output_path, "a") as handle:
+            for key, value in outputs.items():
+                handle.write(f"{key}={value}\n")
+        PY

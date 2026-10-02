@@ -1,0 +1,40 @@
+{
+  "schema": "finite-ram-lab.governor-policy/v0.1",
+  "policy_id": "repaired-governor-v2.1",
+  "policy_version": "v2.1",
+  "implementation": "TILED_WHERE",
+  "claim_ceiling": "NON_DRIFT_UPDATED_REPAIRED_GOVERNOR_V2_1",
+  "evidence_state": {
+    "source_result": "B493",
+    "source_result_schema": "finite-ram-lab.b493-result/v0.1",
+    "governor_sha256": "27a1f6c68d64cce30d808748e7befa0b97f99610ab56bcaaf199166fa0cbc859",
+    "sample_unit": "independent_github_hosted_runner",
+    "exchangeability_required": true
+  },
+  "pareto_q": [2, 4, 7],
+  "dominated_q_excluded": [1],
+  "points": [
+    {
+      "q": 2,
+      "minimum_peak_budget_bytes": 50696192,
+      "sample_count": 27,
+      "rank_max_one_step_predictive_coverage_floor": 0.9642857142857143,
+      "median_latency_seconds": 0.3956389410000014
+    },
+    {
+      "q": 4,
+      "minimum_peak_budget_bytes": 58941440,
+      "sample_count": 27,
+      "rank_max_one_step_predictive_coverage_floor": 0.9642857142857143,
+      "median_latency_seconds": 0.38782265300000063
+    },
+    {
+      "q": 7,
+      "minimum_peak_budget_bytes": 71512064,
+      "sample_count": 27,
+      "rank_max_one_step_predictive_coverage_floor": 0.9642857142857143,
+      "median_latency_seconds": 0.38639202799999595
+    }
+  ],
+  "assumption": "Future execution is exchangeable with the accepted repaired-runtime calibration population; this is not a hard worst-case memory guarantee."
+}
