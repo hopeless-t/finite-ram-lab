@@ -1,0 +1,44 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002e/v0.1",
+  "status": "FROZEN_SYNTHETIC_LATENT_PRESSURE_DETECTOR_SPEC",
+  "source_experiment": "FR-SOOM-002D",
+  "seed": "FR-SOOM-002E-v0.1",
+  "total_episodes": 8192,
+  "train_episodes": 4096,
+  "test_episodes": 4096,
+  "latent_bad_probability": 0.08,
+  "observed_by_ms": 50,
+  "train_recall_target": 0.95,
+  "features": [
+    "psi_full_avg10",
+    "psi_slope",
+    "reclaim_progress_mib_50ms",
+    "refault_ratio",
+    "cooperative_progress_mib_50ms",
+    "swap_velocity_mib_s"
+  ],
+  "detectors": {
+    "PSI_ONLY": "Threshold on psi_full_avg10 fitted on training episodes to meet >=95% BAD-state recall with the highest feasible threshold.",
+    "MULTI_SIGNAL": "Equal-weight normalized pressure-risk score across all frozen early-observable features; threshold fitted using the same recall rule."
+  },
+  "frozen_reference": {
+    "train_bad_count": 308,
+    "test_bad_count": 305,
+    "heldout_true_positive_each": 287,
+    "heldout_false_negative_each": 18,
+    "psi_only_false_positive": 2447,
+    "multi_signal_false_positive": 152,
+    "psi_only_false_escalation_semantic_delta": 12235,
+    "multi_signal_false_escalation_semantic_delta": 760
+  },
+  "synthetic_false_escalation_semantic_delta_per_episode": 5,
+  "primary_finding": "MULTI_SIGNAL_REDUCES_FALSE_ESCALATION_AT_MATCHED_HELDOUT_RECALL",
+  "claim_ceiling": "SYNTHETIC_LATENT_PRESSURE_DETECTOR_ONLY",
+  "nonclaims": [
+    "Feature distributions are synthetic and are not measurements of Linux PSI, swap, reclaim, or refault behavior",
+    "The detector is not a production classifier",
+    "The latent BAD label is synthetic ground truth available only for harness validation",
+    "No live process receives a signal",
+    "The synthetic semantic-cost delta is not a user utility estimate"
+  ]
+}

@@ -1,0 +1,53 @@
+name: FR-SOOM-002E Latent Pressure Detector
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-soom-002e-latent-pressure-detector
+    paths:
+      - "src/finite_ram_lab/semantic_oom_latent_detector.py"
+      - "specs/FR-SOOM-002E.json"
+      - "tests/test_semantic_oom_latent_detector.py"
+      - "docs/FR-SOOM-002E-LATENT-PRESSURE-DETECTOR.md"
+      - ".github/workflows/fr-soom-002e.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_oom_latent_detector -v
+      - name: Run latent-pressure detector panel
+        run: |
+          mkdir -p runs/FR-SOOM-002E
+          python -m finite_ram_lab.semantic_oom_latent_detector \
+            > runs/FR-SOOM-002E/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-SOOM-002E/result.json"))
+          assert r["status"] == "PASS"
+          d=r["detectors"]
+          assert d["PSI_ONLY"]["test"]["true_positive"] == 287
+          assert d["MULTI_SIGNAL"]["test"]["true_positive"] == 287
+          assert d["PSI_ONLY"]["test"]["false_positive"] == 2447
+          assert d["MULTI_SIGNAL"]["test"]["false_positive"] == 152
+          assert r["primary_finding"] == "MULTI_SIGNAL_REDUCES_FALSE_ESCALATION_AT_MATCHED_HELDOUT_RECALL"
+          PY
+          sha256sum specs/FR-SOOM-002E.json
+          sha256sum runs/FR-SOOM-002E/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-soom-002e-latent-pressure-detector
+          path: runs/FR-SOOM-002E/result.json
+          if-no-files-found: error
