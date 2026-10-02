@@ -13,8 +13,8 @@ from finite_ram_lab.semantic_oom_observable_dependence import (
 
 SCHEMA = "finite-ram-lab.semantic-oom-inference-planner/v0.1"
 SEED = "FR-SOOM-002G-v0.1"
-FUTURE_EPISODES = 8192
-FUTURE_TAIL_COUNT_PER_CLUSTER_ACTION = 82
+FUTURE_EPISODES = 16384
+FUTURE_TAIL_COUNT_PER_CLUSTER_ACTION = 164
 RELIEF_TARGET_MIB = 3000
 RELIABILITY_TARGET = 0.999
 
