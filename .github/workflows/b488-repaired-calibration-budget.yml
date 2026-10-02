@@ -1,0 +1,43 @@
+name: B488 Repaired Calibration Budget
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/repaired-calibration-budget-b488
+    paths:
+      - "src/finite_ram_lab/repaired_calibration_budget.py"
+      - "tests/test_repaired_calibration_budget.py"
+      - "docs/B488-REPAIRED-CALIBRATION-BUDGET-v0.1.md"
+      - ".github/workflows/b488-repaired-calibration-budget.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  budget:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_repaired_calibration_budget -v
+      - name: Freeze repaired 95 percent budget
+        run: |
+          mkdir -p runs/B488
+          python -m finite_ram_lab.repaired_calibration_budget \
+            --source analysis/inputs/B487-REPAIRED-Q-FRONTIER-RESULT-v0.1.json \
+            --target-coverage 0.95 \
+            --out runs/B488/repaired-calibration-budget.json
+          python -m json.tool runs/B488/repaired-calibration-budget.json >/dev/null
+          sha256sum runs/B488/repaired-calibration-budget.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b488-repaired-calibration-budget
+          path: runs/B488/repaired-calibration-budget.json
+          if-no-files-found: error
