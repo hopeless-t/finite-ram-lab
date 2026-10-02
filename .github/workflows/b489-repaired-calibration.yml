@@ -1,0 +1,77 @@
+name: B489 Repaired 95 Percent Calibration
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/repaired-calibration-b489
+    paths:
+      - "src/finite_ram_lab/repaired_calibration_probe.py"
+      - "src/finite_ram_lab/repaired_calibration_aggregate.py"
+      - "tests/test_repaired_calibration.py"
+      - "analysis/inputs/B487-REPAIRED-RAW-CALIBRATION-v0.1.json"
+      - "docs/B489-REPAIRED-CALIBRATION-v0.1.md"
+      - ".github/workflows/b489-repaired-calibration.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  block:
+    strategy:
+      fail-fast: false
+      matrix:
+        block: [0,1,2,3,4,5,6,7,8,9,10]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Run repaired calibration block
+        run: |
+          mkdir -p runs/B489
+          python -m finite_ram_lab.repaired_calibration_probe \
+            --block-id ${{ matrix.block }} \
+            --size 2048 \
+            --out runs/B489/block-${{ matrix.block }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b489-calibration-block-${{ matrix.block }}
+          path: runs/B489/block-${{ matrix.block }}.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: block
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_repaired_calibration -v
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b489-calibration-block-*
+          path: runs/B489/blocks
+          merge-multiple: true
+      - name: Aggregate repaired calibration
+        run: |
+          python -m finite_ram_lab.repaired_calibration_aggregate \
+            --old-raw analysis/inputs/B487-REPAIRED-RAW-CALIBRATION-v0.1.json \
+            --blocks-dir runs/B489/blocks \
+            --out runs/B489/repaired-calibration.json
+          python -m json.tool runs/B489/repaired-calibration.json >/dev/null
+          sha256sum runs/B489/repaired-calibration.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b489-repaired-calibration
+          path: runs/B489/repaired-calibration.json
+          if-no-files-found: error
