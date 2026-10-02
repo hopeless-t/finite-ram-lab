@@ -341,7 +341,36 @@ See:
 
 This remains synthetic harness work. The injected omission probability is not an empirical CLM/model error rate.
 
-Next semantic step: sweep selector reliability against resident budget before real model-managed context experiments.
+FR-CLM-001C turns the next step into an explicit two-dimensional synthetic surface:
+
+```text
+selector reliability
+        x
+resident semantic budget
+        ->
+qualified semantic survival
+```
+
+The frozen selector uses symmetric relevance-label errors with p in:
+
+`0, 0.001, 0.0025, 0.005, 0.01, 0.02, 0.03, 0.05, 0.10, 0.20`
+
+across resident budgets:
+
+`1, 2, 4, 6, 8`.
+
+Each cell receives 8,192 observations. The primary statistic is the minimum resident budget whose exact rate and Wilson95 lower bound both remain at least 0.95.
+
+Frozen target frontier:
+
+- p <= 0.01 -> budget 2;
+- p = 0.02 or 0.03 -> budget 4;
+- p = 0.05 -> budget 6;
+- p >= 0.10 -> budget 8.
+
+See [FR-CLM-001C protocol](docs/FR-CLM-001C-RELIABILITY-RESIDENCY-SURFACE.md).
+
+If qualified, the next semantic step is trajectory-length compounding: per-step selector error -> end-to-end trajectory survival.
 
 ## Cross-repository transfer
 
