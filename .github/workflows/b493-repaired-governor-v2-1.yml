@@ -1,0 +1,52 @@
+name: B493 Repaired Governor v2.1
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/repaired-governor-v2-1-b493
+    paths:
+      - "src/finite_ram_lab/repaired_governor_v2_1.py"
+      - "tests/test_repaired_governor_v2_1.py"
+      - "docs/B493-REPAIRED-GOVERNOR-V2-1-v0.1.md"
+      - ".github/workflows/b493-repaired-governor-v2-1.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_repaired_governor_v2_1 -v
+      - name: Freeze Governor v2.1
+        run: |
+          mkdir -p runs/B493
+          python -m finite_ram_lab.repaired_governor_v2_1 \
+            --b490 analysis/inputs/B490-REPAIRED-GOVERNOR-V2-RESULT-v0.1.json \
+            --b492 analysis/inputs/B492-ONLINE-CALIBRATION-UPDATE-RESULT-v0.1.json \
+            --minimum-rank-coverage 0.95 \
+            --out runs/B493/repaired-governor-v2-1.json
+          python -m json.tool runs/B493/repaired-governor-v2-1.json >/dev/null
+          sha256sum runs/B493/repaired-governor-v2-1.json
+      - name: Check old q7 boundary falls back to q4
+        run: |
+          python -m finite_ram_lab.repaired_governor_v2_1 \
+            --b490 analysis/inputs/B490-REPAIRED-GOVERNOR-V2-RESULT-v0.1.json \
+            --b492 analysis/inputs/B492-ONLINE-CALIBRATION-UPDATE-RESULT-v0.1.json \
+            --minimum-rank-coverage 0.95 \
+            --peak-budget-bytes 71507968 \
+            --out runs/B493/old-q7-boundary-decision.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b493-repaired-governor-v2-1
+          path: runs/B493
+          if-no-files-found: error
