@@ -7,6 +7,7 @@ import platform
 from pathlib import Path
 
 from .app_surface import NoEligibleConfiguration, select_from_policy_path, write_receipt
+from .local_adapter_bootstrap import build_local_bootstrap_plan
 from .recorder import ingest_many
 from .evidence_residency import (
     parse_storage_ref,
@@ -142,6 +143,17 @@ def cmd_governor_select(args: argparse.Namespace) -> None:
     _dump(receipt)
 
 
+def cmd_local_bootstrap(args: argparse.Namespace) -> None:
+    payload = build_local_bootstrap_plan(
+        target_coverage=args.target_rank_coverage,
+        exploration_samples_per_q=args.exploration_samples_per_q,
+    )
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    _dump(payload)
+
+
 def cmd_doctor(args: argparse.Namespace) -> None:
     data = {
         "python": platform.python_version(),
@@ -251,6 +263,15 @@ def main() -> None:
     p.add_argument("--minimum-rank-coverage", type=float, default=0.95)
     p.add_argument("--out", required=True)
     p.set_defaults(func=cmd_governor_select)
+
+    p = sub.add_parser(
+        "local-bootstrap",
+        help="Create a host-bound calibration plan for a local Governor adapter",
+    )
+    p.add_argument("--target-rank-coverage", type=float, default=0.95)
+    p.add_argument("--exploration-samples-per-q", type=int, default=8)
+    p.add_argument("--out", required=True)
+    p.set_defaults(func=cmd_local_bootstrap)
 
     p = sub.add_parser(
         "doctor",
