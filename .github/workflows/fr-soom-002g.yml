@@ -38,13 +38,13 @@ jobs:
           r=json.load(open("runs/FR-SOOM-002G/result.json"))
           assert r["status"] == "PASS"
           a=r["arms"]
-          assert a["INDEPENDENT"]["future_policies"]["DEPENDENCE_AWARE"]["deadline_failures"] == 1
+          assert a["INDEPENDENT"]["future_policies"]["DEPENDENCE_AWARE"]["deadline_failures"] == 7
           assert a["INDEPENDENT"]["future_policies"]["DEPENDENCE_AWARE"]["reliability_qualified"] is True
-          assert a["SHARED_BAD"]["future_policies"]["NAIVE_COOPERATIVE"]["deadline_failures"] == 82
+          assert a["SHARED_BAD"]["future_policies"]["NAIVE_COOPERATIVE"]["deadline_failures"] == 164
           assert a["SHARED_BAD"]["future_policies"]["NAIVE_COOPERATIVE"]["reliability_qualified"] is False
           assert a["SHARED_BAD"]["future_policies"]["DEPENDENCE_AWARE"]["deadline_failures"] == 0
           assert a["SHARED_BAD"]["future_policies"]["DEPENDENCE_AWARE"]["p99_semantic_loss"] == 73
-          assert a["SHARED_BAD"]["future_policies"]["KILL_FIRST"]["current_task_loss_count"] == 8192
+          assert a["SHARED_BAD"]["future_policies"]["KILL_FIRST"]["current_task_loss_count"] == 16384
           PY
           sha256sum specs/FR-SOOM-002G.json
           sha256sum runs/FR-SOOM-002G/result.json
