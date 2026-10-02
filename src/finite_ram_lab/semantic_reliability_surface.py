@@ -87,7 +87,7 @@ def noisy_relevance_indices(
         flip = (
             _uniform01(
                 seed,
-                "RELEVANCE_FLIP",
+                "SCORE_FLIP",
                 error_probability,
                 budget,
                 replicate,
