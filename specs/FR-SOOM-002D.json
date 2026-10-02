@@ -1,0 +1,52 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002d/v0.1",
+  "status": "FROZEN_SYNTHETIC_CORRELATED_TAIL_RISK_SHAPE_SPEC",
+  "source_experiment": "FR-SOOM-002C",
+  "seed": "FR-SOOM-002D-v0.1",
+  "replicates": 16384,
+  "tail_count_per_action": 164,
+  "per_action_tail_rate": 0.010009765625,
+  "deadline_ms": 200,
+  "relief_target_mib": 3000,
+  "actions": [
+    {
+      "name": "CHROME_SHRINK",
+      "relief_mib": 1500,
+      "base_latency_ms": 120,
+      "tail_latency_ms": 350
+    },
+    {
+      "name": "MODEL_SHRINK",
+      "relief_mib": 600,
+      "base_latency_ms": 140,
+      "tail_latency_ms": 300
+    },
+    {
+      "name": "INDEXER_EXIT",
+      "relief_mib": 900,
+      "base_latency_ms": 100,
+      "tail_latency_ms": 260
+    }
+  ],
+  "arms": {
+    "INDEPENDENT": "Each action receives exactly 164 tail replicates selected from an action-specific deterministic hash ranking.",
+    "SHARED_BAD": "One shared set of exactly 164 replicates puts all three actions into their tail state simultaneously."
+  },
+  "matched_marginal_contract": "Each action has exactly the same finite-sample tail count and tail rate in both arms.",
+  "frozen_reference": {
+    "independent_affected_replicates": 484,
+    "shared_affected_replicates": 164,
+    "independent_multi_action_tail_replicates": 8,
+    "shared_multi_action_tail_replicates": 164,
+    "independent_conditional_p95_relief_deficit_mib": 1500,
+    "shared_conditional_p95_relief_deficit_mib": 3000
+  },
+  "primary_finding": "MATCHED_MARGINAL_TAILS_DO_NOT_IMPLY_MATCHED_CONTROLLER_RISK",
+  "claim_ceiling": "SYNTHETIC_CORRELATED_TAIL_RISK_SHAPE_ONLY",
+  "nonclaims": [
+    "The synthetic shared BAD state is not a measured Linux pressure mechanism",
+    "The per-action tail rate is a controlled fixture, not a host estimate",
+    "No live process receives a signal",
+    "The result does not establish that correlated tails are globally better or worse"
+  ]
+}
