@@ -1,0 +1,55 @@
+name: B501 Local Execution Admission
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/local-execution-admission-b501
+    paths:
+      - "specs/B501-LOCAL-EXECUTION-ADMISSION-v0.1.json"
+      - "src/finite_ram_lab/local_execution_admission.py"
+      - "tests/test_local_execution_admission.py"
+      - "docs/B501-LOCAL-EXECUTION-ADMISSION-v0.1.md"
+      - ".github/workflows/b501-local-execution-admission.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install dependency-light package
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_local_execution_admission -v
+      - name: Build bounded admission request
+        run: |
+          mkdir -p runs/B501
+          python -m finite_ram_lab.local_execution_admission \
+            --spec specs/B501-LOCAL-EXECUTION-ADMISSION-v0.1.json \
+            --run-id b501-ci-contract \
+            --repo-commit "$GITHUB_SHA" \
+            --out runs/B501/admission-request.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/B501/admission-request.json"))
+          assert r["status"] == "READY_FOR_ADMISSION"
+          assert r["network_allowed"] is False
+          assert r["external_effects_allowed"] is False
+          assert r["maximum_total_physical_observations"] == 76
+          assert r["retry_on_unknown_delivery"] == "DO_NOT_RETRY"
+          assert r["out_dir"] == "runs/local-governor/b501-ci-contract"
+          PY
+          sha256sum specs/B501-LOCAL-EXECUTION-ADMISSION-v0.1.json
+          sha256sum runs/B501/admission-request.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b501-local-execution-admission
+          path: runs/B501/admission-request.json
+          if-no-files-found: error
