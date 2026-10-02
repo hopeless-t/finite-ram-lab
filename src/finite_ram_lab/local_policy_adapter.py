@@ -202,6 +202,7 @@ def select_local_configuration(
         policy,
         peak_budget_bytes=peak_budget_bytes,
         minimum_rank_coverage=minimum_rank_coverage,
+        environment_binding_validated=True,
     )
     receipt["environment_binding"] = {
         "validated": True,
