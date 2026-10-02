@@ -1,0 +1,54 @@
+name: FR-SOOM-002C Rare Tail Policy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-soom-002c-rare-tail-policy
+    paths:
+      - "src/finite_ram_lab/semantic_oom_rare_tail.py"
+      - "specs/FR-SOOM-002C.json"
+      - "tests/test_semantic_oom_rare_tail.py"
+      - "docs/FR-SOOM-002C-RARE-TAIL-POLICY.md"
+      - ".github/workflows/fr-soom-002c.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_oom_rare_tail -v
+      - name: Run rare-tail panel
+        run: |
+          mkdir -p runs/FR-SOOM-002C
+          python -m finite_ram_lab.semantic_oom_rare_tail \
+            > runs/FR-SOOM-002C/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-SOOM-002C/result.json"))
+          assert r["status"] == "PASS"
+          rows=r["plans"]
+          assert rows["MEAN_COOPERATIVE"]["deadline_successes"] == 7525
+          assert rows["MEAN_COOPERATIVE"]["reliability_qualified"] is False
+          assert rows["TAIL_AWARE_MIXED"]["deadline_successes"] == 8168
+          assert rows["TAIL_AWARE_MIXED"]["reliability_qualified"] is True
+          assert rows["KILL_FIRST"]["deadline_successes"] == 8192
+          assert r["primary_finding"] == "MEAN_FAST_DOES_NOT_IMPLY_TAIL_SAFE"
+          PY
+          sha256sum specs/FR-SOOM-002C.json
+          sha256sum runs/FR-SOOM-002C/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-soom-002c-rare-tail-policy
+          path: runs/FR-SOOM-002C/result.json
+          if-no-files-found: error

@@ -1,0 +1,79 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002c/v0.1",
+  "status": "FROZEN_SYNTHETIC_RARE_TAIL_POLICY_SPEC",
+  "source_experiment": "FR-SOOM-002B",
+  "seed": "FR-SOOM-002C-v0.1",
+  "replicates_per_plan": 8192,
+  "deadline_ms": 200,
+  "relief_target_mib": 3000,
+  "reliability_qualification": {
+    "point_rate_min": 0.99,
+    "wilson95_lower_min": 0.99
+  },
+  "plans": {
+    "MEAN_COOPERATIVE": {
+      "actions": [
+        "CHROME_TRIM_AND_IDLE_RENDERERS",
+        "MODEL_SHRINK",
+        "INDEXER_GRACEFUL_EXIT"
+      ],
+      "semantic_loss": 9,
+      "hard_kills": 0,
+      "current_task_survives": true,
+      "expected_reference_successes": 7525,
+      "expected_qualification": false
+    },
+    "TAIL_AWARE_MIXED": {
+      "actions": [
+        "CHROME_TRIM_CACHE",
+        "BATCH_KILL",
+        "INDEXER_GRACEFUL_EXIT"
+      ],
+      "semantic_loss": 14,
+      "hard_kills": 1,
+      "current_task_survives": true,
+      "expected_reference_successes": 8168,
+      "expected_qualification": true
+    },
+    "KILL_FIRST": {
+      "actions": [
+        "CHROME_KILL"
+      ],
+      "semantic_loss": 280,
+      "hard_kills": 1,
+      "current_task_survives": false,
+      "expected_reference_successes": 8192,
+      "expected_qualification": true
+    }
+  },
+  "primary_finding": "MEAN_FAST_DOES_NOT_IMPLY_TAIL_SAFE",
+  "required_biopsy": [
+    "first_deadline_miss",
+    "first_relief_miss",
+    "tail_event_replicate_count",
+    "under_relief_replicate_count"
+  ],
+  "claim_ceiling": "SYNTHETIC_RARE_TAIL_POLICY_ONLY",
+  "nonclaims": [
+    "Injected tail probabilities are not measurements of real applications",
+    "The 200ms deadline is not claimed safe for a real host",
+    "No live process receives a signal",
+    "No real Chrome or systemd pressure handler is invoked",
+    "The kill-first arm is a synthetic control, not an empirical earlyoom benchmark"
+  ],
+  "draw_domains": {
+    "CHROME_TRIM_AND_IDLE_RENDERERS": "CHROME_RICH",
+    "MODEL_SHRINK": "MODEL_SHRINK",
+    "INDEXER_GRACEFUL_EXIT": "INDEXER_GRACEFUL",
+    "CHROME_TRIM_CACHE": "CHROME_CACHE",
+    "BATCH_KILL": "BATCH_KILL",
+    "CHROME_KILL": "CHROME_KILL"
+  },
+  "reproducibility_contract": [
+    "seed",
+    "hash_domain_tags",
+    "action_draw_domains",
+    "replicate_index",
+    "distribution_parameters"
+  ]
+}

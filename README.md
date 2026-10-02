@@ -537,9 +537,36 @@ See:
 - [FR-SOOM-002B protocol](docs/FR-SOOM-002B-ACTION-LADDER.md)
 - [FR-SOOM-002B receipt](docs/FR-SOOM-002B-RECEIPT.md)
 
-The next safe synthetic step is to replace fixed action latency and relief with
-distributions and Rare-event tails before any bounded live intervention is
-considered.
+FR-SOOM-002C replaces fixed action outcomes with deterministic stochastic
+latency/relief distributions and Rare-event tails.
+
+For the frozen 200-ms / 3000-MiB episode:
+
+| plan | deadline success | Wilson95 lower | mean latency | p95 | p99 | semantic loss |
+|---|---:|---:|---:|---:|---:|---:|
+| MEAN_COOPERATIVE | 0.918579 | 0.912459 | 190.26 ms | 310 ms | 495 ms | 9 |
+| TAIL_AWARE_MIXED | 0.997070 | 0.995644 | 100.69 ms | 118 ms | 120 ms | 14 |
+| KILL_FIRST | 1.000000 | 0.999531 | 19.97 ms | 25 ms | 25 ms | 280 |
+
+The mean-cooperative arm therefore demonstrates:
+
+`mean-fast != tail-safe`.
+
+Its average latency is below the deadline, but its p95/p99 tail violates the
+frozen reliability requirement.
+
+The two failed pre-qualification attempts are retained as reproducibility
+evidence: seed alone was insufficient until hash-domain tags and action draw
+IDs were frozen as part of the random-stream identity.
+
+See:
+
+- [FR-SOOM-002C protocol](docs/FR-SOOM-002C-RARE-TAIL-POLICY.md)
+- [FR-SOOM-002C receipt](docs/FR-SOOM-002C-RECEIPT.md)
+
+The next safe synthetic step is FR-SOOM-002D: add a shared BAD pressure state so
+multiple cooperative actions become slow together and test whether matched
+marginal tail rates still produce different controller risk shapes.
 
 
 ## Cross-repository transfer
