@@ -5,6 +5,7 @@ Status: RESEARCH INTAKE / NO LOCAL HARDWARE BENCHMARK
 Primary sources:
 - Magnitude: https://github.com/magnitudedev/magnitude
 - Magnitude engine rewrite discussion: https://github.com/magnitudedev/magnitude/discussions/100
+- Magnitude launch benchmark / author post: https://news.ycombinator.com/item?id=49911995
 - Linux steal governor v14:
   https://lkml.iu.edu/2609.3/08049.html
 
@@ -31,7 +32,7 @@ The portable atom is not "less resources is always faster". It is:
 Magnitude currently advertises:
 - per-device kernel tuning,
 - dynamic memory that is freed when agents stop,
-- 27% less memory per agent in its published benchmark,
+- 27% less per-agent memory on CUDA and 28% less on Metal in the authors' launch benchmark,
 - shared prefix caches for concurrent sessions,
 - future expert streaming in the engine rewrite design.
 
