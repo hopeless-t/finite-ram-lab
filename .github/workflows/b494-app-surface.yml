@@ -1,0 +1,83 @@
+name: B494 Governor Application Surface
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/github-actions-app-surface-b494
+    paths:
+      - "policies/repaired-governor-v2.1.json"
+      - "src/finite_ram_lab/app_surface.py"
+      - "src/finite_ram_lab/cli.py"
+      - "tests/test_app_surface.py"
+      - ".github/actions/finite-ram-governor/action.yml"
+      - "docs/B494-GITHUB-ACTIONS-APP-SURFACE-v0.1.md"
+      - ".github/workflows/b494-app-surface.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Unit tests
+        run: python -m unittest tests.test_app_surface -v
+      - name: CLI contract
+        run: |
+          mkdir -p runs/B494
+          frl governor-select \
+            --policy policies/repaired-governor-v2.1.json \
+            --peak-budget-bytes 60000000 \
+            --minimum-rank-coverage 0.95 \
+            --out runs/B494/cli-receipt.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/B494/cli-receipt.json"))
+          assert r["decision"]["selected_q"] == 4
+          assert r["decision"]["sample_count"] == 27
+          PY
+      - name: Composite Action contract
+        id: governor
+        uses: ./.github/actions/finite-ram-governor
+        with:
+          peak-budget-bytes: "58941440"
+          minimum-rank-coverage: "0.95"
+          receipt-path: "runs/B494/action-receipt.json"
+      - name: Verify Action outputs
+        env:
+          SELECTED_Q: ${{ steps.governor.outputs.selected-q }}
+          SELECTED_BOUNDARY: ${{ steps.governor.outputs.selected-empirical-max-peak-bytes }}
+          SAMPLE_COUNT: ${{ steps.governor.outputs.sample-count }}
+          COVERAGE: ${{ steps.governor.outputs.rank-coverage-floor }}
+          POLICY_VERSION: ${{ steps.governor.outputs.policy-version }}
+          IMPLEMENTATION: ${{ steps.governor.outputs.implementation }}
+        run: |
+          test "$SELECTED_Q" = "4"
+          test "$SELECTED_BOUNDARY" = "58941440"
+          test "$SAMPLE_COUNT" = "27"
+          test "$POLICY_VERSION" = "v2.1"
+          test "$IMPLEMENTATION" = "TILED_WHERE"
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/B494/action-receipt.json"))
+          assert r["decision"]["selected_q"] == 4
+          assert abs(r["decision"]["rank_max_one_step_predictive_coverage_floor"] - 27/28) < 1e-12
+          PY
+      - name: Freeze hashes
+        run: |
+          sha256sum policies/repaired-governor-v2.1.json
+          sha256sum runs/B494/cli-receipt.json
+          sha256sum runs/B494/action-receipt.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b494-governor-app-surface
+          path: runs/B494
+          if-no-files-found: error
