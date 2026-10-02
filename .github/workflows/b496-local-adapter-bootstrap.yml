@@ -1,0 +1,52 @@
+name: B496 Local Adapter Bootstrap Contract
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/local-adapter-bootstrap-b496
+    paths:
+      - "src/finite_ram_lab/local_adapter_bootstrap.py"
+      - "src/finite_ram_lab/cli.py"
+      - "tests/test_local_adapter_bootstrap.py"
+      - "docs/B496-LOCAL-ADAPTER-BOOTSTRAP-v0.1.md"
+      - ".github/workflows/b496-local-adapter-bootstrap.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install dependency-light package
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_local_adapter_bootstrap -v
+      - name: Exercise bootstrap CLI
+        run: |
+          mkdir -p runs/B496
+          frl local-bootstrap \
+            --target-rank-coverage 0.95 \
+            --exploration-samples-per-q 8 \
+            --out runs/B496/local-bootstrap-plan.json
+          python - <<'PY'
+          import json
+          p=json.load(open("runs/B496/local-bootstrap-plan.json"))
+          assert p["status"] == "CALIBRATION_REQUIRED"
+          assert p["candidate_q"] == [1,2,4,7]
+          assert p["hosted_threshold_import_allowed"] is False
+          assert p["initial_exploration"]["physical_observations"] == 32
+          assert p["promotion_target"]["required_sample_count_per_promoted_q"] == 19
+          PY
+          sha256sum runs/B496/local-bootstrap-plan.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b496-local-adapter-bootstrap
+          path: runs/B496/local-bootstrap-plan.json
+          if-no-files-found: error
