@@ -14,7 +14,7 @@ A small, reproducible systems research lab for understanding how finite physical
 
 ## Status
 
-**Systems research / experimental software — Chapter II active + adaptive Governor application lane qualified through B500**
+**Systems research / experimental software — Chapter II active + adaptive Governor application lane qualified through B501**
 
 Current principle:
 
@@ -151,6 +151,8 @@ B495  downstream consumer workflow drives real numerical execution
   ↓
 B496-B500  local/LDC bootstrap, calibration, Pareto extension,
            host-bound promotion, and one-shot adaptive qualifier
+  ↓
+B501  bounded MVCA/LDC admission contract for first real local run
 ```
 
 ### Repaired hosted Governor v2.1
@@ -260,6 +262,32 @@ GitHub-hosted B497-B500 runs are harness qualification only and are not claimed 
 
 Current local execution is waiting on an appropriate LDC operator binding / action for this calibration lane; unrelated authority is not reused.
 
+### B501 bounded local admission
+
+B501 freezes the one local action that may be admitted once the LDC binding is available:
+
+`finite_ram.local_qualify_v1`
+
+The admission contract fixes:
+
+- network access = false;
+- external effects = false;
+- authority effect = NONE;
+- exact checkout commit recording;
+- clean working tree;
+- run-specific output directory;
+- maximum 76 physical observations at the 95% target;
+- `UNKNOWN -> DO_NOT_RETRY`.
+
+The last point is scientific as well as operational: a blind duplicate execution could add an untracked measurement population and invalidate the local calibration ledger.
+
+B501 qualifies the request contract only. The first actual development-machine execution is deferred until a matching MVCA/LDC binding/admission exists.
+
+See:
+
+- [B501 admission contract](docs/B501-LOCAL-EXECUTION-ADMISSION-v0.1.md)
+- [B501 qualification receipt](docs/B501-LOCAL-EXECUTION-ADMISSION-RECEIPT.md)
+
 See:
 
 - [B494 application surface receipt](docs/B494-GITHUB-ACTIONS-APP-SURFACE-RECEIPT.md)
@@ -269,6 +297,23 @@ See:
 - [B498 local policy promoter receipt](docs/B498-LOCAL-POLICY-PROMOTER-RECEIPT.md)
 - [B499 Pareto extension receipt](docs/B499-LOCAL-PARETO-EXTENSION-RECEIPT.md)
 - [B500 one-shot qualifier receipt](docs/B500-LOCAL-ONE-SHOT-QUALIFIER-RECEIPT.md)
+
+## Cross-repository transfer
+
+Finite RAM results are now actively dispatched into adjacent Catfood Lab research when the invariant is directly reusable.
+
+Current transfer matrix:
+[docs/CROSS-REPO-TRANSFER-2026-10-02.md](docs/CROSS-REPO-TRANSFER-2026-10-02.md)
+
+Transfer rule:
+
+```text
+transfer invariants aggressively
+transfer thresholds conservatively
+re-prove target behavior locally
+```
+
+A target-repository PR is independent evidence work, not automatic adoption.
 
 ## Why this project exists
 
