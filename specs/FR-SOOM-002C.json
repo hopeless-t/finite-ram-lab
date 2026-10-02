@@ -36,7 +36,9 @@
       "expected_qualification": true
     },
     "KILL_FIRST": {
-      "actions": ["CHROME_KILL"],
+      "actions": [
+        "CHROME_KILL"
+      ],
       "semantic_loss": 280,
       "hard_kills": 1,
       "current_task_survives": false,
@@ -58,5 +60,20 @@
     "No live process receives a signal",
     "No real Chrome or systemd pressure handler is invoked",
     "The kill-first arm is a synthetic control, not an empirical earlyoom benchmark"
+  ],
+  "draw_domains": {
+    "CHROME_TRIM_AND_IDLE_RENDERERS": "CHROME_RICH",
+    "MODEL_SHRINK": "MODEL_SHRINK",
+    "INDEXER_GRACEFUL_EXIT": "INDEXER_GRACEFUL",
+    "CHROME_TRIM_CACHE": "CHROME_CACHE",
+    "BATCH_KILL": "BATCH_KILL",
+    "CHROME_KILL": "CHROME_KILL"
+  },
+  "reproducibility_contract": [
+    "seed",
+    "hash_domain_tags",
+    "action_draw_domains",
+    "replicate_index",
+    "distribution_parameters"
   ]
 }
