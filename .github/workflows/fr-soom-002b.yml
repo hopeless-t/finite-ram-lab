@@ -1,0 +1,53 @@
+name: FR-SOOM-002B Deadline Action Ladder
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-soom-002b-action-ladder
+    paths:
+      - "src/finite_ram_lab/semantic_oom_action_ladder.py"
+      - "specs/FR-SOOM-002B.json"
+      - "tests/test_semantic_oom_action_ladder.py"
+      - "docs/FR-SOOM-002B-ACTION-LADDER.md"
+      - ".github/workflows/fr-soom-002b.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_oom_action_ladder -v
+      - name: Run deadline action panel
+        run: |
+          mkdir -p runs/FR-SOOM-002B
+          python -m finite_ram_lab.semantic_oom_action_ladder \
+            > runs/FR-SOOM-002B/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-SOOM-002B/result.json"))
+          assert r["status"] == "PASS"
+          rows={row["deadline_ms"]:row for row in r["semantic_plans"]}
+          assert rows[25]["semantic_loss"] == 73
+          assert rows[100]["hard_kill_count"] == 1
+          assert rows[200]["hard_kill_count"] == 0
+          assert rows[600]["semantic_loss"] == 3
+          assert r["live_control_claim"] is False
+          PY
+          sha256sum specs/FR-SOOM-002B.json
+          sha256sum runs/FR-SOOM-002B/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-soom-002b-deadline-action-ladder
+          path: runs/FR-SOOM-002B/result.json
+          if-no-files-found: error
