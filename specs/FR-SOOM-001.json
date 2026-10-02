@@ -1,0 +1,43 @@
+{
+  "schema": "finite-ram-lab.fr-soom-001/v0.1",
+  "status": "FROZEN_SYNTHETIC_SEMANTIC_OOM_SPEC",
+  "question": "Can a memory-only victim ranking preserve system relief while unnecessarily destroying the user's current task, and can explicit semantic cost avoid that loss?",
+  "motivation": "System survival is not equivalent to user-task survival.",
+  "public_baseline_fact": {
+    "earlyoom_default_victim_dimension": "highest /proc/*/oom_score",
+    "model_scope": "static synthetic approximation only; not an implementation or benchmark of earlyoom"
+  },
+  "pressure_deficits_mib": [1024, 2048, 3072, 4096, 5120],
+  "policies": [
+    "EARLYOOM_LIKE_OOM_SCORE",
+    "RSS_FIRST",
+    "SEMANTIC_MIN_LOSS"
+  ],
+  "semantic_loss": "task_value + reconstruction_cost + 100 * unsaved_state",
+  "semantic_policy_objective_order": [
+    "minimize killed current-task processes",
+    "minimize semantic loss",
+    "minimize excess memory relief",
+    "deterministic process-name tie break"
+  ],
+  "acceptance": {
+    "all_policies_meet_relief_target": true,
+    "oom_score_1024_victim": ["chrome-active"],
+    "semantic_loss_improvement_positive_at_every_deficit": true,
+    "semantic_current_task_survival_deficits_mib": [1024, 2048, 3072],
+    "semantic_current_task_fails_by_4096_mib": true
+  },
+  "claim_ceiling": "SYNTHETIC_VICTIM_SELECTION_COUNTEREXAMPLE_ONLY",
+  "nonclaims": [
+    "This does not measure the user's live earlyoom configuration",
+    "This does not claim earlyoom always kills Chrome",
+    "The semantic values are frozen synthetic utilities, not inferred user preferences",
+    "No replacement daemon is deployed",
+    "No process is signaled or killed"
+  ],
+  "next": [
+    "FR-SOOM-002 read-only shadow mode against a live /proc snapshot",
+    "Compare earlyoom-like, nohang-like badness, and semantic ranking without signals",
+    "Only after shadow evidence consider a bounded replacement controller"
+  ]
+}
