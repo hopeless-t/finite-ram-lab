@@ -138,14 +138,22 @@ Transferred:
 
 Grand Prix arms should be compared as curves/frontiers over budget, not one arbitrary point.
 
-## Candidate next transfers
-
 ### harness-component-economics
 
-Likely mapping:
-- resident context/tool bytes as explicit harness cost;
-- marginal utility of an additional resident component;
-- cost should be conditioned on task completion to avoid rewarding early failure.
+Target PR: **#7**
+
+Transferred the distinction:
+
+`component presence != component residency != activation != verified contribution`.
+
+Added:
+- residency states orthogonal to PRESENT/ABSENT;
+- BENCH-001 deferred-vs-eager interpretation as a residency schedule;
+- verified-success-conditioned resource accounting;
+- OBSERVE / OPTIMIZE / PROBE separation;
+- failure-state biopsy for deferred activation.
+
+## Candidate next transfers
 
 ### catfood-jev-cua-lab
 
