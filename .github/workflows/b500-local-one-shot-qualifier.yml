@@ -1,0 +1,77 @@
+name: B500 One Shot Local Qualifier
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/local-one-shot-qualifier-b500
+    paths:
+      - "src/finite_ram_lab/local_one_shot_qualifier.py"
+      - "src/finite_ram_lab/cli.py"
+      - "tests/test_local_one_shot_qualifier.py"
+      - "docs/B500-LOCAL-ONE-SHOT-QUALIFIER-v0.1.md"
+      - ".github/workflows/b500-local-one-shot-qualifier.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install analysis runtime
+        run: python -m pip install -e ".[analysis]"
+      - name: Targeted tests
+        run: python -m unittest tests.test_local_one_shot_qualifier -v
+      - name: Small hosted one-shot smoke
+        run: |
+          mkdir -p runs/B500
+          frl local-qualify \
+            --exploration-samples-per-q 2 \
+            --size 64 \
+            --target-rank-coverage 0.75 \
+            --max-extension-cycles 4 \
+            --out-dir runs/B500/local-bundle
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("runs/B500/local-bundle")
+          receipt=json.load(open(root/"local-qualification-receipt.json"))
+          policy=json.load(open(root/"local-governor-policy.json"))
+          manifest=json.load(open(root/"bundle-manifest.json"))
+          assert receipt["status"] == "QUALIFIED"
+          assert receipt["target_rank_coverage"] == 0.75
+          assert receipt["total_physical_observations"] <= 12
+          assert policy["scope"] == "LOCAL_HOST_BOUND"
+          assert manifest["policy_id"] == policy["policy_id"]
+          PY
+      - name: Bound selector smoke
+        run: |
+          budget=$(python - <<'PY'
+          import json
+          p=json.load(open("runs/B500/local-bundle/local-governor-policy.json"))
+          print(max(row["minimum_peak_budget_bytes"] for row in p["points"]))
+          PY
+          )
+          frl local-governor-select \
+            --policy runs/B500/local-bundle/local-governor-policy.json \
+            --peak-budget-bytes "$budget" \
+            --minimum-rank-coverage 0.75 \
+            --out runs/B500/local-bundle/local-decision.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/B500/local-bundle/local-decision.json"))
+          assert r["environment_binding"]["validated"] is True
+          PY
+          sha256sum runs/B500/local-bundle/bundle-manifest.json
+          sha256sum runs/B500/local-bundle/local-decision.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b500-local-one-shot-qualifier
+          path: runs/B500/local-bundle
+          if-no-files-found: error
