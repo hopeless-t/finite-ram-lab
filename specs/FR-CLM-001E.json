@@ -1,0 +1,52 @@
+{
+  "schema": "finite-ram-lab.fr-clm-001e/v0.1",
+  "status": "FROZEN_MATCHED_MARGINAL_TEMPORAL_ERROR_SPEC",
+  "question": "Can error processes with the same marginal relevance-label flip rate produce different trajectory risk because their dependence structure differs?",
+  "source_experiment": "FR-CLM-001D",
+  "marginal_label_flip_rate": 0.01,
+  "budget": 4,
+  "trajectory_length": 64,
+  "replicates": 8192,
+  "refresh_interval": 8,
+  "distractors_per_step": 2,
+  "arms": {
+    "IID_EVENT": "independent 1% label flip for each candidate event decision",
+    "STEP_SHARED": "independent 1% bad-step draw; all candidate labels on a bad step flip together",
+    "MARKOV_BURST": {
+      "stationary_bad_probability": 0.01,
+      "bad_to_bad_probability": 0.75,
+      "good_to_bad_probability": 0.0025252525252525255,
+      "effect": "all candidate labels flip together while the process is in the bad state"
+    }
+  },
+  "primary_endpoints": [
+    "observed_label_flip_rate",
+    "trajectory_survival_rate",
+    "affected_trajectory_rate",
+    "conditional_p95_max_failure_run"
+  ],
+  "secondary_endpoints": [
+    "endpoint_success_rate",
+    "mean_step_exact_rate",
+    "conditional_mean_max_failure_run",
+    "conditional_mean_failed_steps",
+    "first_failure_histogram"
+  ],
+  "acceptance": {
+    "observed_label_flip_rate_range": [0.009, 0.011],
+    "trajectory_survival_order": "IID_EVENT < STEP_SHARED < MARKOV_BURST",
+    "iid_affected_trajectory_rate_gt": 0.60,
+    "step_shared_affected_trajectory_rate_range": [0.40, 0.60],
+    "markov_affected_trajectory_rate_lt": 0.25,
+    "markov_conditional_p95_max_failure_run_gte": 12,
+    "markov_conditional_mean_max_failure_run_gt_iid": true,
+    "endpoint_success_rate_gte": 0.98
+  },
+  "claim_ceiling": "SYNTHETIC_TEMPORAL_ERROR_SHAPE_ONLY",
+  "nonclaims": [
+    "Matched marginal label-flip rate is not matched semantic failure rate",
+    "No real CLM, model, provider, Pi, or KITten error process is measured",
+    "The Markov persistence value is a synthetic control",
+    "The risk ordering is specific to the frozen trajectory fixture"
+  ]
+}
