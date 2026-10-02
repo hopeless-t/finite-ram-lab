@@ -143,6 +143,29 @@ def cmd_governor_select(args: argparse.Namespace) -> None:
     _dump(receipt)
 
 
+def cmd_local_calibration_extend(args: argparse.Namespace) -> None:
+    from .local_calibration_extend import extend_local_calibration
+
+    exploration = json.loads(Path(args.exploration).read_text())
+    payload = extend_local_calibration(
+        exploration,
+        additional_samples_per_q=args.additional_samples_per_q,
+        size=args.size,
+        target_rank_coverage=args.target_rank_coverage,
+    )
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    _dump({
+        "status": payload["status"],
+        "initial_pareto_q": payload["initial_pareto_q"],
+        "final_pareto_q": payload["pareto_q"],
+        "physical_observations_added": payload["physical_observations_added"],
+        "policy_promotion_allowed": payload["policy_promotion_allowed"],
+        "promotion_rows": payload["promotion_rows"],
+    })
+
+
 def cmd_local_policy_promote(args: argparse.Namespace) -> None:
     from .local_policy_adapter import promote_local_policy
 
@@ -328,6 +351,17 @@ def main() -> None:
     p.add_argument("--minimum-rank-coverage", type=float, default=0.95)
     p.add_argument("--out", required=True)
     p.set_defaults(func=cmd_governor_select)
+
+    p = sub.add_parser(
+        "local-calibration-extend",
+        help="Extend locally observed Pareto q values and merge calibration evidence",
+    )
+    p.add_argument("--exploration", required=True)
+    p.add_argument("--additional-samples-per-q", type=int, default=11)
+    p.add_argument("--size", type=int, default=2048)
+    p.add_argument("--target-rank-coverage", type=float, default=0.95)
+    p.add_argument("--out", required=True)
+    p.set_defaults(func=cmd_local_calibration_extend)
 
     p = sub.add_parser(
         "local-policy-promote",
