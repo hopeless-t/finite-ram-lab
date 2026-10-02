@@ -1,0 +1,63 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002h/v0.1",
+  "status": "FROZEN_SYNTHETIC_REGIME_DRIFT_CONTROL_SPEC",
+  "source_experiment": "FR-SOOM-002G",
+  "seed": "FR-SOOM-002H-v0.1",
+  "windows": 12,
+  "episodes_per_window": 2048,
+  "tail_count_per_action_per_window": 20,
+  "permutations_per_window": 199,
+  "regime_sequence_for_harness_only": [
+    "IID",
+    "IID",
+    "BURST",
+    "IID",
+    "SHARED",
+    "SHARED",
+    "SHARED",
+    "SHARED",
+    "IID",
+    "IID",
+    "IID",
+    "IID"
+  ],
+  "evidence_rule": "DEPENDENCE_EVIDENCE when upper permutation p <= 0.01, otherwise IID_COMPATIBLE.",
+  "strategies": {
+    "STATIC_INITIAL": "Stay cooperative for the entire run.",
+    "RAW_SLIDING": "Use the immediately previous window classification for the next window.",
+    "HYSTERESIS_2_ENTER_1_EXIT": "Require two consecutive dependence-evidence windows before entering background sacrifice; leave background sacrifice after one IID-compatible window."
+  },
+  "frozen_reference": {
+    "STATIC_INITIAL": {
+      "current_task_loss_count": 101,
+      "unnecessary_background_sacrifice_windows": 0,
+      "plan_switches": 0,
+      "detection_delay_windows": null
+    },
+    "RAW_SLIDING": {
+      "current_task_loss_count": 41,
+      "unnecessary_background_sacrifice_windows": 2,
+      "plan_switches": 4,
+      "detection_delay_windows": 1,
+      "post_burst_stale_escalation": true
+    },
+    "HYSTERESIS_2_ENTER_1_EXIT": {
+      "current_task_loss_count": 61,
+      "unnecessary_background_sacrifice_windows": 1,
+      "plan_switches": 2,
+      "detection_delay_windows": 2,
+      "release_delay_windows": 1,
+      "post_burst_stale_escalation": false
+    }
+  },
+  "primary_finding": "HYSTERESIS_REDUCES_STALE_ESCALATION_AND_CHURN_AT_COST_OF_DETECTION_DELAY",
+  "claim_ceiling": "SYNTHETIC_REGIME_DRIFT_CONTROL_ONLY",
+  "nonclaims": [
+    "The regime labels are available only to the harness, not the controller",
+    "The 2048-episode window is not a recommended real-host observation interval",
+    "The hysteresis counts are synthetic controls, not production tuning",
+    "No strategy is claimed globally optimal",
+    "No live process receives a signal"
+  ],
+  "reproducibility_note": "The scratch pilot used abstract action draw IDs A/B/C while the committed harness uses the canonical action names. This changes the deterministic IID overlap stream without changing marginal tail counts, regime evidence, thresholds, or strategy rules. The committed action-name stream is the frozen fixture."
+}
