@@ -298,6 +298,33 @@ See:
 - [B499 Pareto extension receipt](docs/B499-LOCAL-PARETO-EXTENSION-RECEIPT.md)
 - [B500 one-shot qualifier receipt](docs/B500-LOCAL-ONE-SHOT-QUALIFIER-RECEIPT.md)
 
+## Semantic finite-working-set lane
+
+The physical-residency line now has a parallel semantic working-set line.
+
+FR-CLM-001A validates a deterministic synthetic harness that separates:
+
+```text
+resident context size
+!= semantic omission
+!= resident interference
+```
+
+Frozen synthetic result:
+
+- APPEND_TRUNCATE first reaches exact rate 1.0 at budget 8;
+- KEY_AWARE first reaches exact rate 1.0 at budget 2;
+- at budget 2 the exact rates are 0.25 vs 1.00.
+
+This is **not** a real CLM/model performance result. It validates the measurement apparatus and failure-biopsy contract.
+
+See:
+
+- [FR-CLM-001A protocol](docs/FR-CLM-001A-SYNTHETIC-WORKING-SET.md)
+- [FR-CLM-001A receipt](docs/FR-CLM-001A-RECEIPT.md)
+
+Next semantic step: stochastic omission / rare-event capture before real model-managed context experiments.
+
 ## Cross-repository transfer
 
 Finite RAM results are now actively dispatched into adjacent Catfood Lab research when the invariant is directly reusable.
