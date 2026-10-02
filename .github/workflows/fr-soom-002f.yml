@@ -1,0 +1,55 @@
+name: FR-SOOM-002F Observable Dependence
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-soom-002f-observable-dependence
+    paths:
+      - "src/finite_ram_lab/semantic_oom_observable_dependence.py"
+      - "specs/FR-SOOM-002F.json"
+      - "tests/test_semantic_oom_observable_dependence.py"
+      - "docs/FR-SOOM-002F-OBSERVABLE-DEPENDENCE.md"
+      - ".github/workflows/fr-soom-002f.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_oom_observable_dependence -v
+      - name: Run observable dependence panel
+        run: |
+          mkdir -p runs/FR-SOOM-002F
+          python -m finite_ram_lab.semantic_oom_observable_dependence \
+            > runs/FR-SOOM-002F/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-SOOM-002F/result.json"))
+          assert r["status"] == "PASS"
+          assert r["latent_labels_used_by_analyzer"] is False
+          a=r["arms"]
+          assert a["INDEPENDENT"]["observed_pair_cofailure_total"] == 5
+          assert a["INDEPENDENT"]["permutation_p_upper"] == 0.587
+          assert a["INDEPENDENT"]["classification"] == "IID_COMPATIBLE"
+          assert a["SHARED_BAD"]["observed_pair_cofailure_total"] == 492
+          assert a["SHARED_BAD"]["permutation_p_upper"] == 0.001
+          assert a["SHARED_BAD"]["classification"] == "CROSS_ACTION_DEPENDENCE_EVIDENCE"
+          PY
+          sha256sum specs/FR-SOOM-002F.json
+          sha256sum runs/FR-SOOM-002F/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-soom-002f-observable-dependence
+          path: runs/FR-SOOM-002F/result.json
+          if-no-files-found: error
