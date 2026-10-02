@@ -16,6 +16,7 @@ RELIABILITY_TARGET = 0.99
 
 ACTIONS = {
     "CHROME_TRIM_AND_IDLE_RENDERERS": {
+        "draw_domain": "CHROME_RICH",
         "base_latency_ms": (160, 190),
         "tail_probability": 0.04,
         "tail_latency_ms": (420, 520),
@@ -27,6 +28,7 @@ ACTIONS = {
         "current_task_damage": False,
     },
     "MODEL_SHRINK": {
+        "draw_domain": "MODEL_SHRINK",
         "base_latency_ms": (130, 170),
         "tail_probability": 0.02,
         "tail_latency_ms": (260, 340),
@@ -38,6 +40,7 @@ ACTIONS = {
         "current_task_damage": False,
     },
     "INDEXER_GRACEFUL_EXIT": {
+        "draw_domain": "INDEXER_GRACEFUL",
         "base_latency_ms": (80, 120),
         "tail_probability": 0.001,
         "tail_latency_ms": (240, 300),
@@ -49,6 +52,7 @@ ACTIONS = {
         "current_task_damage": False,
     },
     "CHROME_TRIM_CACHE": {
+        "draw_domain": "CHROME_CACHE",
         "base_latency_ms": (60, 90),
         "tail_probability": 0.0015,
         "tail_latency_ms": (220, 280),
@@ -60,6 +64,7 @@ ACTIONS = {
         "current_task_damage": False,
     },
     "BATCH_KILL": {
+        "draw_domain": "BATCH_KILL",
         "base_latency_ms": (15, 25),
         "tail_probability": 0.0,
         "tail_latency_ms": (15, 25),
@@ -71,6 +76,7 @@ ACTIONS = {
         "current_task_damage": False,
     },
     "CHROME_KILL": {
+        "draw_domain": "CHROME_KILL",
         "base_latency_ms": (15, 25),
         "tail_probability": 0.0,
         "tail_latency_ms": (15, 25),
@@ -130,7 +136,7 @@ def _draw_action(
             SEED,
             plan_name,
             replicate,
-            action_name,
+            action["draw_domain"],
             "tail",
         )
         < action["tail_probability"]
@@ -149,7 +155,7 @@ def _draw_action(
             SEED,
             plan_name,
             replicate,
-            action_name,
+            action["draw_domain"],
             "lat",
         ),
     )
@@ -159,7 +165,7 @@ def _draw_action(
             SEED,
             plan_name,
             replicate,
-            action_name,
+            action["draw_domain"],
             "under",
         )
         < action["under_relief_probability"]
