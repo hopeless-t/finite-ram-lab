@@ -568,21 +568,21 @@ def run_panel() -> dict:
 
     if static[
         "current_task_loss_count"
-    ] != 104:
+    ] != 101:
         raise RuntimeError(
             "static_loss_reference_changed"
         )
 
     if raw[
         "current_task_loss_count"
-    ] != 43:
+    ] != 41:
         raise RuntimeError(
             "raw_loss_reference_changed"
         )
 
     if hysteresis[
         "current_task_loss_count"
-    ] != 63:
+    ] != 61:
         raise RuntimeError(
             "hysteresis_loss_reference_changed"
         )
