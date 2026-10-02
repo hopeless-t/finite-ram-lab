@@ -1,0 +1,20 @@
+{
+  "schema": "finite-ram-lab.b492-result/v0.1",
+  "status": "PASS",
+  "classification": "NON_DRIFT_ONLINE_UPDATE_APPLIED",
+  "claim_ceiling": "NON_DRIFT_ONLINE_SAMPLE_MAX_UPDATE",
+  "workflow_run_id": 36953695832,
+  "workflow_job_id": 110671912306,
+  "execution_head_sha": "b681a82832e9dbd3e13e60a02d2ff17c855b399a",
+  "artifact_id": 11205390226,
+  "artifact_zip_sha256": "885447d8377398677b033f96edd0b9dd615c2f64740da2fd8948d52a21a5f3bf",
+  "update_sha256": "ebe15458328255ceff7290d9086013d191c8d363a953c33efd8328048c0404c2",
+  "implementation": "TILED_WHERE",
+  "minimum_updated_coverage_floor": 0.9642857142857143,
+  "rows": [
+    {"q":2,"updated_sample_count":27,"updated_empirical_max_peak_bytes":50696192,"empirical_max_moved_bytes":0,"updated_rank_max_one_step_predictive_coverage_floor":0.9642857142857143},
+    {"q":4,"updated_sample_count":27,"updated_empirical_max_peak_bytes":58941440,"empirical_max_moved_bytes":0,"updated_rank_max_one_step_predictive_coverage_floor":0.9642857142857143},
+    {"q":7,"updated_sample_count":27,"updated_empirical_max_peak_bytes":71512064,"empirical_max_moved_bytes":4096,"updated_rank_max_one_step_predictive_coverage_floor":0.9642857142857143}
+  ],
+  "next": "B493_REPAIRED_GOVERNOR_V2_1"
+}
