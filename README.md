@@ -371,8 +371,36 @@ See:
 - [FR-CLM-001C protocol](docs/FR-CLM-001C-RELIABILITY-RESIDENCY-SURFACE.md)
 - [FR-CLM-001C receipt](docs/FR-CLM-001C-RECEIPT.md)
 
-The next semantic step is trajectory-length compounding: per-step semantic
-survival -> end-to-end trajectory survival.
+FR-CLM-001D qualifies repeated context rewrites and separates one-step,
+all-steps, and endpoint-only semantics.
+
+At selector error p=0.01 and trajectory length 32:
+
+| resident budget | all-steps survival | endpoint success |
+|---:|---:|---:|
+| 2 | 0.270020 | 0.958008 |
+| 4 | 0.571289 | 0.999512 |
+| 6 | 0.625977 | 1.000000 |
+
+Budget 4 and budget 6 both score 1.0 on the one-step cold-start case, yet their
+length-32 uninterrupted survival falls to 0.571289 and 0.625977.
+
+Periodic required-state refresh every 8 steps can restore the current endpoint
+without repairing historical trajectory validity. At length 32, recovered
+trajectories numbered 1,468 / 877 / 766 for budgets 2 / 4 / 6.
+
+Therefore:
+
+`one-step success != trajectory survival != endpoint success`.
+
+See:
+
+- [FR-CLM-001D protocol](docs/FR-CLM-001D-TRAJECTORY-SURVIVAL.md)
+- [FR-CLM-001D receipt](docs/FR-CLM-001D-RECEIPT.md)
+
+The next semantic step is to hold the marginal rewrite error approximately
+fixed while comparing independent, persistent, and bursty temporal error
+processes.
 
 ## Cross-repository transfer
 

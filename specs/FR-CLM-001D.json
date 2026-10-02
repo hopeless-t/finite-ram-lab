@@ -1,0 +1,56 @@
+{
+  "schema": "finite-ram-lab.fr-clm-001d/v0.1",
+  "status": "FROZEN_SYNTHETIC_TRAJECTORY_SPEC",
+  "question": "Can repeated semantic working-set rewrites make one-step or endpoint-only accuracy overstate end-to-end trajectory survival?",
+  "source_experiment": "FR-CLM-001C",
+  "selector": {
+    "kind": "SYMMETRIC_RELEVANCE_LABEL_FLIP",
+    "error_probability": 0.01,
+    "hash_domain": "TRAJECTORY_SCORE_FLIP",
+    "randomness": "deterministic SHA256 pseudo-random draws bound to budget, replicate, step, and event serial"
+  },
+  "trajectory": {
+    "required_keys": ["goal", "constraint"],
+    "budgets": [2, 4, 6],
+    "lengths": [1, 2, 4, 7, 8, 9, 15, 16, 17, 31, 32],
+    "replicates": 2048,
+    "distractors_per_step": 2,
+    "refresh_interval": 8,
+    "refresh_behavior": "both required keys receive a new version before selection on refresh steps",
+    "candidate_pool": "previous resident set plus current incoming events",
+    "loss_semantics": "a lost required fact cannot recover until a later refresh reintroduces that key"
+  },
+  "primary_endpoints": [
+    "trajectory_survival_rate",
+    "endpoint_success_rate",
+    "endpoint_masking_gap"
+  ],
+  "secondary_endpoints": [
+    "mean_step_exact_rate",
+    "first_failure_histogram",
+    "recovered_trajectory_count",
+    "first_failure_biopsy",
+    "cold_start_independent_projection"
+  ],
+  "acceptance": {
+    "survival_monotone_nonincreasing_with_length": true,
+    "cold_start_exact_budget_4": 1.0,
+    "cold_start_exact_budget_6": 1.0,
+    "length_32_survival_order": "budget2 < budget4 < budget6",
+    "length_32_budget4_survival_lt": 0.70,
+    "length_32_budget6_survival_lt": 0.75,
+    "length_32_endpoint_masking_gap_gt": {
+      "2": 0.60,
+      "4": 0.35,
+      "6": 0.30
+    },
+    "refresh_endpoint_success_gte": 0.95
+  },
+  "claim_ceiling": "SYNTHETIC_TRAJECTORY_SURVIVAL_ONLY",
+  "nonclaims": [
+    "No real CLM, model, provider, Pi, or KITten trajectory is evaluated",
+    "The 1% selector error probability is synthetic",
+    "Periodic refresh is a synthetic recovery mechanism",
+    "Trajectory-survival rates are specific to the frozen fixture"
+  ]
+}
