@@ -325,19 +325,23 @@ See:
 
 FR-CLM-001B extends the same apparatus with reproducible low-frequency selector omissions, replicated trials, Wilson 95% intervals, statistically qualified pressure knees, and searchable failure biopsies.
 
-Its frozen synthetic target is:
+Frozen synthetic qualification:
 
 - 512 replicates x 4 cases = 2,048 observations per budget/arm;
 - injected required-event omission probability = 0.5%;
 - qualified knee requires exact rate >= 0.95 and Wilson95 lower bound >= 0.95;
-- APPEND_TRUNCATE should qualify first at budget 8;
-- NOISY_KEY_AWARE should qualify first at budget 2 while still exposing rare omission failures.
+- APPEND_TRUNCATE qualified first at budget 8;
+- NOISY_KEY_AWARE qualified first at budget 2;
+- budget-2 NOISY_KEY_AWARE captured 17 failures / 2,048 observations while retaining Wilson95 lower = 0.9867463946.
 
-See [FR-CLM-001B protocol](docs/FR-CLM-001B-STOCHASTIC-RARE-EVENTS.md).
+See:
+
+- [FR-CLM-001B protocol](docs/FR-CLM-001B-STOCHASTIC-RARE-EVENTS.md)
+- [FR-CLM-001B receipt](docs/FR-CLM-001B-RECEIPT.md)
 
 This remains synthetic harness work. The injected omission probability is not an empirical CLM/model error rate.
 
-Next semantic step after 001B qualification: sweep selector reliability against resident budget before real model-managed context experiments.
+Next semantic step: sweep selector reliability against resident budget before real model-managed context experiments.
 
 ## Cross-repository transfer
 
