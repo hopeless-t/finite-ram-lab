@@ -1,0 +1,69 @@
+{
+  "schema": "finite-ram-lab.local-execution-admission/v0.1",
+  "action_id": "finite_ram.local_qualify_v1",
+  "purpose": "Run one bounded host-local Finite RAM Governor qualification panel and return an evidence bundle.",
+  "authority_effect": "NONE",
+  "claim_ceiling": "LOCAL_EXECUTION_ADMISSION_CONTRACT_ONLY",
+  "execution": {
+    "module": "finite_ram_lab.local_one_shot_qualifier",
+    "python_argv_template": [
+      "python",
+      "-m",
+      "finite_ram_lab.local_one_shot_qualifier",
+      "--exploration-samples-per-q",
+      "8",
+      "--size",
+      "2048",
+      "--target-rank-coverage",
+      "0.95",
+      "--max-extension-cycles",
+      "4",
+      "--out-dir",
+      "{out_dir}"
+    ],
+    "network_allowed": false,
+    "external_effects_allowed": false,
+    "working_tree_required_clean": true,
+    "exact_repo_commit_must_be_recorded": true,
+    "analysis_extra_required": true
+  },
+  "budget": {
+    "candidate_q": [1, 2, 4, 7],
+    "exploration_samples_per_q": 8,
+    "initial_physical_observations": 32,
+    "target_rank_coverage": 0.95,
+    "required_sample_count_per_promoted_q": 19,
+    "maximum_total_physical_observations": 76,
+    "max_extension_cycles": 4,
+    "size": 2048
+  },
+  "output": {
+    "root_template": "runs/local-governor/{run_id}",
+    "required_files": [
+      "local-exploration.json",
+      "local-calibration-state.json",
+      "local-governor-policy.json",
+      "local-qualification-receipt.json",
+      "bundle-manifest.json"
+    ]
+  },
+  "retry": {
+    "unknown_delivery": "DO_NOT_RETRY",
+    "reason": "A blind rerun would create an untracked extra sample population and can invalidate the evidence ledger.",
+    "new_run_requires_new_run_id": true
+  },
+  "preconditions": [
+    "MVCA/LDC operator binding exists for this action",
+    "the action is explicitly admitted for this run_id",
+    "repository checkout commit is recorded",
+    "working tree is clean",
+    "analysis dependencies are installed",
+    "no unrelated authority grant is reused"
+  ],
+  "postconditions": [
+    "bundle manifest exists",
+    "bundle file digests are recorded",
+    "environment fingerprint is present",
+    "no hosted threshold is treated as local calibration evidence"
+  ]
+}
