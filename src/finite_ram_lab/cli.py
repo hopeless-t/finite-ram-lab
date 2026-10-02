@@ -6,7 +6,6 @@ import json
 import platform
 from pathlib import Path
 
-from .calculators import CATALOG, run_spec, template
 from .app_surface import NoEligibleConfiguration, select_from_policy_path, write_receipt
 from .recorder import ingest_many
 from .evidence_residency import (
@@ -21,6 +20,8 @@ def _dump(data: object) -> None:
 
 
 def cmd_catalog(args: argparse.Namespace) -> None:
+    from .calculators import CATALOG
+
     if args.json:
         _dump(CATALOG)
         return
@@ -29,10 +30,16 @@ def cmd_catalog(args: argparse.Namespace) -> None:
 
 
 def cmd_template(args: argparse.Namespace) -> None:
+    from .calculators import CATALOG, template
+
+    if args.tool not in CATALOG:
+        raise SystemExit(f"unknown calculator: {args.tool}")
     _dump(template(args.tool))
 
 
 def cmd_run_spec(args: argparse.Namespace) -> None:
+    from .calculators import run_spec
+
     result = run_spec(args.spec)
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -172,10 +179,7 @@ def main() -> None:
         "template",
         help="Print a spec template for a calculator",
     )
-    p.add_argument(
-        "tool",
-        choices=sorted(CATALOG),
-    )
+    p.add_argument("tool")
     p.set_defaults(func=cmd_template)
 
     p = sub.add_parser(
