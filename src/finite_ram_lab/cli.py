@@ -143,6 +143,34 @@ def cmd_governor_select(args: argparse.Namespace) -> None:
     _dump(receipt)
 
 
+def cmd_local_qualify(args: argparse.Namespace) -> None:
+    from .local_one_shot_qualifier import (
+        qualify_local_governor,
+        write_qualification_bundle,
+    )
+
+    bundle = qualify_local_governor(
+        exploration_samples_per_q=args.exploration_samples_per_q,
+        size=args.size,
+        target_rank_coverage=args.target_rank_coverage,
+        max_extension_cycles=args.max_extension_cycles,
+    )
+    written = write_qualification_bundle(bundle, args.out_dir)
+    _dump({
+        "status": "QUALIFIED",
+        "policy_id": bundle["policy"]["policy_id"],
+        "final_pareto_q": bundle["qualification_receipt"]["final_pareto_q"],
+        "total_physical_observations": bundle[
+            "qualification_receipt"
+        ]["total_physical_observations"],
+        "environment_fingerprint_sha256": bundle[
+            "qualification_receipt"
+        ]["environment_fingerprint_sha256"],
+        "bundle_manifest_sha256": written["manifest_sha256"],
+        "out_dir": written["root"],
+    })
+
+
 def cmd_local_calibration_extend(args: argparse.Namespace) -> None:
     from .local_calibration_extend import extend_local_calibration
 
@@ -351,6 +379,17 @@ def main() -> None:
     p.add_argument("--minimum-rank-coverage", type=float, default=0.95)
     p.add_argument("--out", required=True)
     p.set_defaults(func=cmd_governor_select)
+
+    p = sub.add_parser(
+        "local-qualify",
+        help="Adaptively calibrate and promote a fingerprint-bound local Governor policy",
+    )
+    p.add_argument("--exploration-samples-per-q", type=int, default=8)
+    p.add_argument("--size", type=int, default=2048)
+    p.add_argument("--target-rank-coverage", type=float, default=0.95)
+    p.add_argument("--max-extension-cycles", type=int, default=4)
+    p.add_argument("--out-dir", required=True)
+    p.set_defaults(func=cmd_local_qualify)
 
     p = sub.add_parser(
         "local-calibration-extend",
