@@ -1,0 +1,52 @@
+name: FR-CLM-001D Trajectory Survival
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-clm-001d-trajectory-survival
+    paths:
+      - "src/finite_ram_lab/semantic_trajectory_survival.py"
+      - "specs/FR-CLM-001D.json"
+      - "tests/test_semantic_trajectory_survival.py"
+      - "docs/FR-CLM-001D-TRAJECTORY-SURVIVAL.md"
+      - ".github/workflows/fr-clm-001d.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_trajectory_survival -v
+      - name: Run trajectory panel
+        run: |
+          mkdir -p runs/FR-CLM-001D
+          python -m finite_ram_lab.semantic_trajectory_survival \
+            > runs/FR-CLM-001D/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-CLM-001D/result.json"))
+          assert r["status"] == "PASS"
+          s=r["length32_summary"]
+          assert s["2"]["trajectory_survival_rate"] < s["4"]["trajectory_survival_rate"] < s["6"]["trajectory_survival_rate"]
+          assert s["4"]["endpoint_masking_gap"] > 0.35
+          assert s["6"]["endpoint_masking_gap"] > 0.30
+          assert r["empirical_model_claim"] is False
+          PY
+          sha256sum specs/FR-CLM-001D.json
+          sha256sum runs/FR-CLM-001D/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-clm-001d-trajectory-survival
+          path: runs/FR-CLM-001D/result.json
+          if-no-files-found: error
