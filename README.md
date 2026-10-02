@@ -341,7 +341,38 @@ See:
 
 This remains synthetic harness work. The injected omission probability is not an empirical CLM/model error rate.
 
-Next semantic step: sweep selector reliability against resident budget before real model-managed context experiments.
+FR-CLM-001C qualifies an explicit two-dimensional synthetic surface:
+
+```text
+selector reliability
+        x
+resident semantic budget
+        ->
+qualified semantic survival
+```
+
+The frozen run evaluated 409,600 case observations. Minimum qualified resident budget moved as selector error increased:
+
+- p <= 0.01 -> budget 2;
+- p = 0.02 or 0.03 -> budget 4;
+- p = 0.05 -> budget 6;
+- p >= 0.10 -> budget 8.
+
+At the rare-event sentinel p=0.001 / budget 2, the harness retained qualified
+survival while capturing 30 failures / 8,192 observations.
+
+This is the first Finite RAM semantic result showing a measurable synthetic
+tradeoff:
+
+`selector reliability down -> required resident redundancy up`.
+
+See:
+
+- [FR-CLM-001C protocol](docs/FR-CLM-001C-RELIABILITY-RESIDENCY-SURFACE.md)
+- [FR-CLM-001C receipt](docs/FR-CLM-001C-RECEIPT.md)
+
+The next semantic step is trajectory-length compounding: per-step semantic
+survival -> end-to-end trajectory survival.
 
 ## Cross-repository transfer
 
