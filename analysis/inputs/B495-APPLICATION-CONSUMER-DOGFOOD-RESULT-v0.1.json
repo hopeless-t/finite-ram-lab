@@ -1,0 +1,21 @@
+{
+  "schema": "finite-ram-lab.b495-result/v0.1",
+  "status": "PASS",
+  "classification": "APPLICATION_CONSUMER_LOOP_PASS",
+  "claim_ceiling": "APPLICATION_LEVEL_REPAIRED_GOVERNOR_DOGFOOD",
+  "workflow_run_id": 36965325825,
+  "aggregate_job_id": 110707823155,
+  "execution_head_sha": "dcd8b963b46b8746a05329f847be04114034669a",
+  "aggregate_artifact_id": 11208769565,
+  "aggregate_artifact_zip_sha256": "a773ffdf4595096f189cad0bd20fb2ce8ddcf0cca8fc6300c0572057e69020ea",
+  "aggregate_sha256": "693303788db8d3a8141ab46c2f2664d4bd3bea2bc483b90d2b3c9a554d00cd58",
+  "consumer_count": 3,
+  "cross_q_output_digest": "671c782eacaec6ae75a49121a1ea832c3ec7c3db01c31c8414389ef9c76faaa8",
+  "exceedance_q": [],
+  "rows": [
+    {"q":2,"requested_peak_budget_bytes":50696192,"declared_empirical_max_peak_bytes":50696192,"observed_peak_bytes":50511872,"headroom_bytes":184320,"overrun_bytes":0,"work_seconds":0.27248003100004325},
+    {"q":4,"requested_peak_budget_bytes":58941440,"declared_empirical_max_peak_bytes":58941440,"observed_peak_bytes":58773504,"headroom_bytes":167936,"overrun_bytes":0,"work_seconds":0.4084768929999427},
+    {"q":7,"requested_peak_budget_bytes":71512064,"declared_empirical_max_peak_bytes":71512064,"observed_peak_bytes":71356416,"headroom_bytes":155648,"overrun_bytes":0,"work_seconds":0.2646874579999974}
+  ],
+  "next": "B496_LOCAL_ADAPTER_BOOTSTRAP_CONTRACT"
+}
