@@ -1,0 +1,24 @@
+{
+  "schema": "finite-ram-lab.b493-result/v0.1",
+  "status": "PASS",
+  "classification": "REPAIRED_GOVERNOR_V2_1_QUALIFIED",
+  "claim_ceiling": "NON_DRIFT_UPDATED_REPAIRED_GOVERNOR_V2_1",
+  "workflow_run_id": 36953891535,
+  "workflow_job_id": 110672494146,
+  "execution_head_sha": "a22012256caf5da711fafdc44e2d8310912122d7",
+  "artifact_id": 11205141567,
+  "artifact_zip_sha256": "4ae0fcc1a8f9989ca7c52c05cef1db98b6dc188212b031787f2bdca0eb87342a",
+  "governor_sha256": "27a1f6c68d64cce30d808748e7befa0b97f99610ab56bcaaf199166fa0cbc859",
+  "policy_version": "v2.1",
+  "implementation": "TILED_WHERE",
+  "breakpoints": [
+    {"minimum_peak_budget_bytes":50696192,"selected_q":2,"sample_count":27,"rank_floor":0.9642857142857143},
+    {"minimum_peak_budget_bytes":58941440,"selected_q":4,"sample_count":27,"rank_floor":0.9642857142857143},
+    {"minimum_peak_budget_bytes":71512064,"selected_q":7,"sample_count":27,"rank_floor":0.9642857142857143}
+  ],
+  "old_q7_boundary_decision": {
+    "peak_budget_bytes": 71507968,
+    "selected_q": 4
+  },
+  "next": "APPLICATION_SURFACE_FOR_GITHUB_ACTIONS"
+}
