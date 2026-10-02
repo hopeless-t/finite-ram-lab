@@ -1,0 +1,22 @@
+{
+  "schema": "finite-ram-lab.b501-result/v0.1",
+  "status": "PASS",
+  "classification": "LOCAL_EXECUTION_ADMISSION_CONTRACT_QUALIFIED",
+  "claim_ceiling": "LOCAL_EXECUTION_ADMISSION_CONTRACT_ONLY",
+  "workflow_run_id": 36998404047,
+  "workflow_job_id": 110810282227,
+  "execution_head_sha": "8ab4c2c81d9abd12dd805e255014cde325241ffc",
+  "artifact_id": 11222143453,
+  "artifact_zip_sha256": "3e2676ba445ffae8484becec806c24df2aad039b8f01f270e1582b6b2cf513d8",
+  "spec_file_sha256": "0f4d30667c6c5fe78aa986aa5ae0b3b5c8307833d56972f03f34fa8806404385",
+  "spec_canonical_sha256": "78033200094cdb1f768171036b658b07a5419094929d246633715595a9bf9395",
+  "admission_request_sha256": "e6575c0ffba1ee81531acdc2f10fedef3d953f5e76fcfb5eb4ed8734cde0edb7",
+  "action_id": "finite_ram.local_qualify_v1",
+  "network_allowed": false,
+  "external_effects_allowed": false,
+  "authority_effect": "NONE",
+  "maximum_total_physical_observations": 76,
+  "retry_on_unknown_delivery": "DO_NOT_RETRY",
+  "local_execution_performed": false,
+  "next": "B502_FIRST_DEVELOPMENT_MACHINE_QUALIFICATION_AFTER_LDC_BINDING"
+}
