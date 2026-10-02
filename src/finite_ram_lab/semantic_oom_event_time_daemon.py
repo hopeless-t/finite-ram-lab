@@ -537,7 +537,7 @@ def run_panel() -> dict:
         "RAW_LAST_EVIDENCE": {
             "current_task_loss_count": 1,
             "unnecessary_protection_count": 3,
-            "switch_count": 6,
+            "switch_count": 8,
         },
         "DECAY_HYSTERESIS_COOLDOWN": {
             "current_task_loss_count": 1,
