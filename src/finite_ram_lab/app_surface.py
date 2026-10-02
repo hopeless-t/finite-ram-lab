@@ -65,8 +65,15 @@ def select_configuration(
     *,
     peak_budget_bytes: int,
     minimum_rank_coverage: float,
+    environment_binding_validated: bool = False,
 ) -> dict[str, Any]:
     validate_policy(policy)
+
+    if (
+        policy.get("scope") == "LOCAL_HOST_BOUND"
+        and not environment_binding_validated
+    ):
+        raise RuntimeError("local_policy_requires_bound_selector")
 
     if peak_budget_bytes < 0:
         raise ValueError("peak_budget_invalid")
