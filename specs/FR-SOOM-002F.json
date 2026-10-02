@@ -1,0 +1,56 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002f/v0.1",
+  "status": "FROZEN_SYNTHETIC_OBSERVABLE_DEPENDENCE_INFERENCE_SPEC",
+  "source_experiment": "FR-SOOM-002E",
+  "seed": "FR-SOOM-002F-v0.1",
+  "episodes": 16384,
+  "tail_count_per_action": 164,
+  "actions": [
+    "CHROME_SHRINK",
+    "MODEL_SHRINK",
+    "INDEXER_EXIT"
+  ],
+  "analyzer_inputs": [
+    "episode index",
+    "per-action late/timely outcome"
+  ],
+  "analyzer_forbidden_inputs": [
+    "latent BAD label",
+    "generating arm label",
+    "synthetic pressure-state ground truth"
+  ],
+  "statistic": "Sum of pairwise co-failure counts across action pairs.",
+  "null": "999 deterministic independent circular shifts, one per action and permutation, preserving each action's exact marginal tail count and within-action trace shape.",
+  "classification_rule": {
+    "CROSS_ACTION_DEPENDENCE_EVIDENCE": "upper permutation p <= 0.01 and mean pairwise phi >= 0.10",
+    "IID_COMPATIBLE": "upper permutation p > 0.05",
+    "INCONCLUSIVE": "otherwise"
+  },
+  "frozen_reference": {
+    "INDEPENDENT": {
+      "observed_pair_cofailure_total": 5,
+      "multi_action_tail_episodes": 5,
+      "permutation_p_upper": 0.587,
+      "null_p95": 9,
+      "null_p99": 11,
+      "classification": "IID_COMPATIBLE"
+    },
+    "SHARED_BAD": {
+      "observed_pair_cofailure_total": 492,
+      "multi_action_tail_episodes": 164,
+      "permutation_p_upper": 0.001,
+      "null_p95": 9,
+      "null_p99": 11,
+      "classification": "CROSS_ACTION_DEPENDENCE_EVIDENCE"
+    }
+  },
+  "primary_finding": "SHARED_FAILURE_DOMAIN_CAN_BE_DETECTED_FROM_OBSERVABLE_COFAILURE_TRACE",
+  "claim_ceiling": "SYNTHETIC_OBSERVABLE_DEPENDENCE_INFERENCE_ONLY",
+  "nonclaims": [
+    "IID_COMPATIBLE does not prove independence",
+    "The permutation threshold is not a production escalation threshold",
+    "The synthetic trace is not a measurement of Linux pressure behavior",
+    "No live process receives a signal",
+    "No latent-state label is available to the analyzer"
+  ]
+}
