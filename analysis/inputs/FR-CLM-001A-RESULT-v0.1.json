@@ -1,0 +1,39 @@
+{
+  "schema": "finite-ram-lab.fr-clm-001a-result/v0.1",
+  "status": "PASS",
+  "classification": "SYNTHETIC_SEMANTIC_WORKING_SET_HARNESS_VALIDATED",
+  "claim_ceiling": "SYNTHETIC_SEMANTIC_WORKING_SET_HARNESS_ONLY",
+  "workflow_run_id": 36999197789,
+  "workflow_job_id": 110812741798,
+  "execution_head_sha": "f420d3bd659f7897744992b9a24a25c62273b7ba",
+  "artifact_id": 11222962121,
+  "artifact_zip_sha256": "e4e7b7a5d4f4111c33263739d5db723e92469fac98d32e88ccc9ef6f91668368",
+  "spec_sha256": "6be2243a3c8609ce5b16128ac308aae9d335a4c925a790425120f3662159d9dc",
+  "result_sha256": "5aa02553bdb08cdffa109c5b7ccf6722a3c6d631aab0ed6129a9d1d28a512274",
+  "corpus_sha256": "ccbca20e7a7f476186793fc35c5bc57b5ccdbe243d620673cd94ffdd34235c3a",
+  "case_count": 4,
+  "budgets": [1, 2, 4, 6, 8],
+  "knees": {
+    "APPEND_TRUNCATE": 8,
+    "KEY_AWARE": 2
+  },
+  "rows": {
+    "APPEND_TRUNCATE": [
+      {"budget": 1, "exact_rate": 0.25, "mean_resident_count": 1.0, "mean_interference_events": 0.75},
+      {"budget": 2, "exact_rate": 0.25, "mean_resident_count": 2.0, "mean_interference_events": 1.75},
+      {"budget": 4, "exact_rate": 0.25, "mean_resident_count": 4.0, "mean_interference_events": 3.25},
+      {"budget": 6, "exact_rate": 0.5, "mean_resident_count": 6.0, "mean_interference_events": 5.0},
+      {"budget": 8, "exact_rate": 1.0, "mean_resident_count": 8.0, "mean_interference_events": 6.5}
+    ],
+    "KEY_AWARE": [
+      {"budget": 1, "exact_rate": 0.5, "mean_resident_count": 1.0, "mean_interference_events": 0.0},
+      {"budget": 2, "exact_rate": 1.0, "mean_resident_count": 2.0, "mean_interference_events": 0.5},
+      {"budget": 4, "exact_rate": 1.0, "mean_resident_count": 4.0, "mean_interference_events": 2.5},
+      {"budget": 6, "exact_rate": 1.0, "mean_resident_count": 6.0, "mean_interference_events": 4.5},
+      {"budget": 8, "exact_rate": 1.0, "mean_resident_count": 8.0, "mean_interference_events": 6.5}
+    ]
+  },
+  "empirical_model_claim": false,
+  "synthetic_only": true,
+  "next": "FR-CLM-001B_STOCHASTIC_OMISSION_AND_RARE_EVENT_HARNESS"
+}
