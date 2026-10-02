@@ -1,0 +1,34 @@
+{
+  "schema": "finite-ram-lab.b500-result/v0.1",
+  "status": "PASS",
+  "classification": "LOCAL_ONE_SHOT_QUALIFIER_QUALIFIED",
+  "claim_ceiling": "HOST_BOUND_LOCAL_GOVERNOR_QUALIFICATION",
+  "workflow_run_id": 36967069106,
+  "workflow_job_id": 110713017446,
+  "execution_head_sha": "113749f593f1c4417d548aeee72884e73b7e441f",
+  "artifact_id": 11210402309,
+  "artifact_zip_sha256": "043a631d8acea1be366de593756765c173dd76d53b3a58772d9cc6b83d7da8b0",
+  "bundle_manifest_sha256": "d0a5f16122514a9153594a4c3ed7c827e4db7ef1c882530ef6820cffbccf2d06",
+  "local_decision_sha256": "afad4055e1fc21e721a272304840931a8d8865bf06c2e6757ab1a9cdb3874322",
+  "hosted_smoke_only": true,
+  "development_machine_calibration_claimed": false,
+  "qualification_smoke": {
+    "exploration_samples_per_q": 2,
+    "size": 64,
+    "target_rank_coverage": 0.75,
+    "max_extension_cycles": 4,
+    "final_pareto_q": [2, 7],
+    "total_physical_observations": 10,
+    "environment_fingerprint_sha256": "edb2af10e557914cfc620e7bda927661fb706dfcd364a619f63300a26ec14aac",
+    "policy_id": "local-governor-edb2af10e557-v1",
+    "bound_selector_validated": true
+  },
+  "default_development_machine_plan": {
+    "exploration_samples_per_q": 8,
+    "size": 2048,
+    "target_rank_coverage": 0.95,
+    "initial_physical_observations": 32,
+    "maximum_total_physical_observations": 76
+  },
+  "next": "B501_LOCAL_EXECUTION_ADMISSION_AND_LDC_HANDOFF"
+}
