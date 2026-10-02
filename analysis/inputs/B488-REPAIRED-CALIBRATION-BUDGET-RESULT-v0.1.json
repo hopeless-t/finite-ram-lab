@@ -1,0 +1,21 @@
+{
+  "schema": "finite-ram-lab.b488-result/v0.1",
+  "status": "PASS",
+  "claim_ceiling": "EXCHANGEABILITY_CONDITIONAL_REPAIRED_CALIBRATION_BUDGET",
+  "workflow_run_id": 36952667022,
+  "workflow_job_id": 110668780517,
+  "execution_head_sha": "a385de584342323f6bf8c0bd25a38214372c154a",
+  "artifact_id": 11203783867,
+  "artifact_zip_sha256": "d3776a39ce4d1c8c3cde2337d4d750c2998000caee6f523b84e3abc31e91900f",
+  "budget_sha256": "33de390920e924fc4b0ea8edcfb695425c0009a5a8d23bcd232770b4fabebefd",
+  "implementation": "TILED_WHERE",
+  "pareto_q": [2,4,7],
+  "dominated_q_excluded": [1],
+  "target_coverage": 0.95,
+  "required_sample_count_per_q": 19,
+  "current_independent_runner_samples_per_q": 8,
+  "current_rank_max_coverage_floor": 0.8888888888888888,
+  "additional_runner_samples_required_per_q": 11,
+  "total_additional_runner_observations": 33,
+  "next": "B489_SPEND_REPAIRED_95_PERCENT_CALIBRATION_BUDGET"
+}
