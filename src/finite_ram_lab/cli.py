@@ -143,6 +143,28 @@ def cmd_governor_select(args: argparse.Namespace) -> None:
     _dump(receipt)
 
 
+def cmd_local_calibrate(args: argparse.Namespace) -> None:
+    from .local_calibration_explore import run_local_exploration
+
+    payload = run_local_exploration(
+        samples_per_q=args.samples_per_q,
+        size=args.size,
+        target_rank_coverage=args.target_rank_coverage,
+    )
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    _dump({
+        "status": payload["status"],
+        "local_pareto_q": payload["local_pareto_q"],
+        "samples_per_q": payload["samples_per_q"],
+        "host_fingerprint_sha256": payload["host_binding"][
+            "environment_fingerprint_sha256"
+        ],
+        "policy_promotion_allowed": payload["policy_promotion_allowed"],
+    })
+
+
 def cmd_local_bootstrap(args: argparse.Namespace) -> None:
     payload = build_local_bootstrap_plan(
         target_coverage=args.target_rank_coverage,
@@ -263,6 +285,16 @@ def main() -> None:
     p.add_argument("--minimum-rank-coverage", type=float, default=0.95)
     p.add_argument("--out", required=True)
     p.set_defaults(func=cmd_governor_select)
+
+    p = sub.add_parser(
+        "local-calibrate",
+        help="Run a host-bound repaired q exploration panel in fresh local processes",
+    )
+    p.add_argument("--samples-per-q", type=int, default=8)
+    p.add_argument("--size", type=int, default=2048)
+    p.add_argument("--target-rank-coverage", type=float, default=0.95)
+    p.add_argument("--out", required=True)
+    p.set_defaults(func=cmd_local_calibrate)
 
     p = sub.add_parser(
         "local-bootstrap",

@@ -1,0 +1,23 @@
+{
+  "schema": "finite-ram-lab.b497-result/v0.1",
+  "status": "PASS",
+  "classification": "LOCAL_CALIBRATION_HARNESS_QUALIFIED",
+  "claim_ceiling": "HOST_SCOPED_LOCAL_FRESH_PROCESS_EXPLORATION",
+  "workflow_run_id": 36965974663,
+  "workflow_job_id": 110709687056,
+  "execution_head_sha": "f761958e33a0817692b023d08f27b3af6f184a35",
+  "artifact_id": 11209373465,
+  "artifact_zip_sha256": "d22a7577833f052e948cd7032d1d5112d611c6b0ace38df1374f6e503f14521d",
+  "hosted_smoke_sha256": "8cac021da39f79c6d2efecedadf508401801a7529fbdae8968c253e9226e2720",
+  "hosted_smoke_samples_per_q": 2,
+  "hosted_smoke_physical_observations": 8,
+  "policy_promotion_allowed": false,
+  "development_machine_calibration_claimed": false,
+  "default_local_panel": {
+    "candidate_q": [1,2,4,7],
+    "samples_per_q": 8,
+    "physical_observations": 32,
+    "target_rank_coverage": 0.95
+  },
+  "next": "B498_LOCAL_POLICY_PROMOTER"
+}
