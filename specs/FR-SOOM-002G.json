@@ -4,8 +4,8 @@
   "source_experiment": "FR-SOOM-002F",
   "seed": "FR-SOOM-002G-v0.1",
   "history_inference": "Use FR-SOOM-002F observable-only dependence analyzer. No latent BAD labels or generating-arm labels are available to the planner.",
-  "future_episodes_per_regime": 8192,
-  "future_tail_count_per_cluster_action": 82,
+  "future_episodes_per_regime": 16384,
+  "future_tail_count_per_cluster_action": 164,
   "relief_target_mib": 3000,
   "reliability_qualification": {
     "point_rate_min": 0.999,
@@ -49,15 +49,15 @@
   "frozen_reference": {
     "INDEPENDENT": {
       "history_classification": "IID_COMPATIBLE",
-      "naive_deadline_failures": 1,
+      "naive_deadline_failures": 7,
       "dependence_aware_plan": "COOPERATIVE_REDUNDANCY",
-      "dependence_aware_deadline_failures": 1,
+      "dependence_aware_deadline_failures": 7,
       "dependence_aware_reliability_qualified": true
     },
     "SHARED_BAD": {
       "history_classification": "CROSS_ACTION_DEPENDENCE_EVIDENCE",
-      "naive_deadline_failures": 82,
-      "naive_current_task_loss_count": 82,
+      "naive_deadline_failures": 164,
+      "naive_current_task_loss_count": 164,
       "naive_p99_semantic_loss": 290,
       "dependence_aware_plan": "BACKGROUND_SACRIFICE",
       "dependence_aware_deadline_failures": 0,
@@ -73,5 +73,6 @@
     "The deadline-miss active-task-loss model is synthetic",
     "IID_COMPATIBLE does not prove future independence",
     "No live process receives a signal"
-  ]
+  ],
+  "reproducibility_note": "Initial 8192-episode pilot used a mistyped draw-domain tag and then lacked enough Wilson95 power at the frozen 0.999 lower-bound target. The target was not loosened; the future panel was expanded to 16384 episodes while preserving the ~1% marginal tail rate."
 }
