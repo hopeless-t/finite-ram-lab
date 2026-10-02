@@ -1,0 +1,105 @@
+name: B495 Application Consumer Dogfood
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/application-consumer-dogfood-b495
+    paths:
+      - "src/finite_ram_lab/application_execution_receipt.py"
+      - "src/finite_ram_lab/application_consumer_aggregate.py"
+      - "tests/test_application_consumer_dogfood.py"
+      - "docs/B495-APPLICATION-CONSUMER-DOGFOOD-v0.1.md"
+      - ".github/workflows/b495-application-consumer.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  consumer:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: q2
+            budget: "50696192"
+            expected_q: "2"
+          - name: q4
+            budget: "58941440"
+            expected_q: "4"
+          - name: q7
+            budget: "71512064"
+            expected_q: "7"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Select execution point
+        id: governor
+        uses: ./.github/actions/finite-ram-governor
+        with:
+          peak-budget-bytes: ${{ matrix.budget }}
+          minimum-rank-coverage: "0.95"
+          receipt-path: runs/B495/${{ matrix.name }}-decision.json
+      - name: Verify action decision
+        env:
+          SELECTED_Q: ${{ steps.governor.outputs.selected-q }}
+          EXPECTED_Q: ${{ matrix.expected_q }}
+        run: test "$SELECTED_Q" = "$EXPECTED_Q"
+      - name: Install representative numerical runtime
+        run: python -m pip install -e ".[analysis]"
+      - name: Execute selected repaired workload
+        env:
+          SELECTED_Q: ${{ steps.governor.outputs.selected-q }}
+        run: |
+          python -m finite_ram_lab.repaired_q_frontier \
+            --child \
+            --strategy TILED_WHERE \
+            --q "$SELECTED_Q" \
+            --size 2048 \
+            > runs/B495/${{ matrix.name }}-execution.json
+      - name: Bind decision and execution receipt
+        run: |
+          python -m finite_ram_lab.application_execution_receipt \
+            --decision runs/B495/${{ matrix.name }}-decision.json \
+            --execution runs/B495/${{ matrix.name }}-execution.json \
+            --out runs/B495/${{ matrix.name }}-application-receipt.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b495-consumer-${{ matrix.name }}
+          path: runs/B495/${{ matrix.name }}-application-receipt.json
+          if-no-files-found: error
+
+  aggregate:
+    needs: consumer
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_application_consumer_dogfood -v
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: b495-consumer-*
+          path: runs/B495/receipts
+          merge-multiple: true
+      - name: Aggregate consumer receipts
+        run: |
+          python -m finite_ram_lab.application_consumer_aggregate \
+            --receipts-dir runs/B495/receipts \
+            --out runs/B495/application-consumer-dogfood.json
+          python -m json.tool runs/B495/application-consumer-dogfood.json >/dev/null
+          sha256sum runs/B495/application-consumer-dogfood.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: b495-application-consumer-dogfood
+          path: runs/B495/application-consumer-dogfood.json
+          if-no-files-found: error
