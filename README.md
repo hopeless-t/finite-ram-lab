@@ -298,6 +298,23 @@ See:
 - [B499 Pareto extension receipt](docs/B499-LOCAL-PARETO-EXTENSION-RECEIPT.md)
 - [B500 one-shot qualifier receipt](docs/B500-LOCAL-ONE-SHOT-QUALIFIER-RECEIPT.md)
 
+## Cross-repository transfer
+
+Finite RAM results are now actively dispatched into adjacent Catfood Lab research when the invariant is directly reusable.
+
+Current transfer matrix:
+[docs/CROSS-REPO-TRANSFER-2026-10-02.md](docs/CROSS-REPO-TRANSFER-2026-10-02.md)
+
+Transfer rule:
+
+```text
+transfer invariants aggressively
+transfer thresholds conservatively
+re-prove target behavior locally
+```
+
+A target-repository PR is independent evidence work, not automatic adoption.
+
 ## Why this project exists
 
 Applications and operating systems observe different parts of the memory problem.
