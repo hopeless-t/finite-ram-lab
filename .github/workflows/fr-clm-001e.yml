@@ -1,0 +1,51 @@
+name: FR-CLM-001E Temporal Error Shape
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-clm-001e-temporal-error-shape
+    paths:
+      - "src/finite_ram_lab/semantic_temporal_error_shape.py"
+      - "specs/FR-CLM-001E.json"
+      - "tests/test_semantic_temporal_error_shape.py"
+      - "docs/FR-CLM-001E-TEMPORAL-ERROR-SHAPE.md"
+      - ".github/workflows/fr-clm-001e.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_temporal_error_shape -v
+      - name: Run temporal-dependence panel
+        run: |
+          mkdir -p runs/FR-CLM-001E
+          python -m finite_ram_lab.semantic_temporal_error_shape \
+            > runs/FR-CLM-001E/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-CLM-001E/result.json"))
+          assert r["status"] == "PASS"
+          a={row["arm"]:row for row in r["arms"]}
+          assert a["IID_EVENT"]["trajectory_survival_rate"] < a["STEP_SHARED"]["trajectory_survival_rate"] < a["MARKOV_BURST"]["trajectory_survival_rate"]
+          assert a["MARKOV_BURST"]["conditional_p95_max_failure_run"] >= 12
+          assert r["empirical_model_claim"] is False
+          PY
+          sha256sum specs/FR-CLM-001E.json
+          sha256sum runs/FR-CLM-001E/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-clm-001e-temporal-error-shape
+          path: runs/FR-CLM-001E/result.json
+          if-no-files-found: error
