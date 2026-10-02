@@ -29,20 +29,20 @@
   },
   "frozen_reference": {
     "STATIC_INITIAL": {
-      "current_task_loss_count": 104,
+      "current_task_loss_count": 101,
       "unnecessary_background_sacrifice_windows": 0,
       "plan_switches": 0,
       "detection_delay_windows": null
     },
     "RAW_SLIDING": {
-      "current_task_loss_count": 43,
+      "current_task_loss_count": 41,
       "unnecessary_background_sacrifice_windows": 2,
       "plan_switches": 4,
       "detection_delay_windows": 1,
       "post_burst_stale_escalation": true
     },
     "HYSTERESIS_2_ENTER_1_EXIT": {
-      "current_task_loss_count": 63,
+      "current_task_loss_count": 61,
       "unnecessary_background_sacrifice_windows": 1,
       "plan_switches": 2,
       "detection_delay_windows": 2,
@@ -58,5 +58,6 @@
     "The hysteresis counts are synthetic controls, not production tuning",
     "No strategy is claimed globally optimal",
     "No live process receives a signal"
-  ]
+  ],
+  "reproducibility_note": "The scratch pilot used abstract action draw IDs A/B/C while the committed harness uses the canonical action names. This changes the deterministic IID overlap stream without changing marginal tail counts, regime evidence, thresholds, or strategy rules. The committed action-name stream is the frozen fixture."
 }
