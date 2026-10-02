@@ -1,0 +1,44 @@
+{
+  "schema": "finite-ram-lab.b491-result/v0.1",
+  "status": "PASS",
+  "classification": "TAIL_COMPATIBLE_EXCEEDANCES",
+  "claim_ceiling": "REPAIRED_GOVERNOR_V2_BOUNDARY_DOGFOOD",
+  "workflow_run_id": 36953403574,
+  "aggregate_job_id": 110671162927,
+  "execution_head_sha": "d07095d1b655138826ec95b59dfa185996a99f48",
+  "artifact_id": 11204269349,
+  "artifact_zip_sha256": "46e4ce86abb9f1ab8cfdcdefc3570b83391ce689eb86933a2f37ecbf90efcee5",
+  "dogfood_sha256": "9cfa432e5acb566fd61e8ddb7d91b9877426ccbe56a8c468a06c5a16f197b560",
+  "boundary_dispatch_checks_pass": true,
+  "runner_block_count": 8,
+  "physical_observations": 24,
+  "rows": [
+    {
+      "q": 2,
+      "declared_peak_budget_bytes": 50696192,
+      "exceedance_count": 0,
+      "max_observed_peak_bytes": 50667520,
+      "max_overrun_bytes": 0,
+      "classification": "NO_EXCEEDANCE"
+    },
+    {
+      "q": 4,
+      "declared_peak_budget_bytes": 58941440,
+      "exceedance_count": 0,
+      "max_observed_peak_bytes": 58925056,
+      "max_overrun_bytes": 0,
+      "classification": "NO_EXCEEDANCE"
+    },
+    {
+      "q": 7,
+      "declared_peak_budget_bytes": 71507968,
+      "exceedance_count": 1,
+      "max_observed_peak_bytes": 71512064,
+      "max_overrun_bytes": 4096,
+      "beta_binomial_upper_tail_probability": 0.29629629629629445,
+      "classification": "TAIL_COMPATIBLE_EXCEEDANCE"
+    }
+  ],
+  "suspect_q": [],
+  "next": "B492_ONLINE_CALIBRATION_UPDATE"
+}
