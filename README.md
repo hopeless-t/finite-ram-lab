@@ -398,9 +398,34 @@ See:
 - [FR-CLM-001D protocol](docs/FR-CLM-001D-TRAJECTORY-SURVIVAL.md)
 - [FR-CLM-001D receipt](docs/FR-CLM-001D-RECEIPT.md)
 
-The next semantic step is to hold the marginal rewrite error approximately
-fixed while comparing independent, persistent, and bursty temporal error
-processes.
+FR-CLM-001E holds the marginal relevance-label flip rate at approximately 1%
+while changing only the temporal dependence structure.
+
+| error process | observed label-flip rate | trajectory survival | affected trajectories | conditional p95 max failure run |
+|---|---:|---:|---:|---:|
+| IID_EVENT | 0.010036 | 0.334351 | 0.665649 | 7 |
+| STEP_SHARED | 0.010017 | 0.531738 | 0.468262 | 8 |
+| MARKOV_BURST | 0.009513 | 0.846191 | 0.153809 | 14 |
+
+The matched marginal rate therefore does not imply a matched risk shape.
+
+In this frozen synthetic fixture, temporal clustering concentrates damage into
+fewer trajectories while deepening the conditional failure tail:
+
+`broad + shallow != narrow + deep`.
+
+Endpoint success remains approximately 0.99 or higher in all three arms, so
+endpoint-only evaluation still hides large differences in uninterrupted
+trajectory survival.
+
+See:
+
+- [FR-CLM-001E protocol](docs/FR-CLM-001E-TEMPORAL-ERROR-SHAPE.md)
+- [FR-CLM-001E receipt](docs/FR-CLM-001E-RECEIPT.md)
+
+The next semantic step is FR-CLM-001F: infer latent persistence / burstiness
+from observed failure traces without receiving the generating process as ground
+truth.
 
 ## Cross-repository transfer
 
