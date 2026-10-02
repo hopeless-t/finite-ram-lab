@@ -165,3 +165,7 @@ That would test whether a small per-step selector error compounds across time:
 
 and connect the semantic Finite RAM lane directly to the existing
 Low-interference cognition / trajectory-survival hypothesis.
+
+## Execution gate
+
+Qualification is accepted only from the frozen GitHub Actions workflow on the exact branch head, with the result artifact digest recorded in a receipt.
