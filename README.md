@@ -501,6 +501,46 @@ FR-SOOM-001 synthetic counterexample — PASS
 The latest local readback returned DOMAIN_DENIED / operator_tool_mismatch for
 this lane, so no local snapshot was attempted and no retry was issued.
 
+FR-SOOM-002A adds a source-grounded controller taxonomy across earlyoom, nohang,
+Meta oomd, systemd-oomd, systemd pressure handling, low-memory-monitor, Android
+lmkd, Senpai, and Intel Memory Usage Analyzer.
+
+The synthesis separates:
+
+`pressure observer -> cooperative shrink -> victim selection -> termination`.
+
+It also introduces a stronger semantic hypothesis:
+
+`cross-process importance alone is insufficient; intra-application reclaimability matters`.
+
+See [FR-SOOM-002A controller taxonomy](docs/FR-SOOM-002A-CONTROLLER-TAXONOMY.md).
+
+FR-SOOM-002B then qualifies a synthetic deadline-aware action planner.
+
+For a frozen 3000-MiB relief target:
+
+| response deadline | semantic loss | hard kills | current task |
+|---:|---:|---:|---|
+| 25 ms | 73 | 3 | survives |
+| 100 ms | 14 | 1 | survives |
+| 200 ms | 9 | 0 | survives |
+| 600 ms | 3 | 0 | survives |
+
+The kill-first baseline has semantic loss 280 and destroys the current task.
+
+This introduces a new control variable:
+
+`remaining response-time budget`.
+
+See:
+
+- [FR-SOOM-002B protocol](docs/FR-SOOM-002B-ACTION-LADDER.md)
+- [FR-SOOM-002B receipt](docs/FR-SOOM-002B-RECEIPT.md)
+
+The next safe synthetic step is to replace fixed action latency and relief with
+distributions and Rare-event tails before any bounded live intervention is
+considered.
+
 
 ## Cross-repository transfer
 
