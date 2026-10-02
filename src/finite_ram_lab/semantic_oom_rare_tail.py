@@ -150,7 +150,7 @@ def _draw_action(
             plan_name,
             replicate,
             action_name,
-            "latency",
+            "lat",
         ),
     )
 
@@ -160,7 +160,7 @@ def _draw_action(
             plan_name,
             replicate,
             action_name,
-            "under_relief",
+            "under",
         )
         < action["under_relief_probability"]
     )
