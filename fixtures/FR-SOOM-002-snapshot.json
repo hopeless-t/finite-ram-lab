@@ -1,0 +1,97 @@
+{
+  "schema": "finite-ram-lab.semantic-oom-snapshot/v0.1",
+  "snapshot_id": "synthetic-shadow-001",
+  "captured_at": "2026-10-02T12:30:00Z",
+  "host_fingerprint": "synthetic-host",
+  "pressure": {
+    "mem_available_mib": 1536,
+    "swap_free_mib": 512,
+    "psi_full_avg10": 18.0
+  },
+  "processes": [
+    {
+      "pid": 101,
+      "name": "desktop-shell",
+      "rss_mib": 350,
+      "oom_score": 100,
+      "oom_score_adj": -500,
+      "semantic": {
+        "current_task": true,
+        "hard_protected": true,
+        "task_value": 100,
+        "reconstruction_cost": 100,
+        "unsaved_state": 0
+      }
+    },
+    {
+      "pid": 202,
+      "name": "chrome-active",
+      "rss_mib": 3200,
+      "oom_score": 950,
+      "oom_score_adj": 300,
+      "semantic": {
+        "current_task": true,
+        "hard_protected": false,
+        "task_value": 100,
+        "reconstruction_cost": 80,
+        "unsaved_state": 1
+      }
+    },
+    {
+      "pid": 303,
+      "name": "terminal-session",
+      "rss_mib": 500,
+      "oom_score": 250,
+      "oom_score_adj": 0,
+      "semantic": {
+        "current_task": true,
+        "hard_protected": false,
+        "task_value": 85,
+        "reconstruction_cost": 60,
+        "unsaved_state": 1
+      }
+    },
+    {
+      "pid": 404,
+      "name": "model-worker",
+      "rss_mib": 1200,
+      "oom_score": 820,
+      "oom_score_adj": 200,
+      "semantic": {
+        "current_task": false,
+        "hard_protected": false,
+        "task_value": 35,
+        "reconstruction_cost": 20,
+        "unsaved_state": 0
+      }
+    },
+    {
+      "pid": 505,
+      "name": "batch-compressor",
+      "rss_mib": 1400,
+      "oom_score": 700,
+      "oom_score_adj": 0,
+      "semantic": {
+        "current_task": false,
+        "hard_protected": false,
+        "task_value": 8,
+        "reconstruction_cost": 5,
+        "unsaved_state": 0
+      }
+    },
+    {
+      "pid": 606,
+      "name": "background-indexer",
+      "rss_mib": 900,
+      "oom_score": 650,
+      "oom_score_adj": 0,
+      "semantic": {
+        "current_task": false,
+        "hard_protected": false,
+        "task_value": 3,
+        "reconstruction_cost": 2,
+        "unsaved_state": 0
+      }
+    }
+  ]
+}

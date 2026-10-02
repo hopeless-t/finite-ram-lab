@@ -466,14 +466,40 @@ See:
 This is synthetic only. It is not a live benchmark of earlyoom or nohang and no
 process was signaled.
 
+FR-SOOM-002 qualifies the read-only shadow adapter.
+
+The frozen receipt demonstrates that a process snapshot can produce competing
+victim sets while preserving:
+
+- signals_sent = 0;
+- control_changes = 0;
+- authority_effect = NONE.
+
+For the frozen 2048-MiB fixture:
+
+- oom-score-like shadow -> chrome-active;
+- semantic shadow -> batch-compressor + background-indexer;
+- both satisfy the relief target;
+- semantic-loss delta = 262;
+- current-task survival changes false -> true.
+
+See:
+
+- [FR-SOOM-002 protocol](docs/FR-SOOM-002-SHADOW-MODE.md)
+- [FR-SOOM-002 receipt](docs/FR-SOOM-002-RECEIPT.md)
+
 Replacement research ladder:
 
 ```text
-FR-SOOM-001 synthetic counterexample
-    -> FR-SOOM-002 read-only shadow ranking on target host
-    -> FR-SOOM-003 bounded corrective actions
+FR-SOOM-001 synthetic counterexample — PASS
+    -> FR-SOOM-002 read-only shadow adapter — PASS
+    -> first target-host shadow snapshot — BLOCKED on matching MVCA/LDC binding
+    -> FR-SOOM-003 bounded corrective actions only after live shadow evidence
     -> replacement decision only from target-host evidence
 ```
+
+The latest local readback returned DOMAIN_DENIED / operator_tool_mismatch for
+this lane, so no local snapshot was attempted and no retry was issued.
 
 
 ## Cross-repository transfer

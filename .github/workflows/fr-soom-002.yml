@@ -1,0 +1,57 @@
+name: FR-SOOM-002 Shadow Ranking
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-soom-002-shadow-ranking
+    paths:
+      - "src/finite_ram_lab/semantic_oom_shadow.py"
+      - "fixtures/FR-SOOM-002-snapshot.json"
+      - "specs/FR-SOOM-002.json"
+      - "tests/test_semantic_oom_shadow.py"
+      - "docs/FR-SOOM-002-SHADOW-MODE.md"
+      - ".github/workflows/fr-soom-002.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_oom_shadow -v
+      - name: Run shadow receipt fixture
+        run: |
+          mkdir -p runs/FR-SOOM-002
+          python -m finite_ram_lab.semantic_oom_shadow \
+            fixtures/FR-SOOM-002-snapshot.json \
+            --relief-target-mib 2048 \
+            > runs/FR-SOOM-002/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-SOOM-002/result.json"))
+          assert r["status"] == "PASS"
+          assert r["observation_only"] is True
+          assert r["signals_sent"] == 0
+          assert r["control_changes"] == 0
+          assert r["authority_effect"] == "NONE"
+          assert r["ranking_disagreement"] is True
+          assert r["semantic_loss_delta_vs_oom_score"] == 262
+          assert r["current_task_survival_changed"] is True
+          PY
+          sha256sum specs/FR-SOOM-002.json
+          sha256sum runs/FR-SOOM-002/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-soom-002-shadow-ranking
+          path: runs/FR-SOOM-002/result.json
+          if-no-files-found: error

@@ -1,0 +1,43 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002/v0.1",
+  "status": "FROZEN_READ_ONLY_SHADOW_ADAPTER_SPEC",
+  "source_experiment": "FR-SOOM-001",
+  "purpose": "Compare victim rankings from a process snapshot without sending signals or changing system state.",
+  "snapshot_schema": "finite-ram-lab.semantic-oom-snapshot/v0.1",
+  "receipt_schema": "finite-ram-lab.semantic-oom-shadow/v0.1",
+  "required_process_fields": [
+    "pid",
+    "name",
+    "rss_mib",
+    "oom_score",
+    "oom_score_adj",
+    "semantic.current_task",
+    "semantic.hard_protected",
+    "semantic.task_value",
+    "semantic.reconstruction_cost",
+    "semantic.unsaved_state"
+  ],
+  "required_pressure_fields": [
+    "mem_available_mib",
+    "swap_free_mib",
+    "psi_full_avg10"
+  ],
+  "frozen_fixture_relief_target_mib": 2048,
+  "frozen_fixture_expectations": {
+    "signals_sent": 0,
+    "control_changes": 0,
+    "authority_effect": "NONE",
+    "ranking_disagreement": true,
+    "oom_score_victims": ["chrome-active"],
+    "semantic_victims": ["batch-compressor", "background-indexer"],
+    "semantic_loss_delta_vs_oom_score": 262,
+    "current_task_survival_changed": true
+  },
+  "claim_ceiling": "READ_ONLY_SHADOW_RANKING_ONLY",
+  "live_execution_gate": {
+    "requires_matching_mvca_ldc_operator_binding": true,
+    "unknown_or_domain_denied": "DO_NOT_RETRY",
+    "signals_forbidden": true,
+    "control_changes_forbidden": true
+  }
+}
