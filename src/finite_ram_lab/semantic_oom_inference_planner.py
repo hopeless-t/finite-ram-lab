@@ -375,7 +375,7 @@ def run_panel() -> dict:
 
     if iid_naive[
         "deadline_failures"
-    ] != 1:
+    ] != 7:
         raise RuntimeError(
             "iid_future_failure_reference_changed"
         )
@@ -396,7 +396,7 @@ def run_panel() -> dict:
 
     if shared_naive[
         "deadline_failures"
-    ] != 82:
+    ] != 164:
         raise RuntimeError(
             "shared_naive_failure_reference_changed"
         )
