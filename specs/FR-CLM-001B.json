@@ -1,0 +1,43 @@
+{
+  "schema": "finite-ram-lab.fr-clm-001b/v0.1",
+  "status": "FROZEN_SYNTHETIC_STOCHASTIC_SPEC",
+  "question": "Can the semantic working-set harness detect rare selector omissions while preserving a statistically qualified pressure knee?",
+  "source_experiment": "FR-CLM-001A",
+  "arms": [
+    "APPEND_TRUNCATE",
+    "NOISY_KEY_AWARE"
+  ],
+  "budgets": [1, 2, 4, 6, 8],
+  "replicates": 512,
+  "cases_per_replicate": 4,
+  "observations_per_budget_arm": 2048,
+  "seed": 20261002,
+  "omission_probability": 0.005,
+  "rare_event_injection": "Independently omit each selected required-latest event with deterministic SHA256 pseudo-random draw, block immediate reselection, then back-fill resident slots from newest available events.",
+  "primary_endpoint": "exact_rate",
+  "uncertainty": "Wilson 95% interval",
+  "qualified_knee_rule": {
+    "exact_rate_at_least": 0.95,
+    "wilson95_lower_at_least": 0.95
+  },
+  "secondary_endpoints": [
+    "failure_count",
+    "failure_signature_counts",
+    "failure_biopsy",
+    "omitted_required_indices",
+    "resident_indices"
+  ],
+  "acceptance": {
+    "append_truncate_qualified_knee": 8,
+    "noisy_key_aware_qualified_knee": 2,
+    "budget_2_noisy_key_aware_rare_failure_count_gt": 0,
+    "budget_2_noisy_key_aware_failure_rate_lt": 0.05
+  },
+  "claim_ceiling": "SYNTHETIC_STOCHASTIC_SEMANTIC_WORKING_SET_ONLY",
+  "nonclaims": [
+    "No real CLM model is evaluated",
+    "No provider or LLM performance claim is made",
+    "The injected omission probability is a synthetic fixture, not an empirical selector error rate",
+    "A statistically qualified synthetic knee is not a universal context budget"
+  ]
+}
