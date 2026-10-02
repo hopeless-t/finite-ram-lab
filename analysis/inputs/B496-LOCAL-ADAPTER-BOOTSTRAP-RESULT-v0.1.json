@@ -1,0 +1,25 @@
+{
+  "schema": "finite-ram-lab.b496-result/v0.1",
+  "status": "PASS",
+  "classification": "LOCAL_ADAPTER_BOOTSTRAP_CONTRACT_QUALIFIED",
+  "claim_ceiling": "HOST_SCOPED_LOCAL_CALIBRATION_BOOTSTRAP",
+  "workflow_run_id": 36965649853,
+  "workflow_job_id": 110708711789,
+  "execution_head_sha": "524bec11100c7df8527c6e46fabef713049812be",
+  "artifact_id": 11209199726,
+  "artifact_zip_sha256": "8f14f4b3676c21b46798366e0f98754c7ab156d9736722ccb3a738253f22ce47",
+  "bootstrap_plan_sha256": "83ad69dfd20d87d1df332e873a99a23f28f6a2fea7ab95e01c98478d380b66e0",
+  "candidate_q": [1,2,4,7],
+  "hosted_threshold_import_allowed": false,
+  "initial_exploration": {
+    "samples_per_q": 8,
+    "physical_observations": 32,
+    "sample_unit": "fresh_local_process_on_bound_host"
+  },
+  "promotion_target": {
+    "target_rank_max_coverage": 0.95,
+    "required_sample_count_per_promoted_q": 19,
+    "additional_samples_after_exploration_per_promoted_q": 11
+  },
+  "next": "B497_LOCAL_CALIBRATION_HARNESS"
+}
