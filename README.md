@@ -14,7 +14,7 @@ A small, reproducible systems research lab for understanding how finite physical
 
 ## Status
 
-**Systems research / experimental software — Chapter II active**
+**Systems research / experimental software — Chapter II active + adaptive Governor application lane qualified through B500**
 
 Current principle:
 
@@ -115,6 +115,160 @@ See:
 - [Current handoff](handoffs/CURRENT.md)
 
 Historical project stages and negative results remain part of the evidence record; this README now tracks the active frontier rather than repeating the full experiment ledger.
+
+## Adaptive Governor / application lane — B461 through B500
+
+A second active lane now turns the lab's evidence model into an executable memory-policy application.
+
+The key unifying principle is:
+
+> **Information obligation is not the same thing as simultaneously resident representation.**
+
+That line began with exact streamed reconstruction and physical peak measurement, then moved through mechanism biopsy, implementation repair, calibrated policy selection, runtime dogfood, online evidence update, a reusable GitHub Actions application surface, and finally a host-bound local qualifier.
+
+The current evidence chain is:
+
+```text
+B461  obligation/residency separation
+  ↓
+B462  hosted physical peak proxy
+  ↓
+B483-B485  localize and confirm content-sensitive centering temporary
+  ↓
+B486  exact tiled centering repair
+  ↓
+B487  rebuild repaired q frontier
+  ↓
+B489  19-runner / 95%-class repaired calibration
+  ↓
+B490  repaired Governor v2
+  ↓
+B491-B493  runtime dogfood -> tail/drift diagnosis -> online update -> v2.1
+  ↓
+B494  stable CLI + GitHub Composite Action application surface
+  ↓
+B495  downstream consumer workflow drives real numerical execution
+  ↓
+B496-B500  local/LDC bootstrap, calibration, Pareto extension,
+           host-bound promotion, and one-shot adaptive qualifier
+```
+
+### Repaired hosted Governor v2.1
+
+The hosted repaired runtime currently uses `TILED_WHERE`.
+
+The evidence-qualified v2.1 policy points are:
+
+| empirical peak budget | q | independent hosted-runner samples | rank-max floor |
+|---:|---:|---:|---:|
+| 50,696,192 B | 2 | 27 | 27/28 ≈ 96.43% |
+| 58,941,440 B | 4 | 27 | 27/28 ≈ 96.43% |
+| 71,512,064 B | 7 | 27 | 27/28 ≈ 96.43% |
+
+These are **hosted-environment empirical calibration values**, not universal RAM limits.
+
+The q7 boundary moved upward by one page after a tail-compatible runtime observation. The online updater accepted that observation only after the predeclared tail-vs-drift diagnostic found no drift suspect. Drift-suspect panels fail closed rather than silently widening the policy.
+
+### GitHub Actions application surface
+
+The qualified application contract is available through both a lightweight CLI and a Composite Action.
+
+CLI:
+
+```bash
+frl governor-select \
+  --policy policies/repaired-governor-v2.1.json \
+  --peak-budget-bytes 60000000 \
+  --minimum-rank-coverage 0.95 \
+  --out governor-receipt.json
+```
+
+Composite Action:
+
+```yaml
+- uses: hopeless-t/finite-ram-lab/.github/actions/finite-ram-governor@<ref>
+  id: governor
+  with:
+    peak-budget-bytes: "60000000"
+    minimum-rank-coverage: "0.95"
+    receipt-path: "governor-receipt.json"
+
+- run: echo "selected q = ${{ steps.governor.outputs.selected-q }}"
+```
+
+The decision receipt exposes the selected q, empirical boundary, sample count, rank-coverage floor, policy version, implementation, provenance, and exchangeability assumption.
+
+B495 proved the full consumer path:
+
+```text
+application RAM request
+-> Governor Action
+-> q output
+-> downstream physical execution
+-> exact semantic gate
+-> observed peak
+-> application execution receipt
+```
+
+with q2/q4/q7 consumer jobs all completing exactly and with no boundary exceedance in that panel.
+
+### Local development-machine bridge
+
+Hosted thresholds are **not copied onto a development machine**.
+
+The local lane deliberately restarts with all four candidates:
+
+`{q1, q2, q4, q7}`
+
+because a dominance relation observed on GitHub-hosted runners is not automatically a local-machine fact.
+
+The local flow is host-bound:
+
+```text
+host fingerprint
+-> all-q fresh-process exploration
+-> local Pareto discovery
+-> extend only under-sampled Pareto q
+-> recompute Pareto
+-> repeat if a previously dominated q re-enters
+-> promote host-bound policy
+-> bound selector validates fingerprint before every decision
+```
+
+The one-shot command prepared by B500 is:
+
+```bash
+frl local-qualify \
+  --exploration-samples-per-q 8 \
+  --size 2048 \
+  --target-rank-coverage 0.95 \
+  --max-extension-cycles 4 \
+  --out-dir local-governor-bundle
+```
+
+At the intended 95% target, the initial exploration costs 32 physical observations. The worst case is 76 total observations if all four q values remain Pareto; fewer are needed when the local Pareto is smaller.
+
+A promoted local policy is `LOCAL_HOST_BOUND`. Copying it to another environment does not silently authorize the same decisions: the selector rechecks the environment fingerprint and fails closed on mismatch.
+
+The intended execution path for real development-machine evidence is:
+
+```text
+Web ChatGPT -> MVCA -> LDC -> development machine
+```
+
+GitHub-hosted B497-B500 runs are harness qualification only and are not claimed as development-machine calibration.
+
+Current local execution is waiting on an appropriate LDC operator binding / action for this calibration lane; unrelated authority is not reused.
+
+See:
+
+- [B494 application surface receipt](docs/B494-GITHUB-ACTIONS-APP-SURFACE-RECEIPT.md)
+- [B495 consumer dogfood receipt](docs/B495-APPLICATION-CONSUMER-DOGFOOD-RECEIPT.md)
+- [B496 local bootstrap receipt](docs/B496-LOCAL-ADAPTER-BOOTSTRAP-RECEIPT.md)
+- [B497 local calibration harness receipt](docs/B497-LOCAL-CALIBRATION-HARNESS-RECEIPT.md)
+- [B498 local policy promoter receipt](docs/B498-LOCAL-POLICY-PROMOTER-RECEIPT.md)
+- [B499 Pareto extension receipt](docs/B499-LOCAL-PARETO-EXTENSION-RECEIPT.md)
+- [B500 one-shot qualifier receipt](docs/B500-LOCAL-ONE-SHOT-QUALIFIER-RECEIPT.md)
 
 ## Why this project exists
 
@@ -256,12 +410,20 @@ finite-ram-lab/
 │   ├── CHAR-001.json
 │   ├── MC-001.json
 │   └── MC-QUALITY-001.json
+├── policies/
+│   └── repaired-governor-v2.1.json
 ├── src/finite_ram_lab/
 │   ├── env_probe.py
 │   ├── limit_probe.py
 │   ├── obs_workload.py
 │   ├── char_sweep.py
 │   ├── calculators.py
+│   ├── app_surface.py
+│   ├── local_adapter_bootstrap.py
+│   ├── local_calibration_explore.py
+│   ├── local_calibration_extend.py
+│   ├── local_policy_adapter.py
+│   ├── local_one_shot_qualifier.py
 │   ├── cli.py
 │   ├── sim.py
 │   ├── mc.py
@@ -279,8 +441,11 @@ finite-ram-lab/
 │   ├── MONTE_CARLO.md
 │   ├── EXECUTION_MODEL.md
 │   └── NORTH_STAR.md
-└── .github/workflows/
-    ├── ci.yml
+└── .github/
+    ├── actions/
+    │   └── finite-ram-governor/action.yml
+    └── workflows/
+        ├── ci.yml
     ├── env-001.yml
     ├── env-002.yml
     ├── obs-001.yml
