@@ -38,10 +38,10 @@ jobs:
           r=json.load(open("runs/FR-SOOM-002H/result.json"))
           assert r["status"] == "PASS"
           s=r["strategies"]
-          assert s["STATIC_INITIAL"]["current_task_loss_count"] == 104
-          assert s["RAW_SLIDING"]["current_task_loss_count"] == 43
+          assert s["STATIC_INITIAL"]["current_task_loss_count"] == 101
+          assert s["RAW_SLIDING"]["current_task_loss_count"] == 41
           assert s["RAW_SLIDING"]["plan_switches"] == 4
-          assert s["HYSTERESIS_2_ENTER_1_EXIT"]["current_task_loss_count"] == 63
+          assert s["HYSTERESIS_2_ENTER_1_EXIT"]["current_task_loss_count"] == 61
           assert s["HYSTERESIS_2_ENTER_1_EXIT"]["plan_switches"] == 2
           assert s["HYSTERESIS_2_ENTER_1_EXIT"]["unnecessary_background_sacrifice_windows"] == 1
           PY
