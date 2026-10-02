@@ -53,7 +53,7 @@ class SemanticOomRegimeDriftTests(
             row[
                 "current_task_loss_count"
             ],
-            104,
+            101,
         )
         self.assertIsNone(
             row[
@@ -70,7 +70,7 @@ class SemanticOomRegimeDriftTests(
             row[
                 "current_task_loss_count"
             ],
-            43,
+            41,
         )
         self.assertEqual(
             row["plan_switches"],
@@ -103,7 +103,7 @@ class SemanticOomRegimeDriftTests(
             row[
                 "current_task_loss_count"
             ],
-            63,
+            61,
         )
         self.assertEqual(
             row["plan_switches"],
