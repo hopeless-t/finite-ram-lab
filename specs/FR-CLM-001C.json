@@ -1,0 +1,58 @@
+{
+  "schema": "finite-ram-lab.fr-clm-001c/v0.1",
+  "status": "FROZEN_SYNTHETIC_RELIABILITY_RESIDENCY_SPEC",
+  "question": "How much resident semantic budget is required to maintain qualified task survival as a synthetic relevance selector becomes less reliable?",
+  "source_experiment": "FR-CLM-001B",
+  "selector": {
+    "kind": "SYMMETRIC_RELEVANCE_LABEL_FLIP",
+    "ground_truth_relevant": "latest event for each query key",
+    "ranking": "predicted relevant first, then recency",
+    "error_probabilities": [0.0, 0.001, 0.0025, 0.005, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2],
+    "randomness": "deterministic SHA256 pseudo-random draws bound to frozen experiment identity"
+  },
+  "budgets": [1, 2, 4, 6, 8],
+  "replicates": 2048,
+  "cases_per_replicate": 4,
+  "observations_per_cell": 8192,
+  "seed": 20261002,
+  "primary_endpoint": "exact_rate",
+  "uncertainty": "Wilson 95% interval",
+  "qualified_rule": {
+    "exact_rate_at_least": 0.95,
+    "wilson95_lower_at_least": 0.95
+  },
+  "secondary_endpoints": [
+    "minimum_qualified_budget_by_error",
+    "false_negative_required_events",
+    "false_positive_distractor_events",
+    "failure_signature_counts",
+    "failure_biopsy"
+  ],
+  "acceptance": {
+    "minimum_qualified_budget_by_error": {
+      "0.0": 2,
+      "0.001": 2,
+      "0.0025": 2,
+      "0.005": 2,
+      "0.01": 2,
+      "0.02": 4,
+      "0.03": 4,
+      "0.05": 6,
+      "0.1": 8,
+      "0.2": 8
+    },
+    "rare_event_sentinel": {
+      "error_probability": 0.001,
+      "budget": 2,
+      "failure_count": 30
+    },
+    "full_residency_exact_rate": 1.0
+  },
+  "claim_ceiling": "SYNTHETIC_RELIABILITY_RESIDENCY_SURFACE_ONLY",
+  "nonclaims": [
+    "Synthetic selector error is not an empirical CLM or language-model error rate",
+    "The frontier is a property of the frozen synthetic corpus and selector fixture",
+    "Full resident budget is an exact synthetic reference, not a claim that full production context is always sufficient",
+    "No provider, model, Pi, or KITten performance claim is made"
+  ]
+}
