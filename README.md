@@ -427,6 +427,55 @@ The next semantic step is FR-CLM-001F: infer latent persistence / burstiness
 from observed failure traces without receiving the generating process as ground
 truth.
 
+## Semantic OOM / User-Task Survival lane
+
+FR-SOOM-001 freezes a new memory-pressure hypothesis:
+
+`system survival != task survival != semantic survival`.
+
+The synthetic experiment compares a static oom-score-first baseline, RSS-first,
+and an exact semantic-loss minimizer under the same required memory-relief
+budgets.
+
+Frozen result:
+
+| required relief | oom-score-like victim prefix | semantic victim set | baseline semantic loss | semantic loss | current task survives semantic policy |
+|---:|---|---|---:|---:|---|
+| 1024 MiB | chrome-active | batch-compressor | 280 | 13 | yes |
+| 2048 MiB | chrome-active | batch-compressor + background-indexer | 280 | 18 | yes |
+| 3072 MiB | chrome-active | model-worker + batch-compressor + background-indexer | 280 | 73 | yes |
+| 4096 MiB | chrome-active + model-worker | chrome-active + background-indexer | 335 | 285 | no |
+| 5120 MiB | chrome-active + model-worker + batch-compressor | chrome-active + batch-compressor + background-indexer | 348 | 298 | no |
+
+Every policy satisfies the same frozen relief target.
+
+The result therefore isolates victim-selection semantics rather than claiming
+extra memory capacity:
+
+`do not destroy high-value current-task state while lower-cost relief remains available`.
+
+The semantic policy deliberately stops preserving the active task above the
+3.5-GiB pool of lower-value background memory. It is a sacrifice-order policy,
+not an invincibility mechanism.
+
+See:
+
+- [FR-SOOM-001 protocol](docs/FR-SOOM-001-SEMANTIC-OOM.md)
+- [FR-SOOM-001 receipt](docs/FR-SOOM-001-RECEIPT.md)
+
+This is synthetic only. It is not a live benchmark of earlyoom or nohang and no
+process was signaled.
+
+Replacement research ladder:
+
+```text
+FR-SOOM-001 synthetic counterexample
+    -> FR-SOOM-002 read-only shadow ranking on target host
+    -> FR-SOOM-003 bounded corrective actions
+    -> replacement decision only from target-host evidence
+```
+
+
 ## Cross-repository transfer
 
 Finite RAM results are now actively dispatched into adjacent Catfood Lab research when the invariant is directly reusable.
