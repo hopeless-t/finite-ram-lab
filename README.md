@@ -676,9 +676,37 @@ See:
 - [FR-SOOM-002G protocol](docs/FR-SOOM-002G-INFERENCE-PLANNER.md)
 - [FR-SOOM-002G receipt](docs/FR-SOOM-002G-RECEIPT.md)
 
-The next synthetic step is FR-SOOM-002H: regime drift, confidence decay, and
-hysteresis so stale failure-domain evidence does not cause permanent
-over-escalation.
+FR-SOOM-002H adds regime drift and belief lifecycle.
+
+Across a frozen IID -> one-window burst -> sustained SHARED -> IID recovery
+sequence:
+
+| strategy | current-task losses | unnecessary background-sacrifice windows | switches | SHARED detection delay |
+|---|---:|---:|---:|---|
+| STATIC_INITIAL | 101 | 0 | 0 | never |
+| RAW_SLIDING | 41 | 2 | 4 | 1 window |
+| HYSTERESIS_2_ENTER_1_EXIT | 61 | 1 | 2 | 2 windows |
+
+RAW reacts fastest but carries an isolated dependence burst into the following
+healthy window.
+
+HYSTERESIS removes that burst spillover and halves plan churn, but pays one
+additional window of detection delay.
+
+Thus:
+
+`stability x responsiveness x semantic preservation`
+
+becomes an explicit controller tradeoff.
+
+See:
+
+- [FR-SOOM-002H protocol](docs/FR-SOOM-002H-REGIME-DRIFT.md)
+- [FR-SOOM-002H receipt](docs/FR-SOOM-002H-RECEIPT.md)
+
+The next synthetic step is FR-SOOM-002I: asynchronous event-time evidence,
+wall-clock confidence decay, intervention cooldown, and a daemon-like state
+machine.
 
 
 ## Cross-repository transfer
