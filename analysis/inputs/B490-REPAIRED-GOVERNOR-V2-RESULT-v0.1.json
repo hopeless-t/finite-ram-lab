@@ -1,0 +1,22 @@
+{
+  "schema": "finite-ram-lab.b490-result/v0.1",
+  "status": "PASS",
+  "classification": "REPAIRED_COVERAGE_AWARE_GOVERNOR_V2_QUALIFIED",
+  "claim_ceiling": "EXCHANGEABILITY_CONDITIONAL_REPAIRED_GOVERNOR_V2",
+  "workflow_run_id": 36953182615,
+  "workflow_job_id": 110670364892,
+  "execution_head_sha": "d1307dcc32575e560aa1163ea2985b64800b484a",
+  "artifact_id": 11203964385,
+  "artifact_zip_sha256": "0fecac7e1373eb57255b974633414b11ec24ebc7be14ce4d397698a8b996cf0b",
+  "governor_sha256": "4b13fd45460ab657904dd46abfd733644e5be1c49e444242f9c1b7d43ca98203",
+  "implementation": "TILED_WHERE",
+  "minimum_rank_coverage": 0.95,
+  "pareto_q": [2,4,7],
+  "dominated_q_excluded": [1],
+  "breakpoints": [
+    {"minimum_peak_budget_bytes":50696192,"selected_q":2,"sample_count":19,"rank_floor":0.95,"median_latency_seconds":0.3956389410000014},
+    {"minimum_peak_budget_bytes":58941440,"selected_q":4,"sample_count":19,"rank_floor":0.95,"median_latency_seconds":0.38782265300000063},
+    {"minimum_peak_budget_bytes":71507968,"selected_q":7,"sample_count":19,"rank_floor":0.95,"median_latency_seconds":0.38639202799999595}
+  ],
+  "next": "B491_REPAIRED_GOVERNOR_V2_DOGFOOD"
+}
