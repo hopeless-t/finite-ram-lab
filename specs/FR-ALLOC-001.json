@@ -1,0 +1,77 @@
+{
+  "schema": "finite-ram-lab.fr-alloc-001/v0.1",
+  "title": "FR-ALLOC-001 Fragmentation and Prefix Sharing Surface",
+  "status": "FROZEN_SOURCE_GROUNDED_SYNTHETIC_ALLOCATOR_EXPERIMENT",
+  "parent": "FR-QUANT-002",
+  "source_pins": {
+    "vLLM": "vllm-project/vllm@5f30fc7031cae49bf51073fc953d419b08f8887c",
+    "vAttention": "microsoft/vattention@71a0e91aa46ff8fa985bcca3327efe0ab9929a39"
+  },
+  "fixture": {
+    "pool_blocks": 512,
+    "ticks": 5000,
+    "requests": 5280,
+    "request_block_sizes": [
+      2,
+      4,
+      6,
+      8,
+      12,
+      16,
+      24,
+      32
+    ],
+    "prefix_groups": 12,
+    "prefix_share_probability": 0.7,
+    "prefix_blocks": 4
+  },
+  "frozen_results": {
+    "MAX_RESERVE": {
+      "admitted": 1839,
+      "rejected": 3441
+    },
+    "CONTIG_FIRST_FIT": {
+      "admitted": 4685,
+      "rejected": 595,
+      "external_fragmentation_rejects": 590
+    },
+    "PAGED": {
+      "admitted": 4787,
+      "rejected": 493
+    },
+    "PAGED_PREFIX_SHARE": {
+      "admitted": 5056,
+      "rejected": 224,
+      "prefix_blocks_avoided": 12904
+    }
+  },
+  "block_granularity_probe": {
+    "requests": 8192,
+    "token_length_range": [
+      1,
+      2048
+    ],
+    "block16_waste_fraction": 0.007225370819670894,
+    "block128_waste_fraction": 0.057858782370803254
+  },
+  "boundaries": [
+    "synthetic allocator geometry only",
+    "not a vLLM benchmark",
+    "not a vAttention benchmark",
+    "no GPU/CUDA physical allocation claim",
+    "no throughput claim"
+  ],
+  "claim_ceiling": "SOURCE_GROUNDED_SYNTHETIC_ALLOCATOR_GEOMETRY_ONLY",
+  "reproducibility": {
+    "seed": "FR-ALLOC-001",
+    "draw_domains": [
+      "arrival",
+      "size",
+      "life",
+      "prefix-group",
+      "has-prefix",
+      "granularity-length"
+    ],
+    "correction_note": "Pilot numbers used different draw-domain labels. Repository draw-domain identity is canonical; thresholds were not relaxed."
+  }
+}
