@@ -1,0 +1,26 @@
+{
+  "schema": "finite-ram-lab.fr-fp-019/v0.1",
+  "title": "Hosted restore observability plane",
+  "status": "HOSTED_PHYSICAL_OBSERVABILITY_CANDIDATE",
+  "parent": "FR-FP-018",
+  "fixture": {
+    "state_mib": 8,
+    "paired_blocks": 32,
+    "pre_restore_window_ms": 20,
+    "permutation_tests": 10000
+  },
+  "pre_restore_features": [
+    "global io PSI some delta",
+    "global io PSI full delta",
+    "cgroup io PSI some delta",
+    "cgroup io.stat rbytes delta",
+    "cgroup memory.current delta"
+  ],
+  "restore_window_diagnostics": [
+    "global io PSI",
+    "cgroup io PSI",
+    "cgroup rbytes",
+    "memory.current"
+  ],
+  "claim_ceiling": "HOSTED_RESTORE_OBSERVABILITY_PILOT_ONLY"
+}
