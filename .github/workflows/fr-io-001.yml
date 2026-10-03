@@ -1,0 +1,50 @@
+name: FR-IO-001 Page Cache Residency
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-io-001-page-cache-residency
+    paths:
+      - "src/finite_ram_lab/fr_page_cache_residency.py"
+      - "tests/test_fr_page_cache_residency.py"
+      - "specs/FR-IO-001.json"
+      - "docs/FR-IO-001-PAGE-CACHE-RESIDENCY.md"
+      - ".github/workflows/fr-io-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_page_cache_residency -v
+      - name: Run physical page-cache experiment
+        run: |
+          mkdir -p runs/FR-IO-001
+          python -m finite_ram_lab.fr_page_cache_residency > runs/FR-IO-001/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-IO-001/result.json"))
+          assert r["status"] == "PASS"
+          s=r["summary"]
+          assert s["max_cold_resident_fraction"] <= 0.10
+          assert s["min_after_touch_resident_fraction"] >= 0.95
+          assert s["max_after_dontneed_resident_fraction"] <= 0.25
+          PY
+          sha256sum specs/FR-IO-001.json
+          sha256sum runs/FR-IO-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-io-001-page-cache-residency
+          path: runs/FR-IO-001/result.json
+          if-no-files-found: error

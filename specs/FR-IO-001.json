@@ -1,0 +1,32 @@
+{
+  "schema": "finite-ram-lab.fr-io-001/v0.1",
+  "title": "FR-IO-001 File-backed Page-cache Residency",
+  "status": "FROZEN_HOSTED_LINUX_PHYSICAL_EXPERIMENT",
+  "parent": "FR-REMAT-001",
+  "source_relatives": {
+    "mincore": "Linux man-pages 6.19 / mincore(2)",
+    "posix_fadvise": "Linux man-pages 6.19 / posix_fadvise(2)",
+    "madvise": "Linux man-pages 6.19 / madvise(2)"
+  },
+  "fixture": {
+    "repetitions": 4,
+    "file_size_mib": 32,
+    "measurement": "mincore resident-page fraction",
+    "reclaim_hint": "POSIX_FADV_DONTNEED",
+    "mapping": "mmap ACCESS_COPY, read-only touches"
+  },
+  "qualification_gates": {
+    "max_initial_resident_fraction": 0.1,
+    "min_post_touch_resident_fraction": 0.95,
+    "max_post_dontneed_resident_fraction": 0.25
+  },
+  "boundaries": [
+    "POSIX_FADV_DONTNEED is advisory",
+    "clean temporary file-backed pages only",
+    "no O_DIRECT claim",
+    "no dirty-writeback claim",
+    "no real-model shard claim",
+    "no sysfs writes"
+  ],
+  "claim_ceiling": "HOSTED_LINUX_CLEAN_FILE_PAGE_CACHE_RESIDENCY_ONLY"
+}
