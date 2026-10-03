@@ -19,8 +19,17 @@
     }
   },
   "arms": {
-    "resident_budget_mib": [1024, 2048, 4096, 6144],
-    "ssd_bandwidth_mib_s": [1000, 2500, 5000],
+    "resident_budget_mib": [
+      1024,
+      2048,
+      4096,
+      6144
+    ],
+    "ssd_bandwidth_mib_s": [
+      1000,
+      2500,
+      5000
+    ],
     "window_blocks": 2,
     "double_buffer": true,
     "runtime_and_kv_reserve_mib": 768,
@@ -71,5 +80,10 @@
     "No claim that SSD streaming will deliver usable interactive decode speed.",
     "No claim that a successful analytic window implies a successful physical run.",
     "No host process is controlled by this PR."
-  ]
+  ],
+  "upstream": {
+    "repository": "PrismML-Eng/Bonsai-demo",
+    "commit": "bfaea577522626b883f755236878e4583f3d6e68",
+    "observed_date": "2026-10-03"
+  }
 }
