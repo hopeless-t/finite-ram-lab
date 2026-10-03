@@ -14,6 +14,15 @@ class HostedResidencyLifecycleTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.result = run_panel()
+        import json
+        print(
+            "FR_FP_010_RESULT="
+            + json.dumps(
+                cls.result,
+                sort_keys=True,
+            ),
+            flush=True,
+        )
 
     def test_panel_passes(self) -> None:
         self.assertEqual(
