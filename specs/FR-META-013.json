@@ -1,0 +1,15 @@
+{
+  "schema": "finite-ram-lab.fr-meta-013/v0.1",
+  "title": "GitHub Actions pip download cache",
+  "status": "DOGFOOD_PERFORMANCE_CANDIDATE",
+  "parent": "FR-META-012",
+  "observed_uncached_install_seconds": [19.006, 16.256, 14.679, 16.397],
+  "candidate": {
+    "setup_python": "v7",
+    "cache": "pip",
+    "cache_dependency_path": "pyproject.toml"
+  },
+  "scientific_tests_changed": false,
+  "measurement": "compare Install duration and cache restore behavior on later same-key runs",
+  "claim_ceiling": "CI_DEPENDENCY_CACHE_OPTIMIZATION_ONLY"
+}
