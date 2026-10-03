@@ -37,6 +37,22 @@ class SemanticTieredResidencyTests(unittest.TestCase):
         self.assertEqual(fast["semantic_loss"], 12)
         self.assertEqual(ram["semantic_loss"], 45)
 
+    def test_write_budget_forces_smaller_ssd_action(self):
+        row = self.arms["WRITE_BUDGET_2G"]
+        self.assertEqual(row["choices"]["KV"], "Q4")
+        self.assertEqual(row["choices"]["PREFIX"], "SSD")
+        self.assertEqual(row["choices"]["BROWSER_CACHE"], "DROP")
+        self.assertEqual(row["ssd_write_mib"], 1024)
+        self.assertEqual(row["semantic_loss"], 36)
+
+    def test_analytic_bandwidth_knee(self):
+        knee = self.result["analytic_boundaries"][
+            "fast_hybrid_min_p05_write_mib_s_at_1600ms"
+        ]
+        self.assertAlmostEqual(knee, 1939.3939393939395)
+        self.assertLess(knee, 2500)
+        self.assertGreater(knee, 1000)
+
     def test_slow_ssd_falls_back(self):
         self.assertEqual(
             self.arms["SLOW_SSD_TIERED"]["choices"],
