@@ -1,0 +1,16 @@
+{
+  "schema": "finite-ram-lab.fr-fp-015/v0.1",
+  "title": "Warm-cold break-even tier frontier",
+  "status": "ANALYTIC_FRONTIER_CANDIDATE",
+  "parent": "FR-FP-014",
+  "evidence_pr": 133,
+  "measured_inputs": {
+    "warm_read_ns": 847494.0,
+    "cold_read_ns": 3102932.5,
+    "warm_resident_mib": 8.0,
+    "cold_resident_mib": 0.0
+  },
+  "law": "lambda_star(p)=p*(Lcold-Lwarm)/(Mwarm-Mcold)",
+  "hidden_common_utility": false,
+  "claim_ceiling": "ANALYTIC_BREAK_EVEN_FRONTIER_FROM_SINGLE_HOSTED_RESTORE_PILOT_ONLY"
+}
