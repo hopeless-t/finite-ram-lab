@@ -53,6 +53,13 @@ class SemanticTieredResidencyTests(unittest.TestCase):
         self.assertLess(knee, 2500)
         self.assertGreater(knee, 1000)
 
+    def test_phase_map_has_expected_transitions(self):
+        phase = self.result["phase_map"]
+        self.assertEqual(phase["150"]["5000"], "RAM_FALLBACK")
+        self.assertEqual(phase["800"]["1500"], "PREFIX_SSD_MIX")
+        self.assertEqual(phase["1600"]["2000"], "KV_Q8_AUX_SSD")
+        self.assertEqual(phase["1600"]["3500"], "PREFIX_AUX_SSD")
+
     def test_slow_ssd_falls_back(self):
         self.assertEqual(
             self.arms["SLOW_SSD_TIERED"]["choices"],
