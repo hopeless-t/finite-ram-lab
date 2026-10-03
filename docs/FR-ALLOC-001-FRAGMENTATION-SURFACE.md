@@ -54,13 +54,13 @@ The frozen simulator has:
 
 - 512 physical blocks;
 - 5,000 ticks;
-- 5,308 deterministic requests;
+- 5,280 deterministic requests;
 - request sizes from 2 to 32 blocks;
 - finite lifetimes;
 - 12 repeated-prefix groups;
 - 70% chance of a reusable four-block prefix.
 
-Four allocator policies see the exact same event trace.
+Four allocator policies see the exact same event trace.\n\nReproducibility freezes both the seed and draw-domain labels. An initial pilot used different domain labels; the repository implementation is canonical and no qualification threshold was relaxed.
 
 ## 1. MAX_RESERVE
 
@@ -68,8 +68,8 @@ Each request reserves the maximum possible 32 blocks.
 
 Result:
 
-- admitted: **1,862**
-- rejected: **3,446**
+- admitted: **1,839**
+- rejected: **3,441**
 
 This is capacity stranding by reservation.
 
@@ -83,17 +83,17 @@ contiguous run.
 
 Result:
 
-- admitted: **4,691**
-- rejected: **617**
+- admitted: **4,685**
+- rejected: **595**
 - rejects with enough total free blocks but no large enough contiguous run:
-  **615**
+  **590**
 
 Thus:
 
 [
-rac{615}{617}
+rac{590}{595}
 =
-99.6759%.
+99.1597%.
 ]
 
 Almost every rejection is external fragmentation rather than true exhaustion.
@@ -115,8 +115,8 @@ The same requests can use arbitrary free physical blocks.
 
 Result:
 
-- admitted: **4,804**
-- rejected: **504**
+- admitted: **4,787**
+- rejected: **493**
 
 No semantic bytes were reduced.
 
@@ -131,9 +131,9 @@ across compatible requests.
 
 Result:
 
-- admitted: **5,067**
-- rejected: **241**
-- duplicate prefix blocks avoided over the trace: **12,996**
+- admitted: **5,056**
+- rejected: **224**
+- duplicate prefix blocks avoided over the trace: **12,904**
 
 Compared with plain PAGED:
 
@@ -141,7 +141,7 @@ Compared with plain PAGED:
 504ightarrow241
 ]
 
-or roughly **52.18% fewer rejects**.
+or roughly **54.56% fewer rejects**.
 
 This is the interaction:
 
@@ -162,10 +162,10 @@ For 8,192 deterministic request lengths from 1–2,048 tokens:
 | block size | internal waste |
 |---:|---:|
 | 8 tokens | 0.3401% |
-| 16 | 0.7315% |
+| 16 | 0.7225% |
 | 32 | 1.4897% |
 | 64 | 2.9718% |
-| 128 | 5.7838% |
+| 128 | 5.7859% |
 
 Smaller blocks reduce internal waste.
 
