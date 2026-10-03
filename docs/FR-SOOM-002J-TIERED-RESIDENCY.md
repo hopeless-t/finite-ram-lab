@@ -152,6 +152,32 @@ The optimizer changes plan rather than disabling SSD entirely:
 
 This is intentionally between the unrestricted tiered arm (loss 12) and RAM-only arm (loss 45). It models endurance / write-amplification pressure as another hard resource constraint.
 
+### Bandwidth x deadline phase map
+
+The exact solver was also evaluated on a small grid.
+
+Representative transitions:
+
+| deadline | p05 SSD bandwidth | selected phase |
+|---:|---:|---|
+| 150 ms | 5000 MiB/s | RAM_FALLBACK |
+| 800 ms | 1500 MiB/s | PREFIX_SSD_MIX |
+| 1600 ms | 2000 MiB/s | KV_Q8_AUX_SSD |
+| 1600 ms | 3500 MiB/s | PREFIX_AUX_SSD |
+
+The key point is that there is no single SSD threshold.
+
+The selected representation changes in regimes:
+
+RAM-only degradation
+-> partial SSD spill
+-> quantization + larger SSD spill
+-> mostly lossless SSD residency
+
+as the pressure deadline and tail bandwidth jointly relax.
+
+This is the memory-tier analogue of a pressure-knee / phase-transition experiment.
+
 ### SLOW_SSD_TIERED
 
 Synthetic p05 SSD bandwidth: 1000 MiB/s.
