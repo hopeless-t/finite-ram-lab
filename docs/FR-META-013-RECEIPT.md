@@ -1,41 +1,51 @@
 # FR-META-013 Receipt
 
-Status: **PASS / PIP CACHE CONFIGURATION QUALIFIED / CACHE-HIT SPEED PENDING PR DOGFOOD**
+Status: **PASS / NEGATIVE DOGFOOD RESULT / CACHE NOT PROMOTED**
 
-Implementation qualification:
+Final v0.2 qualification:
 
-- workflow run: 37138413480
-- job: 111247595502
-- execution head: 9ee0185018fde319041f0338c1b1f4ca1c00ee1e
-- qualification artifact ID: 11279392283
-- artifact ZIP SHA256: bd67068c2da8afc158fb0a64f93fc092b5c030dfb2d106ae920d169d8cb16678
+- workflow run: 37139290635
+- job: 111250204243
+- execution head: e5883aeab07b459cb1e1dc812a51280e3cd424d8
+- qualification artifact ID: 11280001698
+- artifact ZIP SHA256: a2ada265af60949aabf6056aa516d4e7c6bbf2a044f301e247d8f42351f4bc6c
 
-Implementation-run cache observation:
+Dogfood observations:
 
-- setup-python cache mode: write
-- initial cache lookup: not found
-- Install start: 2026-10-03T16:51:55.906Z
-- next Compile start: 2026-10-03T16:52:16.094Z
-- approximate uncached Install span: 20.19 s
-- cache saved successfully after the run
-- saved key:
-  setup-python-Linux-x64-24.04-Ubuntu-python-3.12.14-pip-0297d4812f34fab52178c1cb36ba6dae036262df89c4b33cd7779c5cc05da388
+Implementation run:
+- setup-python pip cache lookup: MISS
+- Install span: about 20.19 s
+- cache key saved successfully after the run
 
-Scientific CI surface unchanged:
+PR follow-up:
+- same dependency key
+- setup-python again reported: pip cache is not found
+- Install span: about 19.04 s
+- full CI: PASS
 
-- compile;
-- full unit suite;
-- MC smoke;
-- environment probe;
-- meta qualification.
+The receipt-push CI was correctly cancelled by FR-META-009 concurrency, so the
+surviving PR run is the relevant follow-up specimen.
+
+Theory update:
+
+- cache configuration is not cache reuse evidence;
+- producer -> consumer ref/scope topology must be proven;
+- save/restore overhead must be counted;
+- the current stacked-branch / PR flow did not demonstrate material reuse.
+
+Repository action:
+
+- setup-python pip cache configuration removed in v0.2;
+- no cache speed primitive promoted.
 
 Decision:
 
-**ENABLE_SETUP_PYTHON_PIP_CACHE**
+**DO_NOT_PROMOTE_PIP_CACHE_FOR_CURRENT_STACKED_PR_FLOW**
 
-A speed claim requires the subsequent receipt/PR run to restore this key and
-show an observed Install reduction.
+Compiled negative skill candidate:
+
+**CACHE_REUSE_REQUIRES_PROVEN_PRODUCER_CONSUMER_SCOPE**
 
 Claim ceiling:
 
-**CI_DEPENDENCY_CACHE_OPTIMIZATION_ONLY**
+**NEGATIVE_CI_DEPENDENCY_CACHE_RESULT_ONLY**
