@@ -263,6 +263,16 @@ def candidate(
         "cloud_ok": cloud_ok,
         "deadline_ok": deadline_ok,
         "feasible": feasible,
+        "accelerator_resident_mib": (
+            size_mib
+            if placement.name == "VRAM"
+            else 0.0
+        ),
+        "host_ram_resident_mib": (
+            size_mib
+            if placement.name == "RAM"
+            else 0.0
+        ),
         "volatile_resident_mib": (
             size_mib
             if placement.volatile_resident
@@ -299,7 +309,8 @@ def all_candidates(
 
 def _objective_key(row: dict) -> tuple:
     return (
-        row["volatile_resident_mib"],
+        row["accelerator_resident_mib"],
+        row["host_ram_resident_mib"],
         row["local_storage_mib"],
         row["network_fetch_mib"],
         -row["quality_proxy"],
@@ -497,6 +508,7 @@ def run_panel() -> dict:
             "BITNET_NATIVE_ENCODING_IS_NOT_ARBITRARY_RUNTIME_DEMOTION",
             "CLOUD_IS_A_DEADLINE_CLASS_NOT_A_UNIVERSAL_ESCAPE_HATCH",
             "PRECISION_AND_PLACEMENT_MUST_BE_OPTIMIZED_JOINTLY",
+            "RESIDENCY_BYTES_ARE_TIER_TYPED_NOT_FUNGIBLE",
         ],
         "claim_ceiling": (
             "SYNTHETIC_REPRESENTATION_PLACEMENT_GRAPH_ONLY"
