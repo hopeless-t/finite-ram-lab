@@ -1,0 +1,21 @@
+{
+  "schema": "finite-ram-lab.fr-fp-011/v0.1",
+  "title": "Hosted live-state to RSS calibration",
+  "status": "HOSTED_PHYSICAL_CALIBRATION_CANDIDATE",
+  "parent": "FR-FP-010",
+  "fixture": {
+    "anonymous_mmap_state_mib": 8,
+    "trajectory_steps": 12,
+    "safe_frontiers": [2,4,6,8,10,12]
+  },
+  "fit": [
+    "logical peak KiB -> VmRSS peak delta KiB",
+    "logical peak KiB -> RssAnon peak delta KiB"
+  ],
+  "qualification": {
+    "r2_min": 0.999,
+    "slope_range": [0.9,1.1],
+    "max_abs_rss_residual_kib": 4096
+  },
+  "claim_ceiling": "HOSTED_LINUX_ANONYMOUS_MMAP_LIVE_STATE_RSS_CALIBRATION_ONLY"
+}
