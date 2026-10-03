@@ -1,0 +1,21 @@
+{
+  "schema": "finite-ram-lab.fr-fp-018/v0.1",
+  "title": "Order-only Monte Carlo null for hosted restore trace",
+  "status": "FROZEN_TRACE_MONTE_CARLO_CANDIDATE",
+  "parent": "FR-FP-017",
+  "source": "data/FR-FP-017-trace.json",
+  "shuffles": 20000,
+  "seed": 20261004,
+  "threshold_ms": 25,
+  "tests": [
+    "absolute lag-1 autocorrelation",
+    "absolute lag-2 autocorrelation",
+    "absolute lag-4 autocorrelation",
+    "max-run upper tail",
+    "max-run lower tail",
+    "epoch 25ms-miss range",
+    "epoch median range"
+  ],
+  "multiple_testing": "Bonferroni alpha=0.05/7",
+  "claim_ceiling": "ORDER_STRUCTURE_TEST_ON_ONE_FROZEN_48_SAMPLE_HOSTED_TRACE_ONLY"
+}
