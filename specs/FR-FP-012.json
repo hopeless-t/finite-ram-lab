@@ -1,0 +1,22 @@
+{
+  "schema": "finite-ram-lab.fr-fp-012/v0.1",
+  "title": "Hosted calibrated RSS budget with durable file cold spill",
+  "status": "HOSTED_PHYSICAL_COLD_SPILL_CANDIDATE",
+  "parent": "FR-FP-011",
+  "fixture": {
+    "state_mib": 8,
+    "process_rss_budget_mib": 32,
+    "calibrated_hot_state_budget": 4,
+    "trajectory_steps": 12,
+    "synthetic_safe_step": 9
+  },
+  "cold_tier": {
+    "mechanism": "regular file write + fsync before hot mmap close",
+    "sentinel_verification": true
+  },
+  "accounting": [
+    "process VmRSS/RssAnon",
+    "cgroup memory.current when available"
+  ],
+  "claim_ceiling": "HOSTED_LINUX_PROCESS_RSS_BUDGET_AND_FILE_COLD_SPILL_ONLY"
+}
