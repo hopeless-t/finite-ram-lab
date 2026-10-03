@@ -320,3 +320,14 @@ STRATA-001 was inspired by [Niko1221/Strata](https://github.com/Niko1221/Strata)
 See [the Strata inspiration note](docs/STRATA-INSPIRATION.md) and [STRATA-001 Council](docs/STRATA-001-COUNCIL.md).
 
 The initial study is an independent implementation; no Strata source code is copied into Finite RAM Lab.
+
+
+### QSSR-001 — representation-downshift / cheap-reconstruction hypothesis
+
+QSSR-001 is inspired by Sony's public QSSR and upgraded-PSSR design direction: reduce the expensive learned decision surface and move work with cheaper solutions out of the model. Finite RAM Lab treats this only as an architectural analogy, not as evidence about Linux memory management or as a claim about QSSR's unpublished internals.
+
+The new hypothesis asks whether a finite-memory application can keep a **small sufficient semantic state** for expensive decisions while large reconstructible/cold state is handled by cheaper rebuild, reload, decompression, or RAM/SSD-tier mechanisms.
+
+The first step is mathematical and simulated: derive the break-even surface over downshift ratio, reconstruction cost, migration cost, miss probability, miss penalty, and memory budget, then test whether the pressure knee moves without unacceptable tail latency or quality loss.
+
+See [QSSR-001 — Representation-Downshift Hypothesis](docs/QSSR-001-REPRESENTATION-DOWNSHIFT-HYPOTHESIS.md).
