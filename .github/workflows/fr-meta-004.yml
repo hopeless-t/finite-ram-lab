@@ -1,0 +1,48 @@
+name: FR-META-004 Loop Speed Governor
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-meta-004-loop-speed
+    paths:
+      - "src/finite_ram_lab/fr_loop_speed_governor.py"
+      - "tests/test_fr_loop_speed_governor.py"
+      - "specs/FR-META-004.json"
+      - "docs/FR-META-004-LOOP-SPEED-GOVERNOR.md"
+      - ".github/workflows/fr-meta-004.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Unit tests
+        run: python -m unittest tests.test_fr_loop_speed_governor -v
+      - name: Run panel
+        run: |
+          mkdir -p runs/FR-META-004
+          python -m finite_ram_lab.fr_loop_speed_governor > runs/FR-META-004/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-META-004/result.json"))
+          assert r["status"] == "PASS"
+          assert r["decision"] == "ASSEMBLE_DETACHED_ATOMIC_COMMIT_THEN_PUBLISH_BRANCH"
+          assert all(r["checks"].values())
+          PY
+          sha256sum specs/FR-META-004.json
+          sha256sum runs/FR-META-004/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-meta-004-loop-speed-governor
+          path: runs/FR-META-004/result.json
+          if-no-files-found: error
