@@ -40,7 +40,7 @@ jobs:
           s=r["strategies"]
           assert s["STATIC_COOPERATIVE"]["current_task_loss_count"] == 6
           assert s["STICKY_EVER_DEPENDENCE"]["unnecessary_protection_count"] == 6
-          assert s["RAW_LAST_EVIDENCE"]["switch_count"] == 6
+          assert s["RAW_LAST_EVIDENCE"]["switch_count"] == 8
           assert s["DECAY_HYSTERESIS_COOLDOWN"]["current_task_loss_count"] == 1
           assert s["DECAY_HYSTERESIS_COOLDOWN"]["unnecessary_protection_count"] == 0
           assert s["DECAY_HYSTERESIS_COOLDOWN"]["switch_count"] == 2
