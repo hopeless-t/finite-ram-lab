@@ -1,0 +1,53 @@
+name: FR-SHARE-001 Duplication Tax
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-share-001-duplication-tax
+    paths:
+      - "src/finite_ram_lab/fr_duplication_tax.py"
+      - "tests/test_fr_duplication_tax.py"
+      - "specs/FR-SHARE-001.json"
+      - "docs/FR-SHARE-001-DUPLICATION-TAX.md"
+      - ".github/workflows/fr-share-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_duplication_tax -v
+      - name: Run physical PSS experiment
+        run: |
+          mkdir -p runs/FR-SHARE-001
+          python -m finite_ram_lab.fr_duplication_tax \
+            --workers 6 \
+            --file-mib 32 \
+            > runs/FR-SHARE-001/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-SHARE-001/result.json"))
+          assert r["status"] == "PASS"
+          d=r["derived"]
+          assert d["shared_over_private_pss_delta_ratio"] < 0.35
+          assert d["private_pss_delta_kib"] > 0
+          assert d["shared_pss_delta_kib"] > 0
+          PY
+          sha256sum specs/FR-SHARE-001.json
+          sha256sum runs/FR-SHARE-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-share-001-duplication-tax
+          path: runs/FR-SHARE-001/result.json
+          if-no-files-found: error

@@ -1,0 +1,30 @@
+{
+  "schema": "finite-ram-lab.fr-share-001/v0.1",
+  "title": "FR-SHARE-001 Duplication Tax",
+  "status": "FROZEN_HOSTED_LINUX_PHYSICAL_EXPERIMENT",
+  "parent": "FR-ATOM-001",
+  "platform": "ubuntu-24.04 GitHub-hosted runner",
+  "fixture": {
+    "workers": 6,
+    "immutable_file_mib": 32,
+    "arms": [
+      "BASELINE",
+      "PRIVATE_COPY",
+      "SHARED_MMAP"
+    ],
+    "metric": "sum of /proc/<pid>/smaps_rollup Pss across workers",
+    "rationale": "PSS apportions shared pages instead of double-counting them like RSS"
+  },
+  "gates": {
+    "private_delta_min_fraction_of_nominal_private_payload": 0.7,
+    "shared_delta_max_multiple_of_one_payload": 2,
+    "shared_over_private_pss_delta_ratio_max": 0.35
+  },
+  "boundaries": [
+    "process-attributed PSS, not total-system memory accounting",
+    "immutable read-only payload only",
+    "no KSM mutation or sysfs changes",
+    "no claim about writable model/KV state"
+  ],
+  "claim_ceiling": "HOSTED_LINUX_IMMUTABLE_PROCESS_PSS_SHARING_ONLY"
+}
