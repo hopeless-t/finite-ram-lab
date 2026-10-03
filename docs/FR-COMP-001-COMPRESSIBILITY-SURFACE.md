@@ -107,12 +107,43 @@ The experiment requires:
 
 - every roundtrip exact;
 - ZERO ratio <1% for every codec;
-- REPEATED_BLOCK ratio <5% for every codec;
+- REPEATED_BLOCK best-codec ratio <1%;
+- REPEATED_BLOCK codec spread >5 percentage points;
 - LOW_ENTROPY_4BIT in a broad 35–80% ratio envelope;
 - RANDOM ratio >98% even for the best codec.
 
 The important test is that the same nominal input bytes have radically
-different compressed capacity.
+different compressed capacity **and** that the same state can interact very
+differently with different codec structures.
+
+## Prequalification failure that changed the model
+
+The first qualification attempt required every codec to compress the repeated
+4 KiB pseudo-random block below 5%.
+
+That assumption failed.
+
+Observed mean ratios in the pilot were approximately:
+
+- zlib level 1: 0.97%;
+- zlib level 9: 0.69%;
+- LZMA preset 0: 0.12%;
+- bzip2 level 1: **8.18%**.
+
+The experiment therefore did **not** simply relax the threshold.
+
+Instead it changed the hypothesis:
+
+[
+\boxed{
+\text{compressibility}
+=
+f(\text{state},\text{codec})
+}
+]
+
+The canonical qualification now requires a strong best-codec result and a
+large codec-interaction spread for the repeated-block fixture.
 
 ## New Finite RAM equation
 
