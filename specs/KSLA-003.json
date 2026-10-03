@@ -1,0 +1,84 @@
+{
+  "schema": "finite-ram-lab.ksla-003/v0.1",
+  "title": "KSLA-003 Real-State Bounded Idiocy",
+  "status": "FROZEN_SYNTHETIC_REAL_STATE_EXPERIMENT",
+  "parent": "KSLA-MATH-002",
+  "episodes": 512,
+  "common_random_numbers": true,
+  "problem": {
+    "dimension": 256,
+    "active_coordinates": 48,
+    "target_values": "sparse integers in [-4,-1] U [1,4]",
+    "expert_cache_coordinates": 8,
+    "action_steps": [
+      -4,
+      -2,
+      -1,
+      1,
+      2,
+      4
+    ],
+    "stall_limit": 3,
+    "max_rounds": 500
+  },
+  "cost_model": {
+    "expert_local_candidate_evaluation": "1 per coordinate-step pair",
+    "expert_lane_round_cost": "8 resident coordinates * 6 steps = 48 evaluations",
+    "idiot_proposal_cost": "1 evaluation",
+    "global_refresh_cost": "256 coordinates * 6 steps = 1536 evaluations",
+    "note": "These are deterministic abstract work units, not wall-clock microseconds."
+  },
+  "policies": {
+    "EXPERT_HEAVY": "2 expert lanes, no idiots",
+    "EXPERT_ONLY": "1 expert lane, no idiots",
+    "FIXED_LOW": "1 expert lane + 3 idiots every round",
+    "FIXED_HIGH": "1 expert lane + 8 idiots every round",
+    "STALL_ADAPTIVE": "1 expert lane; 32 idiots only when expert has no improving resident proposal",
+    "IDIOT_ONLY": "16 idiots every round, no expert"
+  },
+  "frozen_summary": {
+    "EXPERT_HEAVY": {
+      "success_count": 512,
+      "mean_rounds": 46.083984375,
+      "mean_work_cost": 9032.0625,
+      "mean_refresh_evaluations": 4608,
+      "peak_resident_coordinates": 16
+    },
+    "EXPERT_ONLY": {
+      "success_count": 512,
+      "mean_rounds": 77.9921875,
+      "mean_work_cost": 12959.625,
+      "mean_refresh_evaluations": 9216,
+      "peak_resident_coordinates": 8
+    },
+    "FIXED_LOW": {
+      "success_count": 512,
+      "mean_rounds": 75.513671875,
+      "mean_work_cost": 12416.197265625,
+      "mean_refresh_evaluations": 8565,
+      "peak_resident_coordinates": 8
+    },
+    "FIXED_HIGH": {
+      "success_count": 512,
+      "mean_rounds": 70.86328125,
+      "mean_work_cost": 10685.34375,
+      "mean_refresh_evaluations": 6717,
+      "peak_resident_coordinates": 8
+    },
+    "STALL_ADAPTIVE": {
+      "success_count": 512,
+      "mean_rounds": 73.255859375,
+      "mean_work_cost": 8169.34375,
+      "mean_refresh_evaluations": 3636,
+      "peak_resident_coordinates": 8
+    },
+    "IDIOT_ONLY": {
+      "success_count": 384,
+      "mean_rounds": 414.21875,
+      "mean_work_cost": 6627.5,
+      "mean_refresh_evaluations": 0,
+      "peak_resident_coordinates": 0
+    }
+  },
+  "claim_ceiling": "SYNTHETIC_REAL_STATE_FINITE_VIEW_EXPERIMENT_ONLY"
+}
