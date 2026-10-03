@@ -1,0 +1,49 @@
+name: FR-GFX-003 Signal Ablation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-gfx-003-signal-ablation
+    paths:
+      - "src/finite_ram_lab/fr_gfx_signal_ablation.py"
+      - "tests/test_fr_gfx_signal_ablation.py"
+      - "specs/FR-GFX-003.json"
+      - "docs/FR-GFX-003-SIGNAL-ABLATION.md"
+      - ".github/workflows/fr-gfx-003.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_gfx_signal_ablation -v
+      - name: Run signal ablation
+        run: |
+          mkdir -p runs/FR-GFX-003
+          python -m finite_ram_lab.fr_gfx_signal_ablation > runs/FR-GFX-003/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-GFX-003/result.json"))
+          assert r["status"] == "PASS"
+          assert r["selection_rules"]["minimum_safe"]["selected"] == "FRAME_GPU_MEM"
+          assert r["selection_rules"]["minimum_high_accuracy"]["selected"] == "FULL"
+          assert r["signal_sets"]["FULL"]["action_accuracy"] > 0.94
+          PY
+          sha256sum specs/FR-GFX-003.json
+          sha256sum runs/FR-GFX-003/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-gfx-003-signal-ablation
+          path: runs/FR-GFX-003/result.json
+          if-no-files-found: error
