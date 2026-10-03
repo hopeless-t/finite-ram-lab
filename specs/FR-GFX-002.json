@@ -1,0 +1,60 @@
+{
+  "schema": "finite-ram-lab.fr-gfx-002/v0.1",
+  "title": "FR-GFX-002 Read-only Low-end Game Observation Plane",
+  "status": "FROZEN_READ_ONLY_SCHEMA_PLUS_SYNTHETIC_IDENTIFIABILITY_SPEC",
+  "parent": "FR-GFX-001",
+  "source_pins": {
+    "mangohud": {
+      "repository": "flightlessmango/MangoHud",
+      "commit": "8bd15ed92667a31427af2c219bc8d2847702f274"
+    },
+    "dxvk": {
+      "repository": "doitsujin/dxvk",
+      "commit": "d30be2baea02a67b9502bffda0ec8b0d915bb3d2"
+    },
+    "intel_gpu_top": "igt-gpu-tools manpage current 2026-07-12 source package 2.5-1"
+  },
+  "read_only_sources": [
+    "MangoHud frame/FPS logging",
+    "intel_gpu_top JSON/CSV",
+    "/proc/meminfo",
+    "/proc/<pid>/smaps_rollup",
+    "/proc/pressure/memory",
+    "DXVK log/HUD metadata"
+  ],
+  "normalized_fields": [
+    "timestamp_ns",
+    "frame.frametime_ms",
+    "frame.fps",
+    "process.rss_kib",
+    "process.pss_kib",
+    "process.swap_kib",
+    "system.mem_available_kib",
+    "system.swap_free_kib",
+    "pressure.memory_some_avg10",
+    "pressure.memory_full_avg10",
+    "gpu.render_busy_pct",
+    "gpu.frequency_mhz",
+    "gpu.memory_read_mib_s",
+    "gpu.memory_write_mib_s",
+    "backend.translation",
+    "backend.api",
+    "backend.proton"
+  ],
+  "synthetic_identifiability": {
+    "episodes": 16384,
+    "latent_states": [
+      "NORMAL",
+      "GPU_BOUND",
+      "UMA_PRESSURE",
+      "CPU_DRIVER"
+    ],
+    "fps_only_gpu_threshold_ms": 34.592,
+    "matched_gpu_bound_recall": 0.8615342763873776,
+    "fps_only_gpu_downscale_false_positive_rate": 0.3060276990871892,
+    "multi_signal_gpu_downscale_false_positive_rate": 0,
+    "fps_only_action_accuracy": 0.69696044921875,
+    "multi_signal_action_accuracy": 0.94921875
+  },
+  "claim_ceiling": "READ_ONLY_SCHEMA_AND_SYNTHETIC_IDENTIFIABILITY_ONLY"
+}
