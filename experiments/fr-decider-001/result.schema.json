@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hopeless-t/finite-ram-lab/experiments/fr-decider-001/result.schema.json",
+  "title": "FR-DECIDER-001 result",
+  "type": "object",
+  "required": [
+    "run_id",
+    "base_model",
+    "upstream_commit",
+    "accuracy",
+    "brier",
+    "ece",
+    "attempted",
+    "peak_rss_bytes",
+    "p95_latency_ms"
+  ],
+  "properties": {
+    "run_id": {"type": "string", "minLength": 1},
+    "base_model": {"type": "string", "minLength": 1},
+    "base_model_revision": {"type": ["string", "null"]},
+    "upstream_commit": {
+      "type": "string",
+      "const": "890947e7ccd44c3de4115e26a7f46cc5c3147b44"
+    },
+    "accuracy": {"type": "number", "minimum": 0, "maximum": 1},
+    "brier": {"type": "number", "minimum": 0},
+    "ece": {"type": "number", "minimum": 0, "maximum": 1},
+    "attempted": {"type": "integer", "minimum": 1},
+    "easy_accuracy": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "standard_accuracy": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "hard_accuracy": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "median_latency_ms": {"type": ["number", "null"], "minimum": 0},
+    "p95_latency_ms": {"type": "number", "minimum": 0},
+    "peak_rss_bytes": {"type": "integer", "minimum": 1},
+    "accelerator_peak_bytes": {"type": ["integer", "null"], "minimum": 0},
+    "checkpoint_bytes": {"type": ["integer", "null"], "minimum": 0},
+    "base_weight_bytes": {"type": ["integer", "null"], "minimum": 0},
+    "cold_load_ms": {"type": ["number", "null"], "minimum": 0},
+    "train_wall_seconds": {"type": ["number", "null"], "minimum": 0},
+    "hardware": {"type": ["string", "null"]},
+    "notes": {"type": ["string", "null"]}
+  },
+  "additionalProperties": true
+}
