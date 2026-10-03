@@ -1,0 +1,22 @@
+{
+  "schema": "finite-ram-lab.fr-fp-003/v0.1",
+  "title": "Predictive cold-tier transfer before semantic OOM",
+  "status": "SYNTHETIC_EXPERIMENT_CANDIDATE",
+  "parent": "FR-FP-002",
+  "transfer_lead_steps": 2,
+  "prediction_margin_steps": 1,
+  "budgets": [4, 8],
+  "policies": [
+    "REACTIVE_TRANSFER",
+    "PREDICTIVE_TRANSFER",
+    "ALWAYS_PREEMPTIVE"
+  ],
+  "predictor_inputs": [
+    "current endpoint gap",
+    "previous endpoint gap",
+    "previous-previous endpoint gap",
+    "current residual"
+  ],
+  "future_trace_access": false,
+  "claim_ceiling": "SYNTHETIC_PREDICTIVE_TRANSFER_TIMING_ONLY"
+}
