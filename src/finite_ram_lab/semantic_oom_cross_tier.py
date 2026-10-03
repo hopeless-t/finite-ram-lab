@@ -73,7 +73,7 @@ def _desktop_vram_demand_mib(
         + 1600.0
         * _uniform(
             episode,
-            "desktop_vram",
+            "dv",
         )
     )
 
