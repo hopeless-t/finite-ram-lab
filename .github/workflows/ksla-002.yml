@@ -1,0 +1,56 @@
+name: KSLA-002 Imaginary Kitten Random Actions
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/ksla-002-imaginary-kitten-random-actions
+    paths:
+      - "src/finite_ram_lab/ksla_imaginary_kittens.py"
+      - "specs/KSLA-002.json"
+      - "tests/test_ksla_imaginary_kittens.py"
+      - "docs/KSLA-002-IMAGINARY-KITTENS.md"
+      - ".github/workflows/ksla-002.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_ksla_imaginary_kittens -v
+      - name: Run imaginary kitten panel
+        run: |
+          mkdir -p runs/KSLA-002
+          python -m finite_ram_lab.ksla_imaginary_kittens \
+            > runs/KSLA-002/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/KSLA-002/result.json"))
+          assert r["status"] == "PASS"
+          assert r["kitten_definition"] == "STATELESS_RANDOM_ACTION_PROPOSAL_NOT_A_PROCESS_AGENT_OR_LLM"
+          f=r["filtered_swarms"]
+          assert f["BATCH_1"]["rounds"] == 2753
+          assert f["BATCH_8"]["rounds"] == 305
+          assert f["BATCH_8"]["proposals"] == 2440
+          assert f["BATCH_128"]["rounds"] == 122
+          assert r["exhaustive_validator"]["proposals"] == 47616
+          assert r["unfiltered_chaos"]["final_residual_norm"] == 585361
+          assert r["unfiltered_chaos"]["exact_solution"] is False
+          PY
+          sha256sum specs/KSLA-002.json
+          sha256sum runs/KSLA-002/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ksla-002-imaginary-kitten-random-actions
+          path: runs/KSLA-002/result.json
+          if-no-files-found: error
