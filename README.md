@@ -311,6 +311,62 @@ And, for future architecture:
 > **Do not choose the control plane before measuring the coordination gap.**
 
 
+## KSLA-001 — Kitten Swarm Linear Algebra
+
+KSLA-001 tests a deliberately weak-worker architecture for exact matrix
+multiplication.
+
+A block product is split into tiny independent tasks:
+
+```text
+A_ik × B_kj
+    ↓
+partial C_ij
+```
+
+A 24 × 24 exact finite-field fixture uses 64 worker tasks and injects four
+faulty outputs.
+
+Frozen result:
+
+| endpoint | result |
+|---|---|
+| unverified swarm | wrong |
+| global verifier | reject |
+| bad tasks localized | 4 / 4 |
+| tasks recomputed | 4 / 64 |
+| repaired product | exact |
+| final global verifier | pass |
+
+A 4096 × 4096 synthetic scaling model with a 16-way block grid gives:
+
+- one worker multiply obligation: **1 / 4096** of a full multiply;
+- one worker working-set proxy: **1 / 256** of the strong-worker matrix working set;
+- verification + 1%-fault selective-repair arithmetic overhead: **3.4912%**;
+- raw partial-result traffic: **16 ×** final output size.
+
+Thus:
+
+`weak-worker compute and residency can become tiny, but coordination is not free`.
+
+The 16× communication amplification is an explicit negative result and
+motivates hierarchical reducers / coded-worker designs.
+
+KSLA is a systems composition of established numerical ideas. It does not claim
+invention of Freivalds verification, block multiplication, randomized Kaczmarz,
+or coded distributed multiplication.
+
+See:
+
+- [KSLA-001 protocol](docs/KSLA-001-SWARM-VERIFIED-MATMUL.md)
+- [KSLA-001 receipt](docs/KSLA-001-RECEIPT.md)
+
+Next candidates:
+
+- KSLA-002 — coded kittens / straggler tolerance;
+- KSLA-003 — FP8/FP16 weak workers with residual-gated precision escalation;
+- KSLA-004 — randomized Kaczmarz swarm.
+
 ## Inspired research
 
 ### STRATA-001 — page-cache bypass and semantic HOT-memory preservation
