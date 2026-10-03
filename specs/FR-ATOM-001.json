@@ -1,0 +1,54 @@
+{
+  "schema": "finite-ram-lab.fr-atom-001/v0.1",
+  "title": "FR-ATOM-001 Memory Efficiency Periodic Table",
+  "status": "FROZEN_SOURCE_GROUNDED_ATOMIC_INVENTORY",
+  "parent": "FR-GFX-007",
+  "foundational_quantization": {
+    "AWQ": "covered in FR-REP-001 synthetic graph",
+    "GPTQ": "covered in FR-REP-001 synthetic graph",
+    "NF4": "covered as numeric representation",
+    "GGUF": "covered as container axis, not a quantizer",
+    "BitNet_b1_58": "covered as native architecture/model encoding"
+  },
+  "quantization_gaps": [
+    "activation quantization",
+    "KV-cache quantization",
+    "additive/codebook 2-3 bit quantization",
+    "outlier sparse-high-precision representation",
+    "dynamic mixed precision",
+    "double quantization of quantization metadata"
+  ],
+  "atomic_memory_terms": [
+    "semantic obligation",
+    "representation density",
+    "residency fraction",
+    "duplication factor",
+    "overlap/concurrency",
+    "allocator fragmentation",
+    "page-cache/IO path",
+    "transfer/staging",
+    "generic compression",
+    "rematerialization/rebuild",
+    "demand",
+    "topology",
+    "observation"
+  ],
+  "immediate_priority": [
+    "DUPLICATION_FACTOR",
+    "ALLOCATOR_FRAGMENTATION",
+    "REPRESENTATION_DENSITY_NON_WEIGHT",
+    "REMATERIALIZATION_REBUILD",
+    "PAGECACHE_IO_PATH",
+    "GENERIC_COMPRESSION",
+    "TOPOLOGY"
+  ],
+  "source_pins": {
+    "SmoothQuant": "mit-han-lab/smoothquant@c61476d728e42ae0d8a35e7e78494edcac3237b5",
+    "KIVI": "jy-yuan/KIVI@876b4d2d08e3b1d5f70d0969c299d8c7c42ddfb6",
+    "AQLM": "Vahe1994/AQLM@e79a896ed6656fe4ed06193d42d004e7d0bbdbb2",
+    "QuIPSharp": "Cornell-RelaxML/quip-sharp@1d8f873e9a2a8b86b12bb1064c312c5689b77d98",
+    "SpQR": "Vahe1994/SpQR@543d10e56f921e5eeb10d5f0aaaccd30b6662d0e",
+    "vLLM": "vllm-project/vllm@5f30fc7031cae49bf51073fc953d419b08f8887c"
+  },
+  "claim_ceiling": "SOURCE_GROUNDED_ATOMIC_INVENTORY_AND_RESEARCH_PRIORITIZATION_ONLY"
+}
