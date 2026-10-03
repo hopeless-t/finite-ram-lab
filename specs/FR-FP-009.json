@@ -1,0 +1,19 @@
+{
+  "schema": "finite-ram-lab.fr-fp-009/v0.1",
+  "title": "Reclaimability survival law",
+  "status": "ANALYTIC_LAW_CANDIDATE",
+  "parent": "FR-FP-008",
+  "grid": {
+    "transfer_leads": [1,2,3,4,5,6],
+    "hot_budgets": [2,3,4,5,6,8,10],
+    "safe_shifts": [0,2,4,6,8,10],
+    "cells": 252
+  },
+  "law": {
+    "B_gt_L": "P_semantic_oom = 0",
+    "B_le_L": "P_semantic_oom = S_T(B)"
+  },
+  "never_safe_semantics": "right-censored beyond observation horizon",
+  "skill_candidate": "SEMANTIC_OOM_SURVIVAL_LAW",
+  "claim_ceiling": "ANALYTIC_LAW_FOR_FROZEN_SYNTHETIC_TRANSFER_MODEL_ONLY"
+}
