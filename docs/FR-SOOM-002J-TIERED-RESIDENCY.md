@@ -136,6 +136,16 @@ The synthetic 2500 MiB/s arm is above the knee. A 1000 MiB/s device is below it.
 
 This gives a concrete pressure-dependent boundary rather than a global rule that SSD is either "fast" or "slow".
 
+At the same 1600 ms deadline, the exact candidate plans produce three nested feasibility knees:
+
+- PREFIX_SSD_MIX: 653.4780 MiB/s
+- KV_Q8_AUX_SSD: 1939.3939 MiB/s
+- PREFIX_AUX_SSD with KV kept full: 2571.2492 MiB/s
+
+Because their modeled objectives are ordered 38.788 > 20.532 > 16.745, the optimizer moves through these representations as each lower-loss plan becomes bandwidth-feasible.
+
+The important object is therefore a family of feasibility boundaries, not one magic SSD threshold.
+
 ### WRITE_BUDGET_2G
 
 The per-event SSD write budget is tightened to 2048 MiB.
