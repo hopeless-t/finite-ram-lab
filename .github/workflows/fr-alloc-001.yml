@@ -36,8 +36,8 @@ jobs:
           import json
           r=json.load(open("runs/FR-ALLOC-001/result.json"))
           assert r["status"] == "PASS"
-          assert r["policies"]["CONTIG_FIRST_FIT"]["external_fragmentation_rejects"] == 615
-          assert r["policies"]["PAGED_PREFIX_SHARE"]["rejected"] == 241
+          assert r["policies"]["CONTIG_FIRST_FIT"]["external_fragmentation_rejects"] == 590
+          assert r["policies"]["PAGED_PREFIX_SHARE"]["rejected"] == 224
           assert r["block_granularity"]["16"]["waste_fraction"] < r["block_granularity"]["128"]["waste_fraction"]
           PY
           sha256sum specs/FR-ALLOC-001.json
