@@ -1,0 +1,53 @@
+name: FR-BONSAI-001 Out-of-Core LLM
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-bonsai-001-out-of-core-llm
+    paths:
+      - "src/finite_ram_lab/out_of_core_llm.py"
+      - "specs/FR-BONSAI-001.json"
+      - "tests/test_out_of_core_llm.py"
+      - "docs/FR-BONSAI-001-OUT-OF-CORE-LLM.md"
+      - ".github/workflows/fr-bonsai-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_out_of_core_llm -v
+      - name: Freeze analytic panel
+        run: |
+          mkdir -p runs/FR-BONSAI-001
+          python -m finite_ram_lab.out_of_core_llm > runs/FR-BONSAI-001/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-BONSAI-001/result.json"))
+          assert r["status"] == "PASS"
+          assert r["claim_ceiling"] == "ANALYTIC_OUT_OF_CORE_LLM_SHADOW_MODEL_ONLY"
+          assert len(r["rows"]) == 24
+          rows = r["rows"]
+          ptq_2g = [x for x in rows if x["model"] == "PTQ1_0" and x["resident_budget_mib"] == 2048]
+          assert len(ptq_2g) == 3
+          by_bw = {x["io_bandwidth_mib_s"]: x for x in ptq_2g}
+          assert by_bw[5000]["decode_io_bound_tps"] > by_bw[1000]["decode_io_bound_tps"]
+          PY
+          sha256sum specs/FR-BONSAI-001.json
+          sha256sum runs/FR-BONSAI-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-bonsai-001-analytic-panel
+          path: runs/FR-BONSAI-001/result.json
+          if-no-files-found: error

@@ -1,0 +1,89 @@
+{
+  "schema": "finite-ram-lab.fr-bonsai-001/v0.1",
+  "status": "FROZEN_ANALYTIC_EXPERIMENT_CONTRACT",
+  "parent_track": "FR-SOOM-002J",
+  "question": "Can a 27B ternary model be executed under a resident-RAM budget substantially below its packed weight size by treating RAM as a bounded working window and SSD as a backing tier without sacrificing foreground survival?",
+  "reference_model": {
+    "name": "Bonsai 2 27B",
+    "base_architecture": "Qwen3.8-27B-derived hybrid attention",
+    "language_backbone_blocks": 64,
+    "language_backbone_params_b": 24.35,
+    "embedding_lm_head_params_b": 2.54,
+    "packs": {
+      "PTQ1_0": {
+        "packed_size_gb_decimal": 5.95
+      },
+      "PQ2_0": {
+        "packed_size_gb_decimal": 7.21
+      }
+    }
+  },
+  "arms": {
+    "resident_budget_mib": [
+      1024,
+      2048,
+      4096,
+      6144
+    ],
+    "ssd_bandwidth_mib_s": [
+      1000,
+      2500,
+      5000
+    ],
+    "window_blocks": 2,
+    "double_buffer": true,
+    "runtime_and_kv_reserve_mib": 768,
+    "prefill_tokens": 4096
+  },
+  "primary_metrics": [
+    "streamed_blocks",
+    "decode_io_mib_per_token",
+    "decode_io_bound_tps",
+    "prefill_io_mib_per_token",
+    "prefill_io_bound_tps",
+    "resident_budget_mib"
+  ],
+  "physical_followup_metrics": [
+    "memory.current",
+    "memory.peak",
+    "memory.events",
+    "PSI memory some/full",
+    "major_faults",
+    "minor_faults",
+    "NVMe read MiB/s",
+    "NVMe queue latency",
+    "tokens_per_second",
+    "time_to_first_token",
+    "foreground_survival",
+    "foreground_latency",
+    "refault_or_reload_bytes",
+    "KV resident bytes"
+  ],
+  "frozen_hypotheses": [
+    "Decode is the adversarial phase because a nonresident dense block must be revisited on every generated token unless it remains pinned.",
+    "Prefill can amortize block-load cost across many input tokens and should tolerate a smaller resident window than decode.",
+    "Increasing resident budget should reduce streamed bytes per decode token monotonically until all blocks are resident.",
+    "SSD bandwidth creates a phase boundary but cannot by itself erase the dense decode reread cost.",
+    "Pressure-aware shrinking should preserve foreground work before process sacrifice is considered."
+  ],
+  "stop_conditions_for_physical_followup": [
+    "foreground task is killed or becomes unresponsive",
+    "memory pressure enters an uncontrolled full-stall regime",
+    "I/O queueing invalidates the bounded-latency assumption",
+    "runtime semantics differ from the modeled layer residency assumptions",
+    "evidence collection becomes incomplete"
+  ],
+  "claim_ceiling": "ANALYTIC_OUT_OF_CORE_LLM_SHADOW_MODEL_ONLY",
+  "nonclaims": [
+    "No claim that stock llama.cpp currently exposes per-block eviction controls required by the physical design.",
+    "No claim that the synthetic 768 MiB runtime/KV reserve represents the user's host.",
+    "No claim that SSD streaming will deliver usable interactive decode speed.",
+    "No claim that a successful analytic window implies a successful physical run.",
+    "No host process is controlled by this PR."
+  ],
+  "upstream": {
+    "repository": "PrismML-Eng/Bonsai-demo",
+    "commit": "bfaea577522626b883f755236878e4583f3d6e68",
+    "observed_date": "2026-10-03"
+  }
+}
