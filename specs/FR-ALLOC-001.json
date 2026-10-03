@@ -10,7 +10,7 @@
   "fixture": {
     "pool_blocks": 512,
     "ticks": 5000,
-    "requests": 5308,
+    "requests": 5280,
     "request_block_sizes": [
       2,
       4,
@@ -27,22 +27,22 @@
   },
   "frozen_results": {
     "MAX_RESERVE": {
-      "admitted": 1862,
-      "rejected": 3446
+      "admitted": 1839,
+      "rejected": 3441
     },
     "CONTIG_FIRST_FIT": {
-      "admitted": 4691,
-      "rejected": 617,
-      "external_fragmentation_rejects": 615
+      "admitted": 4685,
+      "rejected": 595,
+      "external_fragmentation_rejects": 590
     },
     "PAGED": {
-      "admitted": 4804,
-      "rejected": 504
+      "admitted": 4787,
+      "rejected": 493
     },
     "PAGED_PREFIX_SHARE": {
-      "admitted": 5067,
-      "rejected": 241,
-      "prefix_blocks_avoided": 12996
+      "admitted": 5056,
+      "rejected": 224,
+      "prefix_blocks_avoided": 12904
     }
   },
   "block_granularity_probe": {
@@ -51,8 +51,8 @@
       1,
       2048
     ],
-    "block16_waste_fraction": 0.007315450336589354,
-    "block128_waste_fraction": 0.05783839902464139
+    "block16_waste_fraction": 0.007225370819670894,
+    "block128_waste_fraction": 0.057858782370803254
   },
   "boundaries": [
     "synthetic allocator geometry only",
@@ -61,5 +61,17 @@
     "no GPU/CUDA physical allocation claim",
     "no throughput claim"
   ],
-  "claim_ceiling": "SOURCE_GROUNDED_SYNTHETIC_ALLOCATOR_GEOMETRY_ONLY"
+  "claim_ceiling": "SOURCE_GROUNDED_SYNTHETIC_ALLOCATOR_GEOMETRY_ONLY",
+  "reproducibility": {
+    "seed": "FR-ALLOC-001",
+    "draw_domains": [
+      "arrival",
+      "size",
+      "life",
+      "prefix-group",
+      "has-prefix",
+      "granularity-length"
+    ],
+    "correction_note": "Pilot numbers used different draw-domain labels. Repository draw-domain identity is canonical; thresholds were not relaxed."
+  }
 }
