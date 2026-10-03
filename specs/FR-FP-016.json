@@ -1,0 +1,14 @@
+{
+  "schema": "finite-ram-lab.fr-fp-016/v0.1",
+  "title": "Warm-cold restore size scaling",
+  "status": "HOSTED_PHYSICAL_SCALING_CANDIDATE",
+  "parent": "FR-FP-015",
+  "state_sizes_mib": [4,8,16],
+  "paired_blocks_per_size": 6,
+  "arms": [
+    "WARM_PAGECACHE",
+    "COLD_DONTNEED"
+  ],
+  "fit": "median restore read ns ~= intercept + slope * state MiB",
+  "claim_ceiling": "HOSTED_LINUX_WARM_COLD_RESTORE_SIZE_SCALING_ONLY"
+}
