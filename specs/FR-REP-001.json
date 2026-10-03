@@ -1,0 +1,132 @@
+{
+  "schema": "finite-ram-lab.fr-rep-001/v0.1",
+  "status": "FROZEN_SYNTHETIC_REPRESENTATION_PLACEMENT_GRAPH_SPEC",
+  "parent": "FR-SOOM-002L",
+  "source_pins": {
+    "AWQ": {
+      "repository": "mit-han-lab/llm-awq",
+      "commit": "d6e797a42b9ef7778de8ee2352116e0f48a78d61",
+      "paper": "arXiv:2306.00978"
+    },
+    "GPTQ": {
+      "repository": "IST-DASLab/gptq",
+      "commit": "2d65066eeb06a5c9ff5184d8cebdf33662c67faf",
+      "paper": "arXiv:2210.17323"
+    },
+    "NF4": {
+      "repository": "bitsandbytes-foundation/bitsandbytes",
+      "commit": "833649043474794b8fe7a4136e0c40faf077b2e0",
+      "paper": "QLoRA arXiv:2305.14314"
+    },
+    "GGUF": {
+      "repository": "ggml-org/llama.cpp",
+      "commit": "99b95488cac0f00ce3f05af113a8c1e287753f87",
+      "role": "container/tensor metadata and offsets"
+    },
+    "BITNET": {
+      "repository": "microsoft/BitNet",
+      "commit": "0b341e582afbf9e1011f24744b554c96a3477eb5",
+      "paper": "bitnet.cpp arXiv:2410.16144"
+    },
+    "CLOUD_OBJECT": {
+      "references": [
+        "Amazon S3 GetObject Range",
+        "Amazon S3 Express One Zone performance",
+        "Cloudflare R2 object download / S3 API"
+      ],
+      "role": "placement tier only; no provider-specific production choice"
+    }
+  },
+  "taxonomy": {
+    "AWQ": "weight quantization method",
+    "GPTQ": "weight quantization method",
+    "NF4": "numeric representation",
+    "GGUF": "container, not quantization method",
+    "BITNET_B1_58": "native model encoding / architecture class",
+    "CLOUD_OBJECT": "placement tier"
+  },
+  "synthetic_fixture": {
+    "representations": {
+      "FP16": {
+        "size_ratio": 1,
+        "quality_proxy": 1,
+        "decode_overhead_ms": 0
+      },
+      "AWQ4": {
+        "size_ratio": 0.25,
+        "quality_proxy": 0.985,
+        "decode_overhead_ms": 1.5
+      },
+      "GPTQ4": {
+        "size_ratio": 0.25,
+        "quality_proxy": 0.982,
+        "decode_overhead_ms": 2
+      },
+      "NF4": {
+        "size_ratio": 0.25,
+        "quality_proxy": 0.98,
+        "decode_overhead_ms": 4
+      },
+      "BITNET_B1_58": {
+        "size_ratio": 0.09875,
+        "quality_proxy": 0.995,
+        "decode_overhead_ms": 0.8,
+        "native_only": true
+      }
+    },
+    "placements": {
+      "VRAM": {
+        "base_latency_ms": 0.05,
+        "bandwidth_mib_s": 100000
+      },
+      "RAM": {
+        "base_latency_ms": 0.1,
+        "bandwidth_mib_s": 20000
+      },
+      "SSD": {
+        "base_latency_ms": 0.3,
+        "bandwidth_mib_s": 3000
+      },
+      "CLOUD_OBJECT": {
+        "base_latency_ms": 35,
+        "bandwidth_mib_s": 250
+      }
+    },
+    "note": "All latency, bandwidth, quality, size and deadline values are synthetic controls. Cloud values are not measurements of any provider or user connection.",
+    "resource_objective_order": [
+      "accelerator_resident_mib",
+      "host_ram_resident_mib",
+      "local_storage_mib",
+      "network_fetch_mib",
+      "negative_quality_proxy",
+      "latency_ms"
+    ]
+  },
+  "frozen_reference": {
+    "HOT_WEIGHT_SHARD": {
+      "representation": "AWQ4",
+      "placement": "RAM"
+    },
+    "WARM_EXPERT_SHARD": {
+      "representation": "AWQ4",
+      "placement": "SSD"
+    },
+    "COLD_MODEL_SHARD": {
+      "representation": "AWQ4",
+      "placement": "CLOUD_OBJECT"
+    },
+    "BITNET_NATIVE_SHARD": {
+      "representation": "BITNET_B1_58",
+      "placement": "SSD"
+    }
+  },
+  "primary_findings": [
+    "REPRESENTATION_CHOICE_IS_NOT_PLACEMENT_CHOICE",
+    "CONTAINER_IS_NOT_QUANTIZER",
+    "BITNET_NATIVE_ENCODING_IS_NOT_ARBITRARY_RUNTIME_DEMOTION",
+    "CLOUD_IS_A_DEADLINE_CLASS_NOT_A_UNIVERSAL_ESCAPE_HATCH",
+    "PRECISION_AND_PLACEMENT_MUST_BE_OPTIMIZED_JOINTLY",
+    "RESIDENCY_BYTES_ARE_TIER_TYPED_NOT_FUNGIBLE"
+  ],
+  "claim_ceiling": "SYNTHETIC_REPRESENTATION_PLACEMENT_GRAPH_ONLY"
+}

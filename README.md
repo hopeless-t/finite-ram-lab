@@ -709,6 +709,58 @@ wall-clock confidence decay, intervention cooldown, and a daemon-like state
 machine.
 
 
+## FR-REP-001 — Representation × Placement Graph
+
+Finite RAM Lab now separates five control dimensions that are often collapsed
+into one "quantization" bucket:
+
+```text
+model semantics
+  × weight / numeric representation
+  × container
+  × placement tier
+  × deadline / quality constraint
+```
+
+Current source-pinned representation relatives include AWQ, GPTQ, NF4,
+GGUF/llama.cpp and BitNet.
+
+Frozen taxonomy:
+
+- AWQ / GPTQ -> weight quantization methods;
+- NF4 -> numeric representation;
+- GGUF -> container / tensor metadata format, **not** a quantizer;
+- BitNet b1.58 -> native model encoding / architecture class;
+- RAM / SSD / Cloud -> placement tiers.
+
+The synthetic planner selects:
+
+| state | representation | placement |
+|---|---|---|
+| HOT_WEIGHT_SHARD | AWQ4 | RAM |
+| WARM_EXPERT_SHARD | AWQ4 | SSD |
+| COLD_MODEL_SHARD | AWQ4 | CLOUD_OBJECT |
+| BITNET_NATIVE_SHARD | BITNET_B1_58 | SSD |
+
+A forced-cloud counterfactual fails the HOT and WARM deadlines but passes the
+COLD deadline.
+
+The first qualification attempt also exposed a modeling bug: treating 128 MiB
+of VRAM and 128 MiB of host RAM as fungible. The frozen objective now types
+accelerator residency, host RAM, local storage and network transfer separately.
+
+Thus:
+
+`residency bytes are tier-typed, not fungible`.
+
+See:
+
+- [FR-REP-001 protocol](docs/FR-REP-001-REPRESENTATION-PLACEMENT-GRAPH.md)
+- [FR-REP-001 receipt](docs/FR-REP-001-RECEIPT.md)
+
+The next representation lane is FR-REP-002: stochastic cloud tails plus a local
+range cache / prefetch layer.
+
 ## Cross-repository transfer
 
 Finite RAM results are now actively dispatched into adjacent Catfood Lab research when the invariant is directly reusable.
