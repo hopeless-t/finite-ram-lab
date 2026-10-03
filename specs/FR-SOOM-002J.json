@@ -51,6 +51,12 @@
       "deadline_ms": 1600,
       "ssd_p05_write_mib_s": 2500,
       "max_ssd_write_mib": 2048
+    },
+    "HIGH_BW_SSD_TIERED": {
+      "ssd_enabled": true,
+      "deadline_ms": 1600,
+      "ssd_p05_write_mib_s": 3500,
+      "max_ssd_write_mib": 4096
     }
   },
   "frozen_reference": {
@@ -88,6 +94,18 @@
       },
       "semantic_loss": 36,
       "ssd_write_mib": 1024
+    },
+    "HIGH_BW_SSD_TIERED": {
+      "choices": {
+        "KV": "KEEP",
+        "PREFIX": "SSD",
+        "AUX_EXPERTS": "SSD",
+        "BROWSER_CACHE": "KEEP",
+        "BACKGROUND_JOB": "KEEP",
+        "ACTIVE_TASK": "KEEP"
+      },
+      "semantic_loss": 7,
+      "ssd_write_mib": 4096
     }
   },
   "primary_finding": "SSD_IS_USEFUL_AS_A_SEMANTIC_TIER_ONLY_WHEN_ITS_TAIL_BANDWIDTH_AND_DEADLINE_CONSTRAINTS_QUALIFY",
@@ -102,6 +120,8 @@
   "analytic_boundaries": {
     "fast_hybrid_min_p05_write_mib_s_at_1600ms_formula": "ssd_write_mib / ((deadline_ms - non_ssd_apply_ms) / 1000)",
     "fast_hybrid_reference_mib_s": 1939.3939393939395,
-    "fast_hybrid_min_write_budget_mib": 3072
+    "fast_hybrid_min_write_budget_mib": 3072,
+    "prefix_ssd_mix_reference_mib_s": 653.4779834077856,
+    "high_bw_spill_reference_mib_s": 2571.249215317012
   }
 }
