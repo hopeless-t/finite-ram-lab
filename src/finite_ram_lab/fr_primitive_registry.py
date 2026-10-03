@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 
 
-SCHEMA = "finite-ram-lab.fr-northstar-002-primitive-registry/v0.1"
+SCHEMA = "finite-ram-lab.fr-northstar-002-primitive-registry/v0.2"
 
 EVIDENCE_ORDER = {
     "SOURCE_GROUNDED": 0,
@@ -327,6 +327,72 @@ PRIMITIVES = (
             "unknown_delivery",
         ],
     },
+    {
+        "id": "DIRECT_TRANSFER_NO_STAGING",
+        "atoms": ["X"],
+        "failure_domains": [
+            "TRANSFER_STAGING_PRESSURE",
+        ],
+        "evidence": {
+            "pr": 100,
+            "head_sha": "f6293a4ec0a046becf25d286bf100b5ea1a97678",
+            "class": "HOSTED_PHYSICAL",
+            "claim_ceiling": "HOSTED_LINUX_PYTHON_TRANSFER_STAGING_PROXY_ONLY",
+        },
+        "requires": [
+            "source_destination_copy_semantics_valid",
+            "staging_not_required",
+            "payload_size_known",
+            "memory_budget_known",
+        ],
+        "cost_dimensions": [
+            "transient_peak",
+            "copy_cpu",
+            "copy_latency",
+        ],
+        "reversible": True,
+        "mutates_live_workload": True,
+        "live_promotion_allowed": False,
+        "fail_closed_on": [
+            "staging_required",
+            "unknown_copy_semantics",
+            "unknown_payload_size",
+            "unknown_memory_budget",
+        ],
+    },
+    {
+        "id": "ZERO_COPY_SHARED_VIEW",
+        "atoms": ["X", "D"],
+        "failure_domains": [
+            "TRANSFER_STAGING_PRESSURE",
+        ],
+        "evidence": {
+            "pr": 100,
+            "head_sha": "f6293a4ec0a046becf25d286bf100b5ea1a97678",
+            "class": "HOSTED_PHYSICAL",
+            "claim_ceiling": "HOSTED_LINUX_PYTHON_TRANSFER_STAGING_PROXY_ONLY",
+        },
+        "requires": [
+            "share_compatible_semantics",
+            "source_lifetime_covers_consumer",
+            "aliasing_safe",
+            "memory_budget_known",
+        ],
+        "cost_dimensions": [
+            "lifetime_coupling",
+            "aliasing",
+            "consumer_compatibility",
+        ],
+        "reversible": True,
+        "mutates_live_workload": True,
+        "live_promotion_allowed": False,
+        "fail_closed_on": [
+            "share_semantics_unknown",
+            "source_lifetime_too_short",
+            "aliasing_safety_unknown",
+            "unknown_memory_budget",
+        ],
+    },
 )
 
 SUPPORT_PRIMITIVES = (
@@ -515,6 +581,18 @@ def run_panel() -> dict:
         )
     ]
 
+    physical_transfer = [
+        row["id"]
+        for row in eligible(
+            failure_domain=(
+                "TRANSFER_STAGING_PRESSURE"
+            ),
+            min_evidence_class=(
+                "HOSTED_PHYSICAL"
+            ),
+        )
+    ]
+
     live_candidates = [
         row["id"]
         for row in PRIMITIVES
@@ -524,7 +602,7 @@ def run_panel() -> dict:
     ]
 
     frozen = {
-        "primitive_count": 10,
+        "primitive_count": 12,
         "support_count": 4,
         "physical_duplication": [
             "SHARE_IMMUTABLE_MMAP"
@@ -534,6 +612,10 @@ def run_panel() -> dict:
         ],
         "physical_compression": [
             "COMPRESS_STATE"
+        ],
+        "physical_transfer": [
+            "DIRECT_TRANSFER_NO_STAGING",
+            "ZERO_COPY_SHARED_VIEW"
         ],
         "live_candidates": [],
     }
@@ -553,6 +635,9 @@ def run_panel() -> dict:
         ),
         "physical_compression": (
             physical_compression
+        ),
+        "physical_transfer": (
+            physical_transfer
         ),
         "live_candidates": (
             live_candidates
@@ -590,6 +675,9 @@ def run_panel() -> dict:
             "hosted_physical_compression": (
                 physical_compression
             ),
+            "hosted_physical_transfer": (
+                physical_transfer
+            ),
             "live_promotion_candidates": (
                 live_candidates
             ),
@@ -614,6 +702,7 @@ def run_panel() -> dict:
             "APPLICABILITY_AND_FAIL_CLOSED_CONDITIONS_MUST_TRAVEL_WITH_THE_ACTION",
             "HOSTED_PHYSICAL_EVIDENCE_IS_NOT_AUTOMATIC_LIVE_PROMOTION_AUTHORITY",
             "THE_CURRENT_REGISTRY_HAS_ZERO_LIVE_PROMOTION_CANDIDATES_BY_DESIGN",
+            "TRANSFER_STAGING_PRESSURE_NOW_HAS_HOSTED_PHYSICAL_PRIMITIVES",
         ],
         "claim_ceiling": (
             "REGISTRY_STRUCTURE_AND_EVIDENCE_ROUTING_ONLY"
