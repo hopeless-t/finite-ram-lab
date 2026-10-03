@@ -36,7 +36,7 @@ def _episode(ep: int):
     coords = list(range(N))
     coords.sort(
         key=lambda i: _h(
-            f"E{ep}|ACTIVE|{i}"
+            f"ep{ep}|coord|{i}"
         )
     )
 
@@ -45,7 +45,7 @@ def _episode(ep: int):
     for coordinate in coords[:ACTIVE]:
         magnitude = (
             _h(
-                f"E{ep}|VALUE|{coordinate}"
+                f"ep{ep}|val|{coordinate}"
             )
             % 4
         ) + 1
@@ -53,7 +53,7 @@ def _episode(ep: int):
         sign = (
             -1
             if _h(
-                f"E{ep}|SIGN|{coordinate}"
+                f"ep{ep}|sign|{coordinate}"
             ) & 1
             else 1
         )
@@ -65,7 +65,7 @@ def _episode(ep: int):
     permutation = list(range(N))
     permutation.sort(
         key=lambda i: _h(
-            f"E{ep}|CACHE|{i}"
+            f"ep{ep}|cache|{i}"
         )
     )
 
@@ -78,7 +78,7 @@ def _idiot_action(
     slot: int,
 ) -> tuple[int, int]:
     value = _h(
-        f"E{ep}|R{round_index}|I{slot}"
+        f"ep{ep}|round{round_index}|idiot{slot}"
     )
 
     coordinate = value % N
