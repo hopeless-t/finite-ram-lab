@@ -47,6 +47,11 @@ jobs:
           assert 1900 < r["analytic_boundaries"]["fast_hybrid_min_p05_write_mib_s_at_1600ms"] < 2000
           assert a["SLOW_SSD_TIERED"]["choices"] == a["RAM_ONLY"]["choices"]
           assert a["EMERGENCY_SHORT_DEADLINE"]["choices"] == a["RAM_ONLY"]["choices"]
+          p = r["phase_map"]
+          assert p["150"]["5000"] == "RAM_FALLBACK"
+          assert p["800"]["1500"] == "PREFIX_SSD_MIX"
+          assert p["1600"]["2000"] == "KV_Q8_AUX_SSD"
+          assert p["1600"]["3500"] == "PREFIX_AUX_SSD"
           PY
           sha256sum specs/FR-SOOM-002J.json
           sha256sum runs/FR-SOOM-002J/result.json
