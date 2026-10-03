@@ -1,0 +1,50 @@
+name: KSLA-MATH-002 Bounded Idiocy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/ksla-math-002-bounded-idiocy
+    paths:
+      - "src/finite_ram_lab/ksla_bounded_idiocy.py"
+      - "tests/test_ksla_bounded_idiocy.py"
+      - "specs/KSLA-MATH-002.json"
+      - "docs/KSLA-MATH-002-BOUNDED-IDIOCY.md"
+      - ".github/workflows/ksla-math-002.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_ksla_bounded_idiocy -v
+      - name: Analytic plus matched Monte Carlo panel
+        run: |
+          mkdir -p runs/KSLA-MATH-002
+          python -m finite_ram_lab.ksla_bounded_idiocy > runs/KSLA-MATH-002/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/KSLA-MATH-002/result.json"))
+          assert r["status"] == "PASS"
+          assert (r["analytic"]["best_expected_progress"]["experts"], r["analytic"]["best_expected_progress"]["idiots"]) == (1,8)
+          assert (r["analytic"]["best_utility"]["experts"], r["analytic"]["best_utility"]["idiots"]) == (1,3)
+          assert r["monte_carlo"]["matched_random_tape"] is True
+          assert r["monte_carlo"]["max_absolute_analytic_error"] <= 0.08
+          PY
+          sha256sum specs/KSLA-MATH-002.json
+          sha256sum runs/KSLA-MATH-002/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ksla-math-002-bounded-idiocy
+          path: runs/KSLA-MATH-002/result.json
+          if-no-files-found: error

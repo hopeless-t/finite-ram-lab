@@ -1,0 +1,59 @@
+{
+  "schema": "finite-ram-lab.ksla-math-002/v0.1",
+  "title": "KSLA-MATH-002 Bounded Idiocy Portfolio",
+  "status": "FROZEN_ANALYTIC_PLUS_MATCHED_MONTE_CARLO_SPEC",
+  "parent": "KSLA-BENCH-001",
+  "hypothesis": "Small positive random-proposal allocation can be optimal when cheap idiot proposals have complementary support / upper-tail opportunities in expert blind states, but marginal idiot value decays and must be resource-priced.",
+  "toy_model": {
+    "blind_probability": 0.15,
+    "expert": {
+      "cost": 8,
+      "normal_reward": 8,
+      "blind_reward": 0
+    },
+    "idiot": {
+      "cost": 1,
+      "pmf": [
+        {
+          "reward": 0,
+          "probability": 0.8
+        },
+        {
+          "reward": 2,
+          "probability": 0.17
+        },
+        {
+          "reward": 20,
+          "probability": 0.03
+        }
+      ]
+    },
+    "budget": 16,
+    "lambda_cost": 0.39
+  },
+  "analytic_formulas": {
+    "portfolio_progress": "E[G_e,k]=integral(1-F_E(y)^e F_I(y)^k)dy",
+    "expert_to_idiot_swap": "integral F_E^(e-1) F_I^k (F_E-F_I) dy",
+    "simple_blind_tail": "E[G_1,k]=H-(H-(1-q)g)(1-p)^k",
+    "marginal_next_idiot": "p(1-p)^k(H-(1-q)g)"
+  },
+  "frozen_expectations": {
+    "hard_budget_max_progress": {
+      "experts": 1,
+      "idiots": 8
+    },
+    "utility_max_at_lambda_0_39": {
+      "experts": 1,
+      "idiots": 3,
+      "cost": 11
+    },
+    "dominated_idiot_control": "zero marginal progress, reject when cost positive"
+  },
+  "monte_carlo": {
+    "episodes": 200000,
+    "common_random_numbers": true,
+    "random_identity": "episode + proposal_slot + frozen SplitMix64 domain",
+    "max_analytic_error": 0.08
+  },
+  "claim_ceiling": "TOY_ANALYTIC_AND_MATCHED_MONTE_CARLO_BOUNDED_IDIOCY_ONLY"
+}
