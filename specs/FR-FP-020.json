@@ -1,0 +1,12 @@
+{
+  "schema": "finite-ram-lab.fr-fp-020/v0.1",
+  "title": "Cross-run restore uncertainty prior from existing CI",
+  "status": "REUSED_EVIDENCE_ANALYSIS_CANDIDATE",
+  "parent": "FR-FP-019",
+  "new_physical_runs": 0,
+  "reused_ci_runs": 15,
+  "state_mib": 8,
+  "bootstrap_samples": 20000,
+  "deadline_ms": [5,10,25,50,100],
+  "claim_ceiling": "FIFTEEN_REUSED_GITHUB_HOSTED_CI_RUNS_FOR_8MIB_RESTORE_ONLY"
+}
