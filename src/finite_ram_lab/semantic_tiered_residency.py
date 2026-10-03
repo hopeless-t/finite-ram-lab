@@ -220,6 +220,41 @@ def solve(
     }
 
 
+def _plan_label(row: dict) -> str:
+    fingerprint = (
+        row["choices"]["KV"],
+        row["choices"]["PREFIX"],
+        row["choices"]["AUX_EXPERTS"],
+        row["choices"]["BROWSER_CACHE"],
+    )
+    labels = {
+        ("Q4", "DROP", "KEEP", "DROP"): "RAM_FALLBACK",
+        ("Q4", "SSD", "KEEP", "DROP"): "PREFIX_SSD_MIX",
+        ("Q8", "KEEP", "SSD", "KEEP"): "KV_Q8_AUX_SSD",
+        ("KEEP", "SSD", "SSD", "KEEP"): "PREFIX_AUX_SSD",
+    }
+    return labels.get(fingerprint, "OTHER")
+
+
+def _phase_map() -> dict[str, dict[str, str]]:
+    deadlines = (150, 400, 800, 1200, 1600, 2400)
+    bandwidths = (500, 1000, 1500, 2000, 2500, 3500, 5000)
+    return {
+        str(deadline): {
+            str(bandwidth): _plan_label(
+                solve(
+                    ssd_enabled=True,
+                    ssd_p05_write_mib_s=bandwidth,
+                    deadline_ms=deadline,
+                    max_ssd_write_mib=4096,
+                )
+            )
+            for bandwidth in bandwidths
+        }
+        for deadline in deadlines
+    }
+
+
 def run_panel() -> dict:
     arms = {
         "RAM_ONLY": solve(
@@ -312,6 +347,16 @@ def run_panel() -> dict:
     if not 1900 < fast_min_p05_write_mib_s < 2000:
         raise RuntimeError("analytic_bandwidth_knee_changed")
 
+    phase_map = _phase_map()
+    if phase_map["150"]["5000"] != "RAM_FALLBACK":
+        raise RuntimeError("short_deadline_phase_changed")
+    if phase_map["800"]["1500"] != "PREFIX_SSD_MIX":
+        raise RuntimeError("mid_phase_changed")
+    if phase_map["1600"]["2000"] != "KV_Q8_AUX_SSD":
+        raise RuntimeError("hybrid_phase_changed")
+    if phase_map["1600"]["3500"] != "PREFIX_AUX_SSD":
+        raise RuntimeError("high_bandwidth_phase_changed")
+
     return {
         "schema": SCHEMA,
         "status": "PASS",
@@ -334,6 +379,7 @@ def run_panel() -> dict:
                 fast["ssd_write_mib"]
             ),
         },
+        "phase_map": phase_map,
         "refault_scenarios": [
             {
                 "probability": probability,
