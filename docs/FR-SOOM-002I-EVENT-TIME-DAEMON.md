@@ -104,7 +104,7 @@ Result:
 
 - current-task losses: 1;
 - unnecessary protective IID episodes: 3;
-- switches: 6;
+- switches: 8;
 - recovery release delay to the next cooperative pressure episode: 75 s.
 
 It reacts fast but oscillates and follows isolated bursts.
