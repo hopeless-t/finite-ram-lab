@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from functools import lru_cache
 from statistics import mean, pstdev
 
 
@@ -162,60 +163,57 @@ def _segment(
     return rows
 
 
+@lru_cache(maxsize=None)
+def _segment_mean(
+    episode: int,
+    segment: int,
+    constant_ms: float = 0.0,
+    tail_ms: float = 0.0,
+) -> float:
+    return mean(
+        _segment(
+            episode,
+            segment,
+            observer_constant_ms=constant_ms,
+            observer_tail_ms=tail_ms,
+        )
+    )
+
+
+@lru_cache(maxsize=None)
+def _mean_effects_cached(
+    constant_ms: float,
+    tail_ms: float,
+) -> tuple[tuple[float, ...], tuple[float, ...]]:
+    naive = []
+    aba = []
+
+    for episode in range(EPISODES):
+        a1 = _segment_mean(episode, 0)
+        b = _segment_mean(
+            episode,
+            1,
+            constant_ms,
+            tail_ms,
+        )
+        a2 = _segment_mean(episode, 2)
+
+        naive.append(b - a1)
+        aba.append(b - (a1 + a2) / 2.0)
+
+    return tuple(naive), tuple(aba)
+
+
 def _mean_effects(
     *,
     constant_ms: float,
     tail_ms: float,
-) -> tuple[
-    list[float],
-    list[float],
-]:
-    naive = []
-    aba = []
-
-    for episode in range(
-        EPISODES
-    ):
-        a1 = mean(
-            _segment(
-                episode,
-                0,
-            )
-        )
-
-        b = mean(
-            _segment(
-                episode,
-                1,
-                observer_constant_ms=(
-                    constant_ms
-                ),
-                observer_tail_ms=(
-                    tail_ms
-                ),
-            )
-        )
-
-        a2 = mean(
-            _segment(
-                episode,
-                2,
-            )
-        )
-
-        naive.append(
-            b - a1
-        )
-
-        aba.append(
-            b
-            - (
-                a1 + a2
-            ) / 2.0
-        )
-
-    return naive, aba
-
+) -> tuple[list[float], list[float]]:
+    naive, aba = _mean_effects_cached(
+        constant_ms,
+        tail_ms,
+    )
+    return list(naive), list(aba)
 
 def _grouped(
     rows: list[float],

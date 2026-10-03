@@ -1,0 +1,23 @@
+{
+  "schema": "finite-ram-lab.fr-meta-006/v0.1",
+  "title": "ABA deterministic segment-mean memoization",
+  "status": "DOGFOOD_PERFORMANCE_CANDIDATE",
+  "parent": "FR-META-005",
+  "observed_hotspot": {
+    "test": "test_fr_gfx_observer_aba.FrGfxObserverAbaTests.test_aba_reduces_null_mae",
+    "observed_completion_gap_ms": 29091
+  },
+  "scientific_parameters_unchanged": {
+    "episodes": 8192,
+    "frames_per_segment": 120,
+    "blocks_per_decision": 8
+  },
+  "compute_graph": {
+    "baseline_segment_evaluations": 98304,
+    "candidate_unique_segment_means": 40960,
+    "structural_reduction_fraction": 0.5833333333333334
+  },
+  "semantic_gate": "all existing frozen ABA values and tests must remain unchanged",
+  "monte_carlo": "not used because this is deterministic compute deduplication",
+  "claim_ceiling": "TEST_HARNESS_COMPUTE_OPTIMIZATION_ONLY"
+}
