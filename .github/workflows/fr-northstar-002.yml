@@ -1,0 +1,50 @@
+name: FR-NORTHSTAR-002 Primitive Registry
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-northstar-002-primitive-registry
+    paths:
+      - "src/finite_ram_lab/fr_primitive_registry.py"
+      - "tests/test_fr_primitive_registry.py"
+      - "specs/FR-NORTHSTAR-002.json"
+      - "docs/FR-NORTHSTAR-002-PRIMITIVE-REGISTRY.md"
+      - ".github/workflows/fr-northstar-002.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_primitive_registry -v
+      - name: Validate registry
+        run: |
+          mkdir -p runs/FR-NORTHSTAR-002
+          python -m finite_ram_lab.fr_primitive_registry > runs/FR-NORTHSTAR-002/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-NORTHSTAR-002/result.json"))
+          assert r["status"] == "PASS"
+          assert len(r["primitives"]) == 10
+          assert len(r["support_primitives"]) == 4
+          assert r["queries"]["live_promotion_candidates"] == []
+          assert r["governance"]["unknown_applicability"] == "FAIL_CLOSED"
+          PY
+          sha256sum specs/FR-NORTHSTAR-002.json
+          sha256sum runs/FR-NORTHSTAR-002/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-northstar-002-primitive-registry
+          path: runs/FR-NORTHSTAR-002/result.json
+          if-no-files-found: error
