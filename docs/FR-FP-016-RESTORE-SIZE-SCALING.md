@@ -80,3 +80,25 @@ This allows the warm/cold break-even frontier to adapt to variable state size.
 ## Claim ceiling
 
 **HOSTED_LINUX_WARM_COLD_RESTORE_SIZE_SCALING_ONLY**
+
+
+## v0.2 theory update after first physical run
+
+The first run rejected the single-linear-bandwidth hypothesis for COLD.
+
+Observed medians were 3.406 ms at 4 MiB, 4.750 ms at 8 MiB, and 36.574 ms at
+16 MiB.
+
+WARM remained approximately linear (R² 0.987), while COLD fell to R² 0.914.
+
+The qualification is therefore not relaxed.
+
+v0.2 independently reruns the same paired experiment and asks whether the
+8->16 MiB COLD marginal slope remains more than five times the 4->8 MiB
+marginal slope.
+
+If it does, the next experiment will locate and explain the knee.
+
+If it does not, the first run is treated as host variance.
+
+Raw block-level read timings are emitted for biopsy.

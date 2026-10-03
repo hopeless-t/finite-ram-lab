@@ -1,14 +1,20 @@
 {
-  "schema": "finite-ram-lab.fr-fp-016/v0.1",
-  "title": "Warm-cold restore size scaling",
-  "status": "HOSTED_PHYSICAL_SCALING_CANDIDATE",
+  "schema": "finite-ram-lab.fr-fp-016/v0.2",
+  "title": "Warm-cold restore size scaling / cold knee replication",
+  "status": "HOSTED_PHYSICAL_NONLINEARITY_REPLICATION",
   "parent": "FR-FP-015",
   "state_sizes_mib": [4,8,16],
   "paired_blocks_per_size": 6,
-  "arms": [
-    "WARM_PAGECACHE",
-    "COLD_DONTNEED"
-  ],
-  "fit": "median restore read ns ~= intercept + slope * state MiB",
-  "claim_ceiling": "HOSTED_LINUX_WARM_COLD_RESTORE_SIZE_SCALING_ONLY"
+  "first_run": {
+    "workflow": 37145768871,
+    "warm_r2": 0.9871319562539695,
+    "cold_r2": 0.9139812532802742,
+    "cold_median_ms": {
+      "4": 3.406210,
+      "8": 4.7503795,
+      "16": 36.574110
+    }
+  },
+  "replication_hypothesis": "cold 8->16 marginal slope remains >5x cold 4->8 marginal slope",
+  "claim_ceiling": "HOSTED_COLD_RESTORE_NONLINEARITY_REPLICATION_ONLY"
 }

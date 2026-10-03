@@ -747,13 +747,54 @@ def run_panel() -> dict[str, Any]:
             ]
             > 0.95
         ),
-        "cold_linear_fit_reasonable": (
+        "cold_single_linear_fit_rejected": (
             fits[
                 "COLD_DONTNEED"
             ][
                 "r2"
             ]
-            > 0.95
+            < 0.95
+        ),
+        "cold_8_to_16_marginal_slope_gt_5x_4_to_8": (
+            (
+                (
+                    medians[
+                        "COLD_DONTNEED"
+                    ][
+                        "16"
+                    ][
+                        "read_ns"
+                    ]
+                    - medians[
+                        "COLD_DONTNEED"
+                    ][
+                        "8"
+                    ][
+                        "read_ns"
+                    ]
+                )
+                / 8.0
+            )
+            > 5.0
+            * (
+                (
+                    medians[
+                        "COLD_DONTNEED"
+                    ][
+                        "8"
+                    ][
+                        "read_ns"
+                    ]
+                    - medians[
+                        "COLD_DONTNEED"
+                    ][
+                        "4"
+                    ][
+                        "read_ns"
+                    ]
+                )
+                / 4.0
+            )
         ),
     }
 
@@ -778,9 +819,78 @@ def run_panel() -> dict[str, Any]:
         "cold_over_warm_median_read_ratios": (
             ratios
         ),
+        "cold_piecewise": {
+            "slope_4_to_8_ns_per_mib": (
+                (
+                    medians[
+                        "COLD_DONTNEED"
+                    ][
+                        "8"
+                    ][
+                        "read_ns"
+                    ]
+                    - medians[
+                        "COLD_DONTNEED"
+                    ][
+                        "4"
+                    ][
+                        "read_ns"
+                    ]
+                )
+                / 4.0
+            ),
+            "slope_8_to_16_ns_per_mib": (
+                (
+                    medians[
+                        "COLD_DONTNEED"
+                    ][
+                        "16"
+                    ][
+                        "read_ns"
+                    ]
+                    - medians[
+                        "COLD_DONTNEED"
+                    ][
+                        "8"
+                    ][
+                        "read_ns"
+                    ]
+                )
+                / 8.0
+            ),
+        },
+        "rows": [
+            {
+                "block": row["block"],
+                "size_mib": row["size_mib"],
+                "arm": row["arm"],
+                "pre_resident_fraction": (
+                    row[
+                        "pre_restore_residency"
+                    ][
+                        "resident_fraction"
+                    ]
+                ),
+                "read_ns": (
+                    row[
+                        "restore"
+                    ][
+                        "read_ns"
+                    ]
+                ),
+                "verified": (
+                    row[
+                        "restore"
+                    ][
+                        "verified"
+                    ]
+                ),
+            }
+            for row in rows
+        ],
         "checks": checks,
         "decision": (
-            "MODEL_RESTORE_COST_AS_SIZE_DEPENDENT_RATHER_THAN_REUSING_ONE_8MIB_RATIO"
+            "REJECT_SINGLE_LINEAR_COLD_BANDWIDTH_MODEL_AND_REPLICATE_THE_8_TO_16MIB_KNEE"
         ),
         "claim_ceiling": (
             "HOSTED_LINUX_WARM_COLD_RESTORE_SIZE_SCALING_ONLY"

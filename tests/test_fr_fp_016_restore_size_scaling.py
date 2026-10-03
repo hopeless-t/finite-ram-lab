@@ -52,7 +52,7 @@ class RestoreSizeScalingTests(unittest.TestCase):
                 1.0,
             )
 
-    def test_both_restore_fits_are_reasonably_linear(self) -> None:
+    def test_warm_linear_but_cold_single_line_is_rejected(self) -> None:
         self.assertGreater(
             self.result[
                 "fits"
@@ -63,7 +63,7 @@ class RestoreSizeScalingTests(unittest.TestCase):
             ],
             0.95,
         )
-        self.assertGreater(
+        self.assertLess(
             self.result[
                 "fits"
             ][
@@ -72,6 +72,21 @@ class RestoreSizeScalingTests(unittest.TestCase):
                 "r2"
             ],
             0.95,
+        )
+
+    def test_cold_knee_replicates(self) -> None:
+        piece = self.result[
+            "cold_piecewise"
+        ]
+
+        self.assertGreater(
+            piece[
+                "slope_8_to_16_ns_per_mib"
+            ],
+            5.0
+            * piece[
+                "slope_4_to_8_ns_per_mib"
+            ],
         )
 
     def test_claim_ceiling_is_physical_scaling(self) -> None:
