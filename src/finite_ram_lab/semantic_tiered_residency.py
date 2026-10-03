@@ -275,6 +275,12 @@ def run_panel() -> dict:
             deadline_ms=1600,
             max_ssd_write_mib=2048,
         ),
+        "HIGH_BW_SSD_TIERED": solve(
+            ssd_enabled=True,
+            ssd_p05_write_mib_s=3500,
+            deadline_ms=1600,
+            max_ssd_write_mib=4096,
+        ),
         "SLOW_SSD_TIERED": solve(
             ssd_enabled=True,
             ssd_p05_write_mib_s=1000,
@@ -292,6 +298,7 @@ def run_panel() -> dict:
     fast = arms["FAST_SSD_TIERED"]
     ram = arms["RAM_ONLY"]
     write_limited = arms["WRITE_BUDGET_2G"]
+    high_bw = arms["HIGH_BW_SSD_TIERED"]
     slow = arms["SLOW_SSD_TIERED"]
     emergency = arms["EMERGENCY_SHORT_DEADLINE"]
 
@@ -325,6 +332,16 @@ def run_panel() -> dict:
     }:
         raise RuntimeError("write_budget_reference_changed")
 
+    if high_bw["choices"] != {
+        "KV": "KEEP",
+        "PREFIX": "SSD",
+        "AUX_EXPERTS": "SSD",
+        "BROWSER_CACHE": "KEEP",
+        "BACKGROUND_JOB": "KEEP",
+        "ACTIVE_TASK": "KEEP",
+    }:
+        raise RuntimeError("high_bandwidth_reference_changed")
+
     if slow["choices"] != ram["choices"]:
         raise RuntimeError("slow_ssd_should_fall_back_to_ram_plan")
 
@@ -337,15 +354,27 @@ def run_panel() -> dict:
     if fast["choices"]["ACTIVE_TASK"] != "KEEP":
         raise RuntimeError("fast_tiered_plan_killed_active_task")
 
-    fast_min_p05_write_mib_s = (
-        fast["ssd_write_mib"]
-        / (
-            (1600.0 - fast["non_ssd_apply_ms"])
-            / 1000.0
+    def min_p05_bandwidth(row: dict) -> float:
+        return (
+            row["ssd_write_mib"]
+            / (
+                (1600.0 - row["non_ssd_apply_ms"])
+                / 1000.0
+            )
         )
+
+    prefix_mix_min_p05_write_mib_s = min_p05_bandwidth(
+        write_limited
     )
+    fast_min_p05_write_mib_s = min_p05_bandwidth(fast)
+    high_bw_min_p05_write_mib_s = min_p05_bandwidth(high_bw)
+
+    if not 650 < prefix_mix_min_p05_write_mib_s < 660:
+        raise RuntimeError("prefix_mix_bandwidth_knee_changed")
     if not 1900 < fast_min_p05_write_mib_s < 2000:
         raise RuntimeError("analytic_bandwidth_knee_changed")
+    if not 2500 < high_bw_min_p05_write_mib_s < 2600:
+        raise RuntimeError("high_bw_bandwidth_knee_changed")
 
     phase_map = _phase_map()
     if phase_map["150"]["5000"] != "RAM_FALLBACK":
@@ -372,8 +401,14 @@ def run_panel() -> dict:
             "ssd_write_mib": SSD_WRITE_WEIGHT,
         },
         "analytic_boundaries": {
+            "prefix_ssd_mix_min_p05_write_mib_s_at_1600ms": (
+                prefix_mix_min_p05_write_mib_s
+            ),
             "fast_hybrid_min_p05_write_mib_s_at_1600ms": (
                 fast_min_p05_write_mib_s
+            ),
+            "high_bw_spill_min_p05_write_mib_s_at_1600ms": (
+                high_bw_min_p05_write_mib_s
             ),
             "fast_hybrid_min_write_budget_mib": (
                 fast["ssd_write_mib"]
