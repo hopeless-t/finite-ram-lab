@@ -4,6 +4,13 @@ Status: **ANALYTIC / SHADOW DESIGN**
 
 Parent: **FR-SOOM-002J**
 
+Upstream source frozen for Stage 0 geometry:
+
+- repository: `PrismML-Eng/Bonsai-demo`
+- commit: `bfaea577522626b883f755236878e4583f3d6e68`
+- observed: 2026-10-03 source refresh
+
+
 ## Why this experiment exists
 
 FR-SOOM-002J established a synthetic controller that chooses among RAM, compressed RAM, SSD, drop/rebuild, and process sacrifice under a pressure deadline.
