@@ -1,0 +1,49 @@
+{
+  "schema": "finite-ram-lab.fr-gfx-005/v0.1",
+  "title": "FR-GFX-005 Observer Perturbation A-B-A Protocol",
+  "status": "FROZEN_SYNTHETIC_PROTOCOL",
+  "parent": "FR-GFX-004",
+  "model": {
+    "segments": [
+      "A1 observer off",
+      "B observer on",
+      "A2 observer off"
+    ],
+    "linear_drift": "y(t)=mu+beta*t+delta*I_B+epsilon",
+    "estimator": "delta_hat=B-(A1+A2)/2",
+    "property": "linear drift beta cancels in expectation"
+  },
+  "synthetic_fixture": {
+    "episodes": 8192,
+    "frames_per_segment": 120,
+    "blocks_per_decision": 8,
+    "baseline_ms": 100,
+    "equivalence_margin_ms": 1,
+    "margin_relative_to_baseline": 0.01,
+    "note": "1 ms / 1% is fixture-only and must not be transferred to live hardware without pre-registration."
+  },
+  "arms": {
+    "NULL_OBSERVER": {
+      "constant_overhead_ms": 0,
+      "tail_overhead_ms": 0
+    },
+    "LIGHT_OBSERVER": {
+      "constant_overhead_ms": 0.5,
+      "tail_overhead_ms": 2
+    },
+    "HEAVY_OBSERVER": {
+      "constant_overhead_ms": 2,
+      "tail_overhead_ms": 12
+    }
+  },
+  "frozen_results": {
+    "null_single_naive_mae_ms": 1.2329958296867667,
+    "null_single_aba_mae_ms": 0.6702464188226963,
+    "null_single_naive_abs_gt_1ms": 0.5389404296875,
+    "null_single_aba_abs_gt_1ms": 0.2353515625,
+    "null_eight_block_aba_abs_gt_1ms": 0,
+    "light_eight_block_equivalence_pass_rate": 0.9326171875,
+    "heavy_eight_block_equivalence_pass_rate": 0
+  },
+  "claim_ceiling": "SYNTHETIC_OBSERVER_PERTURBATION_PROTOCOL_ONLY"
+}
