@@ -1,0 +1,36 @@
+{
+  "schema": "finite-ram-lab.fr-northstar-002/v0.1",
+  "title": "FR-NORTHSTAR-002 Evidence-backed Primitive Registry",
+  "status": "FROZEN_REGISTRY_CONTRACT",
+  "parent": "FR-NORTHSTAR-001",
+  "evidence_classes": [
+    "SOURCE_GROUNDED",
+    "SYNTHETIC",
+    "HOSTED_PHYSICAL",
+    "HOST_BOUND_PHYSICAL"
+  ],
+  "primitive_fields": [
+    "id",
+    "atoms",
+    "failure_domains",
+    "evidence",
+    "requires",
+    "cost_dimensions",
+    "reversible",
+    "mutates_live_workload",
+    "live_promotion_allowed",
+    "fail_closed_on"
+  ],
+  "governance": {
+    "default_live_promotion": "DENY",
+    "minimum_live_evidence": "HOST_BOUND_PHYSICAL",
+    "unknown_applicability": "FAIL_CLOSED",
+    "unknown_delivery": "DO_NOT_RETRY"
+  },
+  "frozen_registry": {
+    "action_primitives": 10,
+    "support_primitives": 4,
+    "live_promotion_candidates": 0
+  },
+  "claim_ceiling": "REGISTRY_STRUCTURE_AND_EVIDENCE_ROUTING_ONLY"
+}
