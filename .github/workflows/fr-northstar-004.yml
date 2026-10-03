@@ -1,0 +1,49 @@
+name: FR-NORTHSTAR-004 Gap-driven Selector
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-northstar-004-gap-driven-selector
+    paths:
+      - "src/finite_ram_lab/fr_gap_selector.py"
+      - "tests/test_fr_gap_selector.py"
+      - "specs/FR-NORTHSTAR-004.json"
+      - "docs/FR-NORTHSTAR-004-GAP-DRIVEN-SELECTOR.md"
+      - ".github/workflows/fr-northstar-004.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_gap_selector -v
+      - name: Run gap-routing panel
+        run: |
+          mkdir -p runs/FR-NORTHSTAR-004
+          python -m finite_ram_lab.fr_gap_selector > runs/FR-NORTHSTAR-004/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-NORTHSTAR-004/result.json"))
+          assert r["status"] == "PASS"
+          assert r["summary"]["new_mechanism_cases"] == 1
+          assert r["cases"]["capability_gap"]["next_step"] == "OPEN_NEW_MECHANISM_LANE"
+          assert r["cases"]["frontier_reached"]["next_step"] == "NO_NEW_RESEARCH"
+          PY
+          sha256sum specs/FR-NORTHSTAR-004.json
+          sha256sum runs/FR-NORTHSTAR-004/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-northstar-004-gap-driven-selector
+          path: runs/FR-NORTHSTAR-004/result.json
+          if-no-files-found: error

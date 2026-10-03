@@ -1,0 +1,25 @@
+{
+  "schema": "finite-ram-lab.fr-northstar-004/v0.1",
+  "title": "FR-NORTHSTAR-004 Gap-driven Experiment Selector",
+  "status": "FROZEN_SYNTHETIC_RESEARCH_ROUTER",
+  "parent": "FR-NORTHSTAR-003",
+  "gap_classes": {
+    "EVIDENCE_GAP": "Existing modeled capability could close the frontier gap if applicability evidence were collected.",
+    "MODEL_GAP": "Applicable registered capability exists but lacks a qualified effect model.",
+    "CAPABILITY_GAP": "No current registered/effect-modeled primitive can attack the binding gap.",
+    "CONTRACT_GAP": "Known actions can meet memory only by violating another task contract.",
+    "FRONTIER_REACHED": "Existing primitives already reach the target; no new mechanism research."
+  },
+  "routing": {
+    "EVIDENCE_GAP": "MEASURE_MISSING_PRECONDITIONS",
+    "MODEL_GAP": "QUALIFY_EFFECT_MODEL",
+    "CAPABILITY_GAP": "OPEN_NEW_MECHANISM_LANE",
+    "CONTRACT_GAP": "FIND_LOWER_COST_COMPOSITION_OR_REVISIT_CONTRACT",
+    "FRONTIER_REACHED": "NO_NEW_RESEARCH"
+  },
+  "frozen_panel": {
+    "cases": 5,
+    "new_mechanism_cases": 1
+  },
+  "claim_ceiling": "SYNTHETIC_GAP_CLASSIFICATION_AND_RESEARCH_ROUTING_ONLY"
+}
