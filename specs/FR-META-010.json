@@ -1,0 +1,22 @@
+{
+  "schema": "finite-ram-lab.fr-meta-010/v0.1",
+  "title": "KSLA real-state immutable episode-template cache",
+  "status": "DETACHED_PROVISIONAL",
+  "parent": "FR-META-009",
+  "observed_hotspot": {
+    "test_family": "test_ksla_real_state_idiocy",
+    "observed_completion_gap_ms_recent": 11366
+  },
+  "baseline": {
+    "episodes": 512,
+    "policies": 6,
+    "deterministic_template_builds": 3072
+  },
+  "candidate": {
+    "deterministic_template_builds": 512,
+    "fresh_mutable_list_copies_per_policy": true
+  },
+  "structural_reduction_fraction": 0.8333333333333334,
+  "semantic_guard": "frozen policy summaries must remain exactly unchanged",
+  "claim_ceiling": "TEST_HARNESS_TEMPLATE_REUSE_ONLY"
+}
