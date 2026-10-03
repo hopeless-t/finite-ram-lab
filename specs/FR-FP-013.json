@@ -1,0 +1,19 @@
+{
+  "schema": "finite-ram-lab.fr-fp-013/v0.1",
+  "title": "Cold spill page-cache release with POSIX_FADV_DONTNEED",
+  "status": "HOSTED_PHYSICAL_PAGE_CACHE_CANDIDATE",
+  "parent": "FR-FP-012",
+  "arms": [
+    "PLAIN_FSYNC",
+    "DONTNEED_AFTER_FSYNC"
+  ],
+  "measurement": {
+    "process_rss_budget_mib": 32,
+    "hot_state_budget": 4,
+    "safe_step": 9,
+    "spill_states": 5,
+    "spill_state_mib": 8
+  },
+  "primary_gate": "DONTNEED cgroup memory.current peak < 75% of plain spill peak",
+  "claim_ceiling": "HOSTED_LINUX_CGROUP_PAGE_CACHE_RELEASE_FOR_THIS_COLD_SPILL_FIXTURE_ONLY"
+}
