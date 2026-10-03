@@ -376,6 +376,8 @@ def decay_hysteresis_cooldown() -> dict:
     def maybe_decay_exit(
         time_s: int,
         reason: str,
+        *,
+        count_block: bool = False,
     ) -> None:
         nonlocal mode
         nonlocal entered_protective_at_s
@@ -393,7 +395,8 @@ def decay_hysteresis_cooldown() -> dict:
         )
 
         if held_s < MIN_PROTECTIVE_HOLD_S:
-            cooldown_blocked_exit_events += 1
+            if count_block:
+                cooldown_blocked_exit_events += 1
             return
 
         mode = "COOPERATIVE"
@@ -458,6 +461,7 @@ def decay_hysteresis_cooldown() -> dict:
                 maybe_decay_exit(
                     time_s,
                     "CONTRADICTORY_EVIDENCE",
+                    count_block=(value == "IID"),
                 )
 
         if kind == "PRESSURE":
