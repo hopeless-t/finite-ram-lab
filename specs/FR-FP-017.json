@@ -1,0 +1,21 @@
+{
+  "schema": "finite-ram-lab.fr-fp-017/v0.1",
+  "title": "Long paired 8 MiB warm/cold restore temporal trace",
+  "status": "HOSTED_PHYSICAL_TEMPORAL_TRACE_CANDIDATE",
+  "parent": "FR-FP-016",
+  "fixture": {
+    "state_mib": 8,
+    "paired_blocks": 48,
+    "deadlines_ms": [5,10,25,50,100,200]
+  },
+  "metrics": [
+    "p50/p90/p95/p99/max",
+    "coefficient of variation",
+    "deadline miss rates",
+    "slow-run burst lengths",
+    "lag-1/2/4 autocorrelation",
+    "12-block epoch medians",
+    "paired warm control"
+  ],
+  "claim_ceiling": "HOSTED_8MIB_COLD_RESTORE_TEMPORAL_TRACE_PILOT_ONLY"
+}
