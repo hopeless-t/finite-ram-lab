@@ -1,0 +1,72 @@
+{
+  "schema": "finite-ram-lab.fr-gfx-001/v0.1",
+  "title": "FR-GFX-001 Happy iGPU / UMA Governor",
+  "status": "FROZEN_SYNTHETIC_UMA_IGPU_GOVERNOR_SPEC",
+  "parent": "KSLA-003",
+  "source_pins": {
+    "fidelityfx_sdk": {
+      "repository": "GPUOpen-LibrariesAndSDKs/FidelityFX-SDK",
+      "commit": "60f4ea81909200d8542eca14dccb2628b763a9a3"
+    },
+    "vulkan_memory_allocator": {
+      "repository": "GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator",
+      "commit": "3aa921224c154a0d2c43912bc88e1c42ce1f7607"
+    },
+    "vulkan_docs": {
+      "repository": "KhronosGroup/Vulkan-Docs",
+      "commit": "e4e53e4b31e13eeaee1ad99fb940aa72b2ec1b14"
+    }
+  },
+  "synthetic_fixture": {
+    "frames": 5000,
+    "total_uma_mib": 8192,
+    "target_frame_budget_ms": 33.3,
+    "render_scales": [
+      1,
+      0.83,
+      0.67,
+      0.58
+    ],
+    "texture_tiers": [
+      1,
+      0.75,
+      0.5
+    ],
+    "policies": [
+      "NATIVE_STATIC",
+      "UPSCALE_STATIC",
+      "EXPERT_FULL_SCAN",
+      "LOCAL_ONLY",
+      "BOUNDED_PROBE_4"
+    ],
+    "note": "All frame-time, memory, quality, bandwidth and scene-load numbers are synthetic controls. This is not a measured GPU benchmark."
+  },
+  "frozen_results": {
+    "NATIVE_STATIC": {
+      "deadline_misses": 706,
+      "memory_violations": 185,
+      "control_evaluations": 5000
+    },
+    "UPSCALE_STATIC": {
+      "deadline_misses": 224,
+      "memory_violations": 0,
+      "control_evaluations": 5000
+    },
+    "EXPERT_FULL_SCAN": {
+      "deadline_misses": 41,
+      "memory_violations": 0,
+      "control_evaluations": 60000
+    },
+    "LOCAL_ONLY": {
+      "deadline_misses": 69,
+      "memory_violations": 0,
+      "control_evaluations": 6970
+    },
+    "BOUNDED_PROBE_4": {
+      "deadline_misses": 53,
+      "memory_violations": 0,
+      "control_evaluations": 7379
+    }
+  },
+  "claim_ceiling": "SYNTHETIC_UMA_IGPU_GOVERNOR_ONLY"
+}
