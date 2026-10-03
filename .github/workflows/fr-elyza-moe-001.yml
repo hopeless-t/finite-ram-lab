@@ -1,0 +1,52 @@
+name: FR-ELYZA-MOE-001 Sparse Expert Residency
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-elyza-moe-001-sparse-residency
+    paths:
+      - "src/finite_ram_lab/moe_residency.py"
+      - "specs/FR-ELYZA-MOE-001.json"
+      - "tests/test_moe_residency.py"
+      - "docs/FR-ELYZA-MOE-001-SPARSE-EXPERT-RESIDENCY.md"
+      - ".github/workflows/fr-elyza-moe-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_moe_residency -v
+      - name: Freeze analytic panel
+        run: |
+          mkdir -p runs/FR-ELYZA-MOE-001
+          python -m finite_ram_lab.moe_residency > runs/FR-ELYZA-MOE-001/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-ELYZA-MOE-001/result.json"))
+          assert r["status"] == "PASS"
+          assert r["claim_ceiling"] == "ANALYTIC_ROUTING_RESIDENCY_SHADOW_MODEL_ONLY"
+          assert len(r["rows"]) == 36
+          assert r["geometry"]["derived_active_params"] == 3827476992
+          u = {x["tokens"]: x["expected_distinct_experts_per_layer_uniform"] for x in r["uniform_expert_union"]}
+          assert u[1] == 8.0
+          assert u[64] > 125.0
+          PY
+          sha256sum specs/FR-ELYZA-MOE-001.json
+          sha256sum runs/FR-ELYZA-MOE-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-elyza-moe-001-analytic-panel
+          path: runs/FR-ELYZA-MOE-001/result.json
+          if-no-files-found: error

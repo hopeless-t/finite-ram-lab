@@ -941,3 +941,21 @@ STRATA-001 was inspired by [Niko1221/Strata](https://github.com/Niko1221/Strata)
 See [the Strata inspiration note](docs/STRATA-INSPIRATION.md) and [STRATA-001 Council](docs/STRATA-001-COUNCIL.md).
 
 The initial study is an independent implementation; no Strata source code is copied into Finite RAM Lab.
+
+
+### FR-ELYZA-MOE-001 — sparse expert residency challenger
+
+[ELYZA-Thinking-1.0-llm-jp-4-32b-a3b](https://huggingface.co/elyza/ELYZA-Thinking-1.0-llm-jp-4-32b-a3b) is used as a sparse-MoE adversarial workload stacked beside FR-BONSAI-001.
+
+The central correction is:
+
+```text
+activated parameters
+!= trajectory-level resident working set
+```
+
+The source-grounded 32B-A3B geometry has 128 routed experts per layer and activates 8 per token. FR-ELYZA-MOE-001 derives the expert parameter geometry exactly, models expert-union growth across token trajectories, and sweeps bounded expert-cache size against routing locality and backing-store bandwidth.
+
+The first PR is analytic only: no model download, no host execution, and no claim that stock vLLM already exposes safe per-expert eviction.
+
+See [FR-ELYZA-MOE-001](docs/FR-ELYZA-MOE-001-SPARSE-EXPERT-RESIDENCY.md).

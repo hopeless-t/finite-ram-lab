@@ -1,0 +1,110 @@
+{
+  "schema": "finite-ram-lab.fr-elyza-moe-001/v0.1",
+  "status": "FROZEN_ANALYTIC_EXPERIMENT_CONTRACT",
+  "parent_track": "FR-BONSAI-001",
+  "question": "Can a 32.139B-parameter sparse MoE be made to behave like a finite working-set workload on a constrained-RAM host by pinning shared weights, caching a bounded expert hot set, and streaming cold experts without hiding routing churn, SSD traffic, KV growth, or foreground damage?",
+  "reference_model": {
+    "name": "elyza/ELYZA-Thinking-1.0-llm-jp-4-32b-a3b",
+    "base": "llm-jp/llm-jp-4-32b-a3b-base",
+    "architecture": "Qwen3MoeForCausalLM",
+    "layers": 32,
+    "hidden_size": 2560,
+    "moe_intermediate_size": 960,
+    "routed_experts_per_layer": 128,
+    "activated_experts_per_token": 8,
+    "context_length": 65536,
+    "total_parameters": 32139028992,
+    "activated_parameters": 3827476992,
+    "embedding_parameters": 503316480,
+    "license": "Apache-2.0"
+  },
+  "derived_geometry": {
+    "expert_mlp_parameters": 7372800,
+    "all_expert_parameters": 30198988800,
+    "shared_parameters": 1940040192,
+    "active_expert_parameters_per_token": 1887436800,
+    "identity": "shared_parameters + active_expert_parameters_per_token = published activated_parameters"
+  },
+  "shadow_arms": {
+    "expert_cache_slots_per_layer": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "routing_zipf_alpha": [
+      0,
+      0.75,
+      1.25
+    ],
+    "ssd_bandwidth_mib_s": [
+      1000,
+      2500,
+      5000
+    ],
+    "runtime_kv_reserve_mib": 768,
+    "dtype_for_geometry": "BF16"
+  },
+  "primary_metrics": [
+    "resident_mib_bf16_plus_reserve",
+    "hotset_hit_mass",
+    "expected_misses_per_layer",
+    "stream_mib_per_token_bf16",
+    "io_bound_tokens_per_s",
+    "expert_union_growth"
+  ],
+  "physical_followup_metrics": [
+    "memory.current",
+    "memory.peak",
+    "memory.events",
+    "PSI memory some/full",
+    "major_faults",
+    "minor_faults",
+    "NVMe read MiB/s",
+    "NVMe queue latency",
+    "expert cache hit/miss by layer",
+    "expert load bytes",
+    "KV resident bytes",
+    "TTFT",
+    "decode tokens/s",
+    "foreground latency",
+    "foreground survival"
+  ],
+  "frozen_hypotheses": [
+    "Activated parameter count is an execution-width statement, not a residency guarantee over a token trajectory.",
+    "Under uniform routing, the expert union rapidly approaches all 128 experts per layer even though only 8 are active for one token.",
+    "Routing skew creates a measurable expert-hotset cache opportunity; stronger skew should reduce cold-expert traffic at fixed cache size.",
+    "Expert cache size exposes a finite-RAM pressure knee between resident bytes and backing-store traffic.",
+    "Unlike dense FR-BONSAI-001 decode, sparse MoE can reduce per-token weight traffic if routing locality is exploitable, but can collapse toward storage-sized residency or SSD thrash if expert locality is weak."
+  ],
+  "sources": [
+    "https://huggingface.co/elyza/ELYZA-Thinking-1.0-llm-jp-4-32b-a3b",
+    "https://huggingface.co/llm-jp/llm-jp-4-32b-a3b-base",
+    "https://huggingface.co/llm-jp/llm-jp-4-32b-a3b-base/blob/main/config.json",
+    "https://elyza.ai/news/2026/10/02/rsiresearch"
+  ],
+  "physical_stop_conditions": [
+    "foreground task is killed or becomes unresponsive",
+    "memory pressure enters uncontrolled full stall",
+    "expert residency cannot be observed with sufficient completeness",
+    "runtime eagerly materializes or pins weights in a way that invalidates the intended cache intervention",
+    "I/O queueing invalidates the bounded-latency assumption",
+    "model correctness cannot be held constant across reference and treatment"
+  ],
+  "claim_ceiling": "ANALYTIC_ROUTING_RESIDENCY_SHADOW_MODEL_ONLY",
+  "nonclaims": [
+    "No physical run is performed by this PR.",
+    "No claim that stock vLLM or Transformers exposes safe per-expert eviction controls.",
+    "No claim that 3.827B active parameters implies 3.827B-parameter resident memory.",
+    "No claim that the synthetic 768 MiB runtime/KV reserve represents the user's host.",
+    "No claim that any expert-cache policy is faster than full residency.",
+    "No host process is killed, signaled, or reconfigured by this PR."
+  ],
+  "comparison_surface": {
+    "dense_parent": "FR-BONSAI-001",
+    "comparison_dimension": "trajectory-level weight traffic shape under bounded residency",
+    "dense_failure_shape": "nonresident dense blocks are revisited every decode token",
+    "sparse_failure_shape": "selected experts are sparse per token but cache misses can grow with weak routing locality",
+    "prohibited_interpretation": "Do not rank model quality or raw throughput across architectures from this shadow model."
+  }
+}
