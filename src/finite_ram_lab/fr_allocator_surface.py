@@ -656,21 +656,21 @@ def run_panel() -> dict:
     )
 
     frozen = {
-        "requests": 5308,
-        "max_reserve_admitted": 1862,
-        "contig_admitted": 4691,
-        "contig_rejected": 617,
-        "contig_external_fragmentation_rejects": 615,
-        "paged_admitted": 4804,
-        "paged_rejected": 504,
-        "paged_prefix_admitted": 5067,
-        "paged_prefix_rejected": 241,
-        "paged_prefix_blocks_avoided": 12996,
+        "requests": 5280,
+        "max_reserve_admitted": 1839,
+        "contig_admitted": 4685,
+        "contig_rejected": 595,
+        "contig_external_fragmentation_rejects": 590,
+        "paged_admitted": 4787,
+        "paged_rejected": 493,
+        "paged_prefix_admitted": 5056,
+        "paged_prefix_rejected": 224,
+        "paged_prefix_blocks_avoided": 12904,
         "granularity_16_waste_fraction": (
-            0.007315450336589354
+            0.007225370819670894
         ),
         "granularity_128_waste_fraction": (
-            0.05783839902464139
+            0.057858782370803254
         ),
     }
 
