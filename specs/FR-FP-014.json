@@ -1,0 +1,15 @@
+{
+  "schema": "finite-ram-lab.fr-fp-014/v0.1",
+  "title": "Warm page-cache versus cold DONTNEED restore pilot",
+  "status": "HOSTED_PHYSICAL_RESTORE_PILOT",
+  "parent": "FR-FP-013",
+  "blocks": 8,
+  "state_mib": 8,
+  "arms": [
+    "WARM_PAGECACHE",
+    "COLD_DONTNEED"
+  ],
+  "primary_gate": "pre-restore physical residency classes differ and all restores are exact",
+  "latency_ordering": "observational in v0.1; not frozen before measurement",
+  "claim_ceiling": "HOSTED_LINUX_WARM_COLD_RESTORE_PILOT_ONLY"
+}
