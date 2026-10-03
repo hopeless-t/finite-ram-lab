@@ -1,0 +1,12 @@
+{
+  "schema": "finite-ram-lab.fr-fp-021/v0.1",
+  "title": "Few-shot current-run cold restore calibration",
+  "status": "REUSED_EVIDENCE_CALIBRATION_CANDIDATE",
+  "parent": "FR-FP-020",
+  "new_physical_runs": 0,
+  "runs": 15,
+  "cold_trials_per_run": 6,
+  "probe_counts": [1,2,3],
+  "future_baseline_deadline_ms": 25,
+  "claim_ceiling": "FIFTEEN_REUSED_RUNS_SIX_TRIALS_EACH_FOR_8MIB_FEW_SHOT_CALIBRATION_ONLY"
+}
