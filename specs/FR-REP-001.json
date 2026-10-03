@@ -92,7 +92,15 @@
         "bandwidth_mib_s": 250
       }
     },
-    "note": "All latency, bandwidth, quality, size and deadline values are synthetic controls. Cloud values are not measurements of any provider or user connection."
+    "note": "All latency, bandwidth, quality, size and deadline values are synthetic controls. Cloud values are not measurements of any provider or user connection.",
+    "resource_objective_order": [
+      "accelerator_resident_mib",
+      "host_ram_resident_mib",
+      "local_storage_mib",
+      "network_fetch_mib",
+      "negative_quality_proxy",
+      "latency_ms"
+    ]
   },
   "frozen_reference": {
     "HOT_WEIGHT_SHARD": {
@@ -117,7 +125,8 @@
     "CONTAINER_IS_NOT_QUANTIZER",
     "BITNET_NATIVE_ENCODING_IS_NOT_ARBITRARY_RUNTIME_DEMOTION",
     "CLOUD_IS_A_DEADLINE_CLASS_NOT_A_UNIVERSAL_ESCAPE_HATCH",
-    "PRECISION_AND_PLACEMENT_MUST_BE_OPTIMIZED_JOINTLY"
+    "PRECISION_AND_PLACEMENT_MUST_BE_OPTIMIZED_JOINTLY",
+    "RESIDENCY_BYTES_ARE_TIER_TYPED_NOT_FUNGIBLE"
   ],
   "claim_ceiling": "SYNTHETIC_REPRESENTATION_PLACEMENT_GRAPH_ONLY"
 }
