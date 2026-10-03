@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "finite-ram-lab.fr-meta-014-decision-skills/v0.1"
+SCHEMA = "finite-ram-lab.fr-meta-018-decision-skills/v0.2"
 SOURCE_HISTORY_CHARACTERS = 17417
 
 INVARIANTS = (
@@ -185,6 +185,32 @@ SKILLS = (
         "replications": 1,
         "maturity": "QUALIFIED_GUARD",
         "invalidate_on": ["speedup_and_overhead_measured"],
+    },
+    {
+        "id": "SEMANTIC_OOM_SURVIVAL_LAW",
+        "priority": 92,
+        "kind": "positive",
+        "when": {
+            "semantic_oom_question": True,
+            "state_arrival_one_per_step": True,
+            "always_preemptive_transfer": True,
+            "transfer_initiation_one_per_step": True,
+            "transfer_lead_fixed_integer": True,
+            "transfer_failure_present": False,
+            "safe_reclaimability_collapses_history": True,
+        },
+        "action": "USE_ANALYTIC_SURVIVAL_LAW",
+        "mc": "SKIP",
+        "evidence_prs": [127],
+        "replications": 1,
+        "maturity": "QUALIFIED",
+        "invalidate_on": [
+            "state_arrival_rate_changes",
+            "transfer_throughput_changes",
+            "transfer_lead_is_not_fixed",
+            "transfer_failure_present",
+            "safe_reclaimability_does_not_collapse_history",
+        ],
     },
     {
         "id": "FAILURE_BIOPSY_BEFORE_THEORY_UPDATE",
@@ -388,6 +414,33 @@ def run_panel() -> dict[str, Any]:
             "prepared_delta_ready": True,
         }
     )
+    survival_unknown = compile_decision_context(
+        {
+            "semantic_oom_question": True,
+        }
+    )
+    survival_exact = compile_decision_context(
+        {
+            "semantic_oom_question": True,
+            "state_arrival_one_per_step": True,
+            "always_preemptive_transfer": True,
+            "transfer_initiation_one_per_step": True,
+            "transfer_lead_fixed_integer": True,
+            "transfer_failure_present": False,
+            "safe_reclaimability_collapses_history": True,
+        }
+    )
+    survival_invalid = compile_decision_context(
+        {
+            "semantic_oom_question": True,
+            "state_arrival_one_per_step": True,
+            "always_preemptive_transfer": True,
+            "transfer_initiation_one_per_step": True,
+            "transfer_lead_fixed_integer": True,
+            "transfer_failure_present": True,
+            "safe_reclaimability_collapses_history": True,
+        }
+    )
 
     checks = {
         "catalog_is_smaller_than_30pct_of_source": (
@@ -430,6 +483,22 @@ def run_panel() -> dict[str, Any]:
             post_receipt["primary_action"]
             == "MATERIALIZE_ATOMIC_CHILD_ON_RECEIPT_TREE"
         ),
+        "survival_law_requires_complete_facts": (
+            survival_unknown["primary_action"]
+            == "NO_COMPILED_DECISION"
+            and "transfer_lead_fixed_integer"
+            in survival_unknown["unresolved"]
+        ),
+        "survival_law_selected_when_assumptions_hold": (
+            survival_exact["primary_action"]
+            == "USE_ANALYTIC_SURVIVAL_LAW"
+            and survival_exact["skills"][0]["mc"]
+            == "SKIP"
+        ),
+        "survival_law_invalidates_on_transfer_failure": (
+            survival_invalid["primary_action"]
+            == "NO_COMPILED_DECISION"
+        ),
     }
 
     return {
@@ -448,6 +517,9 @@ def run_panel() -> dict[str, Any]:
             "research_ci": research_ci,
             "pre_receipt": pre_receipt,
             "post_receipt": post_receipt,
+            "semantic_survival_unknown": survival_unknown,
+            "semantic_survival_exact": survival_exact,
+            "semantic_survival_invalid": survival_invalid,
         },
         "decision": (
             "COMPILE_REPEATED_RESEARCH_DECISIONS_INTO_SMALL_SKILL_CAPSULES"

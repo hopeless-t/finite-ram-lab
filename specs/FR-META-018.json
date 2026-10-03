@@ -1,0 +1,15 @@
+{
+  "schema": "finite-ram-lab.fr-meta-018/v0.1",
+  "title": "Compile FR-FP-009 survival law into decision skill",
+  "status": "DOGFOOD_COMPILATION_CANDIDATE",
+  "parent": "FR-META-017",
+  "evidence_pr": 127,
+  "skill": {
+    "id": "SEMANTIC_OOM_SURVIVAL_LAW",
+    "action": "USE_ANALYTIC_SURVIVAL_LAW",
+    "mc": "SKIP",
+    "maturity": "QUALIFIED"
+  },
+  "unknown_semantics": "fail closed",
+  "claim_ceiling": "QUALIFIED_DECISION_SKILL_FOR_FROZEN_SYNTHETIC_SURVIVAL_LAW_ONLY"
+}

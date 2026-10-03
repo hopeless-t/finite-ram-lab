@@ -98,9 +98,66 @@ class DecisionSkillCompilerTests(unittest.TestCase):
             "CANCEL_SUPERSEDED_NON_MAIN_CI",
         )
 
+    def test_semantic_oom_survival_law_requires_complete_facts(self) -> None:
+        unknown = compile_decision_context(
+            {
+                "semantic_oom_question": True,
+            }
+        )
+        self.assertEqual(
+            unknown["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+        self.assertIn(
+            "transfer_lead_fixed_integer",
+            unknown["unresolved"],
+        )
+
+    def test_semantic_oom_survival_law_skill(self) -> None:
+        result = compile_decision_context(
+            {
+                "semantic_oom_question": True,
+                "state_arrival_one_per_step": True,
+                "always_preemptive_transfer": True,
+                "transfer_initiation_one_per_step": True,
+                "transfer_lead_fixed_integer": True,
+                "transfer_failure_present": False,
+                "safe_reclaimability_collapses_history": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "USE_ANALYTIC_SURVIVAL_LAW",
+        )
+        self.assertEqual(
+            result["skills"][0]["mc"],
+            "SKIP",
+        )
+        self.assertEqual(
+            result["skills"][0]["maturity"],
+            "QUALIFIED",
+        )
+
+    def test_semantic_oom_survival_law_invalidates_on_failure(self) -> None:
+        result = compile_decision_context(
+            {
+                "semantic_oom_question": True,
+                "state_arrival_one_per_step": True,
+                "always_preemptive_transfer": True,
+                "transfer_initiation_one_per_step": True,
+                "transfer_lead_fixed_integer": True,
+                "transfer_failure_present": True,
+                "safe_reclaimability_collapses_history": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+
     def test_catalog_compression(self) -> None:
         stats = catalog_stats()
-        self.assertEqual(stats["skill_count"], 13)
+        self.assertEqual(stats["skill_count"], 14)
         self.assertLess(
             stats["catalog_fraction_of_source"],
             0.30,
