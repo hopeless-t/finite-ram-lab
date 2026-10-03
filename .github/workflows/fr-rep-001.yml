@@ -1,0 +1,54 @@
+name: FR-REP-001 Representation Placement Graph
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-rep-001-representation-placement-graph
+    paths:
+      - "src/finite_ram_lab/representation_placement_graph.py"
+      - "specs/FR-REP-001.json"
+      - "tests/test_representation_placement_graph.py"
+      - "docs/FR-REP-001-REPRESENTATION-PLACEMENT-GRAPH.md"
+      - ".github/workflows/fr-rep-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_representation_placement_graph -v
+      - name: Run representation-placement panel
+        run: |
+          mkdir -p runs/FR-REP-001
+          python -m finite_ram_lab.representation_placement_graph \
+            > runs/FR-REP-001/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-REP-001/result.json"))
+          assert r["status"] == "PASS"
+          s=r["selected_plans"]
+          assert (s["HOT_WEIGHT_SHARD"]["representation"], s["HOT_WEIGHT_SHARD"]["placement"]) == ("AWQ4", "RAM")
+          assert (s["WARM_EXPERT_SHARD"]["representation"], s["WARM_EXPERT_SHARD"]["placement"]) == ("AWQ4", "SSD")
+          assert (s["COLD_MODEL_SHARD"]["representation"], s["COLD_MODEL_SHARD"]["placement"]) == ("AWQ4", "CLOUD_OBJECT")
+          assert (s["BITNET_NATIVE_SHARD"]["representation"], s["BITNET_NATIVE_SHARD"]["placement"]) == ("BITNET_B1_58", "SSD")
+          assert r["containers"]["GGUF"]["is_quantizer"] is False
+          assert r["bitnet_compatibility_probe"]["compatible"] is False
+          PY
+          sha256sum specs/FR-REP-001.json
+          sha256sum runs/FR-REP-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-rep-001-representation-placement
+          path: runs/FR-REP-001/result.json
+          if-no-files-found: error
