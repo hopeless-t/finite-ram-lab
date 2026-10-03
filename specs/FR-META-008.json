@@ -1,0 +1,20 @@
+{
+  "schema": "finite-ram-lab.fr-meta-008/v0.1",
+  "title": "KSLA matched-Monte-Carlo test fixture reuse",
+  "status": "DETACHED_PROVISIONAL",
+  "parent": "FR-META-007",
+  "observed_hotspot": {
+    "test_family": "test_ksla_bounded_idiocy",
+    "run_panel_calls_in_one_test_class": 3,
+    "mc_episodes_per_call": 200000
+  },
+  "candidate": {
+    "run_panel_calls": 1,
+    "mc_episodes_per_call": 200000,
+    "total_episode_evaluations": 200000
+  },
+  "baseline_total_episode_evaluations": 600000,
+  "structural_reduction_fraction": 0.6666666666666666,
+  "semantic_guard": "run_panel implementation, random tape, thresholds, and assertions unchanged",
+  "claim_ceiling": "TEST_FIXTURE_REUSE_OPTIMIZATION_ONLY"
+}

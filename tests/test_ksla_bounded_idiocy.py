@@ -13,6 +13,10 @@ from finite_ram_lab.ksla_bounded_idiocy import (
 class KslaBoundedIdiocyTests(
     unittest.TestCase
 ):
+    @classmethod
+    def setUpClass(cls):
+        cls.panel = run_panel()
+
     def test_hard_budget_prefers_mixed_portfolio(self):
         result = analytic_panel()
         best = result[
@@ -84,10 +88,8 @@ class KslaBoundedIdiocyTests(
         )
 
     def test_monte_carlo_matches_analytic(self):
-        result = run_panel()
-
         self.assertLess(
-            result[
+            self.panel[
                 "monte_carlo"
             ][
                 "max_absolute_analytic_error"
@@ -96,8 +98,7 @@ class KslaBoundedIdiocyTests(
         )
 
     def test_bounded_mix_beats_controls_in_matched_mc(self):
-        result = run_panel()
-        selected = result[
+        selected = self.panel[
             "monte_carlo"
         ][
             "selected"
@@ -121,10 +122,8 @@ class KslaBoundedIdiocyTests(
         )
 
     def test_claim_ceiling_is_toy(self):
-        result = run_panel()
-
         self.assertEqual(
-            result[
+            self.panel[
                 "claim_ceiling"
             ],
             "TOY_ANALYTIC_AND_MATCHED_MONTE_CARLO_BOUNDED_IDIOCY_ONLY",
