@@ -1,0 +1,53 @@
+{
+  "schema": "finite-ram-lab.fr-comp-001/v0.1",
+  "title": "FR-COMP-001 Compressibility and Codec Surface",
+  "status": "FROZEN_HOSTED_LINUX_USERSPACE_CODEC_EXPERIMENT",
+  "parent": "FR-IO-001",
+  "source_relatives": {
+    "zram": "Linux kernel zram documentation: multi-compressor and recompression tradeoffs",
+    "zswap": "Linux kernel zswap documentation: CPU cycles vs reduced swap I/O"
+  },
+  "fixture": {
+    "payload_mib": 4,
+    "repetitions": 3,
+    "fresh_process_per_measurement": true,
+    "payloads": [
+      "ZERO",
+      "REPEATED_BLOCK",
+      "SPARSE_OUTLIER",
+      "LOW_ENTROPY_4BIT",
+      "RANDOM"
+    ],
+    "codecs": [
+      "ZLIB_1",
+      "ZLIB_9",
+      "BZ2_1",
+      "LZMA_0"
+    ]
+  },
+  "qualification_gates": {
+    "zero_max_ratio_lt": 0.01,
+    "repeated_max_ratio_lt": 0.05,
+    "low_entropy_ratio_range": [
+      0.35,
+      0.8
+    ],
+    "random_min_ratio_gt": 0.98,
+    "exact_roundtrip": true
+  },
+  "measurements": [
+    "compression ratio",
+    "compress CPU time",
+    "decompress CPU time",
+    "wall time",
+    "peak process RSS",
+    "exact roundtrip digest"
+  ],
+  "boundaries": [
+    "userspace codec proxy, not zram/zswap benchmark",
+    "runner-specific timings",
+    "no sysfs writes",
+    "kernel compressor performance may differ"
+  ],
+  "claim_ceiling": "HOSTED_LINUX_USERSPACE_CODEC_SURFACE_ONLY"
+}
