@@ -1,0 +1,23 @@
+{
+  "schema": "finite-ram-lab.fr-meta-009/v0.1",
+  "title": "Cancel superseded non-main CI by head branch",
+  "status": "DETACHED_PROVISIONAL",
+  "parent": "FR-META-008",
+  "concurrency": {
+    "group": "github.workflow + (github.head_ref || github.ref_name)",
+    "cancel_in_progress": "ref_name != main"
+  },
+  "observed_duplicate": {
+    "head_sha": "447a027c7fdc5b91450de8967b28ea4d956e5006",
+    "push_run": 37136849854,
+    "pull_request_run": 37136854358,
+    "start_delta_seconds": 4,
+    "same_sha": true
+  },
+  "expected_clean_fused_lifecycle": {
+    "workflow_triggers": 3,
+    "full_ci_completions": 2
+  },
+  "hard_boundary": "main CI is never canceled",
+  "claim_ceiling": "CI_CONCURRENCY_OPTIMIZATION_ONLY"
+}
