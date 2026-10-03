@@ -1,0 +1,17 @@
+{
+  "schema": "finite-ram-lab.fr-meta-013/v0.2",
+  "title": "GitHub Actions pip cache dogfood",
+  "status": "NEGATIVE_DOGFOOD_RESULT",
+  "parent": "FR-META-012",
+  "observations": {
+    "implementation_run_cache": "MISS",
+    "implementation_install_seconds": 20.188,
+    "pr_run_cache": "MISS",
+    "pr_install_seconds": 19.040,
+    "same_cache_key": true,
+    "cache_save_overhead_present": true
+  },
+  "decision": "DO_NOT_PROMOTE_PIP_CACHE_FOR_CURRENT_STACKED_PR_FLOW",
+  "workflow_change_after_biopsy": "remove setup-python pip cache configuration",
+  "claim_ceiling": "NEGATIVE_CI_DEPENDENCY_CACHE_RESULT_ONLY"
+}
