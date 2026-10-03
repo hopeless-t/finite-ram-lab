@@ -1,0 +1,67 @@
+from __future__ import annotations
+
+import unittest
+
+from finite_ram_lab.semantic_tiered_residency import run_panel
+
+
+class SemanticTieredResidencyTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.result = run_panel()
+        cls.arms = cls.result["arms"]
+
+    def test_fast_ssd_selects_hybrid_quantize_plus_offload(self):
+        row = self.arms["FAST_SSD_TIERED"]
+        self.assertEqual(row["choices"]["KV"], "Q8")
+        self.assertEqual(row["choices"]["AUX_EXPERTS"], "SSD")
+        self.assertEqual(row["choices"]["ACTIVE_TASK"], "KEEP")
+        self.assertEqual(row["relief_mib"], 4096)
+        self.assertEqual(row["ssd_write_mib"], 3072)
+        self.assertAlmostEqual(
+            row["migration_ms_at_p05_bandwidth"],
+            1244.8,
+        )
+
+    def test_ram_only_uses_more_destructive_degradation(self):
+        row = self.arms["RAM_ONLY"]
+        self.assertEqual(row["choices"]["KV"], "Q4")
+        self.assertEqual(row["choices"]["PREFIX"], "DROP")
+        self.assertEqual(row["choices"]["BROWSER_CACHE"], "DROP")
+        self.assertEqual(row["semantic_loss"], 45)
+
+    def test_fast_ssd_lowers_objective(self):
+        fast = self.arms["FAST_SSD_TIERED"]
+        ram = self.arms["RAM_ONLY"]
+        self.assertLess(fast["objective"], ram["objective"])
+        self.assertEqual(fast["semantic_loss"], 12)
+        self.assertEqual(ram["semantic_loss"], 45)
+
+    def test_slow_ssd_falls_back(self):
+        self.assertEqual(
+            self.arms["SLOW_SSD_TIERED"]["choices"],
+            self.arms["RAM_ONLY"]["choices"],
+        )
+
+    def test_short_deadline_falls_back(self):
+        self.assertEqual(
+            self.arms["EMERGENCY_SHORT_DEADLINE"]["choices"],
+            self.arms["RAM_ONLY"]["choices"],
+        )
+
+    def test_tail_risk_is_explicit(self):
+        fast = self.arms["FAST_SSD_TIERED"]
+        self.assertAlmostEqual(fast["expected_restore_ms"], 26.0)
+        self.assertAlmostEqual(fast["cvar95_restore_ms"], 260.0)
+
+    def test_claim_ceiling_is_synthetic(self):
+        self.assertTrue(self.result["synthetic_only"])
+        self.assertFalse(self.result["live_control_claim"])
+        self.assertEqual(
+            self.result["claim_ceiling"],
+            "SYNTHETIC_TIERED_RESIDENCY_SHADOW_PLANNER_ONLY",
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()
