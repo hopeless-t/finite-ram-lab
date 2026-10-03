@@ -1,0 +1,28 @@
+{
+  "schema": "finite-ram-lab.fr-meta-016/v0.1",
+  "title": "Compiled Skill Lifecycle and Residency Governor",
+  "status": "DOGFOOD_GOVERNANCE_CANDIDATE",
+  "parent": "FR-META-015",
+  "states": [
+    "CANDIDATE",
+    "QUALIFIED",
+    "STABLE",
+    "QUALIFIED_NEGATIVE",
+    "RETIRED",
+    "BLOCKED",
+    "INSUFFICIENT_EVIDENCE"
+  ],
+  "resident_states": [
+    "QUALIFIED",
+    "STABLE",
+    "QUALIFIED_NEGATIVE"
+  ],
+  "automatic_mutation": "maturity only",
+  "forbidden_automatic_mutation": [
+    "trigger",
+    "action",
+    "execution authority"
+  ],
+  "retired_storage": "cold history; never erase evidence",
+  "claim_ceiling": "SKILL_LIFECYCLE_AND_RESIDENCY_GOVERNANCE_ONLY"
+}
