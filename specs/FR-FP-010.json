@@ -1,0 +1,23 @@
+{
+  "schema": "finite-ram-lab.fr-fp-010/v0.1",
+  "title": "Hosted physical trajectory residency lifecycle",
+  "status": "HOSTED_PHYSICAL_CANDIDATE",
+  "parent": "FR-FP-009",
+  "fixture": {
+    "anonymous_mmap_state_mib": 8,
+    "steps": 12,
+    "safe_step": 6,
+    "full_logical_peak_mib": 96,
+    "gated_logical_peak_mib": 48
+  },
+  "arms": [
+    "FULL_TRAJECTORY",
+    "GATED_ENDPOINT"
+  ],
+  "observation": [
+    "/proc/self/status VmRSS",
+    "/proc/self/status RssAnon"
+  ],
+  "evidence_boundary": "semantic safe step is synthetic; Linux allocation/fault/close/RSS behavior is hosted physical",
+  "claim_ceiling": "HOSTED_LINUX_ANONYMOUS_MMAP_RESIDENCY_LIFECYCLE_ONLY"
+}
