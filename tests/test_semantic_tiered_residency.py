@@ -50,6 +50,15 @@ class SemanticTieredResidencyTests(unittest.TestCase):
             "fast_hybrid_min_p05_write_mib_s_at_1600ms"
         ]
         self.assertAlmostEqual(knee, 1939.3939393939395)
+        bounds = self.result["analytic_boundaries"]
+        self.assertAlmostEqual(
+            bounds["prefix_ssd_mix_min_p05_write_mib_s_at_1600ms"],
+            653.4779834077856,
+        )
+        self.assertAlmostEqual(
+            bounds["high_bw_spill_min_p05_write_mib_s_at_1600ms"],
+            2571.249215317012,
+        )
         self.assertLess(knee, 2500)
         self.assertGreater(knee, 1000)
 
@@ -59,6 +68,13 @@ class SemanticTieredResidencyTests(unittest.TestCase):
         self.assertEqual(phase["800"]["1500"], "PREFIX_SSD_MIX")
         self.assertEqual(phase["1600"]["2000"], "KV_Q8_AUX_SSD")
         self.assertEqual(phase["1600"]["3500"], "PREFIX_AUX_SSD")
+
+    def test_high_bandwidth_avoids_kv_degradation(self):
+        row = self.arms["HIGH_BW_SSD_TIERED"]
+        self.assertEqual(row["choices"]["KV"], "KEEP")
+        self.assertEqual(row["choices"]["PREFIX"], "SSD")
+        self.assertEqual(row["choices"]["AUX_EXPERTS"], "SSD")
+        self.assertEqual(row["semantic_loss"], 7)
 
     def test_slow_ssd_falls_back(self):
         self.assertEqual(
