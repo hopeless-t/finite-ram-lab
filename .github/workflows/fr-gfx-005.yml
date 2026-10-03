@@ -1,0 +1,49 @@
+name: FR-GFX-005 Observer Perturbation ABA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-gfx-005-observer-perturbation-aba
+    paths:
+      - "src/finite_ram_lab/fr_gfx_observer_aba.py"
+      - "tests/test_fr_gfx_observer_aba.py"
+      - "specs/FR-GFX-005.json"
+      - "docs/FR-GFX-005-OBSERVER-PERTURBATION-ABA.md"
+      - ".github/workflows/fr-gfx-005.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_gfx_observer_aba -v
+      - name: Run synthetic A-B-A panel
+        run: |
+          mkdir -p runs/FR-GFX-005
+          python -m finite_ram_lab.fr_gfx_observer_aba > runs/FR-GFX-005/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-GFX-005/result.json"))
+          assert r["status"] == "PASS"
+          assert r["null_false_perturbation_by_blocks"]["8"]["aba_abs_gt_1ms"] == 0.0
+          assert r["arms"]["LIGHT_OBSERVER"]["eight_block_decision"]["equivalence_pass_rate"] > 0.93
+          assert r["arms"]["HEAVY_OBSERVER"]["eight_block_decision"]["equivalence_pass_rate"] == 0.0
+          PY
+          sha256sum specs/FR-GFX-005.json
+          sha256sum runs/FR-GFX-005/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-gfx-005-observer-perturbation-aba
+          path: runs/FR-GFX-005/result.json
+          if-no-files-found: error
