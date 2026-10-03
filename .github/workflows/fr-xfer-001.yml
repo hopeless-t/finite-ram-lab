@@ -1,0 +1,50 @@
+name: FR-XFER-001 Staging Peak Tax
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-xfer-001-staging-peak-tax
+    paths:
+      - "src/finite_ram_lab/fr_transfer_staging.py"
+      - "tests/test_fr_transfer_staging.py"
+      - "specs/FR-XFER-001.json"
+      - "docs/FR-XFER-001-STAGING-PEAK-TAX.md"
+      - ".github/workflows/fr-xfer-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_transfer_staging -v
+      - name: Run physical transfer/staging panel
+        run: |
+          mkdir -p runs/FR-XFER-001
+          python -m finite_ram_lab.fr_transfer_staging > runs/FR-XFER-001/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-XFER-001/result.json"))
+          assert r["status"] == "PASS"
+          d=r["derived"]
+          assert 1.60 <= d["direct_over_source_pss_ratio"] <= 2.40
+          assert 2.50 <= d["staged_over_source_pss_ratio"] <= 3.50
+          assert 0.80 <= d["shared_view_over_source_pss_ratio"] <= 1.20
+          PY
+          sha256sum specs/FR-XFER-001.json
+          sha256sum runs/FR-XFER-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-xfer-001-staging-peak-tax
+          path: runs/FR-XFER-001/result.json
+          if-no-files-found: error
