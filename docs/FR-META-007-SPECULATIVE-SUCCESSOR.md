@@ -1,58 +1,68 @@
 # FR-META-007 — Speculative Detached Successor
 
-Status: **DOGFOOD PROTOCOL CANDIDATE / PROVISIONAL UNTIL PARENT PASS**
+Status: **DOGFOOD PROTOCOL CANDIDATE / v0.2 AFTER ANCESTRY BIOPSY**
 
 Parent: **FR-META-006**
 
 ## Bottleneck
 
-After an atomic candidate is published, the worker often has useful next work
-but must wait for CI before it may safely promote that next work.
-
-Waiting wastes the reasoning / implementation lane. Publishing the successor
-immediately is worse because it creates branch sprawl, workflow fan-out, and
-authority on top of an unqualified parent.
+A worker can often build the next bounded transition while the parent candidate
+is still in CI. Publishing that successor immediately creates unnecessary branch
+and workflow debt.
 
 ## Protocol
 
-Build the immediate successor as Git objects only:
+Build the immediate successor as unreferenced Git objects only:
 
 1. create blobs;
-2. create a tree whose base is the current parent candidate;
+2. create a tree based on the current parent candidate;
 3. create one detached child commit;
-4. create no branch, tag, PR, workflow dispatch, or canonical handoff yet.
+4. create no branch, PR, workflow dispatch, or canonical handoff.
 
 The child remains PROVISIONAL.
 
-When the parent reaches a qualified PASS, create one branch ref pointing to the
-already-built child commit.
+## v0.1 dogfood failure biopsy
 
-If the parent is FAIL, UNKNOWN, or still IN_PROGRESS, do not publish the child.
+The first dogfood published FR-META-007 immediately after FR-META-006 reported
+PASS.
 
-## Bound
+That was too early.
 
-Speculative depth is exactly one.
+FR-META-006 still needed its qualification receipt commit. Publishing the child
+before that receipt meant the child did not contain the final canonical parent
+receipt in its ancestry.
 
-Do not recursively create a chain of grandchildren while the parent remains
-unqualified. That would convert latency hiding into speculative branch debt.
+The corrected gate is therefore not merely parent PASS.
 
-## Why this is safe
+It is:
 
-An unreferenced commit:
+    PARENT_RECEIPT_FROZEN
 
-- launches no workflow;
-- creates no PR;
-- changes no canonical branch;
-- grants no execution authority.
+A qualified parent without its receipt keeps the child detached.
 
-It is build-ahead, not promotion.
+## Publication
 
-## Dogfood specimen
+Only after the parent receipt is frozen may the child ref be published.
 
-FR-META-007 itself is assembled as a detached child of the FR-META-006
-candidate while FR-META-006 CI is still running.
+If the parent is FAIL, UNKNOWN, IN_PROGRESS, or PASS-without-receipt:
 
-Its branch may be published only after FR-META-006 reports PASS.
+- no child branch;
+- no child workflow;
+- no authority promotion.
+
+Speculative depth remains exactly one.
+
+## Repair of the first dogfood specimen
+
+The prematurely published v0.1 branch is repaired by a non-force merge commit
+that has both:
+
+- the original child commit;
+- the frozen FR-META-006 receipt commit
+
+as parents, with the corrected v0.2 tree.
+
+This preserves the mistake as history while restoring canonical ancestry.
 
 ## Claim ceiling
 
