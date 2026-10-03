@@ -1,0 +1,19 @@
+{
+  "schema": "finite-ram-lab.fr-fp-006/v0.1",
+  "title": "Capability repair frontier",
+  "status": "SYNTHETIC_REPAIR_FRONTIER_CANDIDATE",
+  "parent": "FR-FP-005",
+  "baseline": {
+    "transfer_lead_steps": 4,
+    "hot_budget_states": 4,
+    "classification": "TRANSFER_SURFACE_CAPABILITY_GAP"
+  },
+  "measured_repair_levers": [
+    "transfer lead",
+    "hot capacity"
+  ],
+  "derived_geometric_lever": "state size at fixed hot bytes",
+  "unmodeled_lever": "reclaimability timing",
+  "cross_lever_ranking": "forbidden until a common cost model is frozen",
+  "claim_ceiling": "SYNTHETIC_CAPABILITY_REPAIR_FRONTIER_AND_GEOMETRIC_EQUIVALENCE_ONLY"
+}
