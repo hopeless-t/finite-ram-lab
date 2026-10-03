@@ -1,0 +1,46 @@
+{
+  "schema": "finite-ram-lab.fr-xfer-001/v0.1",
+  "title": "FR-XFER-001 Transfer/Staging Peak Tax",
+  "status": "FROZEN_HOSTED_LINUX_PHYSICAL_PROXY",
+  "parent": "FR-NORTHSTAR-004",
+  "trigger": {
+    "source": "FR-NORTHSTAR-004 CAPABILITY_GAP",
+    "failure_domain": "TRANSFER_STAGING_PRESSURE"
+  },
+  "fixture": {
+    "payload_mib": 32,
+    "repetitions": 4,
+    "fresh_process_per_arm": true,
+    "primary_metric": "baseline-subtracted /proc/self/smaps_rollup Pss",
+    "arms": [
+      "SOURCE_ONLY",
+      "DIRECT_COPY",
+      "STAGED_COPY",
+      "SHARED_VIEW"
+    ]
+  },
+  "qualification_gates": {
+    "source_payload_ratio": [
+      0.7,
+      1.35
+    ],
+    "direct_over_source_ratio": [
+      1.6,
+      2.4
+    ],
+    "staged_over_source_ratio": [
+      2.5,
+      3.5
+    ],
+    "shared_view_over_source_ratio": [
+      0.8,
+      1.2
+    ]
+  },
+  "boundaries": [
+    "host-memory Python proxy only",
+    "no CUDA/pinned/PCIe/VRAM claim",
+    "no development-machine threshold transfer"
+  ],
+  "claim_ceiling": "HOSTED_LINUX_PYTHON_TRANSFER_STAGING_PROXY_ONLY"
+}
