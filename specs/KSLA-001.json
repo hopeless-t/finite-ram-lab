@@ -1,0 +1,92 @@
+{
+  "schema": "finite-ram-lab.ksla-001/v0.1",
+  "status": "FROZEN_SYNTHETIC_VERIFIED_SWARM_MATMUL_SPEC",
+  "title": "Kitten Swarm Linear Algebra 001",
+  "research_question": "Can a large population of tiny matrix workers plus cheap probabilistic verification and selective recomputation reproduce an exact matrix product while reducing each worker's local compute and residency contract?",
+  "source_relatives": [
+    {
+      "work": "Freivalds, Probabilistic Machines Can Use Less Running Time",
+      "year": 1977,
+      "role": "probabilistic matrix-product verification"
+    },
+    {
+      "work": "Drineas, Kannan, Mahoney, Fast Monte Carlo Algorithms for Matrices I: Approximating Matrix Multiplication",
+      "year": 2006,
+      "doi": "10.1137/S0097539704442684",
+      "role": "randomized / resource-aware matrix multiplication relative"
+    },
+    {
+      "work": "Strohmer and Vershynin, A Randomized Kaczmarz Algorithm with Exponential Convergence",
+      "arxiv": "math/0702226",
+      "role": "small-random-subproblem worker relative for later KSLA lane"
+    },
+    {
+      "work": "Dutta et al., On the Optimal Recovery Threshold of Coded Matrix Multiplication",
+      "arxiv": "1801.10292",
+      "role": "coded-worker / straggler-tolerance relative for later KSLA lane"
+    }
+  ],
+  "novelty_boundary": "The experiment composes established block matrix multiplication and Freivalds-style verification with explicit weak-worker contracts, selective recomputation, finite-residency accounting, and a future precision-escalation ladder. It does not claim invention of the underlying algorithms.",
+  "micro_fixture": {
+    "field_prime": 65537,
+    "matrix_n": 24,
+    "block_grid": 4,
+    "worker_tasks": 64,
+    "injected_fault_tasks": [
+      [
+        0,
+        0,
+        3
+      ],
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        2,
+        3,
+        1
+      ],
+      [
+        3,
+        1,
+        2
+      ]
+    ],
+    "verifier_rounds": 2,
+    "expected": {
+      "unverified_matches_exact": false,
+      "initial_global_verifier_pass": false,
+      "localized_fault_count": 4,
+      "recomputed_task_count": 4,
+      "repaired_matches_exact": true,
+      "final_global_verifier_pass": true
+    }
+  },
+  "scale_model": {
+    "matrix_n": 4096,
+    "block_grid": 16,
+    "worker_tasks": 4096,
+    "modeled_fault_rate": 0.01,
+    "expected_single_task_multiply_fraction": 0.000244140625,
+    "expected_single_task_working_set_fraction": 0.00390625,
+    "expected_verified_swarm_work_ratio": 1.034912109375,
+    "expected_raw_task_return_amplification_vs_output": 16
+  },
+  "primary_findings": [
+    "WEAK_WORKERS_CAN_HAVE_SMALL_LOCAL_COMPUTE_AND_MEMORY_CONTRACTS",
+    "CHEAP_PROBABILISTIC_VERIFICATION_CAN_LOCALIZE_INJECTED_FAULTS",
+    "SELECTIVE_RECOMPUTE_CAN_RESTORE_EXACT_OUTPUT_WITHOUT_FULL_REDO",
+    "SWARMING_SHIFTS_COST_FROM_WORKER_CAPABILITY_TO_COMMUNICATION_AND_COORDINATION",
+    "VERIFIER_COST_CAN_BE_ASYMPTOTICALLY_SMALL_RELATIVE_TO_LARGE_MATMUL"
+  ],
+  "nonclaims": [
+    "No real distributed cluster is benchmarked.",
+    "Injected worker faults are synthetic and are not a measured error rate for low-precision arithmetic or small language models.",
+    "The scale model counts arithmetic and working-set proxies, not wall-clock speed, energy, or network contention.",
+    "The finite-field exact fixture is not yet a floating-point numerical-stability result.",
+    "The design does not claim invention of Freivalds verification, block matrix multiplication, randomized Kaczmarz, or coded matrix multiplication."
+  ],
+  "claim_ceiling": "SYNTHETIC_VERIFIED_SWARM_MATMUL_ONLY"
+}

@@ -1,0 +1,58 @@
+name: KSLA-001 Verified Swarm Matmul
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/ksla-001-swarm-verified-matmul
+    paths:
+      - "src/finite_ram_lab/ksla_swarm_matmul.py"
+      - "specs/KSLA-001.json"
+      - "tests/test_ksla_swarm_matmul.py"
+      - "docs/KSLA-001-SWARM-VERIFIED-MATMUL.md"
+      - ".github/workflows/ksla-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_ksla_swarm_matmul -v
+      - name: Run kitten swarm panel
+        run: |
+          mkdir -p runs/KSLA-001
+          python -m finite_ram_lab.ksla_swarm_matmul \
+            > runs/KSLA-001/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/KSLA-001/result.json"))
+          assert r["status"] == "PASS"
+          m=r["micro_exact_fixture"]
+          s=r["scale_model"]
+          assert m["unverified_matches_exact"] is False
+          assert m["localized_fault_count"] == 4
+          assert m["recomputed_task_count"] == 4
+          assert m["repaired_matches_exact"] is True
+          assert m["final_global_verifier_pass"] is True
+          assert s["single_task_multiply_fraction"] == 1.0 / 4096.0
+          assert s["single_task_working_set_fraction"] == 1.0 / 256.0
+          assert 1.03 < s["verified_swarm_work_ratio"] < 1.04
+          assert s["raw_task_return_amplification_vs_output"] == 16.0
+          PY
+          sha256sum specs/KSLA-001.json
+          sha256sum runs/KSLA-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ksla-001-verified-swarm-matmul
+          path: runs/KSLA-001/result.json
+          if-no-files-found: error
