@@ -1,0 +1,49 @@
+name: FR-GFX-007 Causal Sidecar Join
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-gfx-007-causal-sidecar-join
+    paths:
+      - "src/finite_ram_lab/fr_gfx_causal_join.py"
+      - "tests/test_fr_gfx_causal_join.py"
+      - "specs/FR-GFX-007.json"
+      - "docs/FR-GFX-007-CAUSAL-SIDECAR-JOIN.md"
+      - ".github/workflows/fr-gfx-007.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_gfx_causal_join -v
+      - name: Run causal join panel
+        run: |
+          mkdir -p runs/FR-GFX-007
+          python -m finite_ram_lab.fr_gfx_causal_join > runs/FR-GFX-007/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-GFX-007/result.json"))
+          assert r["status"] == "PASS"
+          assert r["invariants"]["future_leakage_count"] == 0
+          assert r["invariants"]["stale_is_not_zero"] is True
+          assert r["invariants"]["missing_is_not_zero"] is True
+          PY
+          sha256sum specs/FR-GFX-007.json
+          sha256sum runs/FR-GFX-007/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-gfx-007-causal-sidecar-join
+          path: runs/FR-GFX-007/result.json
+          if-no-files-found: error
