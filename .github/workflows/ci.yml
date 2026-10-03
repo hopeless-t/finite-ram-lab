@@ -14,6 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
 
       - uses: actions/setup-python@v7
         with:
@@ -35,15 +37,21 @@ jobs:
       - name: Monte Carlo smoke test
         run: |
           mkdir -p runs/MC-001
-          python -m finite_ram_lab.mc \
-            --family stable_hotset \
-            --seed 20260926 \
-            --trials 25 \
-            --out runs/MC-001/smoke.json
+          python -m finite_ram_lab.mc             --family stable_hotset             --seed 20260926             --trials 25             --out runs/MC-001/smoke.json
 
       - name: Environment probe smoke test
         run: |
           mkdir -p runs/ENV-001
-          python -m finite_ram_lab.env_probe \
-            --out runs/ENV-001/probe.json >/dev/null
+          python -m finite_ram_lab.env_probe             --out runs/ENV-001/probe.json >/dev/null
           python -m json.tool runs/ENV-001/probe.json >/dev/null
+
+      - name: Auto-qualify changed meta panels
+        run: |
+          mkdir -p runs/meta-qualification
+          python -m finite_ram_lab.meta_qualifier             --changed-from HEAD^             --out-dir runs/meta-qualification
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: meta-qualification
+          path: runs/meta-qualification/
+          if-no-files-found: ignore

@@ -1,0 +1,18 @@
+{
+  "schema": "finite-ram-lab.fr-meta-005/v0.1",
+  "title": "Qualification Fusion",
+  "status": "DOGFOOD_PROTOCOL_CANDIDATE",
+  "parent": "FR-META-004",
+  "convention": "changed src/finite_ram_lab/fr_meta_*.py modules must expose run_panel() returning status=PASS",
+  "ci_behavior": {
+    "general_ci_preserved": true,
+    "changed_meta_panels_auto_run": true,
+    "qualification_artifact_uploaded": true,
+    "dedicated_meta_workflow_required": false
+  },
+  "expected_clean_lifecycle_runs": 3,
+  "historical_baseline_runs": 10,
+  "atomic_dedicated_runs": 4,
+  "monte_carlo": "not used because workflow topology is exact for this decision",
+  "claim_ceiling": "CI_QUALIFICATION_FANOUT_OPTIMIZATION_ONLY"
+}
