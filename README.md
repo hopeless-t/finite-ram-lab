@@ -941,3 +941,20 @@ STRATA-001 was inspired by [Niko1221/Strata](https://github.com/Niko1221/Strata)
 See [the Strata inspiration note](docs/STRATA-INSPIRATION.md) and [STRATA-001 Council](docs/STRATA-001-COUNCIL.md).
 
 The initial study is an independent implementation; no Strata source code is copied into Finite RAM Lab.
+
+
+### FR-DLSSNR-001 — bit-exact neural rendering as a finite-residency oracle
+
+[OpenDLSS-NR](https://github.com/maanHimself/OpenDLSS-NR) exposes an unusually strong reference/treatment surface for finite-working-set research: the upstream project reports byte-exact internal boundaries while also exposing fused/unfused, chained/barriered, and streamed-attention execution routes.
+
+Finite RAM Lab uses that property as a hard semantic gate:
+
+```text
+preserve exact bytes first
+-> minimize peak live residency
+-> then measure latency / transfer / synchronization cost
+```
+
+The initial track is source-grounded experiment design only. No OpenDLSS-NR physical result or universal VRAM threshold is claimed.
+
+See [FR-DLSSNR-001](docs/FR-DLSSNR-001-BIT-EXACT-RESIDENCY-ORACLE.md).
