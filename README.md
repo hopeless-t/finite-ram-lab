@@ -941,3 +941,32 @@ STRATA-001 was inspired by [Niko1221/Strata](https://github.com/Niko1221/Strata)
 See [the Strata inspiration note](docs/STRATA-INSPIRATION.md) and [STRATA-001 Council](docs/STRATA-001-COUNCIL.md).
 
 The initial study is an independent implementation; no Strata source code is copied into Finite RAM Lab.
+
+
+### FR-SOOM-002K — Steal-inspired demand folding before destructive reclaim
+
+FR-SOOM-002K transfers the control structure of Linux Steal Governor v14 into
+the Semantic OOM line without copying its literal CPU thresholds.
+
+The new action ladder is:
+
+~~~text
+observe
+  -> fold active demand
+  -> representation downshift
+  -> SSD tier / drop
+  -> background exit
+  -> active-task kill
+  -> kernel OOM fallback
+~~~
+
+The new hypothesis is that memory-pressure control should first ask whether
+worker concurrency, in-flight work, batch width, prefetch, speculative work, or
+background parallelism can be reduced while preserving useful forward progress.
+
+The frozen synthetic shadow shows the intended controller behavior only:
+hysteresis increases synthetic useful progress versus fixed maximum concurrency,
+cuts severe-pressure samples, and sharply reduces actuator chatter versus a
+single-threshold controller. It is not a host performance or threshold claim.
+
+See [FR-SOOM-002K](docs/FR-SOOM-002K-DEMAND-FOLDING-GOVERNOR.md).
