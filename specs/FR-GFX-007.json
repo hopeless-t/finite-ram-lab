@@ -1,0 +1,24 @@
+{
+  "schema": "finite-ram-lab.fr-gfx-007/v0.1",
+  "title": "FR-GFX-007 Causal Sidecar Join",
+  "status": "FROZEN_OFFLINE_JOIN_CONTRACT",
+  "parent": "FR-GFX-006",
+  "rule": "for target timestamp t, use latest source timestamp <= t; reject evidence older than source-specific max_age",
+  "evidence_states": [
+    "fresh",
+    "stale",
+    "missing"
+  ],
+  "invariants": {
+    "no_future_leakage": true,
+    "stale_not_zero": true,
+    "missing_not_zero": true,
+    "explicit_backend_identity": true
+  },
+  "default_cli_max_age_ms": {
+    "frame": 250,
+    "gpu": 750
+  },
+  "note": "Default max-age values are convenience defaults for offline tooling, not validated live-control thresholds.",
+  "claim_ceiling": "CAUSAL_OFFLINE_JOIN_CONTRACT_ONLY"
+}
