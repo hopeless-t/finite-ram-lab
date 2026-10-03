@@ -18,12 +18,24 @@
     "active_task_loss": 280
   },
   "synthetic_workload": {
-    "desktop_vram_normal_mib": [600, 2200],
+    "desktop_vram_normal_mib": [
+      600,
+      2200
+    ],
     "desktop_vram_spike_probability": 0.08,
-    "desktop_vram_spike_mib": [2800, 4500],
-    "background_ram_normal_mib": [2500, 5500],
+    "desktop_vram_spike_mib": [
+      2800,
+      4500
+    ],
+    "background_ram_normal_mib": [
+      2500,
+      5500
+    ],
     "background_ram_spike_probability": 0.05,
-    "background_ram_extra_mib": [1500, 3500]
+    "background_ram_extra_mib": [
+      1500,
+      3500
+    ]
   },
   "policies": {
     "TIER_LOCAL_GREEDY": {
@@ -70,5 +82,19 @@
     "The semantic-loss values are synthetic controls, not measured user utilities.",
     "No live VRAM, GTT, RAM, swap, process, or cgroup setting is changed.",
     "No claim is made that proactive headroom is always preferable to reactive shrink."
+  ],
+  "draw_domains": {
+    "desktop_spike": "spike",
+    "desktop_vram": "dv",
+    "background_ram": "bg",
+    "background_ram_spike": "ramspike",
+    "background_ram_spike_size": "bgs"
+  },
+  "reproducibility_contract": [
+    "seed",
+    "draw_domain_ids",
+    "episode_index",
+    "distribution_parameters",
+    "policy_parameters"
   ]
 }
