@@ -1,0 +1,57 @@
+name: FR-GFX-006 Read-only Collector
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-gfx-006-readonly-collector
+    paths:
+      - "src/finite_ram_lab/fr_gfx_readonly_collector.py"
+      - "tests/test_fr_gfx_readonly_collector.py"
+      - "specs/FR-GFX-006.json"
+      - "docs/FR-GFX-006-READONLY-COLLECTOR.md"
+      - ".github/workflows/fr-gfx-006.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_gfx_readonly_collector -v
+      - name: Run self collector
+        run: |
+          mkdir -p runs/FR-GFX-006
+          python -m finite_ram_lab.fr_gfx_readonly_collector \
+            --pid self \
+            --samples 20 \
+            --interval-ms 10 \
+            --output runs/FR-GFX-006/self-trace.jsonl \
+            --receipt runs/FR-GFX-006/self-receipt.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt=json.load(open("runs/FR-GFX-006/self-receipt.json"))
+          lines=Path("runs/FR-GFX-006/self-trace.jsonl").read_text().splitlines()
+          assert receipt["samples"] == 20
+          assert len(lines) == 20
+          assert receipt["jsonl_bytes"] > 0
+          assert receipt["qualification"] == "MEASUREMENT_ONLY_NO_LIVE_PERTURBATION_THRESHOLD"
+          PY
+          sha256sum specs/FR-GFX-006.json
+          sha256sum runs/FR-GFX-006/self-trace.jsonl
+          sha256sum runs/FR-GFX-006/self-receipt.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-gfx-006-readonly-collector
+          path: runs/FR-GFX-006/
+          if-no-files-found: error
