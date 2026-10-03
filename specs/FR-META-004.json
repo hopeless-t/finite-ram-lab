@@ -1,0 +1,27 @@
+{
+  "schema": "finite-ram-lab.fr-meta-004/v0.1",
+  "title": "Loop Speed Governor — Atomic Bundle Publication",
+  "status": "DOGFOOD_PROTOCOL_CANDIDATE",
+  "parent": "FR-META-003",
+  "observed_baseline": {
+    "prs": [103, 104, 105],
+    "commits_per_pr": 6,
+    "workflow_runs_per_pr": 10,
+    "push_runs_per_pr": 8
+  },
+  "candidate": {
+    "construction": "create blobs/tree/commit detached from branch, then publish branch at final commit",
+    "commits_per_transition": 1,
+    "expected_push_runs": 2,
+    "expected_pull_request_runs": 1,
+    "expected_total_runs": 3
+  },
+  "fallback": "one explicit fix commit only after qualification failure",
+  "hard_invariants": [
+    "tests are not skipped",
+    "unknown is not success",
+    "evidence is never force-overwritten",
+    "execution authority does not expand"
+  ],
+  "claim_ceiling": "REPOSITORY_WORKFLOW_FANOUT_OPTIMIZATION_ONLY"
+}
