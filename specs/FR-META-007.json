@@ -1,0 +1,12 @@
+{
+  "schema": "finite-ram-lab.fr-meta-007/v0.1",
+  "title": "Speculative Detached Successor",
+  "status": "DOGFOOD_PROTOCOL_CANDIDATE",
+  "parent": "FR-META-006",
+  "max_speculative_depth": 1,
+  "build_surface": "unreferenced Git objects only",
+  "publication_gate": "parent dedicated/general qualification PASS",
+  "fail_or_unknown_behavior": "do not create branch ref; do not launch workflow; do not grant authority",
+  "goal": "overlap successor construction with parent CI without branch sprawl or workflow fan-out",
+  "claim_ceiling": "SPECULATIVE_DETACHED_BUILD_PROTOCOL_ONLY"
+}
