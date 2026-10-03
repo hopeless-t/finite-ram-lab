@@ -58,13 +58,13 @@ def _uniform(
 def _desktop_vram_demand_mib(
     episode: int,
 ) -> float:
-    if _uniform(episode, "desktop_spike") < 0.08:
+    if _uniform(episode, "spike") < 0.08:
         return (
             2800.0
             + 1700.0
             * _uniform(
                 episode,
-                "desktop_vram",
+                "dv",
             )
         )
 
@@ -86,14 +86,14 @@ def _background_ram_mib(
         + 3000.0
         * _uniform(
             episode,
-            "background_ram",
+            "bg",
         )
     )
 
     if (
         _uniform(
             episode,
-            "background_ram_spike",
+            "ramspike",
         )
         < 0.05
     ):
@@ -102,7 +102,7 @@ def _background_ram_mib(
             + 2000.0
             * _uniform(
                 episode,
-                "background_ram_spike_size",
+                "bgs",
             )
         )
 
