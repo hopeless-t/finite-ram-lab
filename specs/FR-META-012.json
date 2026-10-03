@@ -1,0 +1,19 @@
+{
+  "schema": "finite-ram-lab.fr-meta-012/v0.1",
+  "title": "Speculative build storage reliability boundary",
+  "status": "DOGFOOD_PROTOCOL_CORRECTION",
+  "parent": "FR-META-011",
+  "supersedes": "FR-META-007 durable prepared-object assumption",
+  "observed_failure": {
+    "prepared_commit": "5f8b37de4694652064eeef7f468294de5f4c5fb0",
+    "contents_api": "404_NO_COMMIT_FOUND_FOR_REF",
+    "git_commit_api": "404_NOT_FOUND"
+  },
+  "policy": {
+    "build_ahead": "ephemeral source/reasoning only",
+    "unreferenced_git_object": "not a durable handoff/cache contract",
+    "durable_materialization": "only after parent receipt is frozen",
+    "speculative_depth": 1
+  },
+  "claim_ceiling": "SPECULATIVE_STORAGE_RELIABILITY_BOUNDARY_ONLY"
+}
