@@ -1,0 +1,61 @@
+{
+  "schema": "finite-ram-lab.external-memory-oss-refresh/v0.1",
+  "observed_date": "2026-10-03",
+  "status": "SOURCE_GROUNDED_REFRESH",
+  "sources": {
+    "strata": {
+      "repository": "Niko1221/Strata",
+      "previous_finite_ram_intake": "3ce2523c2823687de5372be3af58534f56cbf286",
+      "current_observed_head": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "commits_ahead": 423,
+      "relevant_commits": [
+        "b48aad2a9d96eceb749b4f06ffd6607f9b00be7f",
+        "25416f3d335807f22531c56af118cc1f932a7761",
+        "3a91b9cd5596f2011b917d3b41a8a1689ec20da6",
+        "421a31d7c17d666df9eb018716cf7610258bc3e0"
+      ]
+    },
+    "intel_memory_usage_analyzer": {
+      "repository": "intel/memory-usage-analyzer",
+      "current_observed_head": "d571f54be6b5c4c10ae7db8a403e1ef03dcb0f03",
+      "relevant_surface": "tests/redis_vm"
+    },
+    "earlyoom": {
+      "repository": "rfjakob/earlyoom",
+      "current_observed_head": "48348938a8ffc1f74004d8492132ca2d99283e6b"
+    },
+    "nohang": {
+      "repository": "hakavlad/nohang",
+      "current_observed_head": "50fad9429ff03e759f8a9405c383339683dbe7f4"
+    },
+    "meta_oomd": {
+      "repository": "facebookincubator/oomd",
+      "current_observed_head": "ad7e64d67a95c8d237aaa6db03a02c1ecf036792"
+    },
+    "senpai": {
+      "repository": "facebookincubator/senpai",
+      "current_observed_head": "c51e8e21de5c459406a015c1860d5f6c5ff6a426"
+    },
+    "strands_decider": {
+      "repository": "strands-labs/strands-decider",
+      "current_observed_head": "890947e7ccd44c3de4115e26a7f46cc5c3147b44",
+      "finite_ram_pr": 70,
+      "pin_current": true
+    },
+    "open_dlss_nr": {
+      "repository": "maanHimself/OpenDLSS-NR",
+      "current_observed_head": "9d08f4184bbcb9d858e2fb7a7834ec0837a9d2f1",
+      "finite_ram_pr": 68,
+      "pin_current": true
+    },
+    "bonsai_demo": {
+      "repository": "PrismML-Eng/Bonsai-demo",
+      "current_observed_head": "bfaea577522626b883f755236878e4583f3d6e68",
+      "finite_ram_pr": 66,
+      "recommend_exact_pin_before_physical_work": true
+    }
+  },
+  "new_hypothesis": "TIER_LOCAL_RELIEF_DOES_NOT_IMPLY_GLOBAL_SEMANTIC_RELIEF",
+  "next_experiment": "FR-SOOM-CROSS-TIER-001",
+  "claim_ceiling": "SOURCE_GROUNDED_EXTERNAL_REFRESH_ONLY"
+}
