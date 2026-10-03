@@ -1,0 +1,48 @@
+{
+  "schema": "finite-ram-lab.strata-derivative-family/v0.1",
+  "observed_date": "2026-10-03",
+  "status": "SOURCE_GROUNDED_FAMILY_MAP",
+  "derivatives": [
+    {
+      "repository": "sergqwer/strata-nvfp4",
+      "head": "69a60f53914f92871b883e826fbb871949d30c15",
+      "research_axis": "quality_constrained_precision_and_tiering"
+    },
+    {
+      "repository": "sergqwer/strata-glm",
+      "head": "ed37419fccd0c52e07d26d526a29c2098f547843",
+      "research_axis": "extreme_out_of_core_moe_bandwidth_wall"
+    },
+    {
+      "repository": "webpolis/Strata",
+      "head": "7cc166ea67ddd223d6be25668a89b3de8f54ee8f",
+      "research_axis": "multi_gpu_expert_cache_and_layer_topology"
+    },
+    {
+      "repository": "rhgo1749/Strata-Lanes",
+      "head": "4b5b47d6e50250b71c52fe4fe7d33593684dce91",
+      "research_axis": "shared_host_expert_arena_multi_lane_serving"
+    },
+    {
+      "repository": "spideytznn/Strata",
+      "head": "0c824e173f0873993b5fd83db570c03537127ac0",
+      "upstream_basis": "d9ab8435f654c368c586340d490915f6addf56a3",
+      "research_axis": "coordinated_vram_ram_budgeting"
+    },
+    {
+      "repository": "gputier/StrataGP",
+      "head": "236388d66c0f6790504a861239a899814527e062",
+      "research_axis": "validated_prefix_reuse_and_parity"
+    }
+  ],
+  "frozen_hypotheses": [
+    "PRECISION_IS_A_RESIDENCY_TIER",
+    "HEADROOM_IS_GLOBALLY_CONSERVED",
+    "CAPACITY_IS_TOPOLOGY_WEIGHTED",
+    "SHARED_REPRESENTATION_CAN_BEAT_REPLICATED_RESIDENCY",
+    "STATE_LOCALITY_IS_PART_OF_SEMANTIC_SURVIVAL",
+    "TIERING_EVENTUALLY_HITS_A_MOVEMENT_WALL"
+  ],
+  "next_experiment": "STRATA-FAMILY-001",
+  "claim_ceiling": "SOURCE_GROUNDED_STRATA_DERIVATIVE_FAMILY_MAP_ONLY"
+}
