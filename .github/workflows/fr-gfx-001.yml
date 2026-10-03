@@ -1,0 +1,52 @@
+name: FR-GFX-001 Happy iGPU UMA Governor
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-gfx-001-happy-igpu-uma-governor
+    paths:
+      - "src/finite_ram_lab/fr_gfx_igpu_governor.py"
+      - "tests/test_fr_gfx_igpu_governor.py"
+      - "specs/FR-GFX-001.json"
+      - "docs/FR-GFX-001-HAPPY-IGPU-UMA.md"
+      - ".github/workflows/fr-gfx-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_gfx_igpu_governor -v
+      - name: Run 5000-frame synthetic panel
+        run: |
+          mkdir -p runs/FR-GFX-001
+          python -m finite_ram_lab.fr_gfx_igpu_governor > runs/FR-GFX-001/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-GFX-001/result.json"))
+          assert r["status"] == "PASS"
+          p=r["policies"]
+          assert p["NATIVE_STATIC"]["memory_violations"] == 185
+          assert p["LOCAL_ONLY"]["deadline_misses"] == 69
+          assert p["BOUNDED_PROBE_4"]["deadline_misses"] == 53
+          assert p["BOUNDED_PROBE_4"]["control_evaluations"] == 7379
+          assert p["EXPERT_FULL_SCAN"]["control_evaluations"] == 60000
+          PY
+          sha256sum specs/FR-GFX-001.json
+          sha256sum runs/FR-GFX-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-gfx-001-happy-igpu-uma
+          path: runs/FR-GFX-001/result.json
+          if-no-files-found: error
