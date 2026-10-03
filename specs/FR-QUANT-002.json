@@ -1,0 +1,42 @@
+{
+  "schema": "finite-ram-lab.fr-quant-002/v0.1",
+  "title": "FR-QUANT-002 State-typed Quantization",
+  "status": "FROZEN_SOURCE_GROUNDED_FORMULA_PLUS_SYNTHETIC_SELECTION",
+  "parent": "FR-SHARE-001",
+  "source_pins": {
+    "SmoothQuant": "mit-han-lab/smoothquant@c61476d728e42ae0d8a35e7e78494edcac3237b5",
+    "KIVI": "jy-yuan/KIVI@876b4d2d08e3b1d5f70d0969c299d8c7c42ddfb6",
+    "AQLM": "Vahe1994/AQLM@e79a896ed6656fe4ed06193d42d004e7d0bbdbb2",
+    "QuIPSharp": "Cornell-RelaxML/quip-sharp@1d8f873e9a2a8b86b12bb1064c312c5689b77d98",
+    "SpQR": "Vahe1994/SpQR@543d10e56f921e5eeb10d5f0aaaccd30b6662d0e"
+  },
+  "accounting_examples": {
+    "q4_group32_scale16_zero16_effective_bits": 5,
+    "q4_group128_scale16_zero16_effective_bits": 4.25,
+    "q4_group32_double_quant_meta_effective_bits": 4.5,
+    "q4_group128_double_quant_meta_effective_bits": 4.125,
+    "spqr_like_3bit_0_5pct_outlier_effective_bits": 3.145
+  },
+  "kv_fixture": {
+    "layers": 32,
+    "tokens": 32768,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "fp16_mib": 4096,
+    "effective_2_5bit_mib": 640
+  },
+  "activation_fixture": {
+    "batch": 1,
+    "tokens": 4096,
+    "hidden": 4096,
+    "fp16_mib": 32,
+    "int8_or_fp8_mib": 16
+  },
+  "boundaries": [
+    "synthetic quality proxies only",
+    "effective-bit examples depend on explicit metadata assumptions",
+    "GGUF remains a container axis",
+    "BitNet remains a native architecture class"
+  ],
+  "claim_ceiling": "SOURCE_GROUNDED_FORMULA_AND_SYNTHETIC_STATE_TYPED_QUANTIZATION_ONLY"
+}
