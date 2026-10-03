@@ -14,8 +14,9 @@ class LoopSpeedGovernorTests(unittest.TestCase):
         row = exact_fanout()
         self.assertEqual(row["baseline_mean_commits"], 6.0)
         self.assertEqual(row["baseline_mean_total_runs"], 10.0)
-        self.assertAlmostEqual(row["commit_reduction_fraction"], 5 / 6)
-        self.assertAlmostEqual(row["workflow_run_reduction_fraction"], 0.7)
+        self.assertAlmostEqual(row["commit_reduction_fraction"], 2 / 3)
+        self.assertAlmostEqual(row["workflow_run_reduction_fraction"], 0.6)
+        self.assertAlmostEqual(row["push_run_reduction_fraction"], 0.625)
 
     def test_governor_promotes_atomic_bundle(self) -> None:
         result = governor_decision()
