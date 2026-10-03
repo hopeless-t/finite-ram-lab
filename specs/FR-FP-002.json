@@ -1,0 +1,30 @@
+{
+  "schema": "finite-ram-lab.fr-fp-002/v0.1",
+  "title": "Semantic OOM Monte Carlo for convergence-conditioned reclaimability",
+  "status": "SYNTHETIC_EXPERIMENT_CANDIDATE",
+  "parent": "FR-FP-001",
+  "seed": 20261004,
+  "episodes": 1000,
+  "steps": 14,
+  "budgets": [2, 4, 8, 16],
+  "thresholds": {
+    "residual_eps": 0.12,
+    "endpoint_delta": 0.35
+  },
+  "families": [
+    "CONTRACTION",
+    "SLOW_DRIFT",
+    "FALSE_SMALL_THEN_JUMP",
+    "OSCILLATORY"
+  ],
+  "policies": [
+    "FULL_TRAJECTORY",
+    "PREMATURE_TERMINAL",
+    "AGE_ONLY",
+    "RESIDUAL_ONLY",
+    "VALIDATED_ENDPOINT",
+    "COLD_TIER_VALIDATED"
+  ],
+  "semantic_oom_definition": "hot-state budget is exceeded while the policy has no semantics-preserving hot reclaim action available",
+  "claim_ceiling": "SYNTHETIC_TRAJECTORY_RECLAIMABILITY_AND_SEMANTIC_OOM_ONLY"
+}
