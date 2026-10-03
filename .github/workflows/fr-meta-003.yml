@@ -1,0 +1,76 @@
+name: FR-META-003 Method Recorder
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-meta-003-method-recorder
+    paths:
+      - "src/finite_ram_lab/fr_method_recorder.py"
+      - "tests/test_fr_method_recorder.py"
+      - "specs/FR-META-003.json"
+      - "docs/FR-META-003-METHOD-RECORDER.md"
+      - ".github/workflows/fr-meta-003.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Unit tests
+        run: python -m unittest tests.test_fr_method_recorder -v
+      - name: Recorder smoke
+        run: |
+          mkdir -p runs/FR-META-003/input runs/FR-META-003/evidence
+          cat > runs/FR-META-003/input/event.json <<'JSON'
+          {
+            "event_id": "CI-DOGFOOD-001",
+            "bounce_id": "CI-DOGFOOD-001",
+            "protocol": "MIXED_V3",
+            "gap_class": "EVIDENCE_GAP",
+            "external_tool_calls": 4,
+            "max_calls_between_updates": 2,
+            "rehydrate_files": 3,
+            "rehydrate_bytes": 12000,
+            "durable_transitions": 1,
+            "mc_trials": null,
+            "failure_specimens": null,
+            "branches_opened": 0,
+            "branches_closed": 0,
+            "frontier_gap_before": null,
+            "frontier_gap_after": null,
+            "authority_expanded": false,
+            "stop_reason": "DURABLE_TRANSITION_COMPLETE",
+            "claim_class": "CI_DOGFOOD"
+          }
+          JSON
+          python -m finite_ram_lab.fr_method_recorder record             runs/FR-META-003/input/event.json             --out-dir runs/FR-META-003/evidence             > runs/FR-META-003/record-receipt.json
+          python -m finite_ram_lab.fr_method_recorder aggregate             runs/FR-META-003/evidence             > runs/FR-META-003/aggregate.json
+          python - <<'PY'
+          import json
+          receipt=json.load(open("runs/FR-META-003/record-receipt.json"))
+          aggregate=json.load(open("runs/FR-META-003/aggregate.json"))
+          assert receipt["status"] == "RECORDED"
+          assert aggregate["status"] == "PASS"
+          assert aggregate["event_count"] == 1
+          calls=aggregate["aggregate"]["means"]["external_tool_calls"]
+          assert calls["value"] == 4.0
+          assert calls["coverage"] == 1.0
+          PY
+          sha256sum specs/FR-META-003.json
+          sha256sum runs/FR-META-003/record-receipt.json
+          sha256sum runs/FR-META-003/aggregate.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-meta-003-method-recorder
+          path: runs/FR-META-003/
+          if-no-files-found: error
