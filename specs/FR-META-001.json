@@ -1,0 +1,33 @@
+{
+  "schema": "finite-ram-lab.fr-meta-001/v0.1",
+  "title": "Recursive Research Improvement Loop",
+  "status": "SYNTHETIC_METHOD_EXPERIMENT",
+  "parent": "FR-NORTHSTAR-005",
+  "north_star": "QUALIFIED_TASK_SURVIVAL_FRONTIER",
+  "layers": {
+    "L0": "object-level research loop",
+    "L1": "research-protocol improvement loop",
+    "L2": "meta-evaluator improvement and anti-Goodhart loop"
+  },
+  "baseline_protocol": "FIXED_V1",
+  "candidate_protocol": "MIXED_V3",
+  "promotion_guardrails": {
+    "candidate_cost_lte_baseline": true,
+    "max_correct_rate_regression": 0.01,
+    "max_rare_capture_regression": 0.10,
+    "max_progress_regression": 0.01,
+    "utility_must_improve": true,
+    "capability_gap_holdout_must_not_change": true,
+    "weight_perturbation_win_rate_min": 0.90,
+    "weight_perturbation_min_delta_gt": 0.0
+  },
+  "non_negotiable_invariants": [
+    "UNKNOWN_IS_NOT_SUCCESS",
+    "MISSING_EVIDENCE_IS_NOT_ZERO",
+    "EVIDENCE_AND_DECISION_REMAIN_SEPARATE",
+    "EXPERIMENT_REQUIRES_COUNCIL_AND_FROZEN_CONTRACT",
+    "FAILURE_SPECIMENS_ARE_NOT_ERASED",
+    "METHOD_IMPROVEMENT_DOES_NOT_EXPAND_EXECUTION_AUTHORITY"
+  ],
+  "claim_ceiling": "SYNTHETIC_RECURSIVE_RESEARCH_METHOD_SELECTION_ONLY"
+}
