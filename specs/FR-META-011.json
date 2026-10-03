@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-meta-011/v0.1",
+  "title": "Recursive research panel fixture reuse",
+  "status": "DOGFOOD_PERFORMANCE_CANDIDATE",
+  "parent": "FR-META-010",
+  "baseline_run_panel_calls": 2,
+  "candidate_run_panel_calls": 1,
+  "meta_meta_perturbations_per_panel": 300,
+  "semantic_guard": "same panel, same holdout, same Goodhart control, same assertions",
+  "claim_ceiling": "TEST_FIXTURE_REUSE_OPTIMIZATION_ONLY"
+}
