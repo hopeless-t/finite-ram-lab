@@ -1,0 +1,16 @@
+{
+  "schema": "finite-ram-lab.fr-fp-007/v0.1",
+  "title": "Reclaimability timing versus coverage",
+  "status": "SYNTHETIC_DECOMPOSITION_CANDIDATE",
+  "parent": "FR-FP-006",
+  "baseline": {
+    "transfer_lead_steps": 4,
+    "hot_budget_states": 4
+  },
+  "safe_shift_steps": [0,1,2,3,4,5,6,7,8,9,10],
+  "failure_domains": [
+    "TIMING_GAP",
+    "COVERAGE_GAP"
+  ],
+  "claim_ceiling": "SYNTHETIC_RECLAIMABILITY_TIMING_AND_COVERAGE_DECOMPOSITION_ONLY"
+}
