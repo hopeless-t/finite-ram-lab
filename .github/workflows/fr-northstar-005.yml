@@ -1,0 +1,55 @@
+name: FR-NORTHSTAR-005 Close Transfer Gap
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-northstar-005-close-transfer-gap
+    paths:
+      - "src/finite_ram_lab/fr_primitive_registry.py"
+      - "src/finite_ram_lab/fr_northstar_transfer_close.py"
+      - "tests/test_fr_northstar_transfer_close.py"
+      - "specs/FR-NORTHSTAR-005.json"
+      - "docs/FR-NORTHSTAR-005-CLOSE-TRANSFER-GAP.md"
+      - ".github/workflows/fr-northstar-005.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: |
+          python -m unittest tests.test_fr_primitive_registry -v
+          python -m unittest tests.test_fr_northstar_transfer_close -v
+      - name: Run loop-closure panel
+        run: |
+          mkdir -p runs/FR-NORTHSTAR-005
+          python -m finite_ram_lab.fr_northstar_transfer_close > runs/FR-NORTHSTAR-005/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-NORTHSTAR-005/result.json"))
+          assert r["status"] == "PASS"
+          life=r["gap_lifecycle"]
+          assert life["before_FR_XFER_001"] == "CAPABILITY_GAP"
+          assert life["after_registry_update"]["classification"] == "MODEL_GAP"
+          assert life["after_effect_model"]["classification"] == "FRONTIER_REACHED"
+          assert r["research_policy"]["open_new_transfer_mechanism_lane"] is False
+          assert r["governance"]["live_actions_executed"] == 0
+          PY
+          sha256sum specs/FR-NORTHSTAR-005.json
+          sha256sum runs/FR-NORTHSTAR-005/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-northstar-005-close-transfer-gap
+          path: runs/FR-NORTHSTAR-005/result.json
+          if-no-files-found: error
