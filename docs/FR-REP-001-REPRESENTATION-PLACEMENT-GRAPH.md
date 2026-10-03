@@ -217,6 +217,35 @@ Therefore:
 
 Cloud is a **deadline class**, not a universal escape hatch.
 
+## Resource objective
+
+Residency bytes are tier-typed.
+
+The planner does **not** collapse VRAM and host RAM into one generic volatile
+byte count.
+
+Frozen lexicographic objective:
+
+```text
+min accelerator-resident bytes
+min host-RAM-resident bytes
+min local-storage bytes
+min network-fetch bytes
+max quality proxy
+min latency
+```
+
+The first qualification attempt exposed why this matters: AWQ4/RAM and
+AWQ4/VRAM both occupied 128 MiB, and a fungible-byte objective chose VRAM only
+because it was faster.
+
+That is rejected by this lane.
+
+`128 MiB VRAM != 128 MiB host RAM`.
+
+This is a direct representation-level instance of the earlier
+`capacity is topology weighted` invariant.
+
 ## Primary findings
 
 ### 1. Representation choice is not placement choice
@@ -244,7 +273,11 @@ BitNet-native models are valuable candidates.
 BitNet is not a magic emergency action that turns any current model into a
 1.58-bit model without semantic/model changes.
 
-### 4. Cold cloud is feasible before hot cloud
+### 4. Residency bytes are tier-typed, not fungible
+
+A byte of accelerator residency, host RAM, local SSD, or remote object storage is not interchangeable.
+
+### 5. Cold cloud is feasible before hot cloud
 
 A large network-backed tier can reduce local storage pressure strongly.
 
