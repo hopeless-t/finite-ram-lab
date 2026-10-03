@@ -163,6 +163,7 @@ def evaluate_plan(
         "relief_mib": relief_mib,
         "semantic_loss": semantic_loss,
         "ssd_write_mib": ssd_write_mib,
+        "non_ssd_apply_ms": non_ssd_apply_ms,
         "migration_ms_at_p05_bandwidth": migration_ms,
         "expected_restore_ms": expected_restore_ms,
         "cvar95_restore_ms": cvar95_restore_ms,
@@ -233,6 +234,12 @@ def run_panel() -> dict:
             deadline_ms=1600,
             max_ssd_write_mib=4096,
         ),
+        "WRITE_BUDGET_2G": solve(
+            ssd_enabled=True,
+            ssd_p05_write_mib_s=2500,
+            deadline_ms=1600,
+            max_ssd_write_mib=2048,
+        ),
         "SLOW_SSD_TIERED": solve(
             ssd_enabled=True,
             ssd_p05_write_mib_s=1000,
@@ -249,6 +256,7 @@ def run_panel() -> dict:
 
     fast = arms["FAST_SSD_TIERED"]
     ram = arms["RAM_ONLY"]
+    write_limited = arms["WRITE_BUDGET_2G"]
     slow = arms["SLOW_SSD_TIERED"]
     emergency = arms["EMERGENCY_SHORT_DEADLINE"]
 
@@ -272,6 +280,16 @@ def run_panel() -> dict:
     }:
         raise RuntimeError("ram_only_reference_changed")
 
+    if write_limited["choices"] != {
+        "KV": "Q4",
+        "PREFIX": "SSD",
+        "AUX_EXPERTS": "KEEP",
+        "BROWSER_CACHE": "DROP",
+        "BACKGROUND_JOB": "KEEP",
+        "ACTIVE_TASK": "KEEP",
+    }:
+        raise RuntimeError("write_budget_reference_changed")
+
     if slow["choices"] != ram["choices"]:
         raise RuntimeError("slow_ssd_should_fall_back_to_ram_plan")
 
@@ -283,6 +301,16 @@ def run_panel() -> dict:
 
     if fast["choices"]["ACTIVE_TASK"] != "KEEP":
         raise RuntimeError("fast_tiered_plan_killed_active_task")
+
+    fast_min_p05_write_mib_s = (
+        fast["ssd_write_mib"]
+        / (
+            (1600.0 - fast["non_ssd_apply_ms"])
+            / 1000.0
+        )
+    )
+    if not 1900 < fast_min_p05_write_mib_s < 2000:
+        raise RuntimeError("analytic_bandwidth_knee_changed")
 
     return {
         "schema": SCHEMA,
@@ -297,6 +325,14 @@ def run_panel() -> dict:
             "expected_restore_ms": EXPECTED_WEIGHT,
             "cvar95_restore_ms": CVAR95_WEIGHT,
             "ssd_write_mib": SSD_WRITE_WEIGHT,
+        },
+        "analytic_boundaries": {
+            "fast_hybrid_min_p05_write_mib_s_at_1600ms": (
+                fast_min_p05_write_mib_s
+            ),
+            "fast_hybrid_min_write_budget_mib": (
+                fast["ssd_write_mib"]
+            ),
         },
         "refault_scenarios": [
             {
