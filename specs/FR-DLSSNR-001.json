@@ -1,0 +1,161 @@
+{
+  "schema": "finite-ram-lab.fr-dlssnr-001/v0.1",
+  "status": "FROZEN_SOURCE_GROUNDED_EXPERIMENT_DESIGN",
+  "stacked_after": "FR-BONSAI-001",
+  "upstream": {
+    "repository": "maanHimself/OpenDLSS-NR",
+    "commit": "9d08f4184bbcb9d858e2fb7a7834ec0837a9d2f1",
+    "sources": [
+      "https://github.com/maanHimself/OpenDLSS-NR",
+      "https://github.com/maanHimself/OpenDLSS-NR/blob/main/docs/README.md",
+      "https://github.com/maanHimself/OpenDLSS-NR/blob/main/docs/execution.md",
+      "https://github.com/maanHimself/OpenDLSS-NR/blob/main/docs/numerics.md"
+    ]
+  },
+  "grounded_geometry": {
+    "network": "DLSS-NR build 310.8.0",
+    "blocks": 71,
+    "pooling_levels": 6,
+    "activation_format": "FP8 E4M3",
+    "accumulation_format": "FP16",
+    "weights_mib_approx": 141,
+    "comparable_boundary_count": 75,
+    "default_dispatches_per_frame": 241,
+    "same_resolution_input_output": true,
+    "is_dlss_sr": false
+  },
+  "published_performance_reference_only": [
+    {"resolution": "512x512", "minimum_ms": 2.72},
+    {"resolution": "768x768", "minimum_ms": 2.83},
+    {"resolution": "1920x1080", "minimum_ms": 7.77},
+    {"resolution": "2560x1440", "minimum_ms": 12.6},
+    {"resolution": "3840x2160", "minimum_ms": 29.3}
+  ],
+  "memory_model": {
+    "equation": "M_pi(t)=W_pi(t)+A_pi(t)+S_pi(t)+H_pi(t)+G_pi(t)",
+    "peak": "M_peak(pi)=max_t M_pi(t)",
+    "terms": {
+      "W": "resident weights",
+      "A": "live activations",
+      "S": "scratch/workspace",
+      "H": "history/temporal state",
+      "G": "staging/transfer state"
+    },
+    "qualification": "M_peak(pi)<=B AND parity_ok(pi) AND evidence_complete(pi) AND validation_clean(pi)"
+  },
+  "optimization_order": [
+    "complete bit-exact parity",
+    "minimum peak live residency",
+    "minimum frame and tail latency",
+    "minimum transfer/rematerialization/synchronization cost"
+  ],
+  "reference_treatment_arms": [
+    {
+      "id": "REF_UNFUSED",
+      "setting": "DLSS5VK_UNFUSED=1",
+      "purpose": "materialized-intermediate reference"
+    },
+    {
+      "id": "FAST_EXACT",
+      "setting": "upstream defaults",
+      "purpose": "fused/streamed/chained exact treatment"
+    },
+    {
+      "id": "CHAIN_OFF",
+      "setting": "DLSS5VK_CHAIN=0",
+      "purpose": "separate synchronization from residency effects"
+    },
+    {
+      "id": "ATTN_STREAM_OFF",
+      "setting": "DLSS5VK_ATTN_STREAM=0",
+      "purpose": "global-attention streaming ablation"
+    },
+    {
+      "id": "ATTN_STREAM_ON",
+      "setting": "DLSS5VK_ATTN_STREAM=1",
+      "purpose": "global-attention streaming treatment"
+    }
+  ],
+  "single_fusion_ablations": [
+    "DLSS5VK_NO_FUSE_PRE=1",
+    "DLSS5VK_NO_FUSE_POOL=1",
+    "DLSS5VK_NO_FUSE_UPRES=1",
+    "DLSS5VK_NO_FUSE_POST=1"
+  ],
+  "frozen_hypotheses": [
+    "Exact semantics do not require maximal intermediate materialization.",
+    "Synchronization savings and residency savings can be separated by controlled chaining ablation.",
+    "Streamed global attention exposes a measurable residency/traffic frontier.",
+    "A pressure-induced semantic failure can be localized to the first mismatching published boundary.",
+    "Cross-implementation parity can distinguish semantic requirements from accelerator-specific implementation choices."
+  ],
+  "stages": [
+    "STAGE0_SOURCE_CONTRACT",
+    "STAGE1_ALLOCATION_LIVENESS_OBSERVATION",
+    "STAGE2_DETERMINISTIC_BUDGET_SWEEP",
+    "STAGE3_KNEE_BIOPSY_AND_RARE_EVENTS",
+    "STAGE4_TEMPORAL_EXTENSION"
+  ],
+  "initial_resolutions": [
+    "512x512",
+    "768x768",
+    "1920x1080"
+  ],
+  "semantic_metrics": [
+    "boundary_exactness_count",
+    "first_mismatching_boundary",
+    "head_exactness",
+    "final_output_exactness",
+    "repeat_agreement"
+  ],
+  "residency_metrics": [
+    "device_local_allocated_bytes",
+    "device_local_peak_bytes",
+    "host_visible_staging_bytes",
+    "activation_live_bytes",
+    "scratch_live_bytes",
+    "history_live_bytes",
+    "transfer_bytes_per_frame"
+  ],
+  "performance_metrics": [
+    "dispatch_count",
+    "barrier_count",
+    "frame_time_min_ms",
+    "frame_time_median_ms",
+    "frame_time_p95_ms",
+    "frame_time_p99_ms",
+    "host_cpu_time_ms",
+    "transfer_queue_time_ms"
+  ],
+  "failure_classes": [
+    "EXACT_PASS",
+    "ALLOC_BUDGET_REJECT",
+    "DEVICE_OOM",
+    "FIRST_BOUNDARY_MISMATCH",
+    "HEAD_MISMATCH",
+    "OUTPUT_MISMATCH",
+    "TEMPORAL_STATE_INVALID",
+    "TRANSFER_THRASH",
+    "SYNC_STALL",
+    "VALIDATION_ERROR",
+    "FIXTURE_INCOMPLETE",
+    "UNSUPPORTED_HARDWARE",
+    "UNKNOWN_EVIDENCE_GAP"
+  ],
+  "physical_run": {
+    "performed_by_this_change": false,
+    "requires_user_supplied_weights": true,
+    "requires_user_supplied_reference_fixtures": true,
+    "requires_compatible_gpu_and_vulkan_surface": true,
+    "budget_mechanism": "future deterministic allocator cap; do not use accidental system OOM as the intervention"
+  },
+  "claim_ceiling": "SOURCE_GROUNDED_BITEXACT_RESIDENCY_DESIGN_ONLY",
+  "nonclaims": [
+    "No Finite RAM Lab OpenDLSS-NR physical measurement is claimed.",
+    "No memory reduction is claimed.",
+    "No universal VRAM requirement is claimed.",
+    "No Linux memcg conclusion is claimed.",
+    "No NVIDIA weights or fixture captures are redistributed.",
+    "No claim is made that the user's current machine satisfies upstream hardware requirements."
+  ]
+}
