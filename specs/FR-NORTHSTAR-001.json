@@ -1,0 +1,45 @@
+{
+  "schema": "finite-ram-lab.fr-northstar-001/v0.1",
+  "title": "FR-NORTHSTAR-001 Qualified Task Survival Frontier",
+  "status": "FROZEN_SYNTHETIC_NORTH_STAR_CONTRACT",
+  "parent": "FR-COMP-001",
+  "north_star": {
+    "name": "QUALIFIED_TASK_SURVIVAL_FRONTIER",
+    "primary_question": "What is the minimum resident RAM required to complete useful work while all task and non-RAM resource contracts still pass?",
+    "anti_cheat": "A RAM reduction is not a win if quality, semantic correctness, p99 latency, reliability, CPU, IO, or network-like budgets are violated."
+  },
+  "contract": {
+    "max_p99_latency_ms": 85,
+    "min_quality": 0.97,
+    "min_reliability": 0.999,
+    "max_extra_cpu_units": 35,
+    "max_extra_io_mib": 400
+  },
+  "action_primitives": [
+    "QUANTIZE",
+    "SHARE",
+    "PAGING",
+    "REMATERIALIZE",
+    "RECLAIM_PAGECACHE",
+    "COMPRESS"
+  ],
+  "workload_archetypes": [
+    "MULTIWORKER_LLM",
+    "LONG_CONTEXT",
+    "SERVING_FRAGMENTED",
+    "OUT_OF_CORE",
+    "COMPRESSIBLE_CACHE",
+    "REBUILDABLE_PIPELINE"
+  ],
+  "frozen_summary": {
+    "single_atom_geomean_memory_gain": 1.377449471796244,
+    "joint_geomean_memory_gain": 2.2625893036493747,
+    "qualified_at_600_mib": {
+      "BASELINE": 0,
+      "SINGLE_ATOM": 0,
+      "JOINT": 6
+    }
+  },
+  "research_policy": "A new atom is only promoted when it improves the qualified survival frontier or closes a measured failure-domain gap.",
+  "claim_ceiling": "SYNTHETIC_NORTH_STAR_CONTRACT_AND_JOINT_POLICY_TOPOLOGY_ONLY"
+}
