@@ -26,9 +26,22 @@
     "identity": "shared_parameters + active_expert_parameters_per_token = published activated_parameters"
   },
   "shadow_arms": {
-    "expert_cache_slots_per_layer": [8, 16, 32, 64],
-    "routing_zipf_alpha": [0.0, 0.75, 1.25],
-    "ssd_bandwidth_mib_s": [1000, 2500, 5000],
+    "expert_cache_slots_per_layer": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "routing_zipf_alpha": [
+      0,
+      0.75,
+      1.25
+    ],
+    "ssd_bandwidth_mib_s": [
+      1000,
+      2500,
+      5000
+    ],
     "runtime_kv_reserve_mib": 768,
     "dtype_for_geometry": "BF16"
   },
@@ -86,5 +99,12 @@
     "No claim that the synthetic 768 MiB runtime/KV reserve represents the user's host.",
     "No claim that any expert-cache policy is faster than full residency.",
     "No host process is killed, signaled, or reconfigured by this PR."
-  ]
+  ],
+  "comparison_surface": {
+    "dense_parent": "FR-BONSAI-001",
+    "comparison_dimension": "trajectory-level weight traffic shape under bounded residency",
+    "dense_failure_shape": "nonresident dense blocks are revisited every decode token",
+    "sparse_failure_shape": "selected experts are sparse per token but cache misses can grow with weak routing locality",
+    "prohibited_interpretation": "Do not rank model quality or raw throughput across architectures from this shadow model."
+  }
 }
