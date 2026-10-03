@@ -1,0 +1,51 @@
+name: FR-NORTHSTAR-001 Qualified Survival Frontier
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-northstar-001-qualified-survival-frontier
+    paths:
+      - "src/finite_ram_lab/fr_northstar_frontier.py"
+      - "tests/test_fr_northstar_frontier.py"
+      - "specs/FR-NORTHSTAR-001.json"
+      - "docs/FR-NORTHSTAR-001-QUALIFIED-SURVIVAL-FRONTIER.md"
+      - ".github/workflows/fr-northstar-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_northstar_frontier -v
+      - name: Run North Star panel
+        run: |
+          mkdir -p runs/FR-NORTHSTAR-001
+          python -m finite_ram_lab.fr_northstar_frontier > runs/FR-NORTHSTAR-001/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-NORTHSTAR-001/result.json"))
+          assert r["status"] == "PASS"
+          s=r["summary"]
+          assert s["joint_geomean_memory_gain"] > s["single_atom_geomean_memory_gain"]
+          assert s["qualified_workloads_at_600_mib"]["JOINT"] == 6
+          assert s["qualified_workloads_at_600_mib"]["BASELINE"] == 0
+          assert s["qualified_workloads_at_600_mib"]["SINGLE_ATOM"] == 0
+          PY
+          sha256sum specs/FR-NORTHSTAR-001.json
+          sha256sum runs/FR-NORTHSTAR-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-northstar-001-qualified-survival-frontier
+          path: runs/FR-NORTHSTAR-001/result.json
+          if-no-files-found: error
