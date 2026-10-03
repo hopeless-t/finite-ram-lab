@@ -27,13 +27,14 @@
   },
   "qualification_gates": {
     "zero_max_ratio_lt": 0.01,
-    "repeated_max_ratio_lt": 0.05,
     "low_entropy_ratio_range": [
       0.35,
       0.8
     ],
     "random_min_ratio_gt": 0.98,
-    "exact_roundtrip": true
+    "exact_roundtrip": true,
+    "repeated_best_ratio_lt": 0.01,
+    "repeated_codec_spread_gt": 0.05
   },
   "measurements": [
     "compression ratio",
@@ -49,5 +50,11 @@
     "no sysfs writes",
     "kernel compressor performance may differ"
   ],
-  "claim_ceiling": "HOSTED_LINUX_USERSPACE_CODEC_SURFACE_ONLY"
+  "claim_ceiling": "HOSTED_LINUX_USERSPACE_CODEC_SURFACE_ONLY",
+  "reproducibility": {
+    "prequalification_failure_run": 37120807723,
+    "failed_assumption": "all codecs should compress the repeated 4 KiB pseudo-random block below 5%",
+    "observed_counterexample": "BZ2 mean ratio ~0.08184 while LZMA/zlib were far smaller",
+    "update": "freeze codec-interaction hypothesis instead of relaxing the old threshold"
+  }
 }
