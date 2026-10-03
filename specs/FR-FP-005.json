@@ -1,0 +1,14 @@
+{
+  "schema": "finite-ram-lab.fr-fp-005/v0.1",
+  "title": "Predictive residency feasibility oracle",
+  "status": "SYNTHETIC_ROUTING_CANDIDATE",
+  "parent": "FR-FP-004",
+  "routes": {
+    "PREDICTION_SAVES_IO": "POLICY_VALUE_REGION",
+    "PREDICTION_HAS_NO_MATERIAL_IO_ADVANTAGE": "SIMPLE_POLICY_SUFFICIENT",
+    "NO_ZERO_OOM_PREDICTIVE_CANDIDATE": "PREDICTOR_MODEL_GAP",
+    "DEADLINE_INFEASIBLE": "TRANSFER_SURFACE_CAPABILITY_GAP"
+  },
+  "out_of_calibration": "fail closed; request measurement instead of interpolation",
+  "claim_ceiling": "SYNTHETIC_PHASE_MAP_ROUTING_ORACLE_ONLY"
+}
