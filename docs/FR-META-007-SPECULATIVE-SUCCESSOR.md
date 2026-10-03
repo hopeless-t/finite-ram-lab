@@ -1,68 +1,59 @@
 # FR-META-007 — Speculative Detached Successor
 
-Status: **DOGFOOD PROTOCOL CANDIDATE / v0.2 AFTER ANCESTRY BIOPSY**
+Status: **DOGFOOD PROTOCOL CANDIDATE / v0.3 AFTER MATERIALIZATION BIOPSY**
 
 Parent: **FR-META-006**
 
-## Bottleneck
+## Goal
 
-A worker can often build the next bounded transition while the parent candidate
-is still in CI. Publishing that successor immediately creates unnecessary branch
-and workflow debt.
+Overlap successor construction with parent CI without creating branch sprawl,
+workflow fan-out, or authority on top of an unqualified parent.
 
-## Protocol
+## Prepared delta
 
-Build the immediate successor as unreferenced Git objects only:
+While the parent is still qualifying, the worker may create blobs, a tree, and
+a detached child commit.
 
-1. create blobs;
-2. create a tree based on the current parent candidate;
-3. create one detached child commit;
-4. create no branch, PR, workflow dispatch, or canonical handoff.
+That detached commit is not the final child.
 
-The child remains PROVISIONAL.
+It is a prepared delta / compilation cache.
 
-## v0.1 dogfood failure biopsy
+No branch, PR, workflow dispatch, or canonical handoff is created.
 
-The first dogfood published FR-META-007 immediately after FR-META-006 reported
-PASS.
+## Two dogfood corrections
 
-That was too early.
+v0.1 published after parent PASS but before the parent receipt. That was too
+early.
 
-FR-META-006 still needed its qualification receipt commit. Publishing the child
-before that receipt meant the child did not contain the final canonical parent
-receipt in its ancestry.
+v0.2 waited for the receipt, but still described publication as pointing a ref
+at the already-built pre-receipt child SHA. That SHA still has the old parent,
+so merely waiting does not repair ancestry.
 
-The corrected gate is therefore not merely parent PASS.
+v0.3 freezes the correct rule.
 
-It is:
+## Correct publication rule
 
-    PARENT_RECEIPT_FROZEN
+After the parent qualification receipt is frozen:
 
-A qualified parent without its receipt keeps the child detached.
+1. use the receipt commit tree as the new base;
+2. reapply the prepared child file delta;
+3. create a new final child commit whose parent is the receipt commit;
+4. publish the branch ref to that final commit.
 
-## Publication
+The pre-receipt detached SHA is never directly published as the final child.
 
-Only after the parent receipt is frozen may the child ref be published.
-
-If the parent is FAIL, UNKNOWN, IN_PROGRESS, or PASS-without-receipt:
-
-- no child branch;
-- no child workflow;
-- no authority promotion.
+If the parent is FAIL, UNKNOWN, IN_PROGRESS, or PASS-without-receipt, the
+prepared delta remains non-canonical and launches no workflow.
 
 Speculative depth remains exactly one.
 
-## Repair of the first dogfood specimen
+## Why this still hides latency
 
-The prematurely published v0.1 branch is repaired by a non-force merge commit
-that has both:
+The expensive work is usually source/test/spec/doc construction. That can be
+done during parent CI.
 
-- the original child commit;
-- the frozen FR-META-006 receipt commit
-
-as parents, with the corrected v0.2 tree.
-
-This preserves the mistake as history while restoring canonical ancestry.
+After the receipt freezes, only deterministic Git materialization and branch
+publication remain on the critical path.
 
 ## Claim ceiling
 

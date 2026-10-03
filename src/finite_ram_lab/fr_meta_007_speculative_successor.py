@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-SCHEMA = "finite-ram-lab.fr-meta-007-speculative-successor/v0.2"
+SCHEMA = "finite-ram-lab.fr-meta-007-speculative-successor/v0.3"
 
 
 def transition(parent_state: str, child_state: str) -> dict:
@@ -11,23 +11,26 @@ def transition(parent_state: str, child_state: str) -> dict:
 
     if parent_state == "RECEIPT_FROZEN":
         return {
-            "decision": "PUBLISH_CHILD_REF",
-            "child_authority": "CANDIDATE",
-            "workflow_allowed": True,
+            "decision": "MATERIALIZE_DELTA_ON_RECEIPT_THEN_PUBLISH",
+            "child_authority": "PROVISIONAL_UNTIL_MATERIALIZED",
+            "workflow_allowed_after_materialization": True,
+            "direct_publish_pre_receipt_commit": False,
         }
 
     if parent_state == "QUALIFIED_PASS":
         return {
             "decision": "WAIT_FOR_PARENT_RECEIPT",
             "child_authority": "PROVISIONAL_ONLY",
-            "workflow_allowed": False,
+            "workflow_allowed_after_materialization": False,
+            "direct_publish_pre_receipt_commit": False,
         }
 
     if parent_state in ("FAIL", "UNKNOWN", "IN_PROGRESS"):
         return {
-            "decision": "DO_NOT_PUBLISH_CHILD_REF",
+            "decision": "DO_NOT_PUBLISH_CHILD",
             "child_authority": "PROVISIONAL_ONLY",
-            "workflow_allowed": False,
+            "workflow_allowed_after_materialization": False,
+            "direct_publish_pre_receipt_commit": False,
         }
 
     raise ValueError(f"unknown_parent_state:{parent_state}")
@@ -41,12 +44,19 @@ def run_panel() -> dict:
     in_progress_case = transition("IN_PROGRESS", "DETACHED_PROVISIONAL")
 
     checks = {
-        "receipt_can_publish": receipt_case["workflow_allowed"] is True,
+        "receipt_requires_materialization": (
+            receipt_case["decision"]
+            == "MATERIALIZE_DELTA_ON_RECEIPT_THEN_PUBLISH"
+        ),
+        "pre_receipt_sha_never_directly_published": (
+            receipt_case["direct_publish_pre_receipt_commit"] is False
+        ),
         "pass_waits_for_receipt": pass_case["decision"] == "WAIT_FOR_PARENT_RECEIPT",
-        "fail_cannot_publish": fail_case["workflow_allowed"] is False,
-        "unknown_cannot_publish": unknown_case["workflow_allowed"] is False,
-        "in_progress_cannot_publish": in_progress_case["workflow_allowed"] is False,
-        "unknown_is_not_receipt": unknown_case["decision"] != receipt_case["decision"],
+        "fail_cannot_publish": fail_case["decision"] == "DO_NOT_PUBLISH_CHILD",
+        "unknown_cannot_publish": unknown_case["decision"] == "DO_NOT_PUBLISH_CHILD",
+        "in_progress_cannot_publish": (
+            in_progress_case["decision"] == "DO_NOT_PUBLISH_CHILD"
+        ),
     }
 
     return {
@@ -55,12 +65,16 @@ def run_panel() -> dict:
         "checks": checks,
         "protocol": {
             "max_speculative_depth": 1,
-            "build_surface": "UNREFERENCED_GIT_OBJECTS_ONLY",
+            "build_surface": "UNREFERENCED_GIT_OBJECTS_AS_PREPARED_DELTA",
             "publish_gate": "PARENT_RECEIPT_FROZEN_ONLY",
+            "publication": (
+                "REAPPLY_PREPARED_CHILD_DELTA_ON_PARENT_RECEIPT_TREE_"
+                "THEN_CREATE_FINAL_CHILD_COMMIT_AND_REF"
+            ),
             "qualified_without_receipt": "KEEP_DETACHED_PROVISIONAL",
             "failed_or_unknown_parent": "NO_BRANCH_REF_NO_WORKFLOW_NO_AUTHORITY",
         },
-        "decision": "BUILD_AHEAD_DETACHED_PUBLISH_AFTER_RECEIPT",
+        "decision": "BUILD_AHEAD_DELTA_MATERIALIZE_AFTER_RECEIPT",
         "claim_ceiling": "SPECULATIVE_DETACHED_BUILD_PROTOCOL_ONLY",
     }
 
