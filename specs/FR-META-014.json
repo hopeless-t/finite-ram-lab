@@ -1,0 +1,28 @@
+{
+  "schema": "finite-ram-lab.fr-meta-014/v0.1",
+  "title": "Decision Skill Compiler",
+  "status": "DOGFOOD_COMPILATION_CANDIDATE",
+  "parent": "FR-META-013",
+  "source_history": {
+    "documents": 10,
+    "characters": 17417,
+    "range": "FR-META-004 through FR-META-013"
+  },
+  "compiled_surface": {
+    "skills": 13,
+    "representation": "fact predicates -> compact action capsules",
+    "unknown_semantics": "fail closed / unresolved",
+    "execution_authority": "none"
+  },
+  "skill_lifecycle": [
+    "observation",
+    "replication or direct negative evidence",
+    "invariant check",
+    "compile trigger/action/evidence/invalidation",
+    "replay tests",
+    "compact context selection",
+    "invalidate or fall back when facts no longer match"
+  ],
+  "fallback": "full L0/L1/L2 loop when no skill matches or facts are unresolved",
+  "claim_ceiling": "COMPILED_DECISION_ROUTING_AND_CONTEXT_SURFACE_ONLY"
+}
