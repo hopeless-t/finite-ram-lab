@@ -1,0 +1,20 @@
+{
+  "schema": "finite-ram-lab.fr-meta-017/v0.1",
+  "title": "Compiled Skill Telemetry Plane",
+  "status": "DOGFOOD_OBSERVATION_CANDIDATE",
+  "parent": "FR-META-016",
+  "first_prospective_event": "FR-META-015-ROUTE",
+  "metrics": [
+    "skill hit rate",
+    "full-history fallback rate",
+    "resident context characters",
+    "context reduction fraction",
+    "qualified skill-hit rate",
+    "reversal rate with coverage",
+    "invalidation events"
+  ],
+  "missing_semantics": "unobserved reversal remains null/UNKNOWN, never false",
+  "effect_claim_minimum_events": 20,
+  "data_boundary": "explicit durable decision metadata only; no private reasoning content",
+  "claim_ceiling": "ONE_PROSPECTIVE_SKILL_DOGFOOD_EVENT_AND_TELEMETRY_SCHEMA_ONLY"
+}
