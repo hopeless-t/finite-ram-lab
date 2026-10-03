@@ -1,0 +1,19 @@
+{
+  "schema": "finite-ram-lab.fr-fp-016/v0.3",
+  "title": "Warm-cold restore size scaling / stationary-model rejection",
+  "status": "NEGATIVE_REPLICATION_RESULT",
+  "parent": "FR-FP-015",
+  "physical_runs": [37145768871, 37145960094],
+  "stable_findings": [
+    "warm restore is physically resident and approximately linear with size",
+    "cold files are physically nonresident before restore",
+    "cold restore is slower than warm at 4/8/16 MiB",
+    "a single linear cold bandwidth model failed in both runs"
+  ],
+  "rejected_findings": [
+    "stable 16 MiB cold restore knee",
+    "one deterministic cold restore bandwidth"
+  ],
+  "next": "fixed-size repeated cold restore tail and temporal-structure campaign",
+  "claim_ceiling": "HOSTED_COLD_RESTORE_NONSTATIONARITY_NEGATIVE_RESULT_ONLY"
+}
