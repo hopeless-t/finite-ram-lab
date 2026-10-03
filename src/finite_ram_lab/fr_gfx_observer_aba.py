@@ -163,6 +163,113 @@ def _segment(
     return rows
 
 
+ARM_SETTINGS = tuple(
+    (
+        settings["constant_overhead_ms"],
+        settings["tail_overhead_ms"],
+    )
+    for settings in ARMS.values()
+)
+
+ARM_SETTING_INDEX = {
+    settings: index
+    for index, settings in enumerate(ARM_SETTINGS)
+}
+
+
+@lru_cache(maxsize=None)
+def _b_arm_means(
+    episode: int,
+) -> tuple[float, ...]:
+    base = (
+        100.0
+        + (
+            episode % 17
+            - 8
+        ) * 0.15
+    )
+
+    drift = (
+        _u(
+            episode,
+            0,
+            0,
+            "drift",
+        )
+        - 0.5
+    ) * 8.0
+
+    rows = [
+        []
+        for _ in ARM_SETTINGS
+    ]
+
+    for frame in range(
+        FRAMES_PER_SEGMENT
+    ):
+        common = (
+            base
+            + drift * 0.5
+            + _noise(
+                episode,
+                1,
+                frame,
+                4.0,
+            )
+        )
+
+        if (
+            _u(
+                episode,
+                1,
+                frame,
+                "tail",
+            )
+            < 0.05
+        ):
+            common += (
+                25.0
+                + 15.0
+                * _u(
+                    episode,
+                    1,
+                    frame,
+                    "tailamp",
+                )
+            )
+
+        observer_tail = (
+            _u(
+                episode,
+                1,
+                frame,
+                "obstail",
+            )
+            < 0.03
+        )
+
+        for index, (
+            constant_ms,
+            tail_ms,
+        ) in enumerate(
+            ARM_SETTINGS
+        ):
+            value = common
+            value += constant_ms
+
+            if observer_tail:
+                value += tail_ms
+
+            rows[index].append(
+                value
+            )
+
+    return tuple(
+        mean(row)
+        for row in rows
+    )
+
+
 @lru_cache(maxsize=None)
 def _segment_mean(
     episode: int,
@@ -188,14 +295,28 @@ def _mean_effects_cached(
     naive = []
     aba = []
 
-    for episode in range(EPISODES):
-        a1 = _segment_mean(episode, 0)
-        b = _segment_mean(
-            episode,
-            1,
+    arm_index = ARM_SETTING_INDEX.get(
+        (
             constant_ms,
             tail_ms,
         )
+    )
+
+    for episode in range(EPISODES):
+        a1 = _segment_mean(episode, 0)
+
+        if arm_index is None:
+            b = _segment_mean(
+                episode,
+                1,
+                constant_ms,
+                tail_ms,
+            )
+        else:
+            b = _b_arm_means(
+                episode
+            )[arm_index]
+
         a2 = _segment_mean(episode, 2)
 
         naive.append(b - a1)
