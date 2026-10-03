@@ -143,9 +143,6 @@ def _spill_region(
         0o600,
     )
 
-    view = memoryview(
-        region
-    )
     written = 0
 
     try:
@@ -155,14 +152,17 @@ def _spill_region(
                 + WRITE_CHUNK_BYTES,
                 STATE_BYTES,
             )
-            chunk = view[
+            chunk = region[
                 written:end
             ]
+            offset = 0
 
-            while chunk:
+            while offset < len(chunk):
                 count = os.write(
                     fd,
-                    chunk,
+                    chunk[
+                        offset:
+                    ],
                 )
 
                 if count <= 0:
@@ -170,14 +170,11 @@ def _spill_region(
                         "short_spill_write"
                     )
 
+                offset += count
                 written += count
-                chunk = chunk[
-                    count:
-                ]
 
         os.fsync(fd)
     finally:
-        view.release()
         os.close(fd)
 
     verified = _verify_spill(
