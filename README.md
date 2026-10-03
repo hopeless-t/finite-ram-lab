@@ -367,6 +367,55 @@ Next candidates:
 - KSLA-003 — FP8/FP16 weak workers with residual-gated precision escalation;
 - KSLA-004 — randomized Kaczmarz swarm.
 
+## KSLA-002 — Imaginary Kitten Random Action Solver
+
+KSLA-002 removes the worker identity from the kitten abstraction.
+
+A kitten is only a stateless random action tuple:
+
+```text
+(coordinate, step)
+```
+
+It is not an LLM, process, agent, thread, or physical worker.
+
+An external exact residual validator decides whether the action survives.
+
+Frozen 64-dimensional exact fixture:
+
+| kittens / round | rounds | proposal evaluations |
+|---:|---:|---:|
+| 1 | 2753 | 2753 |
+| 8 | 305 | **2440** |
+| 64 | 155 | 9920 |
+| 128 | **122** | 15616 |
+
+All filtered arms reach the exact zero-residual solution.
+
+Comparison:
+
+- exhaustive best-action scan: 124 rounds / 47,616 evaluations;
+- unfiltered random chaos: residual grows 51,431 -> 585,361 and does not solve.
+
+Thus:
+
+`randomness is not the intelligence`
+
+The useful system is:
+
+`ignorant action generation + cheap external mathematical selection pressure`
+
+The 8-kitten arm is the frozen proposal-efficiency knee among the tested swarm
+widths. Wider swarms reduce serial depth but increase validator work.
+
+For the tridiagonal fixture, a proposal touches at most three residual entries,
+and the logical kitten itself needs only coordinate + step.
+
+See:
+
+- [KSLA-002 protocol](docs/KSLA-002-IMAGINARY-KITTENS.md)
+- [KSLA-002 receipt](docs/KSLA-002-RECEIPT.md)
+
 ## Inspired research
 
 ### STRATA-001 — page-cache bypass and semantic HOT-memory preservation

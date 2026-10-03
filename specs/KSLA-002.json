@@ -1,0 +1,107 @@
+{
+  "schema": "finite-ram-lab.ksla-002/v0.1",
+  "title": "KSLA-002 Imaginary Kitten Random Action Solver",
+  "status": "FROZEN_SYNTHETIC_RANDOM_ACTION_ACCEPTANCE_SPEC",
+  "parent": "KSLA-001",
+  "source_relatives": [
+    {
+      "work": "Nesterov, Efficiency of Coordinate Descent Methods on Huge-Scale Optimization Problems",
+      "doi": "10.1137/100802001",
+      "role": "random partial-coordinate updates for huge-scale optimization"
+    },
+    {
+      "work": "Strohmer and Vershynin, A Randomized Kaczmarz Algorithm with Exponential Convergence",
+      "arxiv": "math/0702226",
+      "role": "small random subproblem updates for linear systems"
+    },
+    {
+      "work": "Stich, Mueller, Gaertner, Optimization of Convex Functions with Random Pursuit",
+      "doi": "10.1137/110853613",
+      "role": "zeroth-order random-direction optimization relative"
+    }
+  ],
+  "novelty_boundary": "KSLA-002 does not claim a new optimization primitive. It tests a systems abstraction in which logical kittens are stateless random action proposals with no model, process, gradient, objective, or matrix knowledge; an external validator supplies all correctness pressure.",
+  "kitten_contract": {
+    "representation": "(coordinate, step)",
+    "stateful": false,
+    "llm": false,
+    "process_required": false,
+    "knows_gradient": false,
+    "knows_rhs": false,
+    "knows_matrix": false,
+    "knows_objective": false
+  },
+  "fixture": {
+    "dimension": 64,
+    "matrix": "tridiagonal SPD with diagonal 6 and off-diagonal -1",
+    "target_coordinates": "deterministic integers in [-7,7] from frozen SHA256 domain",
+    "initial_state": "zero vector",
+    "action_steps": [
+      -4,
+      -2,
+      -1,
+      1,
+      2,
+      4
+    ],
+    "action_selection": "uniform deterministic SHA256 fixture over coordinate and step",
+    "validator": "accept only negative residual-norm delta; among a batch accept the best improving proposal",
+    "max_rounds": 50000
+  },
+  "frozen_results": {
+    "BATCH_1": {
+      "rounds": 2753,
+      "proposals": 2753,
+      "accepted_actions": 183
+    },
+    "BATCH_4": {
+      "rounds": 635,
+      "proposals": 2540,
+      "accepted_actions": 189
+    },
+    "BATCH_8": {
+      "rounds": 305,
+      "proposals": 2440,
+      "accepted_actions": 150
+    },
+    "BATCH_16": {
+      "rounds": 232,
+      "proposals": 3712,
+      "accepted_actions": 148
+    },
+    "BATCH_32": {
+      "rounds": 185,
+      "proposals": 5920,
+      "accepted_actions": 137
+    },
+    "BATCH_64": {
+      "rounds": 155,
+      "proposals": 9920,
+      "accepted_actions": 132
+    },
+    "BATCH_128": {
+      "rounds": 122,
+      "proposals": 15616,
+      "accepted_actions": 122
+    },
+    "EXHAUSTIVE_SCAN": {
+      "rounds": 124,
+      "proposals": 47616
+    },
+    "UNFILTERED_CHAOS": {
+      "rounds": 2753,
+      "start_residual_norm": 51431,
+      "final_residual_norm": 585361,
+      "exact_solution": false
+    }
+  },
+  "expected_findings": [
+    "IMAGINARY_KITTENS_NEED_NOT_BE_LLMS_OR_PHYSICAL_WORKERS",
+    "RANDOM_ACTION_GENERATION_PLUS_EXTERNAL_VALIDATION_CAN_REACH_AN_EXACT_SOLUTION",
+    "UNFILTERED_RANDOM_ACTIONS_DIVERGE_IN_THE_FROZEN_FIXTURE",
+    "A_SMALL_RANDOM_SWARM_CAN_REDUCE_BOTH_SEARCH_DEPTH_AND_CANDIDATE_EVALUATIONS_VS_SINGLE_RANDOM_ACTIONS",
+    "EXHAUSTIVE_BEST_MOVE_SEARCH_CAN_COST_MORE_VALIDATOR_EVALUATIONS_THAN_RANDOM_PROPOSAL_SAMPLING",
+    "SWARM_WIDTH_TRADES_PARALLEL_DEPTH_AGAINST_TOTAL_PROPOSAL_WORK"
+  ],
+  "claim_ceiling": "SYNTHETIC_IMAGINARY_KITTEN_RANDOM_ACTION_SOLVER_ONLY"
+}
