@@ -1,0 +1,44 @@
+{
+  "schema": "finite-ram-lab.fr-remat-001/v0.1",
+  "title": "FR-REMAT-001 Retain / Recompute / Offload Planner",
+  "status": "FROZEN_SOURCE_GROUNDED_SYNTHETIC_PLANNER",
+  "parent": "FR-ALLOC-001",
+  "source_pins": {
+    "PyTorch": "pytorch/pytorch@818e484e225d53d2ad9cc067ba0c2bff0c4771a8",
+    "Checkmate": "parasj/checkmate@6041c777422328bb8ceaf04b34e3f68575b76ea2",
+    "DTR": "uwsampl/dtr-prototype@eff53cc4804cc7d6246a6e5086861ce2b846f62b"
+  },
+  "budgets": {
+    "fast_mib": 256,
+    "slow_mib": 256,
+    "offload_staging_mib_per_object": 8
+  },
+  "frozen_results": {
+    "keep_all_fast_mib": 648,
+    "drop_largest_objective": 116.375,
+    "cheap_recompute_objective": 60.5625,
+    "optimal_mixed_objective": 51.204499999999996,
+    "optimal_fast_mib": 240,
+    "optimal_slow_mib": 200,
+    "optimal_mean_overhead_ms": 40,
+    "optimal_tail_proxy_ms": 65.95,
+    "optimal_transfer_mib": 656,
+    "optimal_choices": [
+      "RECOMPUTE",
+      "OFFLOAD",
+      "KEEP",
+      "RECOMPUTE",
+      "RECOMPUTE",
+      "KEEP",
+      "OFFLOAD"
+    ]
+  },
+  "objective": "mean_overhead_ms + 0.15*tail_proxy_ms + 0.002*transfer_mib",
+  "boundaries": [
+    "synthetic sizes and latency proxies only",
+    "not a PyTorch performance benchmark",
+    "not a Checkmate performance benchmark",
+    "no live memory policy change"
+  ],
+  "claim_ceiling": "SOURCE_GROUNDED_SYNTHETIC_REMATERIALIZATION_PLANNER_ONLY"
+}
