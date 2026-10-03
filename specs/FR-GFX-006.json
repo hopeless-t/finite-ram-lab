@@ -1,0 +1,36 @@
+{
+  "schema": "finite-ram-lab.fr-gfx-006/v0.1",
+  "title": "FR-GFX-006 Read-only Procfs Collector",
+  "status": "RUNNABLE_READ_ONLY_COLLECTOR",
+  "parent": "FR-GFX-005",
+  "inputs": [
+    "/proc/meminfo",
+    "/proc/pressure/memory",
+    "/proc/<target_pid>/smaps_rollup",
+    "/proc/<collector_pid>/status"
+  ],
+  "outputs": [
+    "normalized JSONL observations",
+    "collector self-overhead receipt"
+  ],
+  "read_only_contract": {
+    "writes_sysfs": false,
+    "changes_game_settings": false,
+    "changes_driver_settings": false,
+    "injects_target_process": false,
+    "signals_target_process": false,
+    "launches_gpu_telemetry": false,
+    "launches_frame_telemetry": false,
+    "writes_only_requested_output_stream": true
+  },
+  "receipt_fields": [
+    "wall_seconds",
+    "collector_cpu_seconds",
+    "collector_cpu_pct_one_core",
+    "collector_peak_observed_rss_kib",
+    "jsonl_bytes",
+    "bytes_per_sample"
+  ],
+  "boundary": "Hosted-runner measurements validate harness execution only; they are not transferred as live low-end-game overhead.",
+  "claim_ceiling": "RUNNABLE_READ_ONLY_COLLECTOR_HARNESS_ONLY"
+}
