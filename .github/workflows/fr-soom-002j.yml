@@ -42,6 +42,9 @@ jobs:
           assert a["FAST_SSD_TIERED"]["choices"]["ACTIVE_TASK"] == "KEEP"
           assert a["RAM_ONLY"]["semantic_loss"] == 45
           assert a["FAST_SSD_TIERED"]["semantic_loss"] == 12
+          assert a["WRITE_BUDGET_2G"]["semantic_loss"] == 36
+          assert a["WRITE_BUDGET_2G"]["ssd_write_mib"] == 1024
+          assert 1900 < r["analytic_boundaries"]["fast_hybrid_min_p05_write_mib_s_at_1600ms"] < 2000
           assert a["SLOW_SSD_TIERED"]["choices"] == a["RAM_ONLY"]["choices"]
           assert a["EMERGENCY_SHORT_DEADLINE"]["choices"] == a["RAM_ONLY"]["choices"]
           PY
