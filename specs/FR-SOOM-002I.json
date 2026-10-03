@@ -31,7 +31,7 @@
     "RAW_LAST_EVIDENCE": {
       "current_task_loss_count": 1,
       "unnecessary_protection_count": 3,
-      "switch_count": 6,
+      "switch_count": 8,
       "release_delay_to_cooperative_pressure_s": 75
     },
     "DECAY_HYSTERESIS_COOLDOWN": {
