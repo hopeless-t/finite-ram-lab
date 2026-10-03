@@ -1,0 +1,51 @@
+name: FR-GFX-002 Read-only Observation Plane
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-gfx-002-readonly-observation-plane
+    paths:
+      - "src/finite_ram_lab/fr_gfx_observation_plane.py"
+      - "tests/test_fr_gfx_observation_plane.py"
+      - "specs/FR-GFX-002.json"
+      - "docs/FR-GFX-002-READONLY-OBSERVATION-PLANE.md"
+      - ".github/workflows/fr-gfx-002.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_gfx_observation_plane -v
+      - name: Run identifiability panel
+        run: |
+          mkdir -p runs/FR-GFX-002
+          python -m finite_ram_lab.fr_gfx_observation_plane > runs/FR-GFX-002/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-GFX-002/result.json"))
+          assert r["status"] == "PASS"
+          p=r["synthetic_identifiability"]
+          assert p["matched_recall"] is True
+          assert p["fps_only"]["gpu_downscale_false_positive_rate"] > 0.30
+          assert p["multi_signal"]["gpu_downscale_false_positive_rate"] == 0.0
+          assert p["multi_signal"]["action_accuracy"] > 0.94
+          PY
+          sha256sum specs/FR-GFX-002.json
+          sha256sum runs/FR-GFX-002/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-gfx-002-readonly-observation-plane
+          path: runs/FR-GFX-002/result.json
+          if-no-files-found: error
