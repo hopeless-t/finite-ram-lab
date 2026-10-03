@@ -6,12 +6,16 @@ from finite_ram_lab.fr_meta_013_pip_cache import run_panel
 
 
 class PipCacheTests(unittest.TestCase):
-    def test_panel(self) -> None:
+    def test_negative_dogfood_result(self) -> None:
         result = run_panel()
         self.assertEqual(result["status"], "PASS")
-        self.assertEqual(result["decision"], "ENABLE_SETUP_PYTHON_PIP_CACHE")
-        self.assertGreater(result["observed_uncached_median_seconds"], 15.0)
-        self.assertFalse(result["monte_carlo"]["used"])
+        self.assertEqual(
+            result["decision"],
+            "DO_NOT_PROMOTE_PIP_CACHE_FOR_CURRENT_STACKED_PR_FLOW",
+        )
+        self.assertTrue(result["checks"]["implementation_cache_miss_observed"])
+        self.assertTrue(result["checks"]["pr_cache_miss_observed"])
+        self.assertLess(result["measured_speedup_ratio"], 1.10)
 
 
 if __name__ == "__main__":

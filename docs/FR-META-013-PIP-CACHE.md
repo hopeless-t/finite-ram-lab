@@ -1,60 +1,65 @@
-# FR-META-013 — CI pip Cache
+# FR-META-013 — pip Cache Dogfood
 
-Status: **DOGFOOD PERFORMANCE CANDIDATE**
+Status: **NEGATIVE DOGFOOD RESULT / THEORY UPDATED**
 
 Parent: **FR-META-012**
 
-## Fixed-cost biopsy
+## Hypothesis
 
-Recent uncached CI Install spans were approximately:
+Recent dependency-install spans were about 15-20 seconds. The candidate enabled
+the pip cache built into actions/setup-python@v7, keyed by pyproject.toml.
 
-- 19.006 s;
-- 16.256 s;
-- 14.679 s;
-- 16.397 s.
+## First run
 
-Median is above 16 seconds.
+Implementation CI:
 
-The repository installs the analysis extras on every CI run:
+- cache lookup: MISS;
+- Install: about 20.19 s;
+- full CI: PASS;
+- cache saved under the expected setup-python key.
 
-- numpy;
-- scipy;
-- pandas;
-- statsmodels.
+A miss on the first run was expected.
 
-## Candidate
+## Critical follow-up
 
-Use the cache support built into actions/setup-python@v7:
+The PR validation used the same dependency file and reported the same cache key,
+but setup-python again reported:
 
-    cache: pip
-    cache-dependency-path: pyproject.toml
+    pip cache is not found
 
-Official setup-python and GitHub Actions documentation describe this as caching
-pip's global package data keyed by the dependency file.
+Its Install span was about 19.04 s.
 
-The scientific test suite, compiler checks, MC smoke, environment probe, and
-meta qualifier are unchanged.
+The receipt-push CI was correctly cancelled by FR-META-009 concurrency, so the
+surviving PR run is the relevant same-head follow-up specimen.
 
-## Experiment semantics
+## Failure biopsy
 
-The first implementation run may be a cache miss. That is expected.
+Configuration is not evidence of reuse.
 
-It can populate the cache after a successful run.
+In the current stacked-branch / pull-request topology, this dogfood did not
+demonstrate a usable restore path. The job also paid cache-save work at the end.
 
-The meaningful speed observation is a later same-key receipt/PR or descendant
-run:
+Therefore the cache is not promoted as a loop-speed primitive.
 
-- cache restore receipt;
-- Install step wall duration;
-- full CI still PASS.
+The workflow cache lines are removed in v0.2.
 
-No speed claim is made merely because the YAML contains a cache option.
+## Compiled lesson
 
-## Sources
+Before enabling a cache:
 
-- https://github.com/actions/setup-python
-- https://docs.github.com/actions/automating-builds-and-tests/building-and-testing-python
+1. identify the exact producer and consumer ref topology;
+2. prove the consumer can restore the producer's key;
+3. measure the target step rather than assuming a hit;
+4. include save/restore overhead in the cost;
+5. promote only after repeated useful reuse.
+
+## Decision
+
+**DO_NOT_PROMOTE_PIP_CACHE_FOR_CURRENT_STACKED_PR_FLOW**
+
+A future experiment may revisit dependency acceleration using a scope-proven
+cache, a durable shared artifact, or a prebuilt environment/image.
 
 ## Claim ceiling
 
-**CI_DEPENDENCY_CACHE_OPTIMIZATION_ONLY**
+**NEGATIVE_CI_DEPENDENCY_CACHE_RESULT_ONLY**
