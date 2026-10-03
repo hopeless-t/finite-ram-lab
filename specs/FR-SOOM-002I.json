@@ -1,0 +1,55 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002i/v0.1",
+  "status": "FROZEN_SYNTHETIC_EVENT_TIME_DAEMON_SPEC",
+  "source_experiment": "FR-SOOM-002H",
+  "event_model": "Irregular evidence events and pressure episodes on wall-clock seconds. Regime labels exist only for harness scoring.",
+  "confidence_model": {
+    "half_life_s": 60.0,
+    "dependence_evidence_delta": 1.0,
+    "iid_evidence_delta": -1.5,
+    "enter_threshold": 1.6,
+    "exit_threshold": 0.6,
+    "minimum_protective_hold_s": 60.0
+  },
+  "strategies": {
+    "STATIC_COOPERATIVE": "Never enter protective mode.",
+    "STICKY_EVER_DEPENDENCE": "Enter protective mode on the first dependence event and never leave.",
+    "RAW_LAST_EVIDENCE": "The latest evidence event directly selects cooperative or protective mode.",
+    "DECAY_HYSTERESIS_COOLDOWN": "Exponentially decay confidence by wall-clock time, use separate enter/exit thresholds, and enforce a minimum protective hold."
+  },
+  "frozen_reference": {
+    "STATIC_COOPERATIVE": {
+      "current_task_loss_count": 6,
+      "unnecessary_protection_count": 0,
+      "switch_count": 0
+    },
+    "STICKY_EVER_DEPENDENCE": {
+      "current_task_loss_count": 0,
+      "unnecessary_protection_count": 6,
+      "switch_count": 1
+    },
+    "RAW_LAST_EVIDENCE": {
+      "current_task_loss_count": 1,
+      "unnecessary_protection_count": 3,
+      "switch_count": 8,
+      "release_delay_to_cooperative_pressure_s": 75
+    },
+    "DECAY_HYSTERESIS_COOLDOWN": {
+      "current_task_loss_count": 1,
+      "unnecessary_protection_count": 0,
+      "switch_count": 2,
+      "detection_delay_to_protected_pressure_s": 10,
+      "release_delay_to_cooperative_pressure_s": 40,
+      "cooldown_blocked_exit_events": 1
+    }
+  },
+  "primary_finding": "WALL_CLOCK_DECAY_PLUS_HYSTERESIS_CAN_REDUCE_STALE_PROTECTION_AND_CHURN_WITH_BOUNDED_DETECTION_DELAY",
+  "claim_ceiling": "SYNTHETIC_EVENT_TIME_DAEMON_STATE_MACHINE_ONLY",
+  "nonclaims": [
+    "The evidence values and timestamps are synthetic",
+    "The confidence half-life and thresholds are not host recommendations",
+    "The daemon modes do not control a live process",
+    "The harness-only regime labels are unavailable to the controller",
+    "No strategy is claimed globally optimal"
+  ]
+}

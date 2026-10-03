@@ -1,0 +1,55 @@
+name: FR-SOOM-002I Event-Time Daemon
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-soom-002i-event-time-daemon
+    paths:
+      - "src/finite_ram_lab/semantic_oom_event_time_daemon.py"
+      - "specs/FR-SOOM-002I.json"
+      - "tests/test_semantic_oom_event_time_daemon.py"
+      - "docs/FR-SOOM-002I-EVENT-TIME-DAEMON.md"
+      - ".github/workflows/fr-soom-002i.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_semantic_oom_event_time_daemon -v
+      - name: Run event-time daemon panel
+        run: |
+          mkdir -p runs/FR-SOOM-002I
+          python -m finite_ram_lab.semantic_oom_event_time_daemon \
+            > runs/FR-SOOM-002I/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-SOOM-002I/result.json"))
+          assert r["status"] == "PASS"
+          s=r["strategies"]
+          assert s["STATIC_COOPERATIVE"]["current_task_loss_count"] == 6
+          assert s["STICKY_EVER_DEPENDENCE"]["unnecessary_protection_count"] == 6
+          assert s["RAW_LAST_EVIDENCE"]["switch_count"] == 8
+          assert s["DECAY_HYSTERESIS_COOLDOWN"]["current_task_loss_count"] == 1
+          assert s["DECAY_HYSTERESIS_COOLDOWN"]["unnecessary_protection_count"] == 0
+          assert s["DECAY_HYSTERESIS_COOLDOWN"]["switch_count"] == 2
+          assert s["DECAY_HYSTERESIS_COOLDOWN"]["cooldown_blocked_exit_events"] == 1
+          PY
+          sha256sum specs/FR-SOOM-002I.json
+          sha256sum runs/FR-SOOM-002I/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-soom-002i-event-time-daemon
+          path: runs/FR-SOOM-002I/result.json
+          if-no-files-found: error
