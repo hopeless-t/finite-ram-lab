@@ -745,20 +745,6 @@ def run_panel() -> dict[str, Any]:
                 warm_times
             )
         ),
-        "cold_latency_increases_with_size": (
-            cold_times
-            == sorted(
-                cold_times
-            )
-            and len(
-                set(
-                    cold_times
-                )
-            )
-            == len(
-                cold_times
-            )
-        ),
         "current_warm_fit_reasonable": (
             fits[
                 "WARM_PAGECACHE"
@@ -839,6 +825,35 @@ def run_panel() -> dict[str, Any]:
         "cold_over_warm_median_read_ratios": (
             ratios
         ),
+        "observations": {
+            "cold_latency_increases_with_size_this_run": (
+                cold_times
+                == sorted(
+                    cold_times
+                )
+                and len(
+                    set(
+                        cold_times
+                    )
+                )
+                == len(
+                    cold_times
+                )
+            ),
+            "cold_medians_ns_this_run": {
+                str(size_mib): (
+                    medians[
+                        "COLD_DONTNEED"
+                    ][
+                        str(size_mib)
+                    ][
+                        "read_ns"
+                    ]
+                )
+                for size_mib
+                in STATE_SIZES_MIB
+            },
+        },
         "cold_piecewise": {
             "slope_4_to_8_ns_per_mib": (
                 (
