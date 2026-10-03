@@ -1,0 +1,30 @@
+{
+  "schema": "finite-ram-lab.fr-meta-015/v0.1",
+  "title": "Skill-routed ABA common stochastic tape reuse",
+  "status": "DOGFOOD_PERFORMANCE_CANDIDATE",
+  "parent": "FR-META-014",
+  "decision_skill": {
+    "facts": {
+      "deterministic_duplicate_work": true,
+      "scientific_contract_unchanged": true,
+      "runtime_is_measurement": false
+    },
+    "expected_action": "REUSE_EXACT_COMPUTATION",
+    "monte_carlo": "SKIP"
+  },
+  "scientific_parameters_unchanged": {
+    "episodes": 8192,
+    "observer_arms": 3,
+    "frames_per_segment": 120
+  },
+  "compute_graph": {
+    "baseline_b_stochastic_tape_passes": 24576,
+    "candidate_b_stochastic_tape_passes": 8192,
+    "b_tape_reduction_fraction": 0.6666666666666666,
+    "baseline_segment_loops_per_episode": 5,
+    "candidate_segment_loops_per_episode": 3,
+    "segment_loop_reduction_fraction": 0.4
+  },
+  "semantic_gate": "all existing frozen ABA values remain exactly unchanged",
+  "claim_ceiling": "SKILL_ROUTED_EXACT_TEST_HARNESS_OPTIMIZATION_ONLY"
+}
