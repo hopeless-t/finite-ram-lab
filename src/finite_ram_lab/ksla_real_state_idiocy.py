@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from functools import lru_cache
 from statistics import mean
 
 
@@ -32,7 +33,10 @@ def _h(text: str) -> int:
     )
 
 
-def _episode(ep: int):
+@lru_cache(maxsize=None)
+def _episode_template(
+    ep: int,
+) -> tuple[tuple[int, ...], tuple[int, ...]]:
     coords = list(range(N))
     coords.sort(
         key=lambda i: _h(
@@ -69,8 +73,15 @@ def _episode(ep: int):
         )
     )
 
-    return target, permutation
+    return tuple(target), tuple(permutation)
 
+
+def _episode(ep: int):
+    target, permutation = _episode_template(ep)
+
+    # Preserve the original per-policy mutable-list contract while sharing only
+    # the expensive deterministic hash/sort template.
+    return list(target), list(permutation)
 
 def _idiot_action(
     ep: int,
