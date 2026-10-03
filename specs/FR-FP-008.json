@@ -1,0 +1,10 @@
+{
+  "schema": "finite-ram-lab.fr-fp-008/v0.1",
+  "title": "Reclaimability coverage x timing interaction frontier",
+  "status": "SYNTHETIC_INTERACTION_CANDIDATE",
+  "parent": "FR-FP-007",
+  "quality_scales": [1.0,0.4,0.3,0.25,0.2,0.18,0.17,0.16],
+  "safe_shift_steps": [0,2,4,6,8,10],
+  "quality_scale_semantics": "synthetic uniform scaling of endpoint error and residual; not a physical model claim",
+  "claim_ceiling": "SYNTHETIC_COVERAGE_TIMING_INTERACTION_ONLY"
+}
