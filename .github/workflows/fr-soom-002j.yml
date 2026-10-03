@@ -44,7 +44,11 @@ jobs:
           assert a["FAST_SSD_TIERED"]["semantic_loss"] == 12
           assert a["WRITE_BUDGET_2G"]["semantic_loss"] == 36
           assert a["WRITE_BUDGET_2G"]["ssd_write_mib"] == 1024
-          assert 1900 < r["analytic_boundaries"]["fast_hybrid_min_p05_write_mib_s_at_1600ms"] < 2000
+          bounds = r["analytic_boundaries"]
+          assert 650 < bounds["prefix_ssd_mix_min_p05_write_mib_s_at_1600ms"] < 660
+          assert 1900 < bounds["fast_hybrid_min_p05_write_mib_s_at_1600ms"] < 2000
+          assert 2500 < bounds["high_bw_spill_min_p05_write_mib_s_at_1600ms"] < 2600
+          assert a["HIGH_BW_SSD_TIERED"]["semantic_loss"] == 7
           assert a["SLOW_SSD_TIERED"]["choices"] == a["RAM_ONLY"]["choices"]
           assert a["EMERGENCY_SHORT_DEADLINE"]["choices"] == a["RAM_ONLY"]["choices"]
           p = r["phase_map"]
