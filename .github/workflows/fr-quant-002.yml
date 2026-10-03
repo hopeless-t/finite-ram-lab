@@ -1,0 +1,49 @@
+name: FR-QUANT-002 State Typed Quantization
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-quant-002-state-typed-quantization
+    paths:
+      - "src/finite_ram_lab/fr_state_typed_quantization.py"
+      - "tests/test_fr_state_typed_quantization.py"
+      - "specs/FR-QUANT-002.json"
+      - "docs/FR-QUANT-002-STATE-TYPED-QUANTIZATION.md"
+      - ".github/workflows/fr-quant-002.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_state_typed_quantization -v
+      - name: Run accounting panel
+        run: |
+          mkdir -p runs/FR-QUANT-002
+          python -m finite_ram_lab.fr_state_typed_quantization > runs/FR-QUANT-002/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-QUANT-002/result.json"))
+          assert r["status"] == "PASS"
+          assert r["group_metadata_effective_bits"]["q4_g32_scale16_zero16"] == 5.0
+          assert r["kv_geometry"]["fp16_mib"] == 4096.0
+          assert r["kv_geometry"]["effective_2_5bit_mib"] == 640.0
+          PY
+          sha256sum specs/FR-QUANT-002.json
+          sha256sum runs/FR-QUANT-002/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-quant-002-state-typed-quantization
+          path: runs/FR-QUANT-002/result.json
+          if-no-files-found: error
