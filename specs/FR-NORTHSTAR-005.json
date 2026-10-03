@@ -1,0 +1,37 @@
+{
+  "schema": "finite-ram-lab.fr-northstar-005/v0.1",
+  "title": "FR-NORTHSTAR-005 Close Transfer/Staging Gap",
+  "status": "FROZEN_HOSTED_PROXY_LOOP_CLOSURE",
+  "parent": "FR-XFER-001",
+  "provenance": {
+    "before": "FR-NORTHSTAR-004 classified TRANSFER_STAGING_PRESSURE as CAPABILITY_GAP",
+    "experiment": "FR-XFER-001 physically measured source/direct/staged/shared-view PSS geometry"
+  },
+  "registered_primitives": [
+    "DIRECT_TRANSFER_NO_STAGING",
+    "ZERO_COPY_SHARED_VIEW"
+  ],
+  "effect_model_fixture": {
+    "current_resident_mib": 560,
+    "budget_mib": 600,
+    "source_pss_kib": 32772,
+    "direct_pss_kib": 65544,
+    "staged_pss_kib": 98316,
+    "shared_view_pss_kib": 32772
+  },
+  "frozen_lifecycle": {
+    "before": "CAPABILITY_GAP",
+    "after_registry": "MODEL_GAP",
+    "after_effect_model": "FRONTIER_REACHED"
+  },
+  "frozen_peaks_mib": {
+    "STAGED_COPY": 624.0078125,
+    "DIRECT_TRANSFER_NO_STAGING": 592.00390625,
+    "ZERO_COPY_SHARED_VIEW": 560
+  },
+  "governance": {
+    "live_promotion_allowed": false,
+    "live_actions_executed": 0
+  },
+  "claim_ceiling": "HOSTED_PROXY_NORTH_STAR_LOOP_CLOSURE_ONLY"
+}
