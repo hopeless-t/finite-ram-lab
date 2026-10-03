@@ -1,0 +1,20 @@
+{
+  "schema": "finite-ram-lab.fr-fp-017/v0.1",
+  "title": "Fixed-size cold restore tail and temporal trace",
+  "status": "HOSTED_PHYSICAL_TAIL_TRACE_CANDIDATE",
+  "parent": "FR-FP-016",
+  "state_mib": 8,
+  "paired_blocks": 32,
+  "deadline_ms": [5,10,25,50,100,200],
+  "metrics": [
+    "p50/p90/p95/max",
+    "coefficient of variation",
+    "p95/p50",
+    "log-latency lag-1 correlation",
+    "deadline miss rate",
+    "longest consecutive miss run",
+    "paired cold/warm ratio",
+    "prior-run median regime distance"
+  ],
+  "claim_ceiling": "HOSTED_LINUX_FIXED_8MIB_RESTORE_TAIL_TRACE_ONLY"
+}
