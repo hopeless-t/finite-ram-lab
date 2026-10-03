@@ -1,0 +1,49 @@
+name: KSLA-BENCH-001 World Claim Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/ksla-bench-001-world-claim-gate
+    paths:
+      - "src/finite_ram_lab/ksla_world_claim_gate.py"
+      - "tests/test_ksla_world_claim_gate.py"
+      - "specs/KSLA-BENCH-001.json"
+      - "docs/KSLA-BENCH-001-WORLD-CLAIM-GATE.md"
+      - ".github/workflows/ksla-bench-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install analysis dependencies
+        run: python -m pip install -e ".[analysis]"
+      - name: Tests
+        run: python -m unittest tests.test_ksla_world_claim_gate -v
+      - name: Benchmark
+        run: |
+          mkdir -p runs/KSLA-BENCH-001
+          python -m finite_ram_lab.ksla_world_claim_gate > runs/KSLA-BENCH-001/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/KSLA-BENCH-001/result.json"))
+          assert r["status"] == "PASS"
+          assert r["world_claim_gate"]["standard_sparse_spd_world_best"] is False
+          assert r["world_claim_gate"]["standard_sparse_spd_verdict"] == "NOT_SUPPORTED"
+          assert r["world_claim_gate"]["exact_solution_all_sizes"] is True
+          PY
+          sha256sum specs/KSLA-BENCH-001.json
+          sha256sum runs/KSLA-BENCH-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ksla-bench-001-world-claim-gate
+          path: runs/KSLA-BENCH-001/result.json
+          if-no-files-found: error

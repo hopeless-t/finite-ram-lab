@@ -1,0 +1,26 @@
+{
+  "schema": "finite-ram-lab.ksla-bench-001/v0.1",
+  "title": "KSLA World Claim Gate",
+  "purpose": "Try to falsify a world-best claim before searching for a constrained Pareto frontier.",
+  "sizes": [
+    64,
+    256,
+    1024,
+    4096
+  ],
+  "matrix": "tridiagonal SPD diag=6 offdiag=-1",
+  "baselines": [
+    "SciPy CG",
+    "SciPy sparse direct",
+    "KSLA batch8"
+  ],
+  "metrics": [
+    "median wall time",
+    "residual/error",
+    "proposal count",
+    "local touch proxy"
+  ],
+  "pass_semantics": "Benchmark execution passes even when the world-best hypothesis is rejected.",
+  "required_verdict": "NOT_SUPPORTED for standard sparse-SPD world-best speed claim",
+  "claim_ceiling": "HOSTED_RUNNER_BENCHMARK_GATE_ONLY"
+}
