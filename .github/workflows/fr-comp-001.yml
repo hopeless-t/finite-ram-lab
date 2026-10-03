@@ -38,7 +38,8 @@ jobs:
           assert r["status"] == "PASS"
           q=r["qualification"]
           assert q["zero_max_ratio"] < 0.01
-          assert q["repeated_max_ratio"] < 0.05
+          assert q["repeated_min_ratio"] < 0.01
+          assert q["repeated_codec_spread"] > 0.05
           assert q["random_min_ratio"] > 0.98
           PY
           sha256sum specs/FR-COMP-001.json
