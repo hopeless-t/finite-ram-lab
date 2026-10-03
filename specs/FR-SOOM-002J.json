@@ -45,6 +45,12 @@
       "ssd_enabled": true,
       "deadline_ms": 150,
       "ssd_p05_write_mib_s": 2500
+    },
+    "WRITE_BUDGET_2G": {
+      "ssd_enabled": true,
+      "deadline_ms": 1600,
+      "ssd_p05_write_mib_s": 2500,
+      "max_ssd_write_mib": 2048
     }
   },
   "frozen_reference": {
@@ -70,6 +76,18 @@
       },
       "semantic_loss": 12,
       "ssd_write_mib": 3072
+    },
+    "WRITE_BUDGET_2G": {
+      "choices": {
+        "KV": "Q4",
+        "PREFIX": "SSD",
+        "AUX_EXPERTS": "KEEP",
+        "BROWSER_CACHE": "DROP",
+        "BACKGROUND_JOB": "KEEP",
+        "ACTIVE_TASK": "KEEP"
+      },
+      "semantic_loss": 36,
+      "ssd_write_mib": 1024
     }
   },
   "primary_finding": "SSD_IS_USEFUL_AS_A_SEMANTIC_TIER_ONLY_WHEN_ITS_TAIL_BANDWIDTH_AND_DEADLINE_CONSTRAINTS_QUALIFY",
@@ -80,5 +98,10 @@
     "No SSD endurance guarantee is inferred",
     "No quality-preservation guarantee is inferred from synthetic semantic costs",
     "The model does not claim SSD is always preferable to RAM compression"
-  ]
+  ],
+  "analytic_boundaries": {
+    "fast_hybrid_min_p05_write_mib_s_at_1600ms_formula": "ssd_write_mib / ((deadline_ms - non_ssd_apply_ms) / 1000)",
+    "fast_hybrid_reference_mib_s": 1939.3939393939395,
+    "fast_hybrid_min_write_budget_mib": 3072
+  }
 }
