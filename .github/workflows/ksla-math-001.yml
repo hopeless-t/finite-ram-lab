@@ -1,0 +1,51 @@
+name: KSLA-MATH-001 Swarm Width Model
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/ksla-math-001-swarm-width-model
+    paths:
+      - "src/finite_ram_lab/ksla_swarm_math.py"
+      - "tests/test_ksla_swarm_math.py"
+      - "specs/KSLA-MATH-001.json"
+      - "docs/KSLA-MATH-001-SWARM-WIDTH-MODEL.md"
+      - ".github/workflows/ksla-math-001.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_ksla_swarm_math -v
+      - name: Run analytical panel
+        run: |
+          mkdir -p runs/KSLA-MATH-001
+          python -m finite_ram_lab.ksla_swarm_math \
+            > runs/KSLA-MATH-001/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/KSLA-MATH-001/result.json"))
+          assert r["status"] == "PASS"
+          assert r["toy_order_statistics"]["marginal_gain_nonincreasing"] is True
+          assert r["toy_order_statistics"]["best_efficiency_batch"] == 12
+          assert [x["optimal_batch"] for x in r["ksla002_empirical_cost_envelope"]["optimal_intervals"]] == [8,16,32,64,128]
+          assert r["ksla002_empirical_cost_envelope"]["dominated_batches"] == [1,4]
+          PY
+          sha256sum specs/KSLA-MATH-001.json
+          sha256sum runs/KSLA-MATH-001/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ksla-math-001-swarm-width-model
+          path: runs/KSLA-MATH-001/result.json
+          if-no-files-found: error
