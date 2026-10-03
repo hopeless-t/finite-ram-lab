@@ -1,0 +1,29 @@
+{
+  "schema": "finite-ram-lab.fr-meta-002/v0.1",
+  "title": "Research Method Telemetry Observation Plane",
+  "status": "SYNTHETIC_OBSERVATION_SCHEMA",
+  "parent": "FR-META-001",
+  "purpose": "Replace synthetic recursive-research cost models with future observed distributions without collecting private reasoning content.",
+  "frozen_operational_references": {
+    "external_call_budget": 6,
+    "progress_update_call_budget": 3,
+    "rehydrate_file_budget": 5
+  },
+  "missing_data_semantics": "UNKNOWN; never coerce missing telemetry to zero",
+  "allowed_sources": [
+    "repository commits and handoffs",
+    "explicit tool-call counts",
+    "workflow and run receipts",
+    "explicit experiment budgets and results",
+    "explicit stop reasons",
+    "frontier-gap values already durable in repository artifacts"
+  ],
+  "forbidden_sources": [
+    "private chain-of-thought",
+    "hidden reasoning tokens",
+    "invented values for unavailable telemetry"
+  ],
+  "monte_carlo_policy": "Synthetic sensitivity may challenge a threshold but cannot change an operational policy without real dogfood evidence and a new Council.",
+  "authority": "observation_only",
+  "claim_ceiling": "SYNTHETIC_METHOD_TELEMETRY_SCHEMA_AND_ALERT_LOGIC_ONLY"
+}

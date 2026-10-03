@@ -1,0 +1,49 @@
+name: FR-META-002 Method Telemetry
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-meta-002-method-telemetry
+    paths:
+      - "src/finite_ram_lab/fr_method_telemetry.py"
+      - "tests/test_fr_method_telemetry.py"
+      - "specs/FR-META-002.json"
+      - "docs/FR-META-002-METHOD-TELEMETRY.md"
+      - ".github/workflows/fr-meta-002.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Unit tests
+        run: python -m unittest tests.test_fr_method_telemetry -v
+      - name: Run telemetry panel
+        run: |
+          mkdir -p runs/FR-META-002
+          python -m finite_ram_lab.fr_method_telemetry > runs/FR-META-002/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-META-002/result.json"))
+          assert r["status"] == "PASS"
+          assert all(r["invariants"].values())
+          assert r["call_budget_sensitivity"]["current_policy_threshold"] == 6
+          assert r["call_budget_sensitivity"]["decision"] == "NO_THRESHOLD_CHANGE_FROM_SYNTHETIC_ONLY"
+          PY
+          sha256sum specs/FR-META-002.json
+          sha256sum runs/FR-META-002/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-meta-002-method-telemetry
+          path: runs/FR-META-002/result.json
+          if-no-files-found: error
