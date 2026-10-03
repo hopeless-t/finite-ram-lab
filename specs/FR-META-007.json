@@ -1,0 +1,13 @@
+{
+  "schema": "finite-ram-lab.fr-meta-007/v0.3",
+  "title": "Speculative Detached Successor",
+  "status": "DOGFOOD_PROTOCOL_CANDIDATE",
+  "parent": "FR-META-006",
+  "max_speculative_depth": 1,
+  "build_surface": "unreferenced Git objects used as a prepared delta",
+  "publication_gate": "parent qualification receipt frozen",
+  "publication_rule": "materialize prepared child delta onto the frozen parent receipt tree, create a new final child commit, then publish the ref",
+  "direct_publish_of_pre_receipt_detached_sha": false,
+  "fail_or_unknown_behavior": "no branch ref; no workflow; no authority",
+  "claim_ceiling": "SPECULATIVE_DETACHED_BUILD_PROTOCOL_ONLY"
+}
