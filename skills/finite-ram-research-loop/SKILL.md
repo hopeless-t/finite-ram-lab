@@ -42,3 +42,24 @@ Pre-receipt build-ahead is ephemeral; durable Git materialization begins only
 after the parent receipt is frozen.
 
 Retiring a skill evicts it from resident context but never deletes its evidence.
+
+
+## Qualified analytic shortcut
+
+FR-FP-009 compiled one synthetic semantic-OOM decision into a qualified
+analytic shortcut.
+
+Use SEMANTIC_OOM_SURVIVAL_LAW only when every trigger fact is explicit:
+
+- one hot state arrives per step;
+- transfer is always-preemptive;
+- at most one new transfer is initiated per step;
+- transfer lead is a fixed integer;
+- no transfer failures are present;
+- safe reclaimability collapses retained hot history to one state.
+
+Then the action is USE_ANALYTIC_SURVIVAL_LAW and Monte Carlo may be skipped for
+that frozen decision surface.
+
+If any trigger is missing or false, do not stretch the law. Fall back to
+simulation / experiment.
