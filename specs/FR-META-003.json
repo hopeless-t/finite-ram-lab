@@ -1,0 +1,17 @@
+{
+  "schema": "finite-ram-lab.fr-meta-003/v0.1",
+  "title": "Append-only Research Method Evidence Recorder",
+  "status": "DOGFOOD_INFRASTRUCTURE",
+  "parent": "FR-META-002",
+  "storage_model": "one canonical JSON event per file, exclusive creation, deterministic encoding",
+  "write_semantics": {
+    "overwrite_existing_event": false,
+    "exclusive_create": true,
+    "event_id_path_escape": false,
+    "missing_values": "preserve as null/UNKNOWN"
+  },
+  "aggregation": "reuse FR-META-002 coverage-aware aggregation",
+  "data_boundary": "explicit durable operational metadata only; no private reasoning content",
+  "authority": "record_and_analyze_only",
+  "claim_ceiling": "APPEND_ONLY_METHOD_EVIDENCE_INFRASTRUCTURE_ONLY"
+}
