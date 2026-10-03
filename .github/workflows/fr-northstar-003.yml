@@ -1,0 +1,52 @@
+name: FR-NORTHSTAR-003 Causal Shadow Compiler
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-northstar-003-causal-shadow-compiler
+    paths:
+      - "src/finite_ram_lab/fr_shadow_compiler.py"
+      - "tests/test_fr_shadow_compiler.py"
+      - "specs/FR-NORTHSTAR-003.json"
+      - "docs/FR-NORTHSTAR-003-CAUSAL-SHADOW-COMPILER.md"
+      - ".github/workflows/fr-northstar-003.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_fr_shadow_compiler -v
+      - name: Run causal compiler panel
+        run: |
+          mkdir -p runs/FR-NORTHSTAR-003
+          python -m finite_ram_lab.fr_shadow_compiler > runs/FR-NORTHSTAR-003/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/FR-NORTHSTAR-003/result.json"))
+          assert r["status"] == "PASS"
+          s=r["summary"]
+          assert s["causal_future_evidence_uses"] == 0
+          assert s["leaky_future_evidence_uses"] == 1
+          assert s["causal_qualified_at_budget"] == 5
+          assert s["leaky_qualified_at_budget"] == 6
+          assert r["governance"]["live_actions_executed"] == 0
+          PY
+          sha256sum specs/FR-NORTHSTAR-003.json
+          sha256sum runs/FR-NORTHSTAR-003/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-northstar-003-causal-shadow-compiler
+          path: runs/FR-NORTHSTAR-003/result.json
+          if-no-files-found: error
