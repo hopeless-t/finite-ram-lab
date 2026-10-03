@@ -12,11 +12,14 @@ from finite_ram_lab.fr_recursive_research import (
 
 
 class RecursiveResearchTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.panel = run_panel()
+
     def test_panel_passes(self) -> None:
-        result = run_panel()
-        self.assertEqual(result["status"], "PASS")
-        self.assertTrue(result["promotion_gate"]["pass"])
-        self.assertTrue(result["council"]["converged"])
+        self.assertEqual(self.panel["status"], "PASS")
+        self.assertTrue(self.panel["promotion_gate"]["pass"])
+        self.assertTrue(self.panel["council"]["converged"])
 
     def test_mixed_policy_preserves_capability_holdout(self) -> None:
         baseline = evaluate_protocol(
@@ -46,10 +49,9 @@ class RecursiveResearchTests(unittest.TestCase):
         violations = invariant_violations("RISKY_FAST")
         self.assertIn("EXPERIMENT_WITHOUT_COUNCIL", violations)
         self.assertIn("MISSING_EVIDENCE_TREATED_AS_ZERO", violations)
-        result = run_panel()
-        self.assertFalse(result["meta_meta"]["risky_promotable"])
-        self.assertGreaterEqual(result["meta_meta"]["candidate_win_rate"], 0.90)
-        self.assertGreater(result["meta_meta"]["min_utility_delta"], 0.0)
+        self.assertFalse(self.panel["meta_meta"]["risky_promotable"])
+        self.assertGreaterEqual(self.panel["meta_meta"]["candidate_win_rate"], 0.90)
+        self.assertGreater(self.panel["meta_meta"]["min_utility_delta"], 0.0)
 
 
 if __name__ == "__main__":
