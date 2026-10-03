@@ -1,0 +1,127 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002j/v0.1",
+  "status": "FROZEN_SYNTHETIC_TIERED_RESIDENCY_SPEC",
+  "source_experiments": [
+    "FR-SOOM-002I",
+    "STRATA-001"
+  ],
+  "relief_target_mib": 4096,
+  "tiers": [
+    "RAM_FULL",
+    "RAM_QUANTIZED",
+    "SSD",
+    "DROP",
+    "PROCESS_EXIT"
+  ],
+  "objective": {
+    "description": "Minimize semantic loss plus expected refault latency, CVaR95 refault latency, and SSD write pressure.",
+    "expected_restore_ms_weight": 0.01,
+    "cvar95_restore_ms_weight": 0.02,
+    "ssd_write_mib_weight": 0.001
+  },
+  "hard_constraints": [
+    "required RAM relief must be reached",
+    "SSD migration must complete by the pressure deadline at p05 write bandwidth",
+    "SSD bytes written must stay within the per-event write budget",
+    "only one representation may be selected for each semantic region"
+  ],
+  "arms": {
+    "RAM_ONLY": {
+      "ssd_enabled": false,
+      "deadline_ms": 1600,
+      "ssd_p05_write_mib_s": 2500
+    },
+    "FAST_SSD_TIERED": {
+      "ssd_enabled": true,
+      "deadline_ms": 1600,
+      "ssd_p05_write_mib_s": 2500
+    },
+    "SLOW_SSD_TIERED": {
+      "ssd_enabled": true,
+      "deadline_ms": 800,
+      "ssd_p05_write_mib_s": 1000
+    },
+    "EMERGENCY_SHORT_DEADLINE": {
+      "ssd_enabled": true,
+      "deadline_ms": 150,
+      "ssd_p05_write_mib_s": 2500
+    },
+    "WRITE_BUDGET_2G": {
+      "ssd_enabled": true,
+      "deadline_ms": 1600,
+      "ssd_p05_write_mib_s": 2500,
+      "max_ssd_write_mib": 2048
+    },
+    "HIGH_BW_SSD_TIERED": {
+      "ssd_enabled": true,
+      "deadline_ms": 1600,
+      "ssd_p05_write_mib_s": 3500,
+      "max_ssd_write_mib": 4096
+    }
+  },
+  "frozen_reference": {
+    "RAM_ONLY": {
+      "choices": {
+        "KV": "Q4",
+        "PREFIX": "DROP",
+        "AUX_EXPERTS": "KEEP",
+        "BROWSER_CACHE": "DROP",
+        "BACKGROUND_JOB": "KEEP",
+        "ACTIVE_TASK": "KEEP"
+      },
+      "semantic_loss": 45
+    },
+    "FAST_SSD_TIERED": {
+      "choices": {
+        "KV": "Q8",
+        "PREFIX": "KEEP",
+        "AUX_EXPERTS": "SSD",
+        "BROWSER_CACHE": "KEEP",
+        "BACKGROUND_JOB": "KEEP",
+        "ACTIVE_TASK": "KEEP"
+      },
+      "semantic_loss": 12,
+      "ssd_write_mib": 3072
+    },
+    "WRITE_BUDGET_2G": {
+      "choices": {
+        "KV": "Q4",
+        "PREFIX": "SSD",
+        "AUX_EXPERTS": "KEEP",
+        "BROWSER_CACHE": "DROP",
+        "BACKGROUND_JOB": "KEEP",
+        "ACTIVE_TASK": "KEEP"
+      },
+      "semantic_loss": 36,
+      "ssd_write_mib": 1024
+    },
+    "HIGH_BW_SSD_TIERED": {
+      "choices": {
+        "KV": "KEEP",
+        "PREFIX": "SSD",
+        "AUX_EXPERTS": "SSD",
+        "BROWSER_CACHE": "KEEP",
+        "BACKGROUND_JOB": "KEEP",
+        "ACTIVE_TASK": "KEEP"
+      },
+      "semantic_loss": 7,
+      "ssd_write_mib": 4096
+    }
+  },
+  "primary_finding": "SSD_IS_USEFUL_AS_A_SEMANTIC_TIER_ONLY_WHEN_ITS_TAIL_BANDWIDTH_AND_DEADLINE_CONSTRAINTS_QUALIFY",
+  "claim_ceiling": "SYNTHETIC_TIERED_RESIDENCY_SHADOW_PLANNER_ONLY",
+  "nonclaims": [
+    "Synthetic bandwidth and latency values are not host recommendations",
+    "No live process is signaled or killed",
+    "No SSD endurance guarantee is inferred",
+    "No quality-preservation guarantee is inferred from synthetic semantic costs",
+    "The model does not claim SSD is always preferable to RAM compression"
+  ],
+  "analytic_boundaries": {
+    "fast_hybrid_min_p05_write_mib_s_at_1600ms_formula": "ssd_write_mib / ((deadline_ms - non_ssd_apply_ms) / 1000)",
+    "fast_hybrid_reference_mib_s": 1939.3939393939395,
+    "fast_hybrid_min_write_budget_mib": 3072,
+    "prefix_ssd_mix_reference_mib_s": 653.4779834077856,
+    "high_bw_spill_reference_mib_s": 2571.249215317012
+  }
+}
