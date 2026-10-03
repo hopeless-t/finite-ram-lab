@@ -1,0 +1,52 @@
+name: KSLA-003 Real State Bounded Idiocy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/ksla-003-real-state-bounded-idiocy
+    paths:
+      - "src/finite_ram_lab/ksla_real_state_idiocy.py"
+      - "tests/test_ksla_real_state_idiocy.py"
+      - "specs/KSLA-003.json"
+      - "docs/KSLA-003-REAL-STATE-BOUNDED-IDIOCY.md"
+      - ".github/workflows/ksla-003.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Tests
+        run: python -m unittest tests.test_ksla_real_state_idiocy -v
+      - name: Run 512 matched episodes
+        run: |
+          mkdir -p runs/KSLA-003
+          python -m finite_ram_lab.ksla_real_state_idiocy > runs/KSLA-003/result.json
+          python - <<'PY'
+          import json
+          r=json.load(open("runs/KSLA-003/result.json"))
+          assert r["status"] == "PASS"
+          s=r["policy_summary"]
+          assert s["STALL_ADAPTIVE"]["success_count"] == 512
+          assert s["STALL_ADAPTIVE"]["mean_work_cost"] < s["EXPERT_HEAVY"]["mean_work_cost"]
+          assert s["STALL_ADAPTIVE"]["peak_resident_coordinates"] == 8
+          assert s["EXPERT_HEAVY"]["peak_resident_coordinates"] == 16
+          assert s["IDIOT_ONLY"]["success_count"] == 384
+          PY
+          sha256sum specs/KSLA-003.json
+          sha256sum runs/KSLA-003/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ksla-003-real-state-bounded-idiocy
+          path: runs/KSLA-003/result.json
+          if-no-files-found: error
