@@ -587,6 +587,15 @@ def run_experiment() -> dict:
         for codec in CODECS
     )
 
+    repeated_min = min(
+        aggregate[
+            "REPEATED_BLOCK"
+        ][codec][
+            "mean_compression_ratio"
+        ]
+        for codec in CODECS
+    )
+
     repeated_max = max(
         aggregate[
             "REPEATED_BLOCK"
@@ -594,6 +603,11 @@ def run_experiment() -> dict:
             "mean_compression_ratio"
         ]
         for codec in CODECS
+    )
+
+    repeated_spread = (
+        repeated_max
+        - repeated_min
     )
 
     low_entropy_min = min(
@@ -629,10 +643,16 @@ def run_experiment() -> dict:
             f"{zero_max}"
         )
 
-    if repeated_max >= 0.05:
+    if repeated_min >= 0.01:
         raise RuntimeError(
-            "repeated_not_highly_compressible:"
-            f"{repeated_max}"
+            "repeated_best_codec_not_effective:"
+            f"{repeated_min}"
+        )
+
+    if repeated_spread <= 0.05:
+        raise RuntimeError(
+            "repeated_codec_interaction_too_small:"
+            f"{repeated_spread}"
         )
 
     if not (
@@ -734,8 +754,14 @@ def run_experiment() -> dict:
             "zero_max_ratio": (
                 zero_max
             ),
+            "repeated_min_ratio": (
+                repeated_min
+            ),
             "repeated_max_ratio": (
                 repeated_max
+            ),
+            "repeated_codec_spread": (
+                repeated_spread
             ),
             "low_entropy_min_ratio": (
                 low_entropy_min
@@ -749,6 +775,7 @@ def run_experiment() -> dict:
         },
         "primary_findings": [
             "COMPRESSIBILITY_IS_A_PROPERTY_OF_STATE_NOT_A_CONSTANT_TIER_MULTIPLIER",
+            "COMPRESSIBILITY_IS_A_STATE_BY_CODEC_INTERACTION_NOT_STATE_ALONE",
             "INCOMPRESSIBLE_STATE_CAN_CONSUME_MORE_BYTES_AFTER_CODEC_METADATA",
             "CODEC_SELECTION_IS_A_RATIO_CPU_DECODE_MEMORY_TRADEOFF",
             "COLD_STATE_CAN_RATIONALLY_USE_A_DIFFERENT_CODEC_THAN_HOT_STATE",
