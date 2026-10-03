@@ -1,0 +1,17 @@
+{
+  "schema": "finite-ram-lab.fr-fp-004/v0.1",
+  "title": "Predictive residency feasibility phase diagram",
+  "status": "SYNTHETIC_PHASE_MAP_CANDIDATE",
+  "parent": "FR-FP-003",
+  "episodes": 1000,
+  "transfer_leads": [1, 2, 3, 4],
+  "hot_budgets": [4, 6, 8, 10],
+  "prediction_margins": [-1, 0, 1, 2, 3, 4],
+  "phases": [
+    "DEADLINE_INFEASIBLE",
+    "NO_ZERO_OOM_PREDICTIVE_CANDIDATE",
+    "PREDICTION_HAS_NO_MATERIAL_IO_ADVANTAGE",
+    "PREDICTION_SAVES_IO"
+  ],
+  "claim_ceiling": "SYNTHETIC_PREDICTIVE_RESIDENCY_PHASE_BOUNDARY_ONLY"
+}
