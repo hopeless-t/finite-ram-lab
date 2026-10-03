@@ -119,6 +119,39 @@ CVaR95 restore latency: 260 ms.
 
 The selected plan is deliberately hybrid: RAM-side quantization and SSD offload are both used.
 
+### Analytic SSD bandwidth knee
+
+For the selected FAST_SSD_TIERED plan:
+
+- SSD bytes = 3072 MiB;
+- non-SSD apply time = 16 ms;
+- deadline = 1600 ms.
+
+Therefore the minimum qualifying p05 write bandwidth is:
+
+B_min = 3072 / ((1600 - 16) / 1000)
+      = 1939.3939 MiB/s.
+
+The synthetic 2500 MiB/s arm is above the knee. A 1000 MiB/s device is below it.
+
+This gives a concrete pressure-dependent boundary rather than a global rule that SSD is either "fast" or "slow".
+
+### WRITE_BUDGET_2G
+
+The per-event SSD write budget is tightened to 2048 MiB.
+
+The 3072-MiB AUX_EXPERTS spill becomes infeasible.
+
+The optimizer changes plan rather than disabling SSD entirely:
+
+- KV -> Q4
+- PREFIX -> SSD
+- BROWSER_CACHE -> DROP
+- SSD write = 1024 MiB
+- synthetic semantic loss = 36
+
+This is intentionally between the unrestricted tiered arm (loss 12) and RAM-only arm (loss 45). It models endurance / write-amplification pressure as another hard resource constraint.
+
 ### SLOW_SSD_TIERED
 
 Synthetic p05 SSD bandwidth: 1000 MiB/s.
