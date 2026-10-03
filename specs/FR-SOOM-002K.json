@@ -1,0 +1,116 @@
+{
+  "schema": "finite-ram-lab.fr-soom-002k/v0.1",
+  "status": "SOURCE_GROUNDED_PLUS_SYNTHETIC_SHADOW",
+  "verified_date": "2026-10-03",
+  "source_experiment": "FR-SOOM-002J",
+  "source_inspiration": {
+    "name": "Linux Steal Governor",
+    "series": "v14",
+    "article": "https://gihyo.jp/article/2026/10/daily-linux-261001",
+    "cover_letter": "https://lists.openwall.net/linux-kernel/2026/09/28/341",
+    "driver_doc_patch": "https://lists.openwall.net/linux-kernel/2026/09/28/351",
+    "policy_loop_patch": "https://lists.openwall.net/linux-kernel/2026/09/28/358"
+  },
+  "steal_governor_atoms": {
+    "signal": "aggregate guest steal-time ratio",
+    "default_interval_ms": 1000,
+    "default_low_threshold_percent": 2.0,
+    "default_high_threshold_percent": 5.0,
+    "deadband": "low < steal <= high means no actuator change",
+    "actuator": "preferred CPU mask",
+    "actuator_semantics": "soft scheduler preference rather than CPU offline",
+    "actuator_step": "one_core",
+    "smt_semantics": "change sibling CPUs as a core unit",
+    "minimum_preferred": "one_core",
+    "preferred_subset_of_active": true,
+    "failure_recovery": "restore preferred CPUs to active and stop loop if invariants break",
+    "communication": "no direct cross-guest communication",
+    "cooperation": "best when participating VMs independently honor the same contention hint",
+    "scope": "guest virtualization; FAIR scheduling path in the current series",
+    "telemetry_dependency": "policy quality depends on accurate steal-time reporting",
+    "workload_dependency": "benefit targets secondary preemption costs; independent CPU work may regress",
+    "numa_limitation": "no NUMA splicing in the current simple policy"
+  },
+  "transfer_principle": "Transfer the feedback architecture, not Linux Steal Governor's literal thresholds.",
+  "fr_soom_mapping": {
+    "steal_time": "memory pressure / stall / thrash observables",
+    "preferred_cpu_mask": "preferred active work set",
+    "one_core_step": "bounded one-unit concurrency change",
+    "protected_core": "minimum foreground progress floor",
+    "deadband": "hysteresis between fold and unfold thresholds",
+    "restore_on_disable": "bounded restoration to declared maximum work set",
+    "cross_guest_cooperation": "independent applications can self-throttle without direct coordination",
+    "secondary_preemption_cost": "reclaim/refault/swap/synchronization amplification beyond raw bytes"
+  },
+  "candidate_observable_vector": [
+    "memory PSI some/full",
+    "cgroup memory.events high/max/oom",
+    "major-fault rate and latency",
+    "refault rate",
+    "pgscan/pgsteal and reclaim latency",
+    "swap-in latency",
+    "zram compression throughput/latency",
+    "SSD queue and migration latency",
+    "task-specific useful forward progress"
+  ],
+  "fr_soom_action_ladder": [
+    "OBSERVE",
+    "DEMAND_FOLD",
+    "REPRESENTATION_DOWNSHIFT",
+    "SSD_TIER_OR_DROP",
+    "BACKGROUND_EXIT",
+    "ACTIVE_TASK_KILL",
+    "KERNEL_OOM_FALLBACK"
+  ],
+  "demand_fold_candidates": [
+    "worker concurrency",
+    "in-flight request count",
+    "batch width",
+    "prefetch depth",
+    "speculative work",
+    "background parallelism",
+    "model/expert parallel lanes"
+  ],
+  "controller_objective": {
+    "primary": "maximize useful forward progress under finite-resource pressure",
+    "not_objective": "minimize pressure or maximize free RAM by itself",
+    "conceptual_form": "maximize F - lambda_stall*stall - lambda_semantic*loss - lambda_churn*control_churn - lambda_deadline*deadline_violations"
+  },
+  "marginal_condition": "Fold when the marginal forward-progress gain of another active work unit is smaller than the marginal contention/stall tax; pressure is only a proxy for this unobserved counterfactual.",
+  "synthetic_shadow": {
+    "max_concurrency": 8,
+    "min_concurrency": 1,
+    "controller": {
+      "high_threshold": 0.50,
+      "low_threshold": 0.20,
+      "step": 1
+    },
+    "single_threshold_reference": 0.35,
+    "expected_invariants": [
+      "hysteresis outprogresses fixed FULL in the frozen synthetic trace",
+      "hysteresis reduces pressure > 0.60 samples",
+      "hysteresis causes less control chatter than the single-threshold reference",
+      "at least one work unit is retained",
+      "no live host control is implied"
+    ]
+  },
+  "next_physical_sequence": [
+    "read-only host trace collection",
+    "identify task-specific useful-progress metric",
+    "map pressure/concurrency surface and pressure knee",
+    "shadow replay with no action",
+    "opt-in application-local folding only",
+    "paired reference/treatment physical experiment",
+    "rare-event injection for stale or false pressure signals",
+    "only then consider coupling to FR-SOOM-002J semantic residency actions"
+  ],
+  "nonclaims": [
+    "Linux Steal Governor thresholds are not copied as memory thresholds",
+    "the synthetic pressure scalar is not a host-ready pressure score",
+    "the synthetic progress gain is not a real-machine performance claim",
+    "memory PSI alone does not prove that folding will improve progress",
+    "no process is signaled, killed, migrated, or throttled on a live host",
+    "no kernel modification is proposed by this experiment"
+  ],
+  "claim_ceiling": "SOURCE_GROUNDED_STEAL_GOVERNOR_TRANSFER_PLUS_SYNTHETIC_DEMAND_FOLDING_SHADOW_ONLY"
+}
