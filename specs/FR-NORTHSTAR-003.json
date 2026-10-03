@@ -1,0 +1,41 @@
+{
+  "schema": "finite-ram-lab.fr-northstar-003/v0.1",
+  "title": "FR-NORTHSTAR-003 Causal Shadow Compiler",
+  "status": "FROZEN_SYNTHETIC_CAUSAL_COMPILER",
+  "parent": "FR-NORTHSTAR-002",
+  "budget_mib": 600,
+  "evidence_max_age_ns": 100,
+  "core_effect_models": [
+    "QUANTIZE_STATE",
+    "SHARE_IMMUTABLE_MMAP",
+    "PAGED_ALLOCATE",
+    "REMATERIALIZE_STATE",
+    "RECLAIM_CLEAN_FILE_CACHE",
+    "COMPRESS_STATE"
+  ],
+  "governance": {
+    "shadow_only": true,
+    "live_actions_executed": 0,
+    "missing_evidence": "FAIL_CLOSED",
+    "stale_evidence": "FAIL_CLOSED",
+    "future_evidence": "FORBIDDEN",
+    "unknown_effect_model": "NOT_SCHEDULABLE"
+  },
+  "adversarial_fixture": {
+    "workload": "MULTIWORKER_LLM",
+    "target_timestamp_ns": 1000,
+    "past_evidence_timestamp_ns": 950,
+    "future_evidence_timestamp_ns": 1010,
+    "future_fact": "DUPLICATION_HEAVY / SHARE eligibility"
+  },
+  "frozen_summary": {
+    "causal_qualified_at_600_mib": 5,
+    "leaky_nearest_neighbor_qualified_at_600_mib": 6,
+    "causal_future_evidence_uses": 0,
+    "leaky_future_evidence_uses": 1,
+    "causal_multiworker_ram_mib": 681.5,
+    "leaky_multiworker_ram_mib": 369.9,
+    "stale_evidence_status": "INSUFFICIENT_EVIDENCE"
+  },
+  "claim_ceiling": "SYNTHETIC_CAUSAL_SHADOW_COMPILER_ONLY"
+}
