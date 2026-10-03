@@ -119,12 +119,7 @@ def _expert_action(
                 delta < 0
                 and (
                     best is None
-                    or (
-                        delta,
-                        coordinate,
-                        step,
-                    )
-                    < best
+                    or delta < best[0]
                 )
             ):
                 best = (
