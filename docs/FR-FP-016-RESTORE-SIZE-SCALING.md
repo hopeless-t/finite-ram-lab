@@ -102,3 +102,19 @@ If it does, the next experiment will locate and explain the knee.
 If it does not, the first run is treated as host variance.
 
 Raw block-level read timings are emitted for biopsy.
+
+
+## v0.3 replication conclusion
+
+The specific 16 MiB COLD knee did not replicate.
+
+Two independent hosted runs both reject a single stable COLD bandwidth model,
+but the location and magnitude of the slowdown change substantially.
+
+WARM remains comparatively regular and approximately linear.
+
+COLD restore is therefore treated as a latency distribution with possible
+temporal structure.
+
+The next experiment fixes state size and increases repeated observations rather
+than adding more sizes.

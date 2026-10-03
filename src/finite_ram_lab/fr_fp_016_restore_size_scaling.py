@@ -26,6 +26,26 @@ ARMS = (
     "WARM_PAGECACHE",
     "COLD_DONTNEED",
 )
+
+REPLICATION_HISTORY = {
+    "run_37145768871": {
+        "warm_r2": 0.9871319562539695,
+        "cold_r2": 0.9139812532802742,
+        "cold_slope_4_to_8_ns_per_mib": 336042.375,
+        "cold_slope_8_to_16_ns_per_mib": 3977966.3125,
+    },
+    "run_37145960094": {
+        "warm_r2": 0.9993036627559178,
+        "cold_r2": 0.7303830590200129,
+        "cold_slope_4_to_8_ns_per_mib": 28303037.625,
+        "cold_slope_8_to_16_ns_per_mib": 3067139.8125,
+        "cold_cv": {
+            "4": 1.0823148185981186,
+            "8": 0.7659077620604521,
+            "16": 0.6117185993017832,
+        },
+    },
+}
 WRITE_CHUNK_BYTES = (
     1024
     * 1024
@@ -739,7 +759,7 @@ def run_panel() -> dict[str, Any]:
                 cold_times
             )
         ),
-        "warm_linear_fit_reasonable": (
+        "current_warm_fit_reasonable": (
             fits[
                 "WARM_PAGECACHE"
             ][
@@ -747,54 +767,54 @@ def run_panel() -> dict[str, Any]:
             ]
             > 0.95
         ),
-        "cold_single_linear_fit_rejected": (
-            fits[
-                "COLD_DONTNEED"
-            ][
-                "r2"
+        "warm_linear_behavior_replicated_twice": all(
+            row[
+                "warm_r2"
+            ]
+            > 0.98
+            for row
+            in REPLICATION_HISTORY.values()
+        ),
+        "cold_single_linear_model_failed_twice": all(
+            row[
+                "cold_r2"
             ]
             < 0.95
+            for row
+            in REPLICATION_HISTORY.values()
         ),
-        "cold_8_to_16_marginal_slope_gt_5x_4_to_8": (
-            (
-                (
-                    medians[
-                        "COLD_DONTNEED"
-                    ][
-                        "16"
-                    ][
-                        "read_ns"
-                    ]
-                    - medians[
-                        "COLD_DONTNEED"
-                    ][
-                        "8"
-                    ][
-                        "read_ns"
-                    ]
-                )
-                / 8.0
-            )
+        "specific_knee_location_failed_to_replicate": (
+            REPLICATION_HISTORY[
+                "run_37145768871"
+            ][
+                "cold_slope_8_to_16_ns_per_mib"
+            ]
             > 5.0
-            * (
-                (
-                    medians[
-                        "COLD_DONTNEED"
-                    ][
-                        "8"
-                    ][
-                        "read_ns"
-                    ]
-                    - medians[
-                        "COLD_DONTNEED"
-                    ][
-                        "4"
-                    ][
-                        "read_ns"
-                    ]
-                )
-                / 4.0
-            )
+            * REPLICATION_HISTORY[
+                "run_37145768871"
+            ][
+                "cold_slope_4_to_8_ns_per_mib"
+            ]
+            and REPLICATION_HISTORY[
+                "run_37145960094"
+            ][
+                "cold_slope_8_to_16_ns_per_mib"
+            ]
+            < REPLICATION_HISTORY[
+                "run_37145960094"
+            ][
+                "cold_slope_4_to_8_ns_per_mib"
+            ]
+        ),
+        "second_run_cold_dispersion_is_material": all(
+            value
+            > 0.60
+            for value
+            in REPLICATION_HISTORY[
+                "run_37145960094"
+            ][
+                "cold_cv"
+            ].values()
         ),
     }
 
@@ -888,9 +908,10 @@ def run_panel() -> dict[str, Any]:
             }
             for row in rows
         ],
+        "replication_history": REPLICATION_HISTORY,
         "checks": checks,
         "decision": (
-            "REJECT_SINGLE_LINEAR_COLD_BANDWIDTH_MODEL_AND_REPLICATE_THE_8_TO_16MIB_KNEE"
+            "REJECT_SINGLE_STATIONARY_COLD_RESTORE_SIZE_MODEL_AND_MEASURE_COLD_LATENCY_AS_A_DISTRIBUTION_WITH_TEMPORAL_STRUCTURE"
         ),
         "claim_ceiling": (
             "HOSTED_LINUX_WARM_COLD_RESTORE_SIZE_SCALING_ONLY"

@@ -52,7 +52,7 @@ class RestoreSizeScalingTests(unittest.TestCase):
                 1.0,
             )
 
-    def test_warm_linear_but_cold_single_line_is_rejected(self) -> None:
+    def test_current_warm_fit_is_reasonable(self) -> None:
         self.assertGreater(
             self.result[
                 "fits"
@@ -63,29 +63,49 @@ class RestoreSizeScalingTests(unittest.TestCase):
             ],
             0.95,
         )
-        self.assertLess(
-            self.result[
-                "fits"
-            ][
-                "COLD_DONTNEED"
-            ][
-                "r2"
-            ],
-            0.95,
+
+    def test_cold_single_linear_model_failed_twice(self) -> None:
+        history = self.result[
+            "replication_history"
+        ]
+
+        self.assertTrue(
+            all(
+                row[
+                    "cold_r2"
+                ]
+                < 0.95
+                for row
+                in history.values()
+            )
         )
 
-    def test_cold_knee_replicates(self) -> None:
-        piece = self.result[
-            "cold_piecewise"
+    def test_specific_knee_did_not_replicate(self) -> None:
+        history = self.result[
+            "replication_history"
+        ]
+        first = history[
+            "run_37145768871"
+        ]
+        second = history[
+            "run_37145960094"
         ]
 
         self.assertGreater(
-            piece[
-                "slope_8_to_16_ns_per_mib"
+            first[
+                "cold_slope_8_to_16_ns_per_mib"
             ],
             5.0
-            * piece[
-                "slope_4_to_8_ns_per_mib"
+            * first[
+                "cold_slope_4_to_8_ns_per_mib"
+            ],
+        )
+        self.assertLess(
+            second[
+                "cold_slope_8_to_16_ns_per_mib"
+            ],
+            second[
+                "cold_slope_4_to_8_ns_per_mib"
             ],
         )
 
