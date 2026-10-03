@@ -1,0 +1,64 @@
+{
+  "schema": "finite-ram-lab.ksla-math-001/v0.1",
+  "title": "KSLA-MATH-001 Swarm Width and Action-Family Model",
+  "status": "FROZEN_ANALYTIC_MODEL",
+  "parent": "KSLA-002",
+  "model": {
+    "potential": "V(s)>=0",
+    "improvement": "Y=max(0,V(s)-V(T(s,A)))",
+    "batch_progress": "G_b=max(Y_1,...,Y_b)",
+    "expected_progress": "E[G_b]=integral(1-F_s(y)^b)dy",
+    "marginal_gain": "Delta_b=integral(F_s(y)^b*(1-F_s(y)))dy",
+    "accept_probability": "1-(1-p_s)^b",
+    "heterogeneous_progress": "integral(1-product_a F_a,s(y)^b_a)dy",
+    "cost": "C_s(b)=c_fixed+b*c_validate+c_apply*P(G_b>0)+c_queue(b)+resource prices",
+    "dynamic_objective": "J(s)=min_bvec C(s,bvec)+E[J(next_state)]"
+  },
+  "ksla002_cost_objective": "proposals + lambda_round * rounds",
+  "frozen_cost_frontier": [
+    {
+      "batch": 8,
+      "lambda_lower": "0",
+      "lambda_upper": "1272/73"
+    },
+    {
+      "batch": 16,
+      "lambda_lower": "1272/73",
+      "lambda_upper": "2208/47"
+    },
+    {
+      "batch": 32,
+      "lambda_lower": "2208/47",
+      "lambda_upper": "400/3"
+    },
+    {
+      "batch": 64,
+      "lambda_lower": "400/3",
+      "lambda_upper": "5696/33"
+    },
+    {
+      "batch": 128,
+      "lambda_lower": "5696/33",
+      "lambda_upper": null
+    }
+  ],
+  "dominated_ksla002_batches": [
+    1,
+    4
+  ],
+  "experimental_correction": {
+    "issue": "batch-specific random domains confound unmatched swarm-width comparisons",
+    "next_protocol": "common random proposal tape; width b receives prefix proposals [0,b)",
+    "frozen_random_identity": "seed + round_id + proposal_index + action_family + distribution parameters"
+  },
+  "optimizer_hierarchy": [
+    "analytic/order-statistic scan for stationary low-dimensional batch width",
+    "cost-aware marginal allocation for multiple known action families",
+    "dynamic programming or approximate MDP for state-dependent known dynamics",
+    "contextual/cost-aware bandit only when action-family value is unknown or drifting",
+    "Monte Carlo for distribution estimation, matched-policy evaluation, and rare-tail validation",
+    "importance sampling for sufficiently rare harmful tails",
+    "Bayesian optimization for expensive black-box outer hyperparameters"
+  ],
+  "claim_ceiling": "ANALYTIC_AND_SYNTHETIC_SWARM_WIDTH_MODEL_ONLY"
+}
