@@ -1,0 +1,73 @@
+{
+  "schema": "finite-ram-lab.fr-gfx-003/v0.1",
+  "title": "FR-GFX-003 Observation Signal Ablation",
+  "status": "FROZEN_SYNTHETIC_SIGNAL_ABLATION_SPEC",
+  "parent": "FR-GFX-002",
+  "episodes": 16384,
+  "cost_semantics": "abstract acquisition units; not measured instrumentation overhead",
+  "signal_sets": {
+    "FRAME": {
+      "cost": 1
+    },
+    "FRAME_MEM": {
+      "cost": 1.2
+    },
+    "FRAME_GPU": {
+      "cost": 1.8
+    },
+    "FRAME_CPU": {
+      "cost": 1.2
+    },
+    "FRAME_GPU_MEM": {
+      "cost": 2
+    },
+    "FULL": {
+      "cost": 2.2
+    }
+  },
+  "frozen_results": {
+    "FRAME": {
+      "accuracy": 0.71197509765625,
+      "gpu_recall": 0.9284548422198041,
+      "gpu_fpr": 0.32522820270695624
+    },
+    "FRAME_MEM": {
+      "accuracy": 0.88385009765625,
+      "gpu_recall": 0.9284548422198041,
+      "gpu_fpr": 0.10363550519357885
+    },
+    "FRAME_GPU": {
+      "accuracy": 0.69696044921875,
+      "gpu_recall": 0.8615342763873776,
+      "gpu_fpr": 0.023371104815864022
+    },
+    "FRAME_CPU": {
+      "accuracy": 0.7923583984375,
+      "gpu_recall": 0.9284548422198041,
+      "gpu_fpr": 0.2215926975133774
+    },
+    "FRAME_GPU_MEM": {
+      "accuracy": 0.86883544921875,
+      "gpu_recall": 0.8615342763873776,
+      "gpu_fpr": 0
+    },
+    "FULL": {
+      "accuracy": 0.94921875,
+      "gpu_recall": 0.8615342763873776,
+      "gpu_fpr": 0
+    }
+  },
+  "selection_rules": {
+    "minimum_safe": {
+      "accuracy_floor": 0.85,
+      "gpu_fpr_ceiling": 0.01,
+      "expected": "FRAME_GPU_MEM"
+    },
+    "minimum_high_accuracy": {
+      "accuracy_floor": 0.9,
+      "gpu_fpr_ceiling": 0.01,
+      "expected": "FULL"
+    }
+  },
+  "claim_ceiling": "SYNTHETIC_SIGNAL_ABLATION_ONLY"
+}
