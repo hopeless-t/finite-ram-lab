@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-048/v0.1",
+  "title": "Hosted physical variable-size directional migration cost calibration",
+  "status": "HOSTED_PHYSICAL_MIGRATION_CALIBRATION_CANDIDATE",
+  "parent": "FR-FP-047",
+  "state_sizes_mib": [4,6,8,10,12,14,16],
+  "repeats_per_size": 3,
+  "model_comparison": ["CONSTANT_PER_ACTION","AFFINE_BYTES"],
+  "validation": "leave-one-size-out",
+  "claim_ceiling": "HOSTED_PHYSICAL_DIRECTIONAL_MIGRATION_COST_ON_SEVEN_STATE_SIZES_AND_THREE_REPEATS_ONLY"
+}
