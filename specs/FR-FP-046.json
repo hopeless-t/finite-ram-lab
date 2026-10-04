@@ -1,0 +1,10 @@
+{
+  "schema": "finite-ram-lab.fr-fp-046/v0.1",
+  "title": "Variable-size mandatory-guarded WARM budget knapsack",
+  "status": "VARIABLE_SIZE_SHADOW_CANDIDATE",
+  "parent": "FR-FP-045",
+  "state_sizes_mib": [4,6,8,10,12,14,16,8,8,12],
+  "budgets_mib": [24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,98],
+  "new_physical_runs": 0,
+  "claim_ceiling": "SYNTHETIC_VARIABLE_SIZE_ALLOCATION_USING_FP034_VALUES_AND_ONE_FROZEN_SIZE_VECTOR_ONLY"
+}
