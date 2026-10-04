@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-042/v0.1",
+  "title": "Cross-validated migration-cost hysteresis",
+  "status": "REUSED_HOSTED_PHYSICAL_HYSTERESIS_CANDIDATE",
+  "parent": "FR-FP-041",
+  "cost_calibration_run": 37205520749,
+  "cost_validation_run": 37210203932,
+  "phase_horizon_rounds": 20,
+  "new_physical_runs": 0,
+  "claim_ceiling": "CROSS_VALIDATED_COST_MODEL_AND_HYSTERESIS_ON_FP037_038_039_EQUAL_SIZE_FIXED_CAPACITY_EVIDENCE_ONLY"
+}
