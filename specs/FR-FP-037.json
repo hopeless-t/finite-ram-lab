@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-037/v0.1",
+  "title": "Hosted physical dynamic WARM budget actuation",
+  "status": "HOSTED_PHYSICAL_DYNAMIC_BUDGET_CANDIDATE",
+  "parent": "FR-FP-036",
+  "state_count": 10,
+  "state_mib": 8,
+  "capacity_schedule_slots": [5,3,7,4,6],
+  "infeasible_test_slots": 2,
+  "claim_ceiling": "HOSTED_PHYSICAL_DYNAMIC_CAPACITY_ACTUATION_ON_ONE_TEN_STATE_EQUAL_SIZE_FIXTURE_ONLY"
+}
