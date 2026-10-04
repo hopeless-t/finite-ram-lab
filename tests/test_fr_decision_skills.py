@@ -285,6 +285,34 @@ class DecisionSkillCompilerTests(unittest.TestCase):
             "NO_COMPILED_DECISION",
         )
 
+    def test_structural_model_refit_is_pruned_when_scaled_path_is_unchanged(self) -> None:
+        result = compile_decision_context(
+            {
+                "migration_model_refit_question": True,
+                "structural_migration_model_qualified": True,
+                "current_run_direction_scaling_holdout_improves": True,
+                "scaled_optimal_path_changed": False,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+        )
+
+    def test_structural_model_refit_is_retained_when_scaled_path_changes(self) -> None:
+        result = compile_decision_context(
+            {
+                "migration_model_refit_question": True,
+                "structural_migration_model_qualified": True,
+                "current_run_direction_scaling_holdout_improves": True,
+                "scaled_optimal_path_changed": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+
     def test_horizon_measurement_stops_when_information_value_is_too_small(self) -> None:
         result = compile_decision_context(
             {
