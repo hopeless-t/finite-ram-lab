@@ -1,0 +1,18 @@
+{
+  "schema": "finite-ram-lab.fr-fp-025/v0.1",
+  "title": "Risk-aware WARM/COLD tier decision frontier",
+  "status": "REUSED_EVIDENCE_DECISION_FRONTIER_CANDIDATE",
+  "parent": "FR-FP-024",
+  "new_physical_runs": 0,
+  "state_mib": 8,
+  "inputs": [
+    "current baseline b",
+    "residual prior R",
+    "warm restore prior W",
+    "reuse probability p",
+    "memory shadow price lambda",
+    "deadline D",
+    "miss tolerance epsilon"
+  ],
+  "claim_ceiling": "EMPIRICAL_FRONTIER_FROM_REUSED_8MIB_HOSTED_RESTORE_EVIDENCE_ONLY"
+}
