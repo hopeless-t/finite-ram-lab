@@ -37,6 +37,8 @@ UNSUPPORTED_TYPED_PARETO_PATHS = (
     "P1",
 )
 
+SCORE_TIE_TOLERANCE_MS = 1e-9
+
 
 def _load() -> dict[str, Any]:
     return json.loads(
@@ -81,15 +83,36 @@ def direct_select(
             "memory_rent_must_be_nonnegative"
         )
 
-    return min(
-        rows,
-        key=lambda row: (
+    scored = [
+        (
             _score(
                 row,
                 memory_rent=(
                     memory_rent
                 ),
             ),
+            row,
+        )
+        for row in rows
+    ]
+    minimum = min(
+        score
+        for score, _row
+        in scored
+    )
+    tied = [
+        row
+        for score, row
+        in scored
+        if abs(
+            score - minimum
+        )
+        <= SCORE_TIE_TOLERANCE_MS
+    ]
+
+    return min(
+        tied,
+        key=lambda row: (
             float(
                 row[
                     "resident_mib_round"
