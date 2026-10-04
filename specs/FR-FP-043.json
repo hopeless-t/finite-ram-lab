@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-043/v0.1",
+  "title": "Hosted physical migration hysteresis",
+  "status": "HOSTED_PHYSICAL_HYSTERESIS_CANDIDATE",
+  "parent": "FR-FP-042",
+  "validity_horizon_rounds": 100,
+  "state_count": 10,
+  "state_mib": 8,
+  "warm_slots": 5,
+  "claim_ceiling": "HOSTED_PHYSICAL_HYSTERESIS_ON_ONE_FIVE_PHASE_EQUAL_SIZE_FIXED_CAPACITY_H100_FIXTURE_ONLY"
+}
