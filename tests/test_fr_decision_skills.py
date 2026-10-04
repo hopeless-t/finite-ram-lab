@@ -204,7 +204,7 @@ class DecisionSkillCompilerTests(unittest.TestCase):
         )
         self.assertEqual(
             result["primary_action"],
-            "SKIP_REUSE_EVIDENCE_AND_DRIFT_MONITORING",
+            "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
         )
 
     def test_decision_relevant_reuse_evidence_is_retained(self) -> None:
@@ -217,6 +217,46 @@ class DecisionSkillCompilerTests(unittest.TestCase):
         self.assertEqual(
             result["primary_action"],
             "NO_COMPILED_DECISION",
+        )
+
+    def test_decision_irrelevant_second_probe_is_pruned(self) -> None:
+        result = compile_decision_context(
+            {
+                "cold_calibration_second_probe_question": True,
+                "risk_surface_qualified": True,
+                "baseline_estimator_two_probe_min": True,
+                "first_probe_reuse_ceiling_one": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+        )
+
+    def test_second_probe_is_retained_when_first_ceiling_is_not_one(self) -> None:
+        result = compile_decision_context(
+            {
+                "cold_calibration_second_probe_question": True,
+                "risk_surface_qualified": True,
+                "baseline_estimator_two_probe_min": True,
+                "first_probe_reuse_ceiling_one": False,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+
+    def test_normalized_cross_plane_pruning_capsule(self) -> None:
+        result = compile_decision_context(
+            {
+                "decision_irrelevance_proven": True,
+                "skip_preserves_admissible_decision": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
         )
 
     def test_catalog_compression(self) -> None:
