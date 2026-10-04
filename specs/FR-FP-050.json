@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-050/v0.1",
+  "title": "Hosted physical validation of joint third placements",
+  "status": "HOSTED_PHYSICAL_JOINT_PLACEMENT_CANDIDATE",
+  "parent": "FR-FP-049",
+  "contexts": [
+    "GROWTH_56_TO_72_H50",
+    "SHRINK_92_TO_44_H20"
+  ],
+  "claim_ceiling": "HOSTED_PHYSICAL_VALIDATION_OF_TWO_FP049_THIRD_PLACEMENT_CONTEXTS_ONLY"
+}
