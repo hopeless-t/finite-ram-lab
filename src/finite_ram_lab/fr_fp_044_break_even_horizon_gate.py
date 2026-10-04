@@ -69,13 +69,22 @@ def _context(
         candidate_warm
         == current_warm
     ):
-        break_even = math.inf
+        break_even = None
+        break_even_reason = (
+            "NO_PLACEMENT_CHANGE"
+        )
     elif benefit_per_round <= 0.0:
-        break_even = math.inf
+        break_even = None
+        break_even_reason = (
+            "NO_POSITIVE_SERVICE_BENEFIT"
+        )
     else:
         break_even = (
             migration["predicted_ms"]
             / benefit_per_round
+        )
+        break_even_reason = (
+            "FINITE_THRESHOLD"
         )
 
     return {
@@ -101,6 +110,9 @@ def _context(
         ),
         "break_even_horizon_rounds": (
             break_even
+        ),
+        "break_even_reason": (
+            break_even_reason
         ),
         "current_deadline_risk": (
             deadline_risk
