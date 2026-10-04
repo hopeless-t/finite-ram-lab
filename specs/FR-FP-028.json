@@ -1,0 +1,15 @@
+{
+  "schema": "finite-ram-lab.fr-fp-028/v0.1",
+  "title": "Reuse evidence staleness and naive rolling-window negative result",
+  "status": "SYNTHETIC_DRIFT_NEGATIVE_RESULT_CANDIDATE",
+  "parent": "FR-FP-027",
+  "confidence": 0.95,
+  "reuse_ceiling": 0.10,
+  "pre_reuse_probability": 0.02,
+  "post_reuse_probabilities": [0.15, 0.25, 0.50],
+  "pre_observations": 60,
+  "post_observations": 60,
+  "rolling_window": 35,
+  "replicates": 5000,
+  "claim_ceiling": "SYNTHETIC_BERNOULLI_DRIFT_INJECTION_FOR_ONE_10PCT_REUSE_CEILING_ONLY"
+}
