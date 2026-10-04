@@ -1,0 +1,15 @@
+{
+  "schema": "finite-ram-lab.fr-fp-024/v0.1",
+  "title": "Post-training unique-head validation of residual restore priors",
+  "status": "POST_TRAINING_VALIDATION_CANDIDATE",
+  "parent": "FR-FP-023",
+  "training_runs": 15,
+  "validation_unique_head_runs": 8,
+  "state_mib": 8,
+  "models": [
+    "ONE_PROBE_FIRST_X_RESIDUAL_PRIOR",
+    "TWO_PROBE_MIN_X_RESIDUAL_PRIOR"
+  ],
+  "new_physical_runs_scheduled": 0,
+  "claim_ceiling": "EIGHT_POST_TRAINING_UNIQUE_HEAD_GITHUB_HOSTED_CI_RUNS_ONLY"
+}
