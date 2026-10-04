@@ -1,0 +1,10 @@
+{
+  "schema": "finite-ram-lab.fr-fp-047/v0.1",
+  "title": "Hosted physical variable-size exact byte-budget allocation",
+  "status": "HOSTED_PHYSICAL_VARIABLE_SIZE_CANDIDATE",
+  "parent": "FR-FP-046",
+  "state_sizes_mib": [4,6,8,10,12,14,16,8,8,12],
+  "budget_schedule_mib": [28,40,56,72,92,44],
+  "infeasible_budget_mib": 24,
+  "claim_ceiling": "HOSTED_PHYSICAL_VARIABLE_SIZE_ALLOCATION_ON_ONE_TEN_STATE_SIZE_VECTOR_AND_BUDGET_SCHEDULE_ONLY"
+}
