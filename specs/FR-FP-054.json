@@ -1,0 +1,9 @@
+{
+  "schema": "finite-ram-lab.fr-fp-054/v0.1",
+  "title": "Endogenous resident usage under hard cap with byte-time rent",
+  "status": "SYNTHETIC_RESIDENT_RENT_FRONTIER_CANDIDATE",
+  "parent": "FR-FP-053",
+  "memory_rent_grid_ms_per_mib_round": [0.0,0.025,0.05,0.075,0.1,0.125,0.15,0.175,0.2,0.25,0.3,0.4],
+  "new_physical_runs": 0,
+  "claim_ceiling": "SYNTHETIC_RESIDENT_RENT_FRONTIER_ON_FP051_PHASES_WITH_FP053_CURRENT_RUN_MIGRATION_SCALES_ONLY"
+}
