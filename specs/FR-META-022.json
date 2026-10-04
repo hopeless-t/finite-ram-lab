@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-meta-022/v0.1",
+  "title": "Physical placement adapter for cross-plane decision-relevance pruning",
+  "status": "CROSS_PLANE_PHYSICAL_ADAPTER_CANDIDATE",
+  "parent": "FR-META-021",
+  "evidence_prs": [151,152,154,160,161],
+  "skill": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+  "skill_count_growth": 0,
+  "resident_budget_fraction_max": 0.30,
+  "claim_ceiling": "CROSS_PLANE_DECISION_RELEVANCE_PRUNING_FOR_REUSE_MONITORING_CALIBRATION_AND_PHYSICAL_PLACEMENT_ONLY"
+}
