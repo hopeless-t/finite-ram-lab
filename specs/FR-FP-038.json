@@ -1,0 +1,15 @@
+{
+  "schema": "finite-ram-lab.fr-fp-038/v0.1",
+  "title": "Online reuse-value reallocation under finite WARM capacity",
+  "status": "SYNTHETIC_ONLINE_VALUE_REALLOCATION_CANDIDATE",
+  "parent": "FR-FP-037",
+  "state_count": 10,
+  "state_mib": 8,
+  "warm_slots": 5,
+  "phase_count": 5,
+  "observations_added_per_phase_per_state": 20,
+  "confidence": 0.95,
+  "deadline_ms": 25,
+  "miss_tolerance": 0.05,
+  "claim_ceiling": "SYNTHETIC_FIVE_PHASE_ONLINE_REUSE_EVIDENCE_REALLOCATION_ON_ONE_TEN_STATE_EQUAL_SIZE_FIXTURE_ONLY"
+}
