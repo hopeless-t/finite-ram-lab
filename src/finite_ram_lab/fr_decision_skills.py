@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "finite-ram-lab.fr-meta-020-decision-skills/v0.5"
+SCHEMA = "finite-ram-lab.fr-meta-021-decision-skills/v0.6"
 SOURCE_HISTORY_CHARACTERS = 17417
 
 INVARIANTS = (
@@ -204,19 +204,19 @@ SKILLS = (
         ],
     },
     {
-        "id": "PRUNE_IRRELEVANT_REUSE_EVIDENCE",
+        "id": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
         "priority": 94,
         "when": {
-            "risk_surface_qualified": True,
-            "reuse_can_change_tier_decision": False,
+            "decision_irrelevance_proven": True,
+            "skip_preserves_admissible_decision": True,
         },
-        "action": "SKIP_REUSE_EVIDENCE_AND_DRIFT_MONITORING",
+        "action": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
         "mc": "SKIP",
-        "evidence_prs": [151, 152],
+        "evidence_prs": [151, 152, 154],
         "maturity": "QUALIFIED",
         "invalidate_on": [
-            "reuse_becomes_decision_relevant",
-            "risk_surface_invalidated",
+            "decision_relevance_changes",
+            "skip_safety_contract_invalidated",
         ],
     },
     {
@@ -324,10 +324,65 @@ def catalog_stats() -> dict[str, Any]:
     }
 
 
+def _derive_decision_relevance_facts(
+    facts: dict[str, Any],
+) -> dict[str, Any]:
+    derived = dict(facts)
+
+    if (
+        facts.get("risk_surface_qualified")
+        is True
+        and facts.get(
+            "reuse_can_change_tier_decision"
+        )
+        is False
+    ):
+        derived.setdefault(
+            "decision_irrelevance_proven",
+            True,
+        )
+        derived.setdefault(
+            "skip_preserves_admissible_decision",
+            True,
+        )
+
+    if (
+        facts.get(
+            "cold_calibration_second_probe_question"
+        )
+        is True
+        and facts.get(
+            "risk_surface_qualified"
+        )
+        is True
+        and facts.get(
+            "baseline_estimator_two_probe_min"
+        )
+        is True
+        and facts.get(
+            "first_probe_reuse_ceiling_one"
+        )
+        is True
+    ):
+        derived.setdefault(
+            "decision_irrelevance_proven",
+            True,
+        )
+        derived.setdefault(
+            "skip_preserves_admissible_decision",
+            True,
+        )
+
+    return derived
+
+
 def compile_decision_context(
     facts: dict[str, Any],
 ) -> dict[str, Any]:
     validate_skills()
+    facts = _derive_decision_relevance_facts(
+        facts
+    )
     selected = []
     unresolved: set[str] = set()
 
@@ -493,6 +548,28 @@ def run_panel() -> dict[str, Any]:
             "reuse_can_change_tier_decision": True,
         }
     )
+    calibration_probe_irrelevant = compile_decision_context(
+        {
+            "cold_calibration_second_probe_question": True,
+            "risk_surface_qualified": True,
+            "baseline_estimator_two_probe_min": True,
+            "first_probe_reuse_ceiling_one": True,
+        }
+    )
+    calibration_probe_relevant = compile_decision_context(
+        {
+            "cold_calibration_second_probe_question": True,
+            "risk_surface_qualified": True,
+            "baseline_estimator_two_probe_min": True,
+            "first_probe_reuse_ceiling_one": False,
+        }
+    )
+    generic_irrelevant = compile_decision_context(
+        {
+            "decision_irrelevance_proven": True,
+            "skip_preserves_admissible_decision": True,
+        }
+    )
 
     checks = {
         "catalog_is_smaller_than_30pct_of_source": (
@@ -567,11 +644,23 @@ def run_panel() -> dict[str, Any]:
         ),
         "decision_irrelevant_reuse_evidence_is_pruned": (
             reuse_irrelevant["primary_action"]
-            == "SKIP_REUSE_EVIDENCE_AND_DRIFT_MONITORING"
+            == "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK"
         ),
         "decision_relevant_reuse_evidence_is_not_pruned": (
             reuse_relevant["primary_action"]
             == "NO_COMPILED_DECISION"
+        ),
+        "decision_irrelevant_second_probe_is_pruned": (
+            calibration_probe_irrelevant["primary_action"]
+            == "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK"
+        ),
+        "decision_relevant_second_probe_is_retained": (
+            calibration_probe_relevant["primary_action"]
+            == "NO_COMPILED_DECISION"
+        ),
+        "generic_normalized_proof_selects_same_capsule": (
+            generic_irrelevant["primary_action"]
+            == "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK"
         ),
     }
 
@@ -599,6 +688,9 @@ def run_panel() -> dict[str, Any]:
             "negative_result_ci_gate": negative_gate,
             "reuse_irrelevant": reuse_irrelevant,
             "reuse_relevant": reuse_relevant,
+            "calibration_probe_irrelevant": calibration_probe_irrelevant,
+            "calibration_probe_relevant": calibration_probe_relevant,
+            "generic_irrelevant": generic_irrelevant,
         },
         "decision": (
             "COMPILE_REPEATED_RESEARCH_DECISIONS_INTO_SMALL_SKILL_CAPSULES"
