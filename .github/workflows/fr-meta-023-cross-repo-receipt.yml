@@ -1,0 +1,59 @@
+name: FR META 023 Cross Repo Receipt
+
+on:
+  pull_request:
+    paths:
+      - "evidence/cross_repo/FR_META_023_DECISION_RELEVANCE_RECEIPT.json"
+      - "src/finite_ram_lab/cross_repo_receipt.py"
+      - "tests/test_cross_repo_receipt.py"
+      - "docs/FR_META_023_CROSS_REPO_RECEIPT.md"
+      - ".github/workflows/fr-meta-023-cross-repo-receipt.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile
+        run: python -m compileall -q src tests
+      - name: Qualify receipt
+        run: python -m unittest tests.test_cross_repo_receipt -v
+      - name: Emit receipt summary
+        run: |
+          mkdir -p runtime/scratch
+          PYTHONPATH=src python - <<'PY'
+          import json
+          from pathlib import Path
+          from finite_ram_lab.cross_repo_receipt import load_receipt, receipt_summary
+
+          source = Path("evidence/cross_repo/FR_META_023_DECISION_RELEVANCE_RECEIPT.json")
+          doc = load_receipt(source)
+          summary = receipt_summary(doc)
+          payload = {
+              "schema": "finite-ram-lab.cross-repo-receipt-qualification/v0.1",
+              "source_receipt": str(source),
+              "summary": summary,
+              "quantitative_receipt": True,
+              "scalar_gain_available": False,
+              "heterogeneous_units_preserved": True,
+              "authority_effect": "NONE",
+              "canonical_write": False,
+              "promotion": False,
+          }
+          out = Path("runtime/scratch/fr-meta-023-cross-repo-receipt.json")
+          out.write_text(json.dumps(payload, sort_keys=True, indent=2) + "\n")
+          print("FR_META_023_RECEIPT_QUALIFIED=1")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-meta-023-cross-repo-receipt
+          path: runtime/scratch/fr-meta-023-cross-repo-receipt.json
+          if-no-files-found: error
