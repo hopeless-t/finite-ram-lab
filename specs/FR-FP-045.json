@@ -1,0 +1,15 @@
+{
+  "schema": "finite-ram-lab.fr-fp-045/v0.1",
+  "title": "Robust horizon information-value ceiling",
+  "status": "ANALYTIC_INFORMATION_VALUE_CANDIDATE",
+  "parent": "FR-FP-044",
+  "new_physical_runs": 0,
+  "units": "milliseconds",
+  "law": {
+    "hold_worst_case_regret": "max(0, delta*H_upper - migration_cost)",
+    "migrate_worst_case_regret": "max(0, migration_cost - delta*H_lower)",
+    "information_value_ceiling": "min(hold_regret, migrate_regret)",
+    "stop_measurement": "measurement_cost >= information_value_ceiling"
+  },
+  "claim_ceiling": "ANALYTIC_ROBUST_INFORMATION_VALUE_BOUND_ON_FP044_HORIZON_CONTEXTS_ONLY"
+}
