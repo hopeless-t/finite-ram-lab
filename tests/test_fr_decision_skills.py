@@ -259,6 +259,32 @@ class DecisionSkillCompilerTests(unittest.TestCase):
             "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
         )
 
+    def test_physical_placement_update_is_pruned_when_optimum_is_unchanged(self) -> None:
+        result = compile_decision_context(
+            {
+                "physical_placement_update_question": True,
+                "multistate_allocator_qualified": True,
+                "optimal_warm_set_changed": False,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+        )
+
+    def test_physical_placement_update_is_retained_when_optimum_changes(self) -> None:
+        result = compile_decision_context(
+            {
+                "physical_placement_update_question": True,
+                "multistate_allocator_qualified": True,
+                "optimal_warm_set_changed": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+
     def test_catalog_compression(self) -> None:
         stats = catalog_stats()
         self.assertEqual(stats["skill_count"], 17)
