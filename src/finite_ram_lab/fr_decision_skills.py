@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "finite-ram-lab.fr-meta-021-decision-skills/v0.6"
+SCHEMA = "finite-ram-lab.fr-meta-022-decision-skills/v0.7"
 SOURCE_HISTORY_CHARACTERS = 17417
 
 INVARIANTS = (
@@ -212,7 +212,7 @@ SKILLS = (
         },
         "action": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
         "mc": "SKIP",
-        "evidence_prs": [151, 152, 154],
+        "evidence_prs": [151, 152, 154, 161],
         "maturity": "QUALIFIED",
         "invalidate_on": [
             "decision_relevance_changes",
@@ -363,6 +363,29 @@ def _derive_decision_relevance_facts(
             "first_probe_reuse_ceiling_one"
         )
         is True
+    ):
+        derived.setdefault(
+            "decision_irrelevance_proven",
+            True,
+        )
+        derived.setdefault(
+            "skip_preserves_admissible_decision",
+            True,
+        )
+
+    if (
+        facts.get(
+            "physical_placement_update_question"
+        )
+        is True
+        and facts.get(
+            "multistate_allocator_qualified"
+        )
+        is True
+        and facts.get(
+            "optimal_warm_set_changed"
+        )
+        is False
     ):
         derived.setdefault(
             "decision_irrelevance_proven",
@@ -570,6 +593,20 @@ def run_panel() -> dict[str, Any]:
             "skip_preserves_admissible_decision": True,
         }
     )
+    placement_irrelevant = compile_decision_context(
+        {
+            "physical_placement_update_question": True,
+            "multistate_allocator_qualified": True,
+            "optimal_warm_set_changed": False,
+        }
+    )
+    placement_relevant = compile_decision_context(
+        {
+            "physical_placement_update_question": True,
+            "multistate_allocator_qualified": True,
+            "optimal_warm_set_changed": True,
+        }
+    )
 
     checks = {
         "catalog_is_smaller_than_30pct_of_source": (
@@ -662,6 +699,14 @@ def run_panel() -> dict[str, Any]:
             generic_irrelevant["primary_action"]
             == "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK"
         ),
+        "decision_irrelevant_physical_placement_update_is_pruned": (
+            placement_irrelevant["primary_action"]
+            == "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK"
+        ),
+        "decision_relevant_physical_placement_update_is_retained": (
+            placement_relevant["primary_action"]
+            == "NO_COMPILED_DECISION"
+        ),
     }
 
     return {
@@ -691,6 +736,8 @@ def run_panel() -> dict[str, Any]:
             "calibration_probe_irrelevant": calibration_probe_irrelevant,
             "calibration_probe_relevant": calibration_probe_relevant,
             "generic_irrelevant": generic_irrelevant,
+            "placement_irrelevant": placement_irrelevant,
+            "placement_relevant": placement_relevant,
         },
         "decision": (
             "COMPILE_REPEATED_RESEARCH_DECISIONS_INTO_SMALL_SKILL_CAPSULES"
