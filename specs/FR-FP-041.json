@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-041/v0.1",
+  "title": "Physical migration break-even horizon",
+  "status": "REUSED_HOSTED_PHYSICAL_NEGATIVE_RESULT_CANDIDATE",
+  "parent": "FR-FP-040",
+  "shadow_source": "FR-FP-038",
+  "physical_actuation_source": "FR-FP-039 workflow 37210203932",
+  "phase_horizon_rounds": 20,
+  "new_physical_runs": 0,
+  "claim_ceiling": "REUSED_HOSTED_ACTUATION_COST_BREAK_EVEN_ON_FP038_039_FIXED_CAPACITY_TRACE_ONLY"
+}
