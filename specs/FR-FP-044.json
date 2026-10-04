@@ -1,0 +1,14 @@
+{
+  "schema": "finite-ram-lab.fr-fp-044/v0.1",
+  "title": "Break-even horizon interval gate",
+  "status": "ANALYTIC_HORIZON_REDUCTION_CANDIDATE",
+  "parent": "FR-FP-043",
+  "new_physical_runs": 0,
+  "law": {
+    "break_even": "H_star = migration_cost / benefit_per_round",
+    "migrate_certified": "H_lower >= H_star",
+    "hold_certified": "H_upper < H_star",
+    "continue_measuring": "H_lower < H_star <= H_upper"
+  },
+  "claim_ceiling": "ANALYTIC_HORIZON_INTERVAL_REDUCTION_ON_FP042_043_EQUAL_SIZE_MIGRATION_CONTEXTS_ONLY"
+}
