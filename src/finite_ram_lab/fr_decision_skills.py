@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "finite-ram-lab.fr-meta-019-decision-skills/v0.3"
+SCHEMA = "finite-ram-lab.fr-meta-020-decision-skills/v0.4"
 SOURCE_HISTORY_CHARACTERS = 17417
 
 INVARIANTS = (
@@ -229,6 +229,24 @@ SKILLS = (
         "invalidate_on": [
             "fixture_or_tail_changes",
             "cross_run_prior_invalidated",
+        ],
+    },
+    {
+        "id": "PRUNE_IRRELEVANT_REUSE_EVIDENCE",
+        "priority": 94,
+        "kind": "positive",
+        "when": {
+            "risk_surface_qualified": True,
+            "reuse_can_change_tier_decision": False,
+        },
+        "action": "SKIP_REUSE_EVIDENCE_AND_DRIFT_MONITORING",
+        "mc": "SKIP",
+        "evidence_prs": [151, 152],
+        "replications": 2,
+        "maturity": "QUALIFIED",
+        "invalidate_on": [
+            "reuse_becomes_decision_relevant",
+            "risk_surface_invalidated",
         ],
     },
     {
@@ -497,6 +515,18 @@ def run_panel() -> dict[str, Any]:
             "ci_requires_rejected_shape": True,
         }
     )
+    reuse_irrelevant = compile_decision_context(
+        {
+            "risk_surface_qualified": True,
+            "reuse_can_change_tier_decision": False,
+        }
+    )
+    reuse_relevant = compile_decision_context(
+        {
+            "risk_surface_qualified": True,
+            "reuse_can_change_tier_decision": True,
+        }
+    )
 
     checks = {
         "catalog_is_smaller_than_30pct_of_source": (
@@ -569,6 +599,14 @@ def run_panel() -> dict[str, Any]:
             negative_gate["primary_action"]
             == "REMOVE_REJECTED_SHAPE_FROM_CI_GATE_BEFORE_CHILD_QUALIFICATION"
         ),
+        "decision_irrelevant_reuse_evidence_is_pruned": (
+            reuse_irrelevant["primary_action"]
+            == "SKIP_REUSE_EVIDENCE_AND_DRIFT_MONITORING"
+        ),
+        "decision_relevant_reuse_evidence_is_not_pruned": (
+            reuse_relevant["primary_action"]
+            == "NO_COMPILED_DECISION"
+        ),
     }
 
     return {
@@ -593,6 +631,8 @@ def run_panel() -> dict[str, Any]:
             "calibration_unknown": calibration_unknown,
             "calibration_frontier": calibration_frontier,
             "negative_result_ci_gate": negative_gate,
+            "reuse_irrelevant": reuse_irrelevant,
+            "reuse_relevant": reuse_relevant,
         },
         "decision": (
             "COMPILE_REPEATED_RESEARCH_DECISIONS_INTO_SMALL_SKILL_CAPSULES"
