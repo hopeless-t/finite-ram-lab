@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-057/v0.1",
+  "title": "Decision-directed physical refinement of resident-rent policy paths",
+  "status": "HOSTED_PHYSICAL_POLICY_REFINEMENT_CANDIDATE",
+  "parent": "FR-FP-056",
+  "new_physical_representative_rents": [0.075, 0.15, 0.20, 0.30],
+  "shadow_rent_points": 12,
+  "expected_unique_paths": 8,
+  "scalar_gain": null,
+  "claim_ceiling": "EIGHT_UNIQUE_HOSTED_PHYSICAL_POLICY_PATHS_FROM_THE_FP054_TWELVE_POINT_RENT_SWEEP_ONLY"
+}
