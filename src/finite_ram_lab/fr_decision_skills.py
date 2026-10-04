@@ -213,7 +213,7 @@ SKILLS = (
         ],
     },
     {
-        "id": "COLD_RESTORE_BASELINE_CALIBRATION",
+        "id": "COLD_RESTORE_CALIBRATION_FRONTIER",
         "priority": 91,
         "kind": "positive",
         "when": {
@@ -221,37 +221,14 @@ SKILLS = (
             "state_size_mib_8": True,
             "cross_run_restore_prior_available": True,
         },
-        "action": "USE_ONE_PROBE_BASELINE_KEEP_TAIL_PRIOR",
+        "action": "ONE_PROBE_BASELINE_OPTIONAL_TWO_PROBE_MIN_IF_WORTH_COST_KEEP_TAIL_PRIOR",
         "mc": "SKIP",
         "evidence_prs": [140, 141],
         "replications": 1,
         "maturity": "QUALIFIED",
         "invalidate_on": [
-            "state_size_changes",
-            "runner_family_changes",
+            "fixture_or_tail_structure_changes",
             "cross_run_prior_invalidated",
-            "tail_structure_changes",
-        ],
-    },
-    {
-        "id": "COLD_RESTORE_OPTIONAL_LOWER_ENVELOPE",
-        "priority": 93,
-        "kind": "positive",
-        "when": {
-            "cold_restore_baseline_question": True,
-            "state_size_mib_8": True,
-            "cross_run_restore_prior_available": True,
-            "extra_baseline_precision_justifies_extra_probe": True,
-        },
-        "action": "USE_TWO_PROBE_LOWER_ENVELOPE_KEEP_TAIL_PRIOR",
-        "mc": "SKIP",
-        "evidence_prs": [141],
-        "replications": 1,
-        "maturity": "QUALIFIED",
-        "invalidate_on": [
-            "state_size_changes",
-            "runner_family_changes",
-            "positive_tail_contamination_pattern_invalidated",
         ],
     },
     {
@@ -507,19 +484,11 @@ def run_panel() -> dict[str, Any]:
             "cold_restore_baseline_question": True,
         }
     )
-    calibration_one = compile_decision_context(
+    calibration_frontier = compile_decision_context(
         {
             "cold_restore_baseline_question": True,
             "state_size_mib_8": True,
             "cross_run_restore_prior_available": True,
-        }
-    )
-    calibration_two = compile_decision_context(
-        {
-            "cold_restore_baseline_question": True,
-            "state_size_mib_8": True,
-            "cross_run_restore_prior_available": True,
-            "extra_baseline_precision_justifies_extra_probe": True,
         }
     )
     negative_gate = compile_decision_context(
@@ -592,13 +561,9 @@ def run_panel() -> dict[str, Any]:
             and "state_size_mib_8"
             in calibration_unknown["unresolved"]
         ),
-        "one_probe_calibration_selected": (
-            calibration_one["primary_action"]
-            == "USE_ONE_PROBE_BASELINE_KEEP_TAIL_PRIOR"
-        ),
-        "two_probe_precision_overrides_when_value_is_explicit": (
-            calibration_two["primary_action"]
-            == "USE_TWO_PROBE_LOWER_ENVELOPE_KEEP_TAIL_PRIOR"
+        "calibration_frontier_selected": (
+            calibration_frontier["primary_action"]
+            == "ONE_PROBE_BASELINE_OPTIONAL_TWO_PROBE_MIN_IF_WORTH_COST_KEEP_TAIL_PRIOR"
         ),
         "negative_result_repairs_ci_contract": (
             negative_gate["primary_action"]
@@ -626,8 +591,7 @@ def run_panel() -> dict[str, Any]:
             "semantic_survival_exact": survival_exact,
             "semantic_survival_invalid": survival_invalid,
             "calibration_unknown": calibration_unknown,
-            "calibration_one": calibration_one,
-            "calibration_two": calibration_two,
+            "calibration_frontier": calibration_frontier,
             "negative_result_ci_gate": negative_gate,
         },
         "decision": (
