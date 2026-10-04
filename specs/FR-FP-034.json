@@ -1,0 +1,14 @@
+{
+  "schema": "finite-ram-lab.fr-fp-034/v0.1",
+  "title": "Equal-size multi-state WARM budget allocator",
+  "status": "MULTI_STATE_SHADOW_CANDIDATE",
+  "parent": "FR-FP-033",
+  "state_count": 10,
+  "state_mib": 8,
+  "hosted_baseline_ms": 3.299338,
+  "deadline_ms": 10,
+  "miss_tolerance": 0.05,
+  "warm_slot_sweep": [3,4,5,6,7,8,9,10],
+  "new_physical_runs": 0,
+  "claim_ceiling": "SYNTHETIC_TEN_STATE_EQUAL_SIZE_ALLOCATION_USING_ONE_HOSTED_BASELINE_AND_REUSED_RESTORE_PRIORS_ONLY"
+}
