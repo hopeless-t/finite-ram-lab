@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-043/v0.1",
+  "title": "Hosted physical 100-round mixed HOLD/MIGRATE hysteresis",
+  "status": "HOSTED_PHYSICAL_HYSTERESIS_CANDIDATE",
+  "parent": "FR-FP-042",
+  "phase_horizon_rounds": 100,
+  "state_count": 10,
+  "state_mib": 8,
+  "warm_slots": 5,
+  "claim_ceiling": "HOSTED_PHYSICAL_100_ROUND_HYSTERESIS_ON_FP038_EQUAL_SIZE_FIVE_PHASE_FIXTURE_ONLY"
+}
