@@ -1,0 +1,26 @@
+{
+  "schema": "finite-ram-lab.fr-fp-030/v0.1",
+  "title": "Hosted physical reuse-evidence lifecycle Governor pilot",
+  "status": "HOSTED_PHYSICAL_INTEGRATION_CANDIDATE",
+  "parent": "FR-FP-029",
+  "state_mib": 8,
+  "reuse_schedule": {
+    "seed": 20261004,
+    "pre_probability": 0.02,
+    "pre_observations": 60,
+    "post_probability": 0.25,
+    "post_observations": 60
+  },
+  "evidence_policy": {
+    "confidence": 0.95,
+    "reuse_ceiling": 0.10,
+    "recent_window": 35,
+    "drift_threshold": 4
+  },
+  "arms": [
+    "ALWAYS_WARM",
+    "ALWAYS_COLD",
+    "LIFECYCLE_GOVERNOR"
+  ],
+  "claim_ceiling": "HOSTED_PHYSICAL_TIER_ACTUATION_ON_ONE_SYNTHETIC_TWO_PHASE_REUSE_TRACE_ONLY"
+}
