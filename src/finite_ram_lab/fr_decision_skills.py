@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "finite-ram-lab.fr-meta-024-decision-skills/v0.8"
+SCHEMA = "finite-ram-lab.fr-meta-025-decision-skills/v0.9"
 SOURCE_HISTORY_CHARACTERS = 17417
 
 INVARIANTS = (
@@ -195,7 +195,7 @@ SKILLS = (
             "skip_preserves_admissible_decision": True,
         },
         "action": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
-        "evidence_prs": [151, 152, 154, 161],
+        "evidence_prs": [151, 152, 154, 161, 178],
         "invalidate_on": [
             "decision_relevance_changes",
             "skip_safety_contract_invalidated",
@@ -390,6 +390,33 @@ def _derive_pruning_facts(
         is True
         and facts.get(
             "optimal_warm_set_changed"
+        )
+        is False
+    ):
+        derived.setdefault(
+            "decision_irrelevance_proven",
+            True,
+        )
+        derived.setdefault(
+            "skip_preserves_admissible_decision",
+            True,
+        )
+
+    if (
+        facts.get(
+            "migration_model_refit_question"
+        )
+        is True
+        and facts.get(
+            "structural_migration_model_qualified"
+        )
+        is True
+        and facts.get(
+            "current_run_direction_scaling_holdout_improves"
+        )
+        is True
+        and facts.get(
+            "scaled_optimal_path_changed"
         )
         is False
     ):
@@ -636,6 +663,22 @@ def run_panel() -> dict[str, Any]:
             "optimal_warm_set_changed": True,
         }
     )
+    model_refit_irrelevant = compile_decision_context(
+        {
+            "migration_model_refit_question": True,
+            "structural_migration_model_qualified": True,
+            "current_run_direction_scaling_holdout_improves": True,
+            "scaled_optimal_path_changed": False,
+        }
+    )
+    model_refit_relevant = compile_decision_context(
+        {
+            "migration_model_refit_question": True,
+            "structural_migration_model_qualified": True,
+            "current_run_direction_scaling_holdout_improves": True,
+            "scaled_optimal_path_changed": True,
+        }
+    )
     horizon_voi_stop = compile_decision_context(
         {
             "horizon_measurement_question": True,
@@ -756,6 +799,14 @@ def run_panel() -> dict[str, Any]:
             placement_relevant["primary_action"]
             == "NO_COMPILED_DECISION"
         ),
+        "decision_irrelevant_structural_model_refit_is_pruned": (
+            model_refit_irrelevant["primary_action"]
+            == "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK"
+        ),
+        "structural_model_refit_is_retained_when_path_changes": (
+            model_refit_relevant["primary_action"]
+            == "NO_COMPILED_DECISION"
+        ),
         "horizon_measurement_stops_when_cost_exceeds_information_value": (
             horizon_voi_stop["primary_action"]
             == "STOP_INFORMATION_ACQUISITION_TAKE_ROBUST_ACTION"
@@ -799,6 +850,8 @@ def run_panel() -> dict[str, Any]:
             "generic_irrelevant": generic_irrelevant,
             "placement_irrelevant": placement_irrelevant,
             "placement_relevant": placement_relevant,
+            "model_refit_irrelevant": model_refit_irrelevant,
+            "model_refit_relevant": model_refit_relevant,
             "horizon_voi_stop": horizon_voi_stop,
             "horizon_voi_measure": horizon_voi_measure,
             "generic_voi_stop": generic_voi_stop,
