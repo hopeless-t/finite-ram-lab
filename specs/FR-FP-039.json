@@ -1,0 +1,12 @@
+{
+  "schema": "finite-ram-lab.fr-fp-039/v0.1",
+  "title": "Hosted physical online-value reallocation",
+  "status": "HOSTED_PHYSICAL_ONLINE_VALUE_CANDIDATE",
+  "parent": "FR-FP-038",
+  "state_count": 10,
+  "state_mib": 8,
+  "warm_slots": 5,
+  "warm_mib": 40,
+  "phase_count": 5,
+  "claim_ceiling": "HOSTED_PHYSICAL_FIVE_PHASE_ONLINE_VALUE_REALLOCATION_ON_ONE_TEN_STATE_EQUAL_SIZE_FIXTURE_ONLY"
+}
