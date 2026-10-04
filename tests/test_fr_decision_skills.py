@@ -195,9 +195,33 @@ class DecisionSkillCompilerTests(unittest.TestCase):
             "REMOVE_REJECTED_SHAPE_FROM_CI_GATE_BEFORE_CHILD_QUALIFICATION",
         )
 
+    def test_decision_irrelevant_reuse_evidence_is_pruned(self) -> None:
+        result = compile_decision_context(
+            {
+                "risk_surface_qualified": True,
+                "reuse_can_change_tier_decision": False,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "SKIP_REUSE_EVIDENCE_AND_DRIFT_MONITORING",
+        )
+
+    def test_decision_relevant_reuse_evidence_is_retained(self) -> None:
+        result = compile_decision_context(
+            {
+                "risk_surface_qualified": True,
+                "reuse_can_change_tier_decision": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+
     def test_catalog_compression(self) -> None:
         stats = catalog_stats()
-        self.assertEqual(stats["skill_count"], 16)
+        self.assertEqual(stats["skill_count"], 17)
         self.assertLess(
             stats["catalog_fraction_of_source"],
             0.30,
