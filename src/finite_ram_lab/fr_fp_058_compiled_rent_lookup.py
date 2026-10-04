@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import bisect
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -37,7 +38,7 @@ UNSUPPORTED_TYPED_PARETO_PATHS = (
     "P1",
 )
 
-SCORE_TIE_TOLERANCE_MS = 1e-9
+SCORE_TIE_ULPS = 64
 
 
 def _load() -> dict[str, Any]:
@@ -100,6 +101,19 @@ def direct_select(
         for score, _row
         in scored
     )
+    scale = max(
+        1.0,
+        max(
+            abs(score)
+            for score, _row
+            in scored
+        ),
+    )
+    tie_tolerance = (
+        SCORE_TIE_ULPS
+        * sys.float_info.epsilon
+        * scale
+    )
     tied = [
         row
         for score, row
@@ -107,7 +121,7 @@ def direct_select(
         if abs(
             score - minimum
         )
-        <= SCORE_TIE_TOLERANCE_MS
+        <= tie_tolerance
     ]
 
     return min(
