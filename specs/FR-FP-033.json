@@ -1,0 +1,13 @@
+{
+  "schema": "finite-ram-lab.fr-fp-033/v0.1",
+  "title": "Decision-relevance early stop for COLD calibration",
+  "status": "REUSED_EVIDENCE_EARLY_STOP_CANDIDATE",
+  "parent": "FR-FP-032",
+  "runs": 15,
+  "baseline_estimator": "TWO_PROBE_MIN",
+  "memory_shadow_price_ms_per_mib": 1.0,
+  "deadline_ms": 25.0,
+  "miss_tolerance": 0.05,
+  "new_physical_runs": 0,
+  "claim_ceiling": "LEAVE_ONE_RUN_OUT_EARLY_STOP_BACKTEST_ON_FIFTEEN_8MIB_HOSTED_RESTORE_RUNS_AND_ONE_POLICY_POINT_ONLY"
+}
