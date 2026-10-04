@@ -1,0 +1,12 @@
+{
+  "schema": "finite-ram-lab.fr-fp-022/v0.1",
+  "title": "Robust current-run baseline estimator frontier",
+  "status": "REUSED_EVIDENCE_ESTIMATOR_CANDIDATE",
+  "parent": "FR-FP-021",
+  "new_physical_runs": 0,
+  "state_mib": 8,
+  "fixed_future_target": "median of final three COLD restores",
+  "candidate_probe_counts": [0,1,2,3],
+  "candidate_estimators": ["LOO_PRIOR","FIRST","MEDIAN","MIN","GEOMEAN"],
+  "claim_ceiling": "ESTIMATOR_FRONTIER_ON_FIFTEEN_REUSED_8MIB_COLD_RESTORE_RUNS_ONLY"
+}
