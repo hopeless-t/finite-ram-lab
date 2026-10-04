@@ -1,0 +1,13 @@
+{
+  "schema": "finite-ram-lab.fr-fp-026/v0.1",
+  "title": "Analytic reuse-probability ceiling for risk-aware tiering",
+  "status": "ANALYTIC_REDUCTION_CANDIDATE",
+  "parent": "FR-FP-025",
+  "new_physical_runs": 0,
+  "law": {
+    "cost_bound": "p <= 8MiB*lambda/E[(bR-W)+]",
+    "deadline_bound": "p <= epsilon/P(bR>D)",
+    "combined": "p <= min(1, cost_bound, deadline_bound)"
+  },
+  "claim_ceiling": "ANALYTIC_REDUCTION_OF_FR_FP_025_EMPIRICAL_8MIB_FRONTIER_ONLY"
+}
