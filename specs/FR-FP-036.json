@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-036/v0.1",
+  "title": "Dynamic WARM budget transition with minimal actuation",
+  "status": "DYNAMIC_BUDGET_SHADOW_CANDIDATE",
+  "parent": "FR-FP-035",
+  "capacity_schedule_slots": [5,3,7,4,6],
+  "infeasible_test_slots": 2,
+  "state_count": 10,
+  "state_mib": 8,
+  "claim_ceiling": "SYNTHETIC_DYNAMIC_CAPACITY_TRANSITIONS_ON_THE_FR_FP_034_EQUAL_SIZE_TEN_STATE_FIXTURE_ONLY"
+}
