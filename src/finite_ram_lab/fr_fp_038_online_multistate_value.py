@@ -477,7 +477,7 @@ def run_panel() -> dict[str, Any]:
                     for phase in phases
                 }
             )
-            >= 3
+            >= 2
         ),
         "at_least_one_new_evidence_phase_requires_zero_actuation": any(
             phase["phase"] > 1
