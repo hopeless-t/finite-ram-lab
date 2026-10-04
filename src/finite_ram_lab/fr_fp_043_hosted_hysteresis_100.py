@@ -702,9 +702,22 @@ def run_panel() -> dict[str, Any]:
                 PHASE_HORIZON_ROUNDS
             ),
         },
-        "hysteresis_plan": (
-            plan
-        ),
+        "hysteresis_plan": {
+            "targets": [
+                sorted(
+                    target
+                )
+                for target
+                in plan[
+                    "targets"
+                ]
+            ],
+            "transitions": (
+                plan[
+                    "transitions"
+                ]
+            ),
+        },
         "immediate": (
             immediate
         ),
