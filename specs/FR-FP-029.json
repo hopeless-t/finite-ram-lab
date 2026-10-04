@@ -1,0 +1,14 @@
+{
+  "schema": "finite-ram-lab.fr-fp-029/v0.1",
+  "title": "Reuse drift-alarm Pareto frontier",
+  "status": "SYNTHETIC_DRIFT_FRONTIER_CANDIDATE",
+  "parent": "FR-FP-028",
+  "confidence": 0.95,
+  "reuse_ceiling": 0.10,
+  "pre_reuse_probability": 0.02,
+  "post_reuse_probabilities": [0.15, 0.25, 0.50],
+  "rolling_window": 35,
+  "alarm_thresholds": [3,4,5,6,7,8],
+  "replicates": 10000,
+  "claim_ceiling": "SYNTHETIC_DRIFT_ALARM_FRONTIER_FOR_ONE_REUSE_CEILING_AND_WINDOW_ONLY"
+}
