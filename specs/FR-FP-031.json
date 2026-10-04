@@ -1,0 +1,12 @@
+{
+  "schema": "finite-ram-lab.fr-fp-031/v0.1",
+  "title": "Hosted physical risk-aware WARM/COLD Governor",
+  "status": "HOSTED_PHYSICAL_RISK_AWARE_INTEGRATION_CANDIDATE",
+  "parent": "FR-FP-030",
+  "state_mib": 8,
+  "current_run_calibration": "TWO_PROBE_MIN",
+  "memory_shadow_price_ms_per_mib": 1.0,
+  "deadline_ms": 25.0,
+  "miss_tolerance": 0.05,
+  "claim_ceiling": "HOSTED_PHYSICAL_RISK_AWARE_TIER_ACTUATION_ON_ONE_SYNTHETIC_REUSE_TRACE_AND_ONE_POLICY_POINT_ONLY"
+}
