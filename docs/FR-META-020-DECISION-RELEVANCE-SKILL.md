@@ -65,3 +65,45 @@ The budget is not relaxed merely because a new skill is useful.
 ## Claim ceiling
 
 **COMPILED_DECISION_IRRELEVANT_REUSE_EVIDENCE_BYPASS_ONLY**
+
+
+## Resident-budget failure biopsy
+
+The first META-020 implementation correctly selected the new pruning skill, but
+the self-hosted catalog gate failed:
+
+    catalog_fraction_of_source = 0.320319
+
+The frozen limit remains:
+
+    < 0.30
+
+Rejected repair:
+
+- do not relax the 30% budget;
+- do not inflate SOURCE_HISTORY_CHARACTERS;
+- do not delete evidence provenance, maturity, or invalidation conditions.
+
+Compression repair:
+
+The resident SKILLS table repeated two metadata fields for every skill:
+
+    kind
+    replications
+
+Neither field participates in:
+
+- trigger matching;
+- priority ordering;
+- emitted decision capsules;
+- invalidation;
+- primary action selection.
+
+They are therefore evicted from the resident executable catalog.
+
+This is the same Finite RAM rule applied to the skill compiler itself:
+
+> metadata that cannot affect the current executable decision should not consume
+> the hot catalog budget.
+
+The evidence PRs, maturity and invalidation conditions remain resident.
