@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-meta-025/v0.1",
+  "title": "Extend decision-relevance pruning to structural model maintenance",
+  "status": "CROSS_PLANE_PRUNING_ADAPTER_CANDIDATE",
+  "parent": "FR-META-024",
+  "evidence_prs": [177,178],
+  "resident_skill": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+  "expected_skill_count": 18,
+  "resident_budget_fraction_max": 0.30,
+  "claim_ceiling": "CROSS_PLANE_DECISION_RELEVANCE_PRUNING_EXTENDED_TO_FP053_MIGRATION_MODEL_MAINTENANCE_ONLY"
+}
