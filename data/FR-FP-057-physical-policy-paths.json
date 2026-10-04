@@ -1,0 +1,162 @@
+{
+  "schema": "finite-ram-lab.fr-fp-057-physical-policy-paths-data/v0.1",
+  "source": {
+    "workflow_run": 37226269361,
+    "job": 111506446809,
+    "parent_fp056_workflow": 37224815026
+  },
+  "points": [
+    {
+      "path_id": "P0",
+      "representative_rent": 0,
+      "shadow_rents": [
+        0,
+        0.025,
+        0.05
+      ],
+      "resident_mib_round": 4720,
+      "semantic_service_ms": 556.7703482924119,
+      "physical_actuation_ms": 92.917521,
+      "evidence": "EXISTING_HOSTED_PHYSICAL"
+    },
+    {
+      "path_id": "P1",
+      "representative_rent": 0.075,
+      "shadow_rents": [
+        0.075
+      ],
+      "resident_mib_round": 4240,
+      "semantic_service_ms": 611.8886056833243,
+      "physical_actuation_ms": 79.819551,
+      "evidence": "NEW_HOSTED_PHYSICAL"
+    },
+    {
+      "path_id": "P2",
+      "representative_rent": 0.1,
+      "shadow_rents": [
+        0.1,
+        0.125
+      ],
+      "resident_mib_round": 3400,
+      "semantic_service_ms": 726.5274750286178,
+      "physical_actuation_ms": 20.183231,
+      "evidence": "EXISTING_HOSTED_PHYSICAL"
+    },
+    {
+      "path_id": "P3",
+      "representative_rent": 0.15,
+      "shadow_rents": [
+        0.15,
+        0.175
+      ],
+      "resident_mib_round": 2720,
+      "semantic_service_ms": 831.1162713998651,
+      "physical_actuation_ms": 23.401166,
+      "evidence": "NEW_HOSTED_PHYSICAL"
+    },
+    {
+      "path_id": "P4",
+      "representative_rent": 0.2,
+      "shadow_rents": [
+        0.2
+      ],
+      "resident_mib_round": 2400,
+      "semantic_service_ms": 888.2112909819436,
+      "physical_actuation_ms": 25.442636,
+      "evidence": "NEW_HOSTED_PHYSICAL"
+    },
+    {
+      "path_id": "P5",
+      "representative_rent": 0.25,
+      "shadow_rents": [
+        0.25
+      ],
+      "resident_mib_round": 480,
+      "semantic_service_ms": 1255.1245653206277,
+      "physical_actuation_ms": 19.069888,
+      "evidence": "EXISTING_HOSTED_PHYSICAL"
+    },
+    {
+      "path_id": "P6",
+      "representative_rent": 0.3,
+      "shadow_rents": [
+        0.3
+      ],
+      "resident_mib_round": 320,
+      "semantic_service_ms": 1297.515164719906,
+      "physical_actuation_ms": 10.522449,
+      "evidence": "NEW_HOSTED_PHYSICAL"
+    },
+    {
+      "path_id": "P7",
+      "representative_rent": 0.4,
+      "shadow_rents": [
+        0.4
+      ],
+      "resident_mib_round": 0,
+      "semantic_service_ms": 1411.9784356560885,
+      "physical_actuation_ms": 0.001734,
+      "evidence": "EXISTING_HOSTED_PHYSICAL"
+    }
+  ],
+  "scalar_lower_envelope_intervals": [
+    {
+      "lower_inclusive": 0,
+      "upper_exclusive": 0.07350214904258025,
+      "path_id": "P0"
+    },
+    {
+      "lower_inclusive": 0.07350214904258025,
+      "upper_exclusive": 0.1585393108400696,
+      "path_id": "P2"
+    },
+    {
+      "lower_inclusive": 0.1585393108400696,
+      "upper_exclusive": 0.1848015299439954,
+      "path_id": "P3"
+    },
+    {
+      "lower_inclusive": 0.1848015299439954,
+      "upper_exclusive": 0.18778152413473126,
+      "path_id": "P4"
+    },
+    {
+      "lower_inclusive": 0.18778152413473126,
+      "upper_exclusive": 0.2115197524954894,
+      "path_id": "P5"
+    },
+    {
+      "lower_inclusive": 0.2115197524954894,
+      "upper_exclusive": 0.32482048730057045,
+      "path_id": "P6"
+    },
+    {
+      "lower_inclusive": 0.32482048730057045,
+      "upper_exclusive": null,
+      "path_id": "P7"
+    }
+  ],
+  "typed_pareto_path_ids": [
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "scalar_supported_path_ids": [
+    "P0",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7"
+  ],
+  "scalar_unsupported_typed_pareto_path_ids": [
+    "P1"
+  ],
+  "scalar_gain": null
+}
