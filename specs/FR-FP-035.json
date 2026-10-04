@@ -1,0 +1,14 @@
+{
+  "schema": "finite-ram-lab.fr-fp-035/v0.1",
+  "title": "Hosted physical multi-state equal-capacity allocation pilot",
+  "status": "HOSTED_PHYSICAL_MULTISTATE_CANDIDATE",
+  "parent": "FR-FP-034",
+  "state_count": 10,
+  "state_mib": 8,
+  "warm_slots": 5,
+  "warm_mib": 40,
+  "opportunities": 60,
+  "value_warm_ids": [5,6,7,8,9],
+  "anti_value_warm_ids": [0,1,2,3,4],
+  "claim_ceiling": "HOSTED_PHYSICAL_TEN_STATE_EQUAL_SIZE_SAME_CAPACITY_ALLOCATION_ON_ONE_SYNTHETIC_REUSE_TRACE_ONLY"
+}
