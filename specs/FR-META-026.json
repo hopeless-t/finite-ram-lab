@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-meta-026/v0.1",
+  "title": "Prune rich solver rehydration behind qualified compiled decision surface",
+  "status": "CROSS_PLANE_DECISION_RELEVANCE_ADAPTER_CANDIDATE",
+  "parent": "FR-META-025",
+  "evidence_prs": [183, 184],
+  "resident_skill": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+  "resident_skill_count_expected": 18,
+  "resident_catalog_fraction_max": 0.30,
+  "claim_ceiling": "CROSS_PLANE_DECISION_RELEVANCE_PRUNING_EXTENDED_TO_FP058_COMPILED_SOLVER_REHYDRATION_ONLY"
+}
