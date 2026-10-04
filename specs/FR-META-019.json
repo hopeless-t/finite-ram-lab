@@ -1,0 +1,13 @@
+{
+  "schema": "finite-ram-lab.fr-meta-019/v0.1",
+  "title": "Compile restore calibration and negative-result CI repair",
+  "status": "DECISION_SKILL_COMPILATION_CANDIDATE",
+  "parent": "FR-META-018",
+  "evidence_prs": [135,137,140,141],
+  "skills_added": [
+    "COLD_RESTORE_BASELINE_CALIBRATION",
+    "COLD_RESTORE_OPTIONAL_LOWER_ENVELOPE",
+    "NEGATIVE_RESULT_INVALIDATES_REJECTED_CI_GATE"
+  ],
+  "claim_ceiling": "COMPILED_CALIBRATION_ROUTING_AND_NEGATIVE_RESULT_CI_CONTRACT_REPAIR_ONLY"
+}

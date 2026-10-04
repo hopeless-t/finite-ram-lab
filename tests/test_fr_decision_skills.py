@@ -155,9 +155,63 @@ class DecisionSkillCompilerTests(unittest.TestCase):
             "NO_COMPILED_DECISION",
         )
 
+    def test_cold_restore_one_probe_calibration_skill(self) -> None:
+        result = compile_decision_context(
+            {
+                "cold_restore_baseline_question": True,
+                "state_size_mib_8": True,
+                "cross_run_restore_prior_available": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "USE_ONE_PROBE_BASELINE_KEEP_TAIL_PRIOR",
+        )
+
+    def test_optional_two_probe_lower_envelope_skill(self) -> None:
+        result = compile_decision_context(
+            {
+                "cold_restore_baseline_question": True,
+                "state_size_mib_8": True,
+                "cross_run_restore_prior_available": True,
+                "extra_baseline_precision_justifies_extra_probe": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "USE_TWO_PROBE_LOWER_ENVELOPE_KEEP_TAIL_PRIOR",
+        )
+
+    def test_calibration_unknown_fails_closed(self) -> None:
+        result = compile_decision_context(
+            {
+                "cold_restore_baseline_question": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+        self.assertIn(
+            "state_size_mib_8",
+            result["unresolved"],
+        )
+
+    def test_negative_result_updates_ci_contract(self) -> None:
+        result = compile_decision_context(
+            {
+                "qualified_negative_result": True,
+                "ci_requires_rejected_shape": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "REMOVE_REJECTED_SHAPE_FROM_CI_GATE_BEFORE_CHILD_QUALIFICATION",
+        )
+
     def test_catalog_compression(self) -> None:
         stats = catalog_stats()
-        self.assertEqual(stats["skill_count"], 14)
+        self.assertEqual(stats["skill_count"], 17)
         self.assertLess(
             stats["catalog_fraction_of_source"],
             0.30,

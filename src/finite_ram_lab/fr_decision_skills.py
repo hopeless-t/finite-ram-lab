@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "finite-ram-lab.fr-meta-018-decision-skills/v0.2"
+SCHEMA = "finite-ram-lab.fr-meta-019-decision-skills/v0.3"
 SOURCE_HISTORY_CHARACTERS = 17417
 
 INVARIANTS = (
@@ -210,6 +210,66 @@ SKILLS = (
             "transfer_lead_is_not_fixed",
             "transfer_failure_present",
             "safe_reclaimability_does_not_collapse_history",
+        ],
+    },
+    {
+        "id": "COLD_RESTORE_BASELINE_CALIBRATION",
+        "priority": 91,
+        "kind": "positive",
+        "when": {
+            "cold_restore_baseline_question": True,
+            "state_size_mib_8": True,
+            "cross_run_restore_prior_available": True,
+        },
+        "action": "USE_ONE_PROBE_BASELINE_KEEP_TAIL_PRIOR",
+        "mc": "SKIP",
+        "evidence_prs": [140, 141],
+        "replications": 1,
+        "maturity": "QUALIFIED",
+        "invalidate_on": [
+            "state_size_changes",
+            "runner_family_changes",
+            "cross_run_prior_invalidated",
+            "tail_structure_changes",
+        ],
+    },
+    {
+        "id": "COLD_RESTORE_OPTIONAL_LOWER_ENVELOPE",
+        "priority": 93,
+        "kind": "positive",
+        "when": {
+            "cold_restore_baseline_question": True,
+            "state_size_mib_8": True,
+            "cross_run_restore_prior_available": True,
+            "extra_baseline_precision_justifies_extra_probe": True,
+        },
+        "action": "USE_TWO_PROBE_LOWER_ENVELOPE_KEEP_TAIL_PRIOR",
+        "mc": "SKIP",
+        "evidence_prs": [141],
+        "replications": 1,
+        "maturity": "QUALIFIED",
+        "invalidate_on": [
+            "state_size_changes",
+            "runner_family_changes",
+            "positive_tail_contamination_pattern_invalidated",
+        ],
+    },
+    {
+        "id": "NEGATIVE_RESULT_INVALIDATES_REJECTED_CI_GATE",
+        "priority": 99,
+        "kind": "guard",
+        "when": {
+            "qualified_negative_result": True,
+            "ci_requires_rejected_shape": True,
+        },
+        "action": "REMOVE_REJECTED_SHAPE_FROM_CI_GATE_BEFORE_CHILD_QUALIFICATION",
+        "mc": "SKIP",
+        "evidence_prs": [135, 137],
+        "replications": 1,
+        "maturity": "QUALIFIED_GUARD",
+        "invalidate_on": [
+            "negative_result_invalidated",
+            "ci_gate_already_matches_current_theory",
         ],
     },
     {
@@ -442,6 +502,33 @@ def run_panel() -> dict[str, Any]:
         }
     )
 
+    calibration_unknown = compile_decision_context(
+        {
+            "cold_restore_baseline_question": True,
+        }
+    )
+    calibration_one = compile_decision_context(
+        {
+            "cold_restore_baseline_question": True,
+            "state_size_mib_8": True,
+            "cross_run_restore_prior_available": True,
+        }
+    )
+    calibration_two = compile_decision_context(
+        {
+            "cold_restore_baseline_question": True,
+            "state_size_mib_8": True,
+            "cross_run_restore_prior_available": True,
+            "extra_baseline_precision_justifies_extra_probe": True,
+        }
+    )
+    negative_gate = compile_decision_context(
+        {
+            "qualified_negative_result": True,
+            "ci_requires_rejected_shape": True,
+        }
+    )
+
     checks = {
         "catalog_is_smaller_than_30pct_of_source": (
             stats["catalog_fraction_of_source"] < 0.30
@@ -499,6 +586,24 @@ def run_panel() -> dict[str, Any]:
             survival_invalid["primary_action"]
             == "NO_COMPILED_DECISION"
         ),
+        "calibration_unknown_fails_closed": (
+            calibration_unknown["primary_action"]
+            == "NO_COMPILED_DECISION"
+            and "state_size_mib_8"
+            in calibration_unknown["unresolved"]
+        ),
+        "one_probe_calibration_selected": (
+            calibration_one["primary_action"]
+            == "USE_ONE_PROBE_BASELINE_KEEP_TAIL_PRIOR"
+        ),
+        "two_probe_precision_overrides_when_value_is_explicit": (
+            calibration_two["primary_action"]
+            == "USE_TWO_PROBE_LOWER_ENVELOPE_KEEP_TAIL_PRIOR"
+        ),
+        "negative_result_repairs_ci_contract": (
+            negative_gate["primary_action"]
+            == "REMOVE_REJECTED_SHAPE_FROM_CI_GATE_BEFORE_CHILD_QUALIFICATION"
+        ),
     }
 
     return {
@@ -520,6 +625,10 @@ def run_panel() -> dict[str, Any]:
             "semantic_survival_unknown": survival_unknown,
             "semantic_survival_exact": survival_exact,
             "semantic_survival_invalid": survival_invalid,
+            "calibration_unknown": calibration_unknown,
+            "calibration_one": calibration_one,
+            "calibration_two": calibration_two,
+            "negative_result_ci_gate": negative_gate,
         },
         "decision": (
             "COMPILE_REPEATED_RESEARCH_DECISIONS_INTO_SMALL_SKILL_CAPSULES"
