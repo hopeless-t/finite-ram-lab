@@ -1,0 +1,12 @@
+{
+  "schema": "finite-ram-lab.fr-meta-021/v0.1",
+  "title": "Cross-plane decision-relevance pruning capsule",
+  "status": "META_META_GENERALIZATION_CANDIDATE",
+  "parent": "FR-META-020",
+  "evidence_prs": [151,152,154],
+  "replaces_skill": "PRUNE_IRRELEVANT_REUSE_EVIDENCE",
+  "skill": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+  "skill_count_growth": 0,
+  "resident_budget_fraction_max": 0.30,
+  "claim_ceiling": "CROSS_PLANE_DECISION_RELEVANCE_PRUNING_FOR_REUSE_MONITORING_AND_SECOND_COLD_CALIBRATION_PROBE_ONLY"
+}
