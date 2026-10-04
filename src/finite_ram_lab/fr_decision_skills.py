@@ -227,7 +227,7 @@ SKILLS = (
         "replications": 1,
         "maturity": "QUALIFIED",
         "invalidate_on": [
-            "fixture_or_tail_structure_changes",
+            "fixture_or_tail_changes",
             "cross_run_prior_invalidated",
         ],
     },
