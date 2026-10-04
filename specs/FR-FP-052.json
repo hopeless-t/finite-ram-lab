@@ -1,0 +1,10 @@
+{
+  "schema": "finite-ram-lab.fr-fp-052/v0.1",
+  "title": "Hosted physical online joint variable-size placement path",
+  "status": "HOSTED_PHYSICAL_ONLINE_JOINT_PATH_CANDIDATE",
+  "parent": "FR-FP-051",
+  "phase_count": 5,
+  "capacity_schedule_mib": [40, 28, 72, 44, 56],
+  "state_sizes_mib": [4, 6, 8, 10, 12, 14, 16, 8, 8, 12],
+  "claim_ceiling": "HOSTED_PHYSICAL_FIVE_PHASE_VARIABLE_SIZE_JOINT_PATH_ON_ONE_FROZEN_ONLINE_TRACE_ONLY"
+}
