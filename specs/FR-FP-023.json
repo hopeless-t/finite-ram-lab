@@ -1,0 +1,12 @@
+{
+  "schema": "finite-ram-lab.fr-fp-023/v0.1",
+  "title": "Baseline-normalized residual COLD restore tail prior",
+  "status": "REUSED_EVIDENCE_RESIDUAL_TAIL_CANDIDATE",
+  "parent": "FR-FP-022",
+  "new_physical_runs": 0,
+  "state_mib": 8,
+  "baseline": "first current-run COLD restore",
+  "residual": "future latency / baseline",
+  "deadlines_ms": [10,25,50,100],
+  "claim_ceiling": "LEAVE_ONE_RUN_OUT_RESIDUAL_TAIL_MODEL_ON_FIFTEEN_REUSED_8MIB_COLD_RUNS_ONLY"
+}
