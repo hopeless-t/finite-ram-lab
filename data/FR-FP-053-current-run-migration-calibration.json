@@ -1,0 +1,26 @@
+{
+  "schema": "finite-ram-lab.fr-fp-053-current-run-migration-calibration-data/v0.1",
+  "source": {
+    "fp048_run": 37219146828,
+    "fp051_run": 37220346757,
+    "fp052_run": 37223002770
+  },
+  "model": {
+    "promote_intercept_ms": 2.2828326190476176,
+    "promote_slope_ms_per_mib": 1.730256023809524,
+    "evict_intercept_ms": 10.115818500000001,
+    "evict_slope_ms_per_mib": 0.032783035714285695
+  },
+  "joint_pure_direction_calibration": [
+    {"direction":"EVICT","state_mib":[12],"predicted_ms":10.50921492857143,"observed_ms":11.139995},
+    {"direction":"PROMOTE","state_mib":[6,10,12,12],"predicted_ms":78.34157142857143,"observed_ms":44.454972},
+    {"direction":"EVICT","state_mib":[12,12],"predicted_ms":21.01842985714286,"observed_ms":21.892169},
+    {"direction":"PROMOTE","state_mib":[12],"predicted_ms":23.045904904761905,"observed_ms":12.387656}
+  ],
+  "semantic_mixed_holdout": [
+    {"promote_mib":[6,10],"evict_mib":[8,8,12],"observed_ms":51.631167},
+    {"promote_mib":[12,14,8,8,12],"evict_mib":[10],"observed_ms":66.753518},
+    {"promote_mib":[10],"evict_mib":[12,14,12],"observed_ms":43.575755},
+    {"promote_mib":[12],"evict_mib":[],"observed_ms":11.0152}
+  ]
+}

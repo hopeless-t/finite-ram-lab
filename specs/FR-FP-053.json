@@ -1,0 +1,10 @@
+{
+  "schema": "finite-ram-lab.fr-fp-053/v0.1",
+  "title": "Current-run migration scaling with decision-directed refit gate",
+  "status": "REUSED_PHYSICAL_EVIDENCE_MODEL_MAINTENANCE_CANDIDATE",
+  "parent": "FR-FP-052",
+  "new_physical_runs": 0,
+  "calibration_source": "FP052 JOINT pure-direction transitions",
+  "holdout_source": "FP052 migration-blind semantic mixed transitions",
+  "claim_ceiling": "CURRENT_RUN_DIRECTION_SCALING_AND_REFIT_SKIP_ON_ONE_FP052_HOSTED_TRACE_ONLY"
+}
