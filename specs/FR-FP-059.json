@@ -1,0 +1,10 @@
+{
+  "schema": "finite-ram-lab.fr-fp-059/v0.1",
+  "title": "Decision-relevant validity gate for compiled physical rent lookup",
+  "status": "COMPILED_LOOKUP_VALIDITY_CANDIDATE",
+  "parent": "FR-FP-058",
+  "new_physical_runs": 0,
+  "keep_lookup_when": "rederived scalar surface remains numerically equivalent",
+  "invalidate_when": "supported path order or crossover boundary changes",
+  "claim_ceiling": "DECISION_SURFACE_VALIDITY_GATE_FOR_THE_FP058_SCALAR_MEMORY_RENT_LOOKUP_ONLY"
+}
