@@ -1,0 +1,10 @@
+{
+  "schema": "finite-ram-lab.fr-meta-020/v0.1",
+  "title": "Compile decision-relevance pruning for reuse evidence",
+  "status": "DECISION_SKILL_COMPILATION_CANDIDATE",
+  "parent": "FR-META-019",
+  "evidence_prs": [151, 152],
+  "skill": "PRUNE_IRRELEVANT_REUSE_EVIDENCE",
+  "resident_budget_fraction_max": 0.30,
+  "claim_ceiling": "COMPILED_DECISION_IRRELEVANT_REUSE_EVIDENCE_BYPASS_ONLY"
+}
