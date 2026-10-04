@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "finite-ram-lab.fr-meta-020-decision-skills/v0.4"
+SCHEMA = "finite-ram-lab.fr-meta-020-decision-skills/v0.5"
 SOURCE_HISTORY_CHARACTERS = 17417
 
 INVARIANTS = (
@@ -19,19 +19,16 @@ SKILLS = (
     {
         "id": "PRESERVE_RUNTIME_BENCHMARK",
         "priority": 100,
-        "kind": "guard",
         "when": {"runtime_is_measurement": True},
         "action": "PRESERVE_MEASUREMENT_BODY",
         "mc": "UNCHANGED",
         "evidence_prs": [],
-        "replications": 1,
         "maturity": "STABLE_GUARD",
         "invalidate_on": ["benchmark_contract_changed"],
     },
     {
         "id": "EXACT_REUSE_BEFORE_SAMPLE_REDUCTION",
         "priority": 90,
-        "kind": "positive",
         "when": {
             "deterministic_duplicate_work": True,
             "scientific_contract_unchanged": True,
@@ -40,7 +37,6 @@ SKILLS = (
         "action": "REUSE_EXACT_COMPUTATION",
         "mc": "SKIP",
         "evidence_prs": [108, 110, 112, 113],
-        "replications": 4,
         "maturity": "STABLE",
         "invalidate_on": [
             "scientific_contract_changed",
@@ -50,7 +46,6 @@ SKILLS = (
     {
         "id": "SKIP_MC_FOR_EXACT_TOPOLOGY",
         "priority": 85,
-        "kind": "positive",
         "when": {
             "topology_exact": True,
             "decision_uncertain": False,
@@ -58,14 +53,12 @@ SKILLS = (
         "action": "SKIP_MONTE_CARLO",
         "mc": "SKIP",
         "evidence_prs": [107, 111],
-        "replications": 2,
         "maturity": "STABLE",
         "invalidate_on": ["topology_becomes_uncertain"],
     },
     {
         "id": "MC_FOR_LOSS_SENSITIVE_UNCERTAINTY",
         "priority": 85,
-        "kind": "positive",
         "when": {
             "decision_uncertain": True,
             "loss_sensitive": True,
@@ -73,38 +66,32 @@ SKILLS = (
         "action": "RUN_MONTE_CARLO_ROBUSTNESS",
         "mc": "REQUIRED",
         "evidence_prs": [103, 104],
-        "replications": 2,
         "maturity": "STABLE",
         "invalidate_on": ["decision_becomes_exact"],
     },
     {
         "id": "ATOMIC_BUNDLE_ONE_TRANSITION",
         "priority": 70,
-        "kind": "positive",
         "when": {"coherent_transition": True},
         "action": "ATOMIC_BUNDLE_THEN_QUALIFY",
         "mc": "SKIP",
         "evidence_prs": [106],
-        "replications": 1,
         "maturity": "QUALIFIED",
         "invalidate_on": ["transition_contains_independent_questions"],
     },
     {
         "id": "GENERAL_CI_META_QUALIFICATION",
         "priority": 75,
-        "kind": "positive",
         "when": {"meta_module_changed": True},
         "action": "QUALIFY_IN_GENERAL_CI",
         "mc": "SKIP",
         "evidence_prs": [107],
-        "replications": 1,
         "maturity": "QUALIFIED",
         "invalidate_on": ["general_ci_no_longer_covers_meta_contract"],
     },
     {
         "id": "CANCEL_SUPERSEDED_NON_MAIN_CI",
         "priority": 95,
-        "kind": "positive",
         "when": {
             "same_head_duplicate_ci": True,
             "branch_is_main": False,
@@ -112,38 +99,32 @@ SKILLS = (
         "action": "CANCEL_SUPERSEDED_NON_MAIN_CI",
         "mc": "SKIP",
         "evidence_prs": [111],
-        "replications": 2,
         "maturity": "STABLE",
         "invalidate_on": ["ci_heads_diverge", "branch_becomes_main"],
     },
     {
         "id": "NEVER_CANCEL_MAIN_CI",
         "priority": 100,
-        "kind": "guard",
         "when": {"branch_is_main": True},
         "action": "KEEP_MAIN_CI",
         "mc": "SKIP",
         "evidence_prs": [111],
-        "replications": 2,
         "maturity": "STABLE_GUARD",
         "invalidate_on": [],
     },
     {
         "id": "EPHEMERAL_BUILD_AHEAD_ONLY",
         "priority": 95,
-        "kind": "guard",
         "when": {"parent_receipt_frozen": False},
         "action": "DRAFT_EPHEMERALLY_NO_CANONICAL_GIT",
         "mc": "SKIP",
         "evidence_prs": [109, 114],
-        "replications": 2,
         "maturity": "STABLE_GUARD",
         "invalidate_on": ["parent_receipt_frozen"],
     },
     {
         "id": "MATERIALIZE_AFTER_RECEIPT",
         "priority": 90,
-        "kind": "positive",
         "when": {
             "parent_receipt_frozen": True,
             "prepared_delta_ready": True,
@@ -151,14 +132,12 @@ SKILLS = (
         "action": "MATERIALIZE_ATOMIC_CHILD_ON_RECEIPT_TREE",
         "mc": "SKIP",
         "evidence_prs": [109, 114],
-        "replications": 2,
         "maturity": "STABLE",
         "invalidate_on": ["parent_receipt_invalidated"],
     },
     {
         "id": "CACHE_REUSE_PROVE_SCOPE_FIRST",
         "priority": 100,
-        "kind": "negative",
         "when": {
             "cache_candidate": True,
             "cache_restore_proven": False,
@@ -166,14 +145,12 @@ SKILLS = (
         "action": "REJECT_CACHE_PROMOTION",
         "mc": "SKIP",
         "evidence_prs": [115],
-        "replications": 1,
         "maturity": "QUALIFIED_NEGATIVE",
         "invalidate_on": ["producer_consumer_restore_proven"],
     },
     {
         "id": "CACHE_MEASURE_BEFORE_PROMOTION",
         "priority": 95,
-        "kind": "guard",
         "when": {
             "cache_candidate": True,
             "cache_restore_proven": True,
@@ -182,14 +159,12 @@ SKILLS = (
         "action": "MEASURE_CACHE_SPEEDUP_AND_OVERHEAD",
         "mc": "SKIP",
         "evidence_prs": [115],
-        "replications": 1,
         "maturity": "QUALIFIED_GUARD",
         "invalidate_on": ["speedup_and_overhead_measured"],
     },
     {
         "id": "SEMANTIC_OOM_SURVIVAL_LAW",
         "priority": 92,
-        "kind": "positive",
         "when": {
             "semantic_oom_question": True,
             "state_arrival_one_per_step": True,
@@ -202,7 +177,6 @@ SKILLS = (
         "action": "USE_ANALYTIC_SURVIVAL_LAW",
         "mc": "SKIP",
         "evidence_prs": [127],
-        "replications": 1,
         "maturity": "QUALIFIED",
         "invalidate_on": [
             "state_arrival_rate_changes",
@@ -215,7 +189,6 @@ SKILLS = (
     {
         "id": "COLD_RESTORE_CALIBRATION_FRONTIER",
         "priority": 91,
-        "kind": "positive",
         "when": {
             "cold_restore_baseline_question": True,
             "state_size_mib_8": True,
@@ -224,7 +197,6 @@ SKILLS = (
         "action": "ONE_PROBE_BASELINE_OPTIONAL_TWO_PROBE_MIN_IF_WORTH_COST_KEEP_TAIL_PRIOR",
         "mc": "SKIP",
         "evidence_prs": [140, 141],
-        "replications": 1,
         "maturity": "QUALIFIED",
         "invalidate_on": [
             "fixture_or_tail_changes",
@@ -234,7 +206,6 @@ SKILLS = (
     {
         "id": "PRUNE_IRRELEVANT_REUSE_EVIDENCE",
         "priority": 94,
-        "kind": "positive",
         "when": {
             "risk_surface_qualified": True,
             "reuse_can_change_tier_decision": False,
@@ -242,7 +213,6 @@ SKILLS = (
         "action": "SKIP_REUSE_EVIDENCE_AND_DRIFT_MONITORING",
         "mc": "SKIP",
         "evidence_prs": [151, 152],
-        "replications": 2,
         "maturity": "QUALIFIED",
         "invalidate_on": [
             "reuse_becomes_decision_relevant",
@@ -252,7 +222,6 @@ SKILLS = (
     {
         "id": "NEGATIVE_RESULT_INVALIDATES_REJECTED_CI_GATE",
         "priority": 99,
-        "kind": "guard",
         "when": {
             "qualified_negative_result": True,
             "ci_requires_rejected_shape": True,
@@ -260,7 +229,6 @@ SKILLS = (
         "action": "REMOVE_REJECTED_SHAPE_FROM_CI_GATE_BEFORE_CHILD_QUALIFICATION",
         "mc": "SKIP",
         "evidence_prs": [135, 137],
-        "replications": 1,
         "maturity": "QUALIFIED_GUARD",
         "invalidate_on": [
             "negative_result_invalidated",
@@ -270,12 +238,10 @@ SKILLS = (
     {
         "id": "FAILURE_BIOPSY_BEFORE_THEORY_UPDATE",
         "priority": 90,
-        "kind": "guard",
         "when": {"prediction_mismatch": True},
         "action": "PRESERVE_FAILURE_BIOPSY_THEN_UPDATE_MODEL",
         "mc": "CONDITIONAL",
         "evidence_prs": [106, 109, 114, 115],
-        "replications": 4,
         "maturity": "STABLE_GUARD",
         "invalidate_on": [],
     },
