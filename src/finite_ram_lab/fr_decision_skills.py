@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "finite-ram-lab.fr-meta-022-decision-skills/v0.7"
+SCHEMA = "finite-ram-lab.fr-meta-024-decision-skills/v0.8"
 SOURCE_HISTORY_CHARACTERS = 17417
 
 INVARIANTS = (
@@ -35,7 +35,6 @@ SKILLS = (
             "runtime_is_measurement": False,
         },
         "action": "REUSE_EXACT_COMPUTATION",
-        "mc": "SKIP",
         "evidence_prs": [108, 110, 112, 113],
         "maturity": "STABLE",
         "invalidate_on": [
@@ -51,7 +50,6 @@ SKILLS = (
             "decision_uncertain": False,
         },
         "action": "SKIP_MONTE_CARLO",
-        "mc": "SKIP",
         "evidence_prs": [107, 111],
         "maturity": "STABLE",
         "invalidate_on": ["topology_becomes_uncertain"],
@@ -74,7 +72,6 @@ SKILLS = (
         "priority": 70,
         "when": {"coherent_transition": True},
         "action": "ATOMIC_BUNDLE_THEN_QUALIFY",
-        "mc": "SKIP",
         "evidence_prs": [106],
         "maturity": "QUALIFIED",
         "invalidate_on": ["transition_contains_independent_questions"],
@@ -84,7 +81,6 @@ SKILLS = (
         "priority": 75,
         "when": {"meta_module_changed": True},
         "action": "QUALIFY_IN_GENERAL_CI",
-        "mc": "SKIP",
         "evidence_prs": [107],
         "maturity": "QUALIFIED",
         "invalidate_on": ["general_ci_no_longer_covers_meta_contract"],
@@ -97,7 +93,6 @@ SKILLS = (
             "branch_is_main": False,
         },
         "action": "CANCEL_SUPERSEDED_NON_MAIN_CI",
-        "mc": "SKIP",
         "evidence_prs": [111],
         "maturity": "STABLE",
         "invalidate_on": ["ci_heads_diverge", "branch_becomes_main"],
@@ -107,7 +102,6 @@ SKILLS = (
         "priority": 100,
         "when": {"branch_is_main": True},
         "action": "KEEP_MAIN_CI",
-        "mc": "SKIP",
         "evidence_prs": [111],
         "maturity": "STABLE_GUARD",
         "invalidate_on": [],
@@ -117,7 +111,6 @@ SKILLS = (
         "priority": 95,
         "when": {"parent_receipt_frozen": False},
         "action": "DRAFT_EPHEMERALLY_NO_CANONICAL_GIT",
-        "mc": "SKIP",
         "evidence_prs": [109, 114],
         "maturity": "STABLE_GUARD",
         "invalidate_on": ["parent_receipt_frozen"],
@@ -130,7 +123,6 @@ SKILLS = (
             "prepared_delta_ready": True,
         },
         "action": "MATERIALIZE_ATOMIC_CHILD_ON_RECEIPT_TREE",
-        "mc": "SKIP",
         "evidence_prs": [109, 114],
         "maturity": "STABLE",
         "invalidate_on": ["parent_receipt_invalidated"],
@@ -143,7 +135,6 @@ SKILLS = (
             "cache_restore_proven": False,
         },
         "action": "REJECT_CACHE_PROMOTION",
-        "mc": "SKIP",
         "evidence_prs": [115],
         "maturity": "QUALIFIED_NEGATIVE",
         "invalidate_on": ["producer_consumer_restore_proven"],
@@ -157,7 +148,6 @@ SKILLS = (
             "cache_speedup_measured": False,
         },
         "action": "MEASURE_CACHE_SPEEDUP_AND_OVERHEAD",
-        "mc": "SKIP",
         "evidence_prs": [115],
         "maturity": "QUALIFIED_GUARD",
         "invalidate_on": ["speedup_and_overhead_measured"],
@@ -175,7 +165,6 @@ SKILLS = (
             "safe_reclaimability_collapses_history": True,
         },
         "action": "USE_ANALYTIC_SURVIVAL_LAW",
-        "mc": "SKIP",
         "evidence_prs": [127],
         "maturity": "QUALIFIED",
         "invalidate_on": [
@@ -195,7 +184,6 @@ SKILLS = (
             "cross_run_restore_prior_available": True,
         },
         "action": "ONE_PROBE_BASELINE_OPTIONAL_TWO_PROBE_MIN_IF_WORTH_COST_KEEP_TAIL_PRIOR",
-        "mc": "SKIP",
         "evidence_prs": [140, 141],
         "maturity": "QUALIFIED",
         "invalidate_on": [
@@ -211,12 +199,27 @@ SKILLS = (
             "skip_preserves_admissible_decision": True,
         },
         "action": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
-        "mc": "SKIP",
         "evidence_prs": [151, 152, 154, 161],
         "maturity": "QUALIFIED",
         "invalidate_on": [
             "decision_relevance_changes",
             "skip_safety_contract_invalidated",
+        ],
+    },
+    {
+        "id": "STOP_LOW_VALUE_INFORMATION_ACQUISITION",
+        "priority": 93,
+        "when": {
+            "information_value_ceiling_proven": True,
+            "acquisition_cost_ge_information_value_ceiling": True,
+        },
+        "action": "STOP_INFORMATION_ACQUISITION_TAKE_ROBUST_ACTION",
+        "evidence_prs": [168, 169],
+        "maturity": "QUALIFIED",
+        "invalidate_on": [
+            "information_value_bound_invalidated",
+            "acquisition_cost_changed",
+            "decision_context_changed",
         ],
     },
     {
@@ -227,7 +230,6 @@ SKILLS = (
             "ci_requires_rejected_shape": True,
         },
         "action": "REMOVE_REJECTED_SHAPE_FROM_CI_GATE_BEFORE_CHILD_QUALIFICATION",
-        "mc": "SKIP",
         "evidence_prs": [135, 137],
         "maturity": "QUALIFIED_GUARD",
         "invalidate_on": [
@@ -295,7 +297,10 @@ def _capsule(skill: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": skill["id"],
         "action": skill["action"],
-        "mc": skill["mc"],
+        "mc": skill.get(
+            "mc",
+            "SKIP",
+        ),
         "maturity": skill["maturity"],
         "evidence_prs": skill["evidence_prs"],
         "invalidate_on": skill["invalidate_on"],
@@ -324,7 +329,7 @@ def catalog_stats() -> dict[str, Any]:
     }
 
 
-def _derive_decision_relevance_facts(
+def _derive_pruning_facts(
     facts: dict[str, Any],
 ) -> dict[str, Any]:
     derived = dict(facts)
@@ -396,6 +401,29 @@ def _derive_decision_relevance_facts(
             True,
         )
 
+    if (
+        facts.get(
+            "horizon_measurement_question"
+        )
+        is True
+        and facts.get(
+            "robust_information_value_bound_qualified"
+        )
+        is True
+        and facts.get(
+            "measurement_cost_ge_information_value_ceiling"
+        )
+        is True
+    ):
+        derived.setdefault(
+            "information_value_ceiling_proven",
+            True,
+        )
+        derived.setdefault(
+            "acquisition_cost_ge_information_value_ceiling",
+            True,
+        )
+
     return derived
 
 
@@ -403,7 +431,7 @@ def compile_decision_context(
     facts: dict[str, Any],
 ) -> dict[str, Any]:
     validate_skills()
-    facts = _derive_decision_relevance_facts(
+    facts = _derive_pruning_facts(
         facts
     )
     selected = []
@@ -607,6 +635,26 @@ def run_panel() -> dict[str, Any]:
             "optimal_warm_set_changed": True,
         }
     )
+    horizon_voi_stop = compile_decision_context(
+        {
+            "horizon_measurement_question": True,
+            "robust_information_value_bound_qualified": True,
+            "measurement_cost_ge_information_value_ceiling": True,
+        }
+    )
+    horizon_voi_measure = compile_decision_context(
+        {
+            "horizon_measurement_question": True,
+            "robust_information_value_bound_qualified": True,
+            "measurement_cost_ge_information_value_ceiling": False,
+        }
+    )
+    generic_voi_stop = compile_decision_context(
+        {
+            "information_value_ceiling_proven": True,
+            "acquisition_cost_ge_information_value_ceiling": True,
+        }
+    )
 
     checks = {
         "catalog_is_smaller_than_30pct_of_source": (
@@ -707,6 +755,18 @@ def run_panel() -> dict[str, Any]:
             placement_relevant["primary_action"]
             == "NO_COMPILED_DECISION"
         ),
+        "horizon_measurement_stops_when_cost_exceeds_information_value": (
+            horizon_voi_stop["primary_action"]
+            == "STOP_INFORMATION_ACQUISITION_TAKE_ROBUST_ACTION"
+        ),
+        "horizon_measurement_continues_when_information_can_pay_for_itself": (
+            horizon_voi_measure["primary_action"]
+            == "NO_COMPILED_DECISION"
+        ),
+        "generic_information_value_proof_selects_same_capsule": (
+            generic_voi_stop["primary_action"]
+            == "STOP_INFORMATION_ACQUISITION_TAKE_ROBUST_ACTION"
+        ),
     }
 
     return {
@@ -738,6 +798,9 @@ def run_panel() -> dict[str, Any]:
             "generic_irrelevant": generic_irrelevant,
             "placement_irrelevant": placement_irrelevant,
             "placement_relevant": placement_relevant,
+            "horizon_voi_stop": horizon_voi_stop,
+            "horizon_voi_measure": horizon_voi_measure,
+            "generic_voi_stop": generic_voi_stop,
         },
         "decision": (
             "COMPILE_REPEATED_RESEARCH_DECISIONS_INTO_SMALL_SKILL_CAPSULES"
