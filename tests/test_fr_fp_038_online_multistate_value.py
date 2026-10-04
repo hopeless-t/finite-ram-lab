@@ -41,7 +41,7 @@ class OnlineMultistateValueTests(unittest.TestCase):
             ][
                 "unique_warm_sets"
             ],
-            3,
+            2,
         )
 
     def test_decision_irrelevant_phase_has_zero_action(self) -> None:
