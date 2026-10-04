@@ -165,21 +165,7 @@ class DecisionSkillCompilerTests(unittest.TestCase):
         )
         self.assertEqual(
             result["primary_action"],
-            "USE_ONE_PROBE_BASELINE_KEEP_TAIL_PRIOR",
-        )
-
-    def test_optional_two_probe_lower_envelope_skill(self) -> None:
-        result = compile_decision_context(
-            {
-                "cold_restore_baseline_question": True,
-                "state_size_mib_8": True,
-                "cross_run_restore_prior_available": True,
-                "extra_baseline_precision_justifies_extra_probe": True,
-            }
-        )
-        self.assertEqual(
-            result["primary_action"],
-            "USE_TWO_PROBE_LOWER_ENVELOPE_KEEP_TAIL_PRIOR",
+            "ONE_PROBE_BASELINE_OPTIONAL_TWO_PROBE_MIN_IF_WORTH_COST_KEEP_TAIL_PRIOR",
         )
 
     def test_calibration_unknown_fails_closed(self) -> None:
@@ -211,7 +197,7 @@ class DecisionSkillCompilerTests(unittest.TestCase):
 
     def test_catalog_compression(self) -> None:
         stats = catalog_stats()
-        self.assertEqual(stats["skill_count"], 17)
+        self.assertEqual(stats["skill_count"], 16)
         self.assertLess(
             stats["catalog_fraction_of_source"],
             0.30,
