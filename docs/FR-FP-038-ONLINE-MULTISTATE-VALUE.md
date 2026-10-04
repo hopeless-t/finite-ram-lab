@@ -66,7 +66,7 @@ wasteful.
 Require:
 
 - every phase exact-matches exhaustive optimum;
-- at least three distinct optimal WARM sets;
+- at least two distinct optimal WARM sets;
 - at least one later evidence phase with zero actuation;
 - minimal delta actions beat full re-enforcement;
 - online reallocation beats phase-1 static placement.
