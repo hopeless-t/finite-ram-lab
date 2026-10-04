@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-040/v0.1",
+  "title": "Hosted Governor with simultaneous capacity and state-value changes",
+  "status": "HOSTED_PHYSICAL_COMBINED_CONTROL_CANDIDATE",
+  "parent": "FR-FP-039",
+  "state_count": 10,
+  "state_mib": 8,
+  "capacity_schedule_slots": [5,3,7,4,6],
+  "online_value_phases": 5,
+  "claim_ceiling": "HOSTED_PHYSICAL_COMBINED_CAPACITY_VALUE_CONTROL_ON_ONE_TEN_STATE_EQUAL_SIZE_FIVE_PHASE_FIXTURE_ONLY"
+}
