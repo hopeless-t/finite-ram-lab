@@ -1,0 +1,10 @@
+{
+  "schema": "finite-ram-lab.fr-meta-024/v0.1",
+  "title": "Compile information-value pruning without relaxing resident budget",
+  "status": "META_COMPILATION_CANDIDATE",
+  "parent": "FR-META-023",
+  "evidence_prs": [168,169],
+  "skill": "STOP_LOW_VALUE_INFORMATION_ACQUISITION",
+  "catalog_budget_fraction_max": 0.30,
+  "claim_ceiling": "COMPILED_INFORMATION_VALUE_PRUNING_FOR_QUALIFIED_HORIZON_MEASUREMENT_CONTEXT_ONLY"
+}

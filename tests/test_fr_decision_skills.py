@@ -285,9 +285,47 @@ class DecisionSkillCompilerTests(unittest.TestCase):
             "NO_COMPILED_DECISION",
         )
 
+    def test_horizon_measurement_stops_when_information_value_is_too_small(self) -> None:
+        result = compile_decision_context(
+            {
+                "horizon_measurement_question": True,
+                "robust_information_value_bound_qualified": True,
+                "measurement_cost_ge_information_value_ceiling": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "STOP_INFORMATION_ACQUISITION_TAKE_ROBUST_ACTION",
+        )
+
+    def test_horizon_measurement_is_retained_when_information_can_pay(self) -> None:
+        result = compile_decision_context(
+            {
+                "horizon_measurement_question": True,
+                "robust_information_value_bound_qualified": True,
+                "measurement_cost_ge_information_value_ceiling": False,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+
+    def test_generic_information_value_pruning_capsule(self) -> None:
+        result = compile_decision_context(
+            {
+                "information_value_ceiling_proven": True,
+                "acquisition_cost_ge_information_value_ceiling": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "STOP_INFORMATION_ACQUISITION_TAKE_ROBUST_ACTION",
+        )
+
     def test_catalog_compression(self) -> None:
         stats = catalog_stats()
-        self.assertEqual(stats["skill_count"], 17)
+        self.assertEqual(stats["skill_count"], 18)
         self.assertLess(
             stats["catalog_fraction_of_source"],
             0.30,
