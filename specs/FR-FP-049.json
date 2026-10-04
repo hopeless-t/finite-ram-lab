@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-049/v0.1",
+  "title": "Joint migration-aware variable-size byte-budget knapsack",
+  "status": "REUSED_EVIDENCE_JOINT_OPTIMIZATION_CANDIDATE",
+  "parent": "FR-FP-048",
+  "migration_cost_run": 37219146828,
+  "budget_schedule_mib": [28,40,56,72,92,44],
+  "horizons": [1,5,10,20,50,100,250],
+  "new_physical_runs": 0,
+  "claim_ceiling": "SYNTHETIC_JOINT_PLACEMENT_USING_FP046_VALUES_FP047_TRANSITIONS_AND_FP048_COST_MODEL_ONLY"
+}
