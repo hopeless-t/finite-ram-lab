@@ -313,6 +313,60 @@ class DecisionSkillCompilerTests(unittest.TestCase):
             "NO_COMPILED_DECISION",
         )
 
+    def test_compiled_solver_rehydration_is_pruned_when_equivalent_and_valid(self) -> None:
+        result = compile_decision_context(
+            {
+                "rich_solver_rehydration_question": True,
+                "compiled_surface_qualified": True,
+                "compiled_surface_matches_direct_solver": True,
+                "compiled_surface_valid_for_current_family": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+        )
+
+    def test_compiled_solver_rehydration_is_retained_on_mismatch(self) -> None:
+        result = compile_decision_context(
+            {
+                "rich_solver_rehydration_question": True,
+                "compiled_surface_qualified": True,
+                "compiled_surface_matches_direct_solver": False,
+                "compiled_surface_valid_for_current_family": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+
+    def test_compiled_solver_rehydration_is_retained_after_invalidation(self) -> None:
+        result = compile_decision_context(
+            {
+                "rich_solver_rehydration_question": True,
+                "compiled_surface_qualified": True,
+                "compiled_surface_matches_direct_solver": True,
+                "compiled_surface_valid_for_current_family": False,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+
+    def test_compiled_solver_rehydration_unknown_fails_closed(self) -> None:
+        result = compile_decision_context(
+            {
+                "rich_solver_rehydration_question": True,
+                "compiled_surface_qualified": True,
+            }
+        )
+        self.assertEqual(
+            result["primary_action"],
+            "NO_COMPILED_DECISION",
+        )
+
     def test_horizon_measurement_stops_when_information_value_is_too_small(self) -> None:
         result = compile_decision_context(
             {
