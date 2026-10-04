@@ -1,0 +1,9 @@
+{
+  "schema": "finite-ram-lab.fr-fp-055/v0.1",
+  "title": "Hosted physical endogenous resident-byte-time frontier",
+  "status": "HOSTED_PHYSICAL_RESIDENT_RENT_CANDIDATE",
+  "parent": "FR-FP-054",
+  "selected_memory_rents_ms_per_mib_round": [0.0,0.1,0.25,0.4],
+  "new_physical_runs": 1,
+  "claim_ceiling": "HOSTED_PHYSICAL_RESIDENT_RENT_ACTUATION_AT_FOUR_POLICY_POINTS_ON_ONE_VARIABLE_SIZE_FIVE_PHASE_FIXTURE_ONLY"
+}
