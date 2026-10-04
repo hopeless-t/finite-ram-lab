@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "finite-ram-lab.fr-meta-025-decision-skills/v0.9"
+SCHEMA = "finite-ram-lab.fr-meta-026-decision-skills/v1.0"
 SOURCE_HISTORY_CHARACTERS = 17417
 
 INVARIANTS = (
@@ -195,7 +195,7 @@ SKILLS = (
             "skip_preserves_admissible_decision": True,
         },
         "action": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
-        "evidence_prs": [151, 152, 154, 161, 178],
+        "evidence_prs": [151, 152, 154, 161, 178, 183, 184],
         "invalidate_on": [
             "decision_relevance_changes",
             "skip_safety_contract_invalidated",
@@ -419,6 +419,33 @@ def _derive_pruning_facts(
             "scaled_optimal_path_changed"
         )
         is False
+    ):
+        derived.setdefault(
+            "decision_irrelevance_proven",
+            True,
+        )
+        derived.setdefault(
+            "skip_preserves_admissible_decision",
+            True,
+        )
+
+    if (
+        facts.get(
+            "rich_solver_rehydration_question"
+        )
+        is True
+        and facts.get(
+            "compiled_surface_qualified"
+        )
+        is True
+        and facts.get(
+            "compiled_surface_matches_direct_solver"
+        )
+        is True
+        and facts.get(
+            "compiled_surface_valid_for_current_family"
+        )
+        is True
     ):
         derived.setdefault(
             "decision_irrelevance_proven",
@@ -679,6 +706,37 @@ def run_panel() -> dict[str, Any]:
             "scaled_optimal_path_changed": True,
         }
     )
+    solver_rehydration_irrelevant = compile_decision_context(
+        {
+            "rich_solver_rehydration_question": True,
+            "compiled_surface_qualified": True,
+            "compiled_surface_matches_direct_solver": True,
+            "compiled_surface_valid_for_current_family": True,
+        }
+    )
+    solver_rehydration_mismatch = compile_decision_context(
+        {
+            "rich_solver_rehydration_question": True,
+            "compiled_surface_qualified": True,
+            "compiled_surface_matches_direct_solver": False,
+            "compiled_surface_valid_for_current_family": True,
+        }
+    )
+    solver_rehydration_invalid = compile_decision_context(
+        {
+            "rich_solver_rehydration_question": True,
+            "compiled_surface_qualified": True,
+            "compiled_surface_matches_direct_solver": True,
+            "compiled_surface_valid_for_current_family": False,
+        }
+    )
+    solver_rehydration_unknown = compile_decision_context(
+        {
+            "rich_solver_rehydration_question": True,
+            "compiled_surface_qualified": True,
+        }
+    )
+
     horizon_voi_stop = compile_decision_context(
         {
             "horizon_measurement_question": True,
@@ -807,6 +865,22 @@ def run_panel() -> dict[str, Any]:
             model_refit_relevant["primary_action"]
             == "NO_COMPILED_DECISION"
         ),
+        "decision_irrelevant_rich_solver_rehydration_is_pruned": (
+            solver_rehydration_irrelevant["primary_action"]
+            == "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK"
+        ),
+        "rich_solver_is_retained_when_equivalence_fails": (
+            solver_rehydration_mismatch["primary_action"]
+            == "NO_COMPILED_DECISION"
+        ),
+        "rich_solver_is_retained_when_compiled_family_invalidates": (
+            solver_rehydration_invalid["primary_action"]
+            == "NO_COMPILED_DECISION"
+        ),
+        "rich_solver_unknown_fails_closed": (
+            solver_rehydration_unknown["primary_action"]
+            == "NO_COMPILED_DECISION"
+        ),
         "horizon_measurement_stops_when_cost_exceeds_information_value": (
             horizon_voi_stop["primary_action"]
             == "STOP_INFORMATION_ACQUISITION_TAKE_ROBUST_ACTION"
@@ -852,6 +926,10 @@ def run_panel() -> dict[str, Any]:
             "placement_relevant": placement_relevant,
             "model_refit_irrelevant": model_refit_irrelevant,
             "model_refit_relevant": model_refit_relevant,
+            "solver_rehydration_irrelevant": solver_rehydration_irrelevant,
+            "solver_rehydration_mismatch": solver_rehydration_mismatch,
+            "solver_rehydration_invalid": solver_rehydration_invalid,
+            "solver_rehydration_unknown": solver_rehydration_unknown,
             "horizon_voi_stop": horizon_voi_stop,
             "horizon_voi_measure": horizon_voi_measure,
             "generic_voi_stop": generic_voi_stop,
