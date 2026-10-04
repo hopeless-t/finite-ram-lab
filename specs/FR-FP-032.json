@@ -1,0 +1,9 @@
+{
+  "schema": "finite-ram-lab.fr-fp-032/v0.1",
+  "title": "Decision-relevance bypass for unconstrained reuse",
+  "status": "HOSTED_PHYSICAL_DECISION_RELEVANCE_CANDIDATE",
+  "parent": "FR-FP-031",
+  "trigger": "reuse_ceiling >= 1",
+  "compiled_action": "bypass reuse evidence and drift monitoring; keep COLD",
+  "claim_ceiling": "HOSTED_PHYSICAL_P1_REUSE_CEILING_DECISION_RELEVANCE_BYPASS_ONLY"
+}
