@@ -1,0 +1,9 @@
+{
+  "schema": "finite-ram-lab.fr-fp-027/v0.1",
+  "title": "Exact binomial reuse evidence budget",
+  "status": "ANALYTIC_EVIDENCE_BUDGET_CANDIDATE",
+  "parent": "FR-FP-026",
+  "confidence_levels": [0.95, 0.99],
+  "max_reused_events_in_table": 2,
+  "claim_ceiling": "EXACT_BINOMIAL_EVIDENCE_BUDGET_UNDER_STABLE_BERNOULLI_REUSE_ASSUMPTION_ONLY"
+}
