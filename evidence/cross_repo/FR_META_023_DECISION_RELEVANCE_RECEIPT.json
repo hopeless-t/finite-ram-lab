@@ -1,0 +1,126 @@
+{
+  "schema": "catfood.improvement-receipt/v0.1",
+  "receipt_id": "finite-ram:decision-relevance-pruning:fr-meta-022",
+  "producer_repository": "hopeless-t/finite-ram-lab",
+  "producer_head": "7ed7815e602a3808efce650d1426f8fcce161f3e",
+  "loop_id": "decision-relevance-pruning",
+  "variant": {
+    "core_family": "finite-ram-governor",
+    "variant_id": "fr-meta-022-three-plane",
+    "parent_variant_id": "fr-meta-021-two-plane",
+    "correlation_group": "finite-ram-decision-relevance-lineage"
+  },
+  "maturity": "QUALIFIED_THREE_PLANE",
+  "scalar_gain": null,
+  "scalar_gain_reason": "heterogeneous physical units are preserved as a cost vector and must not be summed into one score",
+  "decision_invariant": {
+    "id": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+    "decision_irrelevance_proven_required": true,
+    "skip_preserves_admissible_decision_required": true,
+    "fail_closed_when_proof_absent": true,
+    "authority_effect": "NONE"
+  },
+  "evidence_planes": [
+    {
+      "plane_id": "reuse-monitoring",
+      "evidence_prs": [
+        151,
+        152
+      ],
+      "qualification_run": 37195187519,
+      "independent_plane": true,
+      "proof": "qualified risk surface makes reuse unable to change COLD eligibility",
+      "comparator": {
+        "evidenceful_policy_event_lower_bound": 124,
+        "evidenceful_resident_mib_opportunity_integral": 40,
+        "pruned_resident_mib_opportunity_integral": 0,
+        "evidenceful_drift_alarm_count": 4,
+        "pruned_drift_alarm_count": 0,
+        "restore_count_both": 17,
+        "storage_read_mib_both": 136
+      },
+      "cost_delta": {
+        "resident_mib_opportunity_saved": 40,
+        "drift_alarm_count_avoided": 4
+      },
+      "decision_equivalence_verified": true
+    },
+    {
+      "plane_id": "cold-calibration-measurement",
+      "evidence_prs": [
+        154
+      ],
+      "qualification_run": 37203947209,
+      "independent_plane": true,
+      "proof": "under TWO_PROBE_MIN, probe 2 cannot reduce a first-probe reuse ceiling already equal to 1",
+      "comparator": {
+        "backtest_runs": 15,
+        "early_stop_runs": 2,
+        "full_two_probe_runs_retained": 13,
+        "unsafe_early_stops": 0,
+        "second_probe_surface_change_runs": 4
+      },
+      "cost_delta": {
+        "counterfactual_probe_latency_saved_ms": 23.969,
+        "median_saved_probe_latency_ms": 11.984
+      },
+      "decision_equivalence_verified": true
+    },
+    {
+      "plane_id": "physical-multistate-placement",
+      "evidence_prs": [
+        160,
+        161
+      ],
+      "qualification_run": 37210203932,
+      "independent_plane": true,
+      "proof": "when updated evidence leaves the optimal WARM set unchanged, physical actuation is unnecessary",
+      "comparator": {
+        "observed_minimal_delta_actions": 24,
+        "full_reenforcement_reference_actions": 40,
+        "action_reduction_fraction": 0.4,
+        "decision_irrelevant_zero_action_transitions": 1,
+        "warm_budget_mib": 40,
+        "physical_phase_count": 5
+      },
+      "cost_delta": {
+        "actions_avoided_vs_full_reenforcement": 16,
+        "decision_irrelevant_transition_actions": 0
+      },
+      "decision_equivalence_verified": true
+    }
+  ],
+  "meta_compilation": {
+    "evidence_prs": [
+      151,
+      152,
+      154,
+      160,
+      161,
+      155,
+      162
+    ],
+    "qualification_run": 37212952807,
+    "resident_skill": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
+    "resident_skill_count": 17,
+    "skill_count_growth": 0,
+    "catalog_budget_fraction_ceiling": 0.3,
+    "catalog_budget_gate": "PASS"
+  },
+  "lineage": {
+    "physical_evidence_heads": {
+      "fr_fp_032": "1482be29a324f720cf24893190734614996bd39f",
+      "fr_fp_033": "da728378dd014434eaac453ab9e40e90288b4c59",
+      "fr_fp_039": "20eb5fe79de27fffeb51fd75d1b83dce50fb015c"
+    },
+    "meta_heads": {
+      "fr_meta_021": "4d2a3c38bfec640537a8613e5cbf810c16ac1e82",
+      "fr_meta_022": "0c0f95c9fdcbfce2b7f546870bfbf6621948de4a"
+    }
+  },
+  "no_new_physical_run_for_export": true,
+  "authority_effect": "NONE",
+  "canonical_write": false,
+  "promotion": false,
+  "claim_ceiling": "THREE_PLANE_DECISION_RELEVANCE_RECEIPT_WITH_HETEROGENEOUS_COST_VECTOR_ONLY"
+}
