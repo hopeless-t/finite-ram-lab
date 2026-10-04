@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import time
 from pathlib import Path
@@ -11,9 +12,6 @@ from finite_ram_lab.fr_fp_016_restore_size_scaling import (
     _file_residency,
     _prepare_tier,
     _size_bytes,
-)
-from finite_ram_lab.fr_fp_030_hosted_reuse_lifecycle import (
-    _enforce_tier,
 )
 from finite_ram_lab.fr_fp_046_variable_size_knapsack import (
     STATE_SIZES_MIB,
@@ -33,6 +31,102 @@ BUDGET_SCHEDULE_MIB = (
 )
 INFEASIBLE_BUDGET_MIB = 24
 STATE_COUNT = len(STATE_SIZES_MIB)
+
+
+def _warm_file_sized(
+    path: Path,
+    *,
+    size_bytes: int,
+) -> int:
+    fd = os.open(
+        path,
+        os.O_RDONLY,
+    )
+    read = 0
+    chunk = 1024 * 1024
+
+    try:
+        while read < size_bytes:
+            data = os.pread(
+                fd,
+                min(
+                    chunk,
+                    size_bytes - read,
+                ),
+                read,
+            )
+
+            if not data:
+                raise RuntimeError(
+                    "unexpected_prefetch_eof"
+                )
+
+            read += len(
+                data
+            )
+
+        return read
+
+    finally:
+        os.close(fd)
+
+
+def _enforce_tier_sized(
+    path: Path,
+    *,
+    tier: str,
+    size_bytes: int,
+) -> dict[str, Any]:
+    if tier == "COLD":
+        _fadvise_dontneed(
+            path
+        )
+        time.sleep(
+            0.01
+        )
+        action = "DONTNEED"
+        prefetch_bytes = 0
+
+    elif tier == "WARM":
+        before = _file_residency(
+            path
+        )[
+            "resident_fraction"
+        ]
+
+        if before < 0.95:
+            prefetch_bytes = (
+                _warm_file_sized(
+                    path,
+                    size_bytes=size_bytes,
+                )
+            )
+            time.sleep(
+                0.005
+            )
+            action = "PREFETCH"
+        else:
+            prefetch_bytes = 0
+            action = "KEEP_WARM"
+
+    else:
+        raise ValueError(
+            f"unknown_tier:{tier}"
+        )
+
+    after = _file_residency(
+        path
+    )[
+            "resident_fraction"
+        ]
+
+    return {
+        "action": action,
+        "prefetch_bytes": (
+            prefetch_bytes
+        ),
+        "resident_fraction": after,
+    }
 
 
 def _snapshot(
@@ -210,13 +304,18 @@ def run_panel() -> dict[str, Any]:
         for state_id, path in (
             paths.items()
         ):
-            _enforce_tier(
+            _enforce_tier_sized(
                 path,
                 tier=(
                     "WARM"
                     if state_id
                     in initial
                     else "COLD"
+                ),
+                size_bytes=_size_bytes(
+                    sizes_mib[
+                        state_id
+                    ]
                 ),
             )
 
@@ -277,11 +376,16 @@ def run_panel() -> dict[str, Any]:
                         in current
                         else "COLD"
                     )
-                    row = _enforce_tier(
+                    row = _enforce_tier_sized(
                         paths[
                             state_id
                         ],
                         tier=target_tier,
+                        size_bytes=_size_bytes(
+                            sizes_mib[
+                                state_id
+                            ]
+                        ),
                     )
                     total_prefetch_bytes += int(
                         row[
