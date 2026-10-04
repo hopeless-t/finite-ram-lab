@@ -1,0 +1,37 @@
+{
+  "schema": "finite-ram-lab.fr-fp-056-physical-resident-pareto-data/v0.1",
+  "source": {
+    "fp054_workflow": 37224069602,
+    "fp055_workflow": 37224456783
+  },
+  "points": [
+    {
+      "policy_label": "RENT_0",
+      "memory_rent_ms_per_mib_round": 0.0,
+      "resident_mib_round": 4720.0,
+      "semantic_service_ms": 556.7703482924119,
+      "physical_actuation_ms": 92.917521
+    },
+    {
+      "policy_label": "RENT_0_10",
+      "memory_rent_ms_per_mib_round": 0.10,
+      "resident_mib_round": 3400.0,
+      "semantic_service_ms": 726.5274750286178,
+      "physical_actuation_ms": 20.183231
+    },
+    {
+      "policy_label": "RENT_0_25",
+      "memory_rent_ms_per_mib_round": 0.25,
+      "resident_mib_round": 480.0,
+      "semantic_service_ms": 1255.1245653206277,
+      "physical_actuation_ms": 19.069888
+    },
+    {
+      "policy_label": "RENT_0_40",
+      "memory_rent_ms_per_mib_round": 0.40,
+      "resident_mib_round": 0.0,
+      "semantic_service_ms": 1411.9784356560885,
+      "physical_actuation_ms": 0.001734
+    }
+  ]
+}

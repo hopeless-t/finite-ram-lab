@@ -1,0 +1,10 @@
+{
+  "schema": "finite-ram-lab.fr-fp-056/v0.1",
+  "title": "Typed hosted physical resident-service-actuation Pareto frontier",
+  "status": "REUSED_PHYSICAL_EVIDENCE_PARETO_CANDIDATE",
+  "parent": "FR-FP-055",
+  "new_physical_runs": 0,
+  "axes": ["resident_mib_round","semantic_service_ms","physical_actuation_ms"],
+  "scalar_gain": null,
+  "claim_ceiling": "FOUR_ANCHOR_HOSTED_PHYSICAL_PARETO_AND_CANDIDATE_CROSSOVERS_ONLY"
+}
