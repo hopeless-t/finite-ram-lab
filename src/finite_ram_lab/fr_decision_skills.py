@@ -73,7 +73,6 @@ SKILLS = (
         "when": {"coherent_transition": True},
         "action": "ATOMIC_BUNDLE_THEN_QUALIFY",
         "evidence_prs": [106],
-        "maturity": "QUALIFIED",
         "invalidate_on": ["transition_contains_independent_questions"],
     },
     {
@@ -82,7 +81,6 @@ SKILLS = (
         "when": {"meta_module_changed": True},
         "action": "QUALIFY_IN_GENERAL_CI",
         "evidence_prs": [107],
-        "maturity": "QUALIFIED",
         "invalidate_on": ["general_ci_no_longer_covers_meta_contract"],
     },
     {
@@ -166,7 +164,6 @@ SKILLS = (
         },
         "action": "USE_ANALYTIC_SURVIVAL_LAW",
         "evidence_prs": [127],
-        "maturity": "QUALIFIED",
         "invalidate_on": [
             "state_arrival_rate_changes",
             "transfer_throughput_changes",
@@ -185,7 +182,6 @@ SKILLS = (
         },
         "action": "ONE_PROBE_BASELINE_OPTIONAL_TWO_PROBE_MIN_IF_WORTH_COST_KEEP_TAIL_PRIOR",
         "evidence_prs": [140, 141],
-        "maturity": "QUALIFIED",
         "invalidate_on": [
             "fixture_or_tail_changes",
             "cross_run_prior_invalidated",
@@ -200,7 +196,6 @@ SKILLS = (
         },
         "action": "PRUNE_PROVEN_DECISION_IRRELEVANT_WORK",
         "evidence_prs": [151, 152, 154, 161],
-        "maturity": "QUALIFIED",
         "invalidate_on": [
             "decision_relevance_changes",
             "skip_safety_contract_invalidated",
@@ -215,7 +210,6 @@ SKILLS = (
         },
         "action": "STOP_INFORMATION_ACQUISITION_TAKE_ROBUST_ACTION",
         "evidence_prs": [168, 169],
-        "maturity": "QUALIFIED",
         "invalidate_on": [
             "information_value_bound_invalidated",
             "acquisition_cost_changed",
@@ -261,7 +255,11 @@ def validate_skills() -> None:
             raise RuntimeError(f"skill_without_trigger:{skill_id}")
         if not skill["action"]:
             raise RuntimeError(f"skill_without_action:{skill_id}")
-        if skill["maturity"] not in {
+        maturity = skill.get(
+            "maturity",
+            "QUALIFIED",
+        )
+        if maturity not in {
             "STABLE",
             "STABLE_GUARD",
             "QUALIFIED",
@@ -301,7 +299,10 @@ def _capsule(skill: dict[str, Any]) -> dict[str, Any]:
             "mc",
             "SKIP",
         ),
-        "maturity": skill["maturity"],
+        "maturity": skill.get(
+            "maturity",
+            "QUALIFIED",
+        ),
         "evidence_prs": skill["evidence_prs"],
         "invalidate_on": skill["invalidate_on"],
     }
