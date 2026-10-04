@@ -1,0 +1,11 @@
+{
+  "schema": "finite-ram-lab.fr-fp-058/v0.1",
+  "title": "Compile fully physical rent policy family into interval lookup",
+  "status": "COMPILED_POLICY_LOOKUP_CANDIDATE",
+  "parent": "FR-FP-057",
+  "compiled_path_count": 7,
+  "threshold_count": 6,
+  "validation_grid_points_min": 50001,
+  "resident_capsule_fraction_max": 0.30,
+  "claim_ceiling": "COMPILED_LOOKUP_FOR_THE_EIGHT_FP057_HOSTED_PHYSICAL_POLICY_PATHS_ONLY"
+}
