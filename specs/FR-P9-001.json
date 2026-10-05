@@ -1,0 +1,35 @@
+{
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "experiment_id": "FR-P9-001",
+  "title": "Minimum sufficient resident projection from canonical semantic state",
+  "status": "CANDIDATE",
+  "parent_head": "d267515bf663d68f24879cc9d8ef06d4abf71570",
+  "research_question": "Can a canonical semantic state be treated as backing truth while a smaller per-work runtime projection preserves decision, verification, recovery, and capability requirements?",
+  "hypothesis": "A dependency-closed projection compiled from all declared contract planes can be much smaller than the canonical universe while remaining contract-equivalent to full residency; a decision-only slice will produce false confidence by dropping verification or recovery requirements.",
+  "arms": [
+    "FULL_CANONICAL_RESIDENCY",
+    "DECISION_ONLY_SLICE_ADVERSARY",
+    "COMPILED_MULTI_PLANE_PROJECTION"
+  ],
+  "contract_planes": [
+    "decision",
+    "verification",
+    "recovery",
+    "capability"
+  ],
+  "primary_oracles": [
+    "compiled contract equals full contract for every work unit",
+    "removing any compiled atom breaks at least one declared contract plane",
+    "decision-only projection is detected as insufficient",
+    "compiled byte-rounds are lower than full byte-rounds"
+  ],
+  "failure_conditions": [
+    "unknown dependency",
+    "dependency cycle",
+    "compiled/full contract mismatch",
+    "selected atom with no contract-plane witness",
+    "decision-only adversary incorrectly passes the complete contract"
+  ],
+  "claim_ceiling": "SYNTHETIC_DECLARED_DEPENDENCY_FIXTURE_ONLY_NO_PHYSICAL_RAM_OR_PCG_PERFORMANCE_CLAIM",
+  "next_gate": "Add measured topology and migration costs, then test re-planning after resource observation before any physical-PCG performance claim."
+}
