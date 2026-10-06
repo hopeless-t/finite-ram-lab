@@ -1,0 +1,45 @@
+{
+  "schema": "finite-ram-lab.fr-p9-009-spec/v0.1",
+  "experiment_id": "FR-P9-009",
+  "title": "Kernel-Enforced Cgroup Quota Replan",
+  "question": "Does a physically enforced cgroup v2 memory.max boundary invalidate a measured high-concurrency plan and force a lower-concurrency semantic-equivalent replan?",
+  "fixture": {
+    "host": "GitHub-hosted Ubuntu 24.04",
+    "cgroup": "v2 memory controller",
+    "payload_mib": 8,
+    "workspace_mib_per_worker": 16,
+    "worker_classes": [2, 4],
+    "jobs": 12,
+    "sha256_rounds_per_job": 4,
+    "calibration_repetitions": 2,
+    "high_quota_mib": 256,
+    "residency_mode": "KEEP_WARM"
+  },
+  "quota_derivation": {
+    "n2_required": "max calibrated N2 memory.peak",
+    "n4_floor": "min calibrated N4 memory.peak",
+    "minimum_required_separation_mib": 12,
+    "tight_quota": "N2 required + max(4 MiB, one quarter of the measured separation)"
+  },
+  "preregistered_expectations": {
+    "high_quota_n2": "COMPLETED",
+    "high_quota_n4": "COMPLETED",
+    "tight_quota_prediction_n2": "FEASIBLE",
+    "tight_quota_prediction_n4": "INFEASIBLE",
+    "tight_quota_n4": "KERNEL_OOM_KILL_INSIDE_ISOLATED_CGROUP",
+    "tight_quota_n2": "COMPLETED_WITHOUT_OOM",
+    "semantic_result": "IDENTICAL_JOB_DIGEST_MAP"
+  },
+  "hard_invariants": [
+    "parent monitor remains outside the constrained cgroup",
+    "quota is derived only after physical calibration",
+    "tight quota must lie strictly between measured N2 and N4 envelopes",
+    "kernel OOM evidence is isolated to the disposable cgroup",
+    "replanned N2 workload preserves deterministic job semantics",
+    "resource feasibility does not grant execution authority",
+    "OOM or replan does not grant retry permission"
+  ],
+  "scalar_gain": null,
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_CGROUP_V2_QUOTA_AND_HASHING_PROXY_ONLY_NO_UNIVERSAL_MEMORY_THRESHOLD_OR_APPLICATION_PERFORMANCE_CLAIM",
+  "next_falsifier": "make residency policy physical too and test whether FAULT_IN rescues a concurrency class under the same kernel quota"
+}
