@@ -1,0 +1,89 @@
+{
+  "schema": "finite-ram-lab.fr-p9-002-resource-epoch-replan/v0.1",
+  "status": "FROZEN_SYNTHETIC_RESOURCE_REPLAN_SPEC",
+  "parent": "FR-P9-001",
+  "research_question": "Can a semantically sufficient runtime projection become physically invalid after materialization, and can replanning be triggered only by planner-relevant resource changes rather than every observation epoch?",
+  "hypotheses": [
+    "A startup placement can become infeasible after runtime/page-cache/workspace materialization changes available RAM.",
+    "A planner-relevant resource certificate is a narrower invalidation surface than global observation epoch identity.",
+    "Replanning can change physical placement while preserving the exact FR-P9-001 semantic projection.",
+    "If a required backing tier disappears and RAM is insufficient, admission must fail closed rather than discard semantic atoms.",
+    "Resource replanning grants neither execution authority nor retry permission."
+  ],
+  "fixture": {
+    "semantic_projection_source": "FR-P9-001 GENERATE_CHUNK compiled projection",
+    "startup": {
+      "epoch": 7,
+      "ram_free_bytes": 8192,
+      "ssd_available": true,
+      "ssd_read_bytes_per_second": 2500000000
+    },
+    "irrelevant_epoch_control": {
+      "epoch": 8,
+      "ram_free_bytes": 8192,
+      "ssd_available": true,
+      "ssd_read_bytes_per_second": 2500000000
+    },
+    "post_materialization": {
+      "epoch": 9,
+      "ram_free_bytes": 6144,
+      "ssd_available": true,
+      "ssd_read_bytes_per_second": 2500000000
+    },
+    "topology_loss": {
+      "epoch": 10,
+      "ram_free_bytes": 6144,
+      "ssd_available": false,
+      "ssd_read_bytes_per_second": 0
+    }
+  },
+  "planner_policy": {
+    "objective_order": [
+      "min_current_phase_transfer_bytes",
+      "min_migration_bytes",
+      "min_ssd_bytes",
+      "deterministic_tie_break"
+    ],
+    "scalar_gain": null,
+    "certificate_fields": [
+      "ram_free_bytes",
+      "ssd_available",
+      "ssd_read_bytes_per_second"
+    ],
+    "non_certificate_provenance_fields": [
+      "epoch",
+      "observer_note"
+    ]
+  },
+  "primary_oracles": [
+    "startup projection is all-RAM",
+    "irrelevant epoch-only change preserves the resource certificate and placement",
+    "post-materialization resource change invalidates the startup plan",
+    "the stale startup plan is physically infeasible under the post-materialization snapshot",
+    "replanning preserves the semantic atom set",
+    "replanning restores physical feasibility without current GENERATE-phase transfer",
+    "the frozen pressure fixture moves checkpoint_manifest and collision_verifier to SSD",
+    "SSD topology loss returns no feasible plan",
+    "authority_effect remains NONE and retry_authority remains false"
+  ],
+  "frozen_expected": {
+    "semantic_projection_bytes": 7968,
+    "startup_ssd_bytes": 0,
+    "post_materialization_ssd_bytes": 1920,
+    "post_materialization_moved_atoms": [
+      "checkpoint_manifest",
+      "collision_verifier"
+    ],
+    "post_materialization_current_phase_transfer_bytes": 0,
+    "topology_loss_plan": null
+  },
+  "invariants": [
+    "semantic projection != physical placement",
+    "observation epoch != planner-relevant resource change",
+    "resource freshness != execution authority",
+    "replan != retry permission",
+    "topology loss must fail closed rather than drop semantic atoms"
+  ],
+  "next_falsifier": "Add phase transitions and measured transfer/recompute timing, then test when warm capability residency beats repeated fault-in.",
+  "claim_ceiling": "SYNTHETIC_RESOURCE_CERTIFICATE_AND_REPLAN_FIXTURE_ONLY_NO_PHYSICAL_PLACEMENT_OR_PERFORMANCE_CLAIM"
+}
