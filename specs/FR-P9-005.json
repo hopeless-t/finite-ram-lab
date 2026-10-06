@@ -1,0 +1,43 @@
+{
+  "schema": "finite-ram-lab.fr-p9-005-concurrency-frontier/v0.1",
+  "status": "FROZEN_HOSTED_SHARED_CAPABILITY_CONCURRENCY_SPEC",
+  "parent": "FR-P9-004",
+  "research_question": "After immutable capability replication is removed, how should worker count be selected when queueing/progress and residual process residency move in different directions?",
+  "hosted_proxy": {
+    "runner": "ubuntu-24.04",
+    "payload_mib": 4,
+    "worker_counts": [1, 2, 4],
+    "jobs": 12,
+    "hash_rounds_per_job": 8,
+    "repetitions": 2,
+    "capability_placement": "read-only shared mmap prefaulted before start barrier",
+    "run_order": "ascending worker counts then descending worker counts"
+  },
+  "typed_objectives": [
+    "total_pss_kib",
+    "wall_ns",
+    "p95_queue_wait_ns",
+    "p95_service_ns",
+    "p95_sojourn_ns"
+  ],
+  "primary_oracles": [
+    "all job digests are stable across repetitions",
+    "all job digests are stable across worker counts",
+    "all measured cost dimensions are positive where defined",
+    "the measured Pareto frontier is non-empty",
+    "no worker count is preregistered as the winner",
+    "no scalar gain is emitted without an external price or hard constraint"
+  ],
+  "nonclaims": [
+    "The observed fastest worker count is not a universal optimum.",
+    "The observed lowest-PSS worker count is not a universal optimum.",
+    "This batch hashing proxy is not application throughput for Strata, PCG, or AI workers.",
+    "Shared mmap does not eliminate page-fault, cache, coordination, or contention costs.",
+    "Capability availability does not grant execution authority."
+  ],
+  "selection_rule": "Use the measured typed frontier plus explicit caller constraints or prices; do not maximize worker count by default.",
+  "scalar_gain": null,
+  "authority_effect": "NONE",
+  "next_falsifier": "Add finite memory pressure and phase fault-in so worker count and residency policy must be chosen jointly rather than as independent knobs.",
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_SHARED_MMAP_BATCH_CONCURRENCY_PROXY_ONLY_NO_UNIVERSAL_WORKER_COUNT_OR_APPLICATION_THROUGHPUT_CLAIM"
+}
