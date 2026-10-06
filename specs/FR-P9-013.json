@@ -1,0 +1,32 @@
+{
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "experiment_id": "FR-P9-013",
+  "title": "External-validity probe with compressed reconstruction and strided arithmetic",
+  "part": 9,
+  "classification": "HOSTED_PHYSICAL_CGROUP_V2_EXTERNAL_VALIDITY",
+  "question": "Does the horizon-dependent KEEP_WARM versus FAULT_IN price-boundary ordering survive when the cold representation is gzip-compressed, runtime capability state is reconstructed into anonymous mmap, and semantic work uses strided arithmetic instead of the P9-011 hashing proxy?",
+  "frozen_fixture": {
+    "payload_mib": 16,
+    "workspace_mib": 24,
+    "rounds": 2,
+    "transition_counts": [2, 4, 8],
+    "repetitions": 2,
+    "high_quota_mib": 128,
+    "cold_representation": "gzip-compressed deterministic patterned bytes",
+    "runtime_representation": "anonymous writable mmap",
+    "semantic_work": "deterministic page-stride arithmetic"
+  },
+  "preregistered_gates": [
+    "all high-quota runs complete without kernel OOM",
+    "workspace and semantic signatures match across modes and repetitions at each horizon",
+    "compressed source is less than one sixteenth of runtime capability bytes",
+    "FAULT_IN reduces kernel memory peak by at least 8 MiB at horizons 2,4,8",
+    "FAULT_IN has higher total reconstruction time than KEEP_WARM at horizons 2,4,8",
+    "the derived break-even external RAM price rises monotonically over horizons 2,4,8",
+    "authority and retry authority remain unchanged"
+  ],
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_CGROUP_V2_COMPRESSED_RECONSTRUCTION_AND_STRIDED_ARITHMETIC_PROXY_ONLY_NO_UNIVERSAL_POLICY_OR_APPLICATION_PERFORMANCE_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "scalar_gain": null
+}
