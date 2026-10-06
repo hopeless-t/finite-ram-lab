@@ -1,0 +1,51 @@
+name: FR-P9-009 Kernel Quota Replan
+
+on:
+  push:
+    branches:
+      - research/fr-p9-009-cgroup-quota-probe
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted helper tests
+        run: python -m unittest tests.test_fr_p9_009_cgroup_quota_replan -v
+      - name: Run kernel-enforced quota falsifier
+        run: |
+          mkdir -p runs/FR-P9-009
+          python -m finite_ram_lab.fr_p9_009_cgroup_quota_replan \
+            --payload-mib 8 --workspace-mib 16 --jobs 12 --rounds 4 \
+            --calibration-repetitions 2 --high-quota-mib 256 \
+            > runs/FR-P9-009/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-009/result.json"))
+          assert r["status"] == "PASS"
+          assert r["authority_effect"] == "NONE"
+          assert r["retry_authority"] is False
+          assert r["scalar_gain"] is None
+          assert r["checks"]["tight_n4_triggers_isolated_kernel_oom"] is True
+          assert r["checks"]["tight_n2_completes_without_oom"] is True
+          assert r["checks"]["replan_preserves_job_semantics"] is True
+          assert r["tight_n4"]["oom_kill_delta"] > 0
+          assert r["tight_n2"]["oom_kill_delta"] == 0
+          assert all(r["checks"].values())
+          PY
+          sha256sum specs/FR-P9-009.json
+          sha256sum runs/FR-P9-009/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-009-kernel-quota-replan
+          path: runs/FR-P9-009/result.json
+          if-no-files-found: error
