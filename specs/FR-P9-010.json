@@ -1,0 +1,31 @@
+{
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "experiment_id": "FR-P9-010",
+  "title": "Physical phase-overlap residency under one kernel quota",
+  "part": 9,
+  "classification": "HOSTED_PHYSICAL_CGROUP_V2_PROXY",
+  "question": "Can phase-separated FAULT_IN preserve the same four-worker concurrency class under a kernel memory quota that kills KEEP_WARM because of simultaneous lifetime overlap?",
+  "frozen_fixture": {
+    "workers": 4,
+    "payload_mib": 8,
+    "workspace_mib_per_worker": 16,
+    "jobs": 12,
+    "hash_rounds": 4,
+    "calibration_repetitions": 2,
+    "high_quota_mib": 256
+  },
+  "preregistered_gates": [
+    "both residency modes complete under high quota",
+    "job digests and phase-A workspace signatures match across modes",
+    "measured KEEP_WARM and FAULT_IN peaks differ by at least 8 MiB",
+    "tight quota is derived strictly between measured FAULT_IN required peak and KEEP_WARM floor",
+    "KEEP_WARM triggers isolated kernel OOM under tight quota",
+    "FAULT_IN completes under the same tight quota with zero OOM kills",
+    "same four workers and same kernel quota are used for the rescue comparison",
+    "authority and retry authority remain unchanged"
+  ],
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_CGROUP_V2_PHASE_OVERLAP_AND_HASHING_PROXY_ONLY_NO_UNIVERSAL_RESIDENCY_POLICY_OR_APPLICATION_PERFORMANCE_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "scalar_gain": null
+}

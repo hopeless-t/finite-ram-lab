@@ -1,0 +1,52 @@
+name: FR-P9-010 Phase Overlap Residency
+
+on:
+  push:
+    branches:
+      - research/fr-p9-010-phase-overlap-residency
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted helper tests
+        run: python -m unittest tests.test_fr_p9_010_phase_overlap_residency -v
+      - name: Run physical phase-overlap falsifier
+        run: |
+          mkdir -p runs/FR-P9-010
+          python -m finite_ram_lab.fr_p9_010_phase_overlap_residency \
+            --payload-mib 8 --workspace-mib 16 --workers 4 --jobs 12 --rounds 4 \
+            --calibration-repetitions 2 --high-quota-mib 256 \
+            > runs/FR-P9-010/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-010/result.json"))
+          assert r["status"] == "PASS"
+          assert r["authority_effect"] == "NONE"
+          assert r["retry_authority"] is False
+          assert r["scalar_gain"] is None
+          assert r["checks"]["tight_keep_warm_triggers_isolated_kernel_oom"] is True
+          assert r["checks"]["tight_fault_in_completes_without_oom"] is True
+          assert r["checks"]["fault_in_rescue_preserves_job_semantics"] is True
+          assert r["checks"]["same_worker_count_and_same_kernel_quota"] is True
+          assert r["tight_keep_warm"]["oom_kill_delta"] > 0
+          assert r["tight_fault_in"]["oom_kill_delta"] == 0
+          assert all(r["checks"].values())
+          PY
+          sha256sum specs/FR-P9-010.json
+          sha256sum runs/FR-P9-010/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-010-phase-overlap-residency
+          path: runs/FR-P9-010/result.json
+          if-no-files-found: error
