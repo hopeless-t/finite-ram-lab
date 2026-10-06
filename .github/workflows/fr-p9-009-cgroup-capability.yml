@@ -1,0 +1,41 @@
+name: FR-P9-009 Cgroup Capability Probe
+
+on:
+  push:
+    branches:
+      - research/fr-p9-009-cgroup-quota-probe
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Probe isolated cgroup v2 memory domain
+        run: |
+          mkdir -p runs/FR-P9-009-CGROUP-PROBE
+          python -m finite_ram_lab.fr_p9_009_cgroup_capability_probe \
+            --payload-mib 16 --memory-max-mib 128 \
+            > runs/FR-P9-009-CGROUP-PROBE/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-009-CGROUP-PROBE/result.json"))
+          assert r["status"] == "PASS"
+          assert r["authority_effect"] == "NONE"
+          assert all(r["checks"].values())
+          assert r["memory_current_bytes"] > 0
+          assert r["memory_events_after"].get("oom", 0) == r["memory_events_before"].get("oom", 0)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-009-cgroup-capability-probe
+          path: runs/FR-P9-009-CGROUP-PROBE/result.json
+          if-no-files-found: error
