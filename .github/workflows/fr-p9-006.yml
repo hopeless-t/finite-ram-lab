@@ -1,0 +1,53 @@
+name: FR-P9-006 Joint Residency Concurrency
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-p9-006-joint-residency-concurrency
+    paths:
+      - "src/finite_ram_lab/fr_p9_006_joint_residency_concurrency.py"
+      - "tests/test_fr_p9_006_joint_residency_concurrency.py"
+      - "specs/FR-P9-006.json"
+      - "docs/FR-P9-006-JOINT-RESIDENCY-CONCURRENCY.md"
+      - ".github/workflows/fr-p9-006.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_fr_p9_006_joint_residency_concurrency -v
+      - name: Run joint composition falsifier
+        run: |
+          mkdir -p runs/FR-P9-006
+          python -m finite_ram_lab.fr_p9_006_joint_residency_concurrency \
+            > runs/FR-P9-006/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-006/result.json"))
+          assert r["status"] == "PASS"
+          assert r["authority_effect"] == "NONE"
+          assert r["scalar_gain"] is None
+          assert r["checks"]["independent_composition_is_infeasible"] is True
+          assert r["checks"]["four_worker_fault_in_remains_feasible"] is True
+          assert r["checks"]["two_worker_keep_warm_remains_feasible"] is True
+          assert len(r["plans"]) == 6
+          PY
+          sha256sum specs/FR-P9-006.json
+          sha256sum runs/FR-P9-006/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-006-joint-residency-concurrency
+          path: runs/FR-P9-006/result.json
+          if-no-files-found: error
