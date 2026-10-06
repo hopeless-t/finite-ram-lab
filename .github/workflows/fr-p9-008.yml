@@ -1,0 +1,51 @@
+name: FR-P9-008 Online Joint Replan
+
+on:
+  push:
+    branches:
+      - research/fr-p9-008-online-joint-replan
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_fr_p9_008_online_joint_replan -v
+      - name: Run hosted measurement-anchored online replan
+        run: |
+          mkdir -p runs/FR-P9-008
+          python -m finite_ram_lab.fr_p9_008_online_joint_replan \
+            --physical --payload-mib 8 --jobs 12 --rounds 6 \
+            --repetitions 2 --idle-gap-seconds 0.20 \
+            > runs/FR-P9-008/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-008/result.json"))
+          assert r["status"] == "PASS"
+          assert r["authority_effect"] == "NONE"
+          assert r["retry_authority"] is False
+          assert r["scalar_gain"] is None
+          assert r["startup"]["selected_plan"]["plan_id"] == "N4:KEEP_WARM"
+          assert r["pressure_transition"]["replanned"]["plan_id"] == "N2:KEEP_WARM"
+          assert r["irrelevant_epoch_control"]["admission"] == "RESOURCE_PLAN_VALID_AUTHORITY_STILL_REQUIRED"
+          assert r["pressure_transition"]["stale_admission"] == "REPLAN_REQUIRED"
+          assert r["measurement_drift_admission"] == "REMEASURE_OR_REPLAN_REQUIRED"
+          assert all(r["checks"].values())
+          PY
+          sha256sum specs/FR-P9-008.json
+          sha256sum runs/FR-P9-008/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-008-online-joint-replan
+          path: runs/FR-P9-008/result.json
+          if-no-files-found: error
