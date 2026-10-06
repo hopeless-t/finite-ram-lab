@@ -37,6 +37,26 @@ def _write_payload(path: Path, payload_bytes: int) -> str:
     return digest.hexdigest()
 
 
+def _publish_text_atomic(path: Path, content: str) -> None:
+    """Publish a barrier/receipt only after its content is complete.
+
+    The first hosted attempt exposed a TOCTOU race: `Path.exists()` can become
+    true after `write_text()` creates the file but before the JSON/timestamp is
+    fully visible to another process. Publish through a sibling temporary file
+    and `os.replace()` so existence means complete content.
+    """
+
+    tmp = path.with_name(
+        f".{path.name}.{os.getpid()}.{time.monotonic_ns()}.tmp"
+    )
+    tmp.write_text(content)
+    os.replace(tmp, path)
+
+
+def _publish_json_atomic(path: Path, payload: dict[str, Any]) -> None:
+    _publish_text_atomic(path, json.dumps(payload, sort_keys=True))
+
+
 def _read_pss_kib(pid: int) -> int:
     for line in Path(f"/proc/{pid}/smaps_rollup").read_text().splitlines():
         if line.startswith("Pss:"):
@@ -102,16 +122,14 @@ def _child(
     elif mode != "FAULT_IN":
         raise ValueError(f"unknown_mode:{mode}")
 
-    ready_path.write_text(
-        json.dumps(
-            {
-                "pid": os.getpid(),
-                "mode": mode,
-                "prepare_ns": prepare_ns,
-                "capability_digest": capability_digest,
-            },
-            sort_keys=True,
-        )
+    _publish_json_atomic(
+        ready_path,
+        {
+            "pid": os.getpid(),
+            "mode": mode,
+            "prepare_ns": prepare_ns,
+            "capability_digest": capability_digest,
+        },
     )
 
     while not load_start_path.exists():
@@ -126,18 +144,16 @@ def _child(
         resume_ns = 0
 
     assert mapped is not None
-    loaded_path.write_text(
-        json.dumps(
-            {
-                "pid": os.getpid(),
-                "mode": mode,
-                "resume_ns": resume_ns,
-                "loaded_at_ns": time.monotonic_ns(),
-                "load_start_ns": load_start_ns,
-                "capability_digest": capability_digest,
-            },
-            sort_keys=True,
-        )
+    _publish_json_atomic(
+        loaded_path,
+        {
+            "pid": os.getpid(),
+            "mode": mode,
+            "resume_ns": resume_ns,
+            "loaded_at_ns": time.monotonic_ns(),
+            "load_start_ns": load_start_ns,
+            "capability_digest": capability_digest,
+        },
     )
 
     while not work_start_path.exists():
@@ -161,7 +177,7 @@ def _child(
             }
         )
 
-    result_path.write_text(json.dumps({"jobs": job_rows}, sort_keys=True))
+    _publish_json_atomic(result_path, {"jobs": job_rows})
     mapped.close()
     return 0
 
@@ -250,7 +266,7 @@ def _run_arm(
         time.sleep(idle_gap_seconds)
         load_start_ns = time.monotonic_ns()
         idle_elapsed_ns = load_start_ns - idle_begin_ns
-        load_start_path.write_text(str(load_start_ns))
+        _publish_text_atomic(load_start_path, str(load_start_ns))
 
         _wait_paths(loaded_paths, processes)
         loaded = [json.loads(path.read_text()) for path in loaded_paths]
@@ -259,7 +275,7 @@ def _run_arm(
         child_resume_ns = max(int(row["resume_ns"]) for row in loaded)
 
         work_start_ns = time.monotonic_ns()
-        work_start_path.write_text(str(work_start_ns))
+        _publish_text_atomic(work_start_path, str(work_start_ns))
 
         for process in processes:
             process.wait(timeout=120)
