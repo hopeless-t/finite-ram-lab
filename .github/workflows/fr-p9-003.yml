@@ -1,0 +1,55 @@
+name: FR-P9-003 Phase Residency Frontier
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/fr-p9-003-phase-residency-frontier
+    paths:
+      - "src/finite_ram_lab/fr_p9_003_phase_residency.py"
+      - "tests/test_fr_p9_003_phase_residency.py"
+      - "specs/FR-P9-003.json"
+      - "docs/FR-P9-003-PHASE-RESIDENCY-FRONTIER.md"
+      - ".github/workflows/fr-p9-003.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted tests
+        run: python -m unittest tests.test_fr_p9_003_phase_residency -v
+      - name: Run hosted file-fault proxy
+        run: |
+          mkdir -p runs/FR-P9-003
+          python -m finite_ram_lab.fr_p9_003_phase_residency \
+            --physical --payload-mib 8 --repetitions 6 \
+            > runs/FR-P9-003/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-003/result.json"))
+          assert r["status"] == "PASS"
+          assert r["scalar_gain"] is None
+          assert r["authority_effect"] == "NONE"
+          assert r["probe"]["payload_bytes"] == 8 * 1024 * 1024
+          assert r["probe"]["repetitions"] == 6
+          assert len(r["phase_frontier"]) == 3
+          assert all(not row["warm_dominates"] for row in r["phase_frontier"])
+          assert all(not row["fault_dominates"] for row in r["phase_frontier"])
+          PY
+          sha256sum specs/FR-P9-003.json
+          sha256sum runs/FR-P9-003/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-003-phase-residency-frontier
+          path: runs/FR-P9-003/result.json
+          if-no-files-found: error

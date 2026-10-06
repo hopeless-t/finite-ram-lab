@@ -1,0 +1,47 @@
+{
+  "schema": "finite-ram-lab.fr-p9-003-phase-residency/v0.1",
+  "status": "FROZEN_HOSTED_PROXY_PHASE_RESIDENCY_SPEC",
+  "parent": "FR-P9-002",
+  "research_question": "Does a universal HOT/WARM/COLD threshold exist for a capability across phase gaps, or do KEEP_WARM and FAULT_IN remain typed Pareto alternatives until an external price or hard constraint is supplied?",
+  "policies": [
+    "KEEP_WARM",
+    "FAULT_IN"
+  ],
+  "typed_cost_vector": [
+    "resident_byte_seconds",
+    "requested_transfer_bytes",
+    "resume_latency_ns"
+  ],
+  "hosted_proxy": {
+    "runner": "ubuntu-24.04",
+    "payload_mib": 8,
+    "repetitions": 6,
+    "phase_gap_seconds": [0.1, 1.0, 10.0],
+    "fault_in_method": "best-effort POSIX_FADV_DONTNEED then file read plus SHA256 verification",
+    "warm_method": "resident bytes plus SHA256 verification",
+    "ordering": "alternating warm-first and fault-first"
+  },
+  "primary_oracles": [
+    "warm and fault-in return the same SHA256 digest",
+    "KEEP_WARM has zero requested transfer bytes",
+    "FAULT_IN has zero gap resident byte-seconds",
+    "for every positive phase gap, neither policy Pareto-dominates the other on the frozen typed vector",
+    "no scalar gain is emitted without an explicit external price vector"
+  ],
+  "scalarization": {
+    "default": null,
+    "allowed_only_with_external_prices": true,
+    "break_even_formula": "gap* = [p_transfer*B + p_latency*(L_fault-L_warm)] / (p_resident*B)",
+    "no_finite_threshold_when_resident_byte_second_price_nonpositive": true
+  },
+  "invariants": [
+    "semantic temperature != physical residency",
+    "warm residency trades byte-time for lower requested transfer",
+    "fault-in trades transfer/resume work for lower gap residency",
+    "hosted file-read latency is a proxy, not a universal SSD law",
+    "no external price vector => no universal warm/cold winner"
+  ],
+  "authority_effect": "NONE",
+  "next_falsifier": "Add repeated phase transitions and capability reuse counts, then measure parallelism/cache-sharing taxes before admitting KEEP_WARM.",
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_FILE_READ_PROXY_AND_TYPED_COST_FRONTIER_ONLY_NO_UNIVERSAL_STORAGE_OR_HOST_THRESHOLD_CLAIM"
+}
