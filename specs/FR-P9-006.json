@@ -1,0 +1,52 @@
+{
+  "schema": "finite-ram-lab.fr-p9-006-joint-residency-concurrency/v0.1",
+  "status": "FROZEN_SYNTHETIC_JOINT_COMPOSITION_SPEC",
+  "parent": "FR-P9-005",
+  "research_question": "Can independently attractive concurrency and residency choices compose into an infeasible plan when they consume the same finite memory budget?",
+  "memory_cap_kib": 50000,
+  "worker_evidence_anchor": {
+    "source": "FR-P9-005 qualified hosted medians",
+    "profiles": [
+      {"workers": 1, "active_pss_kib": 15395, "work_wall_ns": 256454324},
+      {"workers": 2, "active_pss_kib": 24937, "work_wall_ns": 128979271},
+      {"workers": 4, "active_pss_kib": 42864, "work_wall_ns": 70568943}
+    ]
+  },
+  "residency_fixture": {
+    "classification": "synthetic shape inspired by FR-P9-003; not a directly comparable physical measurement",
+    "KEEP_WARM": {
+      "idle_capability_pss_kib": 8192,
+      "requested_transfer_bytes": 0,
+      "resume_penalty_ns": 0,
+      "resident_byte_seconds": 8388608
+    },
+    "FAULT_IN": {
+      "idle_capability_pss_kib": 0,
+      "requested_transfer_bytes": 8388608,
+      "resume_penalty_ns": 2668202,
+      "resident_byte_seconds": 0
+    }
+  },
+  "primary_oracles": [
+    "exactly six worker/residency combinations are enumerated",
+    "the independently fastest worker count is four",
+    "the independently transfer/latency-preferred residency policy is KEEP_WARM",
+    "the independently selected N=4 plus KEEP_WARM composition exceeds the frozen memory cap",
+    "the joint feasible set remains non-empty",
+    "N=4 plus FAULT_IN remains feasible",
+    "N=2 plus KEEP_WARM remains feasible",
+    "the feasible typed Pareto frontier remains non-empty"
+  ],
+  "typed_objectives": [
+    "prestart_pss_kib",
+    "requested_transfer_bytes",
+    "predicted_completion_ns",
+    "resident_byte_seconds"
+  ],
+  "decision": "DO_NOT_COMPOSE_INDEPENDENT_CONCURRENCY_AND_RESIDENCY_OPTIMA;SOLVE_THE_JOINT_FEASIBLE_TYPED_FRONTIER",
+  "scalar_gain": null,
+  "authority_effect": "NONE",
+  "claim_boundary": "Cross-proxy shapes are used only to construct a synthetic composition falsifier. No physical joint optimum or host memory recommendation is claimed.",
+  "next_falsifier": "Measure KEEP_WARM and FAULT_IN under the same hosted payload, worker counts, queue workload, and memory-accounting surface.",
+  "claim_ceiling": "SYNTHETIC_JOINT_COMPOSITION_USING_QUALIFIED_PROXY_SHAPES_ONLY_NO_PHYSICAL_JOINT_OPTIMUM_CLAIM"
+}
