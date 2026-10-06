@@ -1,0 +1,29 @@
+{
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "experiment_id": "FR-P9-012",
+  "title": "Compile repeated-residency typed evidence into horizon/price policy regions",
+  "part": 9,
+  "classification": "ANALYTIC_COMPILATION_OVER_HOSTED_FR_P9_011_ANCHORS",
+  "source_evidence": {
+    "experiment": "FR-P9-011",
+    "pr": 203,
+    "artifact_sha256": "4ac83d72124f3982d8cebb860d04e54628d75dc8356f7cd703baf7fce5113b59",
+    "anchor_statistic": "median_of_two_hosted_repetitions_per_mode_and_horizon"
+  },
+  "question": "Can the hosted P9-011 typed frontier be compiled into exact policy regions without inventing a scalar objective, using hard capacity/latency feasibility first and only an externally supplied RAM price when both policies remain feasible?",
+  "external_price_unit": "nanoseconds_per_MiB_of_peak_memory",
+  "frozen_horizons": [1, 2, 4, 8],
+  "preregistered_gates": [
+    "hard capacity and latency feasibility are applied before any external price",
+    "when both policies remain feasible and no external price is supplied, decision remains TYPED_FRONTIER_UNRESOLVED",
+    "negative external prices fail closed",
+    "exact break-even price produces PRICE_TIE",
+    "compiled region lookup matches an independent direct priced-cost solver over at least 1000 boundary-focused comparisons",
+    "break-even external RAM price rises monotonically over the frozen reuse horizons",
+    "policy compilation does not grant execution authority or retry permission"
+  ],
+  "claim_ceiling": "ANALYTIC_POLICY_BOUNDARY_COMPILATION_OVER_HOSTED_FR_P9_011_MEDIAN_ANCHORS_ONLY_NO_UNIVERSAL_MEMORY_PRICE_OR_APPLICATION_POLICY_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "scalar_gain": null
+}
