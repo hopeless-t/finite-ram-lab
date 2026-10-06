@@ -1,0 +1,35 @@
+{
+  "schema": "finite-ram-lab.fr-p9-004-parallelism-residency-tax/v0.1",
+  "status": "FROZEN_HOSTED_PSS_PARALLELISM_SPEC",
+  "parent": "FR-P9-003",
+  "research_question": "How much resident-state tax is created when parallel workers privately replicate the same immutable capability, and how much of that tax can verified shared immutable backing remove?",
+  "hosted_proxy": {
+    "runner": "ubuntu-24.04",
+    "payload_mib": 16,
+    "worker_counts": [1, 4],
+    "repetitions": 3,
+    "arms": ["BASELINE", "PRIVATE_COPY", "SHARED_MMAP"],
+    "metric": "sum of worker PSS from /proc/<pid>/smaps_rollup with same-worker-count baseline subtraction",
+    "arm_order": "rotated across repetitions",
+    "semantic_gate": "SHA256 equality for PRIVATE_COPY and SHARED_MMAP"
+  },
+  "primary_oracles": [
+    "all capability digests match the frozen source payload",
+    "one-worker private and shared capability growth are both positive after baseline subtraction",
+    "PRIVATE_COPY normalized PSS growth from one to four workers scales by at least 2.5x",
+    "SHARED_MMAP normalized PSS growth from one to four workers scales by at most 2.0x",
+    "four-worker SHARED_MMAP normalized growth is at most 60% of PRIVATE_COPY normalized growth"
+  ],
+  "nonclaims": [
+    "Lower PSS is not a throughput improvement claim.",
+    "The experiment does not select a universal worker count.",
+    "Shared mmap is not assumed to remove page-fault, cache, contention, or coordination costs.",
+    "GitHub-hosted Linux PSS behavior is not a universal RAM law.",
+    "Shared availability does not grant execution authority."
+  ],
+  "net_parallel_gain_candidate": "QueueReduction + UsefulConcurrency - ResidencyTax - Contention - Coordination - VerificationOverhead",
+  "measured_component_in_this_pr": "ResidencyTax only",
+  "authority_effect": "NONE",
+  "next_falsifier": "Add queueing/useful-progress and contention measurements across worker counts so residency savings cannot be mistaken for net parallel speedup.",
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_PROCESS_PSS_PROXY_FOR_PRIVATE_COPY_VS_SHARED_MMAP_ONLY_NO_UNIVERSAL_WORKER_OR_THROUGHPUT_CLAIM"
+}
