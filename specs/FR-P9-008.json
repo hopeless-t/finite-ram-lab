@@ -1,0 +1,41 @@
+{
+  "schema": "finite-ram-lab.fr-p9-008-spec/v0.1",
+  "experiment_id": "FR-P9-008",
+  "title": "Online Joint Replan Under Finite PSS Admission",
+  "base_evidence": "FR-P9-007 same-surface hosted joint residency/concurrency proxy",
+  "question": "Can a joint residency/concurrency plan remain bound to planner-relevant resource and measurement certificates and replan only when those facts change?",
+  "resource_transition": {
+    "startup_pss_cap_kib": 50000,
+    "pressure_pss_cap_kib": 40000,
+    "capability_available": true,
+    "transition_type": "synthetic admission-cap change over hosted measurement anchors"
+  },
+  "selection_policy": "HIGHEST_ADMISSIBLE_CONCURRENCY_CLASS_THEN_LOWEST_RESUME",
+  "preregistered_expectations": {
+    "startup_plan": "N4:KEEP_WARM",
+    "pressure_plan": "N2:KEEP_WARM",
+    "irrelevant_epoch_change": "NO_REPLAN",
+    "topology_loss": "FAIL_CLOSED",
+    "measurement_drift": "REMEASURE_OR_REPLAN_REQUIRED"
+  },
+  "hard_invariants": [
+    "feasibility precedes service-policy selection",
+    "observation epoch alone does not invalidate a plan",
+    "resource certificate mismatch rejects stale plan",
+    "measurement certificate mismatch rejects stale evidence binding",
+    "job semantics remain identical across replan",
+    "resource feasibility does not grant execution authority",
+    "resource replan does not grant retry permission"
+  ],
+  "typed_objectives": [
+    "peak_pss_kib",
+    "joint_resume_ns",
+    "work_wall_ns",
+    "p95_sojourn_ns",
+    "logical_fault_span_bytes",
+    "idle_capability_byte_seconds"
+  ],
+  "scalar_gain": null,
+  "claim_ceiling": "HOSTED_FR_P9_007_MEASUREMENT_ANCHOR_PLUS_SYNTHETIC_PSS_CAP_TRANSITION_ONLY_NO_PHYSICAL_GLOBAL_PRESSURE_OR_UNIVERSAL_POLICY_CLAIM",
+  "next_falsifier": "replace synthetic admission-cap transition with an isolated physical pressure domain or quota and compare observed replans with certificate predictions"
+}
