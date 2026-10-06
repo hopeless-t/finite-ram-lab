@@ -1,0 +1,32 @@
+{
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "experiment_id": "FR-P9-011",
+  "title": "Repeated phase transitions as a typed residency horizon",
+  "part": 9,
+  "classification": "HOSTED_PHYSICAL_CGROUP_V2_PROXY",
+  "question": "Across repeated semantic phase transitions, does FAULT_IN preserve its lower peak-memory advantage while accumulating materialization cost strongly enough to keep KEEP_WARM and FAULT_IN non-dominated on a typed frontier?",
+  "frozen_fixture": {
+    "workers": 4,
+    "payload_mib": 8,
+    "workspace_mib_per_worker": 16,
+    "jobs_per_transition": 12,
+    "hash_rounds": 4,
+    "transition_counts": [1, 2, 4, 8],
+    "repetitions": 2,
+    "high_quota_mib": 256
+  },
+  "preregistered_gates": [
+    "all high-quota runs complete without kernel OOM",
+    "job digests and per-transition workspace signatures match across residency modes and repetitions at each horizon",
+    "KEEP_WARM performs one capability materialization per worker while FAULT_IN performs one per worker per transition",
+    "FAULT_IN reduces measured kernel memory peak by at least 8 MiB at every horizon",
+    "KEEP_WARM has lower total materialization time at every horizon",
+    "both residency modes remain non-dominated on the two-objective memory-peak/materialization-time frontier at every horizon",
+    "long-horizon FAULT_IN total materialization time exceeds short-horizon FAULT_IN total materialization time",
+    "authority and retry authority remain unchanged"
+  ],
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_CGROUP_V2_REPEATED_PHASE_AND_HASHING_PROXY_ONLY_NO_UNIVERSAL_RESIDENCY_POLICY_OR_APPLICATION_PERFORMANCE_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "scalar_gain": null
+}
