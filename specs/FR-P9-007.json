@@ -1,0 +1,50 @@
+{
+  "schema": "finite-ram-lab.fr-p9-007-hosted-joint-frontier/v0.1",
+  "status": "FROZEN_HOSTED_SAME_SURFACE_JOINT_SPEC",
+  "parent": "FR-P9-006",
+  "research_question": "When KEEP_WARM and FAULT_IN are measured under the same payload, worker counts, batch workload, PSS surface, barriers, and runner, what joint typed frontier remains?",
+  "hosted_proxy": {
+    "runner": "ubuntu-24.04",
+    "payload_mib": 8,
+    "worker_counts": [1, 2, 4],
+    "modes": ["KEEP_WARM", "FAULT_IN"],
+    "jobs": 12,
+    "hash_rounds_per_job": 6,
+    "repetitions": 2,
+    "idle_gap_seconds_target": 0.2,
+    "memory_metric": "sum worker PSS from /proc/<pid>/smaps_rollup",
+    "barriers": ["ready", "load_or_resume", "work_start"],
+    "run_order": "all six combinations then exact reverse"
+  },
+  "typed_objectives": [
+    "prestart_pss_kib",
+    "active_pss_kib",
+    "resume_ns",
+    "work_wall_ns",
+    "p95_sojourn_ns",
+    "logical_fault_span_bytes",
+    "idle_capability_byte_seconds"
+  ],
+  "primary_oracles": [
+    "capability SHA256 identities remain stable in every arm",
+    "the complete deterministic job digest map is identical across all six worker/residency arms",
+    "FAULT_IN prestart PSS is lower than KEEP_WARM prestart PSS for worker counts 1, 2, and 4",
+    "KEEP_WARM has zero logical fault span",
+    "FAULT_IN has positive logical fault span and positive resume cost",
+    "KEEP_WARM pays positive idle capability byte-seconds",
+    "the measured typed frontier is non-empty",
+    "no joint winner is preregistered",
+    "no scalar gain is emitted without an external price or hard constraint"
+  ],
+  "critical_boundaries": [
+    "logical fault span is the per-worker mapped/touched capability span and is not physical SSD/NVMe traffic",
+    "PSS is a hosted Linux process-sharing proxy, not universal hardware accounting",
+    "this experiment does not impose a synthetic memory cap or claim a universal joint optimum",
+    "resource-optimal joint plan does not grant execution authority"
+  ],
+  "decision": "PLAN_RESIDENCY_AND_CONCURRENCY_ON_ONE_MEASURED_SURFACE;DO_NOT_IMPORT_CROSS_PROXY_OPTIMA_AS_IF_PHYSICALLY_COMPOSABLE",
+  "scalar_gain": null,
+  "authority_effect": "NONE",
+  "next_falsifier": "Introduce an explicit finite PSS admission cap and change the observed resource certificate between idle and work phases, then test online joint replanning.",
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_SAME_SURFACE_PSS_AND_LATENCY_PROXY_ONLY_NO_UNIVERSAL_JOINT_POLICY_OR_DEVICE_IO_CLAIM"
+}
