@@ -53,12 +53,6 @@ class BoundPlan:
 
 
 def resource_certificate(observation: ResourceObservation) -> str:
-    """Hash only planner-relevant resource facts.
-
-    Epoch and observer note are provenance. A new observation alone must not
-    trigger a replan when the finite PSS admission cap/topology are unchanged.
-    """
-
     payload = {
         "pss_cap_kib": observation.pss_cap_kib,
         "capability_available": observation.capability_available,
@@ -135,10 +129,6 @@ def select_plan(
     if not feasible:
         return None
 
-    # This is an explicit external service policy for this falsifier, not a
-    # universal scalar optimum. Hard-cap feasibility is applied first. Among
-    # admissible candidates, preserve the highest available concurrency class;
-    # within that class prefer the lower measured resume cost.
     chosen = min(
         feasible,
         key=lambda plan: (
@@ -179,8 +169,6 @@ def admit_plan(
 
 
 def frozen_measurement_fixture() -> dict[str, Any]:
-    """Qualified FR-P9-007 medians frozen for deterministic unit tests only."""
-
     common = {"0": "semantic-equal", "1": "semantic-equal-1"}
     rows = [
         (1, "KEEP_WARM", 19531, 19531, 833744, 405293781, 405293781, 0, 1678465.736638464),
@@ -210,50 +198,28 @@ def frozen_measurement_fixture() -> dict[str, Any]:
 
 
 def run_panel(measurement_result: dict[str, Any] | None = None) -> dict[str, Any]:
-    measurement_result = measurement_result or frozen_measurement_fixture()
-    plans = plans_from_measurement(measurement_result)
+    hosted_measurement = measurement_result is not None
+    source_result = measurement_result if measurement_result is not None else frozen_measurement_fixture()
+    plans = plans_from_measurement(source_result)
 
-    startup = ResourceObservation(
-        epoch=41,
-        pss_cap_kib=50_000,
-        capability_available=True,
-        observer_note="idle admission before external pressure",
-    )
+    startup = ResourceObservation(41, 50_000, True, "idle admission before external pressure")
     startup_plan = select_plan(plans, startup)
     if startup_plan is None:
         raise RuntimeError("startup_fixture_must_have_a_plan")
 
-    irrelevant_epoch = ResourceObservation(
-        epoch=42,
-        pss_cap_kib=50_000,
-        capability_available=True,
-        observer_note="new observation, same planner-relevant facts",
-    )
+    irrelevant_epoch = ResourceObservation(42, 50_000, True, "new observation, same planner-relevant facts")
     control_admission = admit_plan(startup_plan, irrelevant_epoch, plans)
 
-    pressure = ResourceObservation(
-        epoch=43,
-        pss_cap_kib=40_000,
-        capability_available=True,
-        observer_note="finite PSS admission cap tightened before work",
-    )
+    pressure = ResourceObservation(43, 40_000, True, "finite PSS admission cap tightened before work")
     stale_admission = admit_plan(startup_plan, pressure, plans)
     replanned = select_plan(plans, pressure)
     if replanned is None:
         raise RuntimeError("pressure_fixture_should_have_a_lower_concurrency_plan")
 
-    topology_loss = ResourceObservation(
-        epoch=44,
-        pss_cap_kib=40_000,
-        capability_available=False,
-        observer_note="capability backing unavailable",
-    )
+    topology_loss = ResourceObservation(44, 40_000, False, "capability backing unavailable")
     topology_admission = admit_plan(replanned, topology_loss, plans)
     topology_replan = select_plan(plans, topology_loss)
 
-    # Measurement evidence is part of the plan binding too. Mutating even one
-    # measured value forces revalidation instead of silently applying a plan to
-    # a different evidence surface.
     drifted_first = replace(plans[0], active_pss_kib=plans[0].active_pss_kib + 1)
     drifted_plans = (drifted_first,) + plans[1:]
     evidence_drift_admission = admit_plan(replanned, pressure, drifted_plans)
@@ -280,7 +246,11 @@ def run_panel(measurement_result: dict[str, Any] | None = None) -> dict[str, Any
     return {
         "schema": SCHEMA,
         "status": "PASS" if all(checks.values()) else "FAIL",
-        "classification": "HOSTED_MEASUREMENT_ANCHORED_SYNTHETIC_PSS_CAP_TRANSITION" if measurement_result is not None else "FROZEN_FIXTURE_ONLINE_JOINT_REPLAN",
+        "classification": (
+            "HOSTED_MEASUREMENT_ANCHORED_SYNTHETIC_PSS_CAP_TRANSITION"
+            if hosted_measurement
+            else "FROZEN_FIXTURE_ONLINE_JOINT_REPLAN"
+        ),
         "selection_policy": POLICY,
         "measurement_certificate": measurement_certificate(plans),
         "startup": {
@@ -306,13 +276,7 @@ def run_panel(measurement_result: dict[str, Any] | None = None) -> dict[str, Any
             "replan_result": None,
         },
         "measurement_drift_admission": evidence_drift_admission,
-        "plans": [
-            {
-                **asdict(plan),
-                "peak_pss_kib": plan.peak_pss_kib,
-            }
-            for plan in plans
-        ],
+        "plans": [{**asdict(plan), "peak_pss_kib": plan.peak_pss_kib} for plan in plans],
         "checks": checks,
         "decision": "BIND_JOINT_PLANS_TO_RESOURCE_AND_MEASUREMENT_CERTIFICATES;REPLAN_ONLY_AFTER_RELEVANT_CHANGE;FAIL_CLOSED_IF_NO_FEASIBLE_PLAN",
         "typed_objectives": [
