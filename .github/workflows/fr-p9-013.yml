@@ -1,0 +1,52 @@
+name: FR-P9-013 Compressed Reconstruction External Validity
+
+on:
+  push:
+    branches:
+      - research/fr-p9-013-compressed-reconstruction-validity
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted reconstruction tests
+        run: python -m unittest tests.test_fr_p9_013_compressed_reconstruction_external_validity -v
+      - name: Run compressed reconstruction external-validity probe
+        run: |
+          mkdir -p runs/FR-P9-013
+          python -m finite_ram_lab.fr_p9_013_compressed_reconstruction_external_validity \
+            --payload-mib 16 --workspace-mib 24 --rounds 2 \
+            --transition-counts 2,4,8 --repetitions 2 --high-quota-mib 128 \
+            > runs/FR-P9-013/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-013/result.json"))
+          assert r["status"] == "PASS"
+          assert r["classification"] == "HOSTED_LINUX_CGROUP_V2_COMPRESSED_RECONSTRUCTION_EXTERNAL_VALIDITY"
+          assert r["authority_effect"] == "NONE"
+          assert r["retry_authority"] is False
+          assert r["scalar_gain"] is None
+          assert r["checks"]["all_runs_complete_and_preserve_semantics"] is True
+          assert r["checks"]["high_quota_runs_have_no_kernel_oom"] is True
+          assert r["checks"]["fault_in_has_lower_peak_at_every_horizon"] is True
+          assert r["checks"]["fault_in_has_higher_reconstruction_cost_at_every_horizon"] is True
+          assert r["checks"]["break_even_price_rises_with_reuse_horizon"] is True
+          assert all(r["checks"].values())
+          PY
+          sha256sum specs/FR-P9-013.json
+          sha256sum runs/FR-P9-013/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-013-compressed-reconstruction-external-validity
+          path: runs/FR-P9-013/result.json
+          if-no-files-found: error
