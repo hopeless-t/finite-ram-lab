@@ -1,0 +1,25 @@
+{
+  "id": "FR-P9-020",
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "title": "Typed multi-resource ServiceCurve conjunction",
+  "evidence_class": "ANALYTIC_PROOF_PLUS_SYNTHETIC_MONTE_CARLO",
+  "base": "FR-P9-019",
+  "resources": [
+    {"kind": "CPU", "unit": "cpu_quanta"},
+    {"kind": "TRANSFER", "unit": "byte_quanta"}
+  ],
+  "hypothesis": "A bounded multi-resource materialization is resource-feasible only if every required typed resource independently meets its current-epoch service demand before its deadline; surplus in one unit must never compensate for deficit in another.",
+  "falsifiers": [
+    "exhaustive two-resource conjunction disagrees with direct oracle",
+    "cross-unit scalar sum can replace typed conjunction without false admission",
+    "one stale required resource fails to invalidate the whole plan",
+    "service-unit mismatch does not fail closed",
+    "typed conjunction produces a Monte Carlo false admit"
+  ],
+  "frozen_seed": 20261008,
+  "frozen_trials": 5000,
+  "claim_ceiling": "ANALYTIC_TWO_RESOURCE_DISCRETE_SERVICE_CURVE_CONJUNCTION_ONLY_NO_PHYSICAL_MULTI_DEVICE_OR_APPLICATION_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "next_gate": "PHYSICAL_CPU_PLUS_TRANSFER_SERVICE_CURVE_CONJUNCTION"
+}
