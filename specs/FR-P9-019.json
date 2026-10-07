@@ -1,0 +1,24 @@
+{
+  "id": "FR-P9-019",
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "title": "Physical service-curve epoch invalidation and replan",
+  "evidence_class": "HOSTED_PHYSICAL_PROXY_PLUS_CONTROL_PLANE_GUARD",
+  "base": "FR-P9-018",
+  "forecast_pattern": "FRONT_YIELD",
+  "actual_pattern": "BACK_YIELD",
+  "half_ms": 30,
+  "repetitions": 3,
+  "hypothesis": "A plan qualified under one service-arrival epoch can become deadline-infeasible after a controlled arrival-pattern change; an epoch guard must stop stale execution and force replanning before a conservative fallback is invoked.",
+  "falsifiers": [
+    "front-loaded forecast lane materially misses the frozen deadline",
+    "back-loaded stale execution does not materially miss the deadline",
+    "epoch mismatch fails to produce REPLAN_REQUIRED",
+    "guarded path invokes stale FAULT_IN anyway",
+    "conservative fallback changes semantic output",
+    "fallback does not expose the expected higher-residency tradeoff"
+  ],
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_CONTROLLED_FRONT_TO_BACK_SERVICE_ARRIVAL_SWITCH_PROXY_ONLY_NO_SPONTANEOUS_HOST_DRIFT_OR_UNIVERSAL_SCHEDULER_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "next_gate": "MULTI_RESOURCE_TYPED_SERVICE_CURVE_CONJUNCTION"
+}
