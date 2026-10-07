@@ -1,0 +1,38 @@
+{
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "experiment_id": "FR-P9-017",
+  "title": "Equal service budget with different temporal arrival",
+  "parent": "FR-P9-016",
+  "hypothesis": "Equal total CPU-yield and CPU-busy budgets over a 60 ms post-release window are not deadline-equivalent when the useful reconstruction service arrives before versus after a 30 ms capability-ready deadline.",
+  "fixture": {
+    "payload_mib": 16,
+    "workspace_mib": 24,
+    "transitions": 4,
+    "rounds": 2,
+    "window_ms": 60,
+    "capability_deadline_ms": 30,
+    "nominal_yield_ms": 30,
+    "nominal_busy_ms": 30,
+    "patterns": ["FRONT_YIELD", "INTERLEAVED", "BACK_YIELD"],
+    "repetitions": 3,
+    "high_quota_mib": 128,
+    "cpu_affinity": "exactly_one_allowed_cpu"
+  },
+  "preregistered_gates": [
+    "semantic_signature_equal",
+    "no_kernel_oom",
+    "single_cpu_affinity_verified",
+    "reconstruction_after_phase_a_release",
+    "all_fault_lanes_save_at_least_8_mib_peak_vs_keep_warm",
+    "observed_busy_totals_max_min_ratio_at_most_1_25",
+    "observed_yield_totals_max_min_ratio_at_most_1_25",
+    "front_yield_deadline_miss_at_most_5_ms_total",
+    "back_yield_deadline_miss_at_least_20_ms_total",
+    "back_minus_front_deadline_miss_at_least_15_ms_total"
+  ],
+  "evidence_class": "HOSTED_PHYSICAL_PROXY",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "scalar_gain": null,
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_SINGLE_CPU_PYTHON_THREAD_GZIP_EQUAL_TOTAL_BUDGET_TIMING_PROXY_ONLY_NO_UNIVERSAL_SCHEDULER_OR_SERVICE_CURVE_THEOREM"
+}

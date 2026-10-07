@@ -1,0 +1,47 @@
+name: FR-P9-017 Service Curve Timing
+
+on:
+  push:
+    branches:
+      - research/fr-p9-017-service-curve-timing
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted service-curve tests
+        run: python -m unittest tests.test_fr_p9_017_service_curve_timing -v
+      - name: Run equal-budget timing falsifier
+        run: |
+          mkdir -p runs/FR-P9-017
+          set +e
+          python -m finite_ram_lab.fr_p9_017_service_curve_timing \
+            --payload-mib 16 --workspace-mib 24 --transitions 4 --rounds 2 \
+            --half-ms 30 --repetitions 3 --high-quota-mib 128 \
+            > runs/FR-P9-017/result.json
+          rc=$?
+          set -e
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-017/result.json"))
+          print(json.dumps({"status": r["status"], "busy_ratio": r["observed_busy_total_ratio_max_over_min"], "yield_ratio": r["observed_yield_total_ratio_max_over_min"], "lanes": r["lanes"], "checks": r["checks"]}, indent=2, sort_keys=True))
+          PY
+          sha256sum specs/FR-P9-017.json
+          sha256sum runs/FR-P9-017/result.json
+          exit "$rc"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fr-p9-017-service-curve-timing
+          path: runs/FR-P9-017/result.json
+          if-no-files-found: warn
