@@ -1,0 +1,49 @@
+name: FR-P9-018 Service Curve Deadline Admission
+
+on:
+  push:
+    branches:
+      - research/fr-p9-018-service-curve-deadline-admission
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted admission tests
+        run: python -m unittest tests.test_fr_p9_018_service_curve_deadline_admission -v
+      - name: Run analytic qualification
+        run: |
+          mkdir -p runs/FR-P9-018
+          python -m finite_ram_lab.fr_p9_018_service_curve_deadline_admission \
+            --seed 20261008 --trials 5000 > runs/FR-P9-018/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-018/result.json"))
+          assert r["status"] == "PASS"
+          assert r["classification"] == "ANALYTIC_DISCRETE_SERVICE_CURVE_DEADLINE_ADMISSION"
+          assert r["exhaustive"]["mismatches"] == 0
+          assert r["monte_carlo"]["naive_false_admits"] > 0
+          assert r["monte_carlo"]["epoch_aware_false_admits"] == 0
+          assert r["stale_epoch_adversary"]["stale_aware_status"] == "REPLAN_REQUIRED"
+          assert r["authority_effect"] == "NONE"
+          assert r["retry_authority"] is False
+          assert r["scalar_gain"] is None
+          assert all(r["checks"].values())
+          PY
+          sha256sum specs/FR-P9-018.json
+          sha256sum runs/FR-P9-018/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-018-service-curve-deadline-admission
+          path: runs/FR-P9-018/result.json
+          if-no-files-found: error

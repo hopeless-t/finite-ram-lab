@@ -1,0 +1,20 @@
+{
+  "id": "FR-P9-018",
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "title": "ServiceCurve deadline admission with stale-epoch fail-closed",
+  "evidence_class": "ANALYTIC_PROOF_PLUS_SYNTHETIC_MONTE_CARLO",
+  "base_physical_anchor": "FR-P9-017",
+  "hypothesis": "For a bounded single-resource workload, current-epoch cumulative delivered service at the capability-use deadline is sufficient for analytic resource-feasibility admission, while stale service curves must not admit execution.",
+  "falsifiers": [
+    "exhaustive discrete curves disagree with direct cumulative-sum oracle",
+    "equal-horizon-total front/back curves are treated as deadline-equivalent",
+    "stale forecast remains admissible when observed epoch changes",
+    "epoch-aware Monte Carlo produces any stale-forecast false admit"
+  ],
+  "frozen_seed": 20261008,
+  "frozen_trials": 5000,
+  "claim_ceiling": "ANALYTIC_DISCRETE_SERVICE_CURVE_ADMISSION_ONLY_NO_PHYSICAL_SCHEDULER_OR_APPLICATION_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "next_gate": "PHYSICAL_FORECAST_DRIFT_AND_SERVICE_CURVE_EPOCH_REPLAN"
+}
