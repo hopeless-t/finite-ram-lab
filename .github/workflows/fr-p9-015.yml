@@ -1,0 +1,48 @@
+name: FR-P9-015 CPU Contention Slack
+
+on:
+  push:
+    branches:
+      - research/fr-p9-015-cpu-contention-slack
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted typed-slack tests
+        run: python -m unittest tests.test_fr_p9_015_cpu_contention_slack -v
+      - name: Run single-CPU contention falsifier
+        run: |
+          mkdir -p runs/FR-P9-015
+          python -m finite_ram_lab.fr_p9_015_cpu_contention_slack \
+            --payload-mib 16 --workspace-mib 24 --transitions 4 --rounds 2 \
+            --slack-ms 40 --repetitions 3 --high-quota-mib 128 \
+            > runs/FR-P9-015/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-015/result.json"))
+          assert r["status"] == "PASS"
+          assert r["classification"] == "HOSTED_LINUX_SINGLE_CPU_RESOURCE_TYPED_SLACK_CONTENTION_PROXY"
+          assert r["authority_effect"] == "NONE"
+          assert r["retry_authority"] is False
+          assert r["scalar_gain"] is None
+          assert all(r["checks"].values())
+          PY
+          sha256sum specs/FR-P9-015.json
+          sha256sum runs/FR-P9-015/result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fr-p9-015-cpu-contention-slack
+          path: runs/FR-P9-015/result.json
+          if-no-files-found: warn
