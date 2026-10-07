@@ -1,0 +1,21 @@
+{
+  "id": "FR-P9-024",
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "title": "Semantic prefix validity and release closure",
+  "evidence_class": "ANALYTIC_PROOF_PLUS_SYNTHETIC_MONTE_CARLO",
+  "base": "FR-P9-023",
+  "hypothesis": "A received prefix is semantically releasable only after its declared semantic dependencies and verification roots are also available; byte arrival alone can false-release downstream work.",
+  "falsifiers": [
+    "exhaustive DAG release schedule disagrees with topological oracle",
+    "dependency/verification arrival cannot delay prefix release",
+    "independent prefix fails to release at byte arrival",
+    "unknown dependency or cycle does not fail closed",
+    "semantic closure produces any Monte Carlo false early release"
+  ],
+  "frozen_seed": 20261008,
+  "frozen_trials": 5000,
+  "claim_ceiling": "ANALYTIC_DECLARED_PREFIX_DEPENDENCY_AND_VERIFICATION_CLOSURE_ONLY_NO_GENERAL_FORMAT_DECODABILITY_OR_APPLICATION_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "next_gate": "PHYSICAL_INDEPENDENT_MEMBER_VS_MONOLITHIC_COMPRESSED_PREFIX_VALIDITY"
+}

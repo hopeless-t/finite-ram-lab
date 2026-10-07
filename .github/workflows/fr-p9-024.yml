@@ -1,0 +1,48 @@
+name: FR-P9-024 Semantic Prefix Validity
+
+on:
+  push:
+    branches:
+      - research/fr-p9-024-semantic-prefix-validity
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted semantic-prefix tests
+        run: python -m unittest tests.test_fr_p9_024_semantic_prefix_validity -v
+      - name: Run analytic qualification
+        run: |
+          mkdir -p runs/FR-P9-024
+          python -m finite_ram_lab.fr_p9_024_semantic_prefix_validity \
+            --seed 20261008 --trials 5000 > runs/FR-P9-024/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-024/result.json"))
+          assert r["status"] == "PASS"
+          assert r["exhaustive"]["comparisons"] == 65536
+          assert r["exhaustive"]["mismatches"] == 0
+          assert r["dependency_adversary"]["chunk0_naive_release"] == 1
+          assert r["dependency_adversary"]["chunk0_semantic_release"] == 4
+          assert r["monte_carlo"]["naive_early_releases"] > 0
+          assert r["monte_carlo"]["semantic_false_early_releases"] == 0
+          assert r["authority_effect"] == "NONE"
+          assert r["retry_authority"] is False
+          assert r["scalar_gain"] is None
+          assert all(r["checks"].values())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-024-semantic-prefix-validity
+          path: runs/FR-P9-024/result.json
+          if-no-files-found: error
