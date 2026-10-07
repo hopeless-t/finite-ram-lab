@@ -1,0 +1,33 @@
+{
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "experiment_id": "FR-P9-014",
+  "title": "Post-release deadline slack for just-in-time residency",
+  "part": 9,
+  "classification": "HOSTED_PHYSICAL_CGROUP_V2_SCHEDULING_PROXY",
+  "question": "Can reconstruction begin only after phase-A state is released, use independent deadline slack to reduce exposed FAULT_IN stall, and still preserve the lower peak-memory residency shape?",
+  "frozen_fixture": {
+    "payload_mib": 16,
+    "workspace_mib": 24,
+    "transitions": 4,
+    "rounds": 2,
+    "slack_ms_values": [0, 10, 20, 40, 80],
+    "repetitions": 3,
+    "high_quota_mib": 128,
+    "cold_representation": "P9-013 gzip-compressed deterministic capability",
+    "slack_proxy": "post-release sleep representing independent schedulable work"
+  },
+  "preregistered_gates": [
+    "all runs complete with identical semantic signatures and zero kernel OOM",
+    "every FAULT_IN reconstruction starts after the corresponding phase-A workspace has been closed",
+    "FAULT_IN retains at least 8 MiB lower kernel memory peak than KEEP_WARM in every slack lane",
+    "median exposed stall is nonincreasing as post-release slack increases",
+    "zero-slack FAULT_IN exposes at least 40 ms aggregate reconstruction stall across four transitions",
+    "80 ms per-transition slack reduces aggregate exposed reconstruction stall to at most 2 ms",
+    "the largest slack lane does not recreate KEEP_WARM peak residency",
+    "authority and retry authority remain unchanged"
+  ],
+  "claim_ceiling": "HOSTED_GITHUB_LINUX_CGROUP_V2_POST_RELEASE_SLEEP_SLACK_AND_COMPRESSED_RECONSTRUCTION_PROXY_ONLY_NO_UNIVERSAL_LATENCY_HIDING_OR_APPLICATION_PERFORMANCE_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "scalar_gain": null
+}

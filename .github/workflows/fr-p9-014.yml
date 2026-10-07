@@ -1,0 +1,52 @@
+name: FR-P9-014 Deadline Slack Fault-In
+
+on:
+  push:
+    branches:
+      - research/fr-p9-014-deadline-slack-fault-in
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted slack tests
+        run: python -m unittest tests.test_fr_p9_014_deadline_slack_fault_in -v
+      - name: Run post-release slack falsifier
+        run: |
+          mkdir -p runs/FR-P9-014
+          python -m finite_ram_lab.fr_p9_014_deadline_slack_fault_in \
+            --payload-mib 16 --workspace-mib 24 --transitions 4 --rounds 2 \
+            --slack-ms-values 0,10,20,40,80 --repetitions 3 --high-quota-mib 128 \
+            > runs/FR-P9-014/result.json
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-014/result.json"))
+          assert r["status"] == "PASS"
+          assert r["classification"] == "HOSTED_LINUX_CGROUP_V2_POST_RELEASE_SLACK_SCHEDULING_PROXY"
+          assert r["authority_effect"] == "NONE"
+          assert r["retry_authority"] is False
+          assert r["scalar_gain"] is None
+          assert r["checks"]["fault_in_reconstruction_starts_after_workspace_release"] is True
+          assert r["checks"]["fault_in_peak_saving_survives_all_slack_lanes"] is True
+          assert r["checks"]["exposed_stall_is_nonincreasing_with_slack"] is True
+          assert r["checks"]["largest_slack_hides_almost_all_reconstruction_stall"] is True
+          assert r["checks"]["largest_slack_does_not_restore_keep_warm_peak"] is True
+          assert all(r["checks"].values())
+          PY
+          sha256sum specs/FR-P9-014.json
+          sha256sum runs/FR-P9-014/result.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fr-p9-014-deadline-slack-fault-in
+          path: runs/FR-P9-014/result.json
+          if-no-files-found: error
