@@ -30,7 +30,27 @@ jobs:
           gcc -O2 -Wall -Wextra -std=c11 experiments/tx_perturbation_worker.c -o /tmp/tx_perturbation_worker
 
       - name: Unit tests
-        run: python -m unittest discover -s tests -v
+        id: unit_tests
+        shell: bash
+        run: |
+          mkdir -p runs/CI
+          set +e
+          python -m unittest discover -s tests -v 2>&1 | tee runs/CI/unit-tests.log
+          rc=${PIPESTATUS[0]}
+          printf '%s\n' "$rc" > runs/CI/unit-tests.exit-code
+          set -e
+          exit "$rc"
+
+      - name: Upload unit-test failure diagnostics
+        if: ${{ failure() && steps.unit_tests.outcome == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-unit-test-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            runs/CI/unit-tests.log
+            runs/CI/unit-tests.exit-code
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Monte Carlo smoke test
         run: |
