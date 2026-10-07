@@ -1,0 +1,22 @@
+{
+  "id": "FR-P9-022",
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "title": "Stage-release-aware service composition",
+  "evidence_class": "ANALYTIC_PROOF_PLUS_SYNTHETIC_MONTE_CARLO",
+  "base": "FR-P9-021",
+  "prior_art_boundary": "Service-curve composition and min-plus Network Calculus are established prior art; this experiment tests a bounded semantic-materialization adaptation and does not claim a new Network Calculus theorem.",
+  "hypothesis": "For a sequential materialization pipeline, downstream CPU service delivered before upstream transfer completion is not bankable; admission must count downstream service only after the stage release point.",
+  "falsifiers": [
+    "exhaustive stage-aware operator disagrees with direct sequential simulation",
+    "independent absolute service checks never false-admit",
+    "front-loaded downstream service before release remains usable",
+    "stale upstream stage does not force replan",
+    "stage-aware Monte Carlo operator produces a false admit"
+  ],
+  "frozen_seed": 20261008,
+  "frozen_trials": 5000,
+  "claim_ceiling": "ANALYTIC_DISCRETE_TWO_STAGE_RELEASE_AWARE_MATERIALIZATION_ONLY_NO_NEW_NETWORK_CALCULUS_THEOREM_OR_PHYSICAL_APPLICATION_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "next_gate": "PHYSICAL_STAGE_RELEASE_COMPOSITION_WITH_OVERLAP_AND_STREAMING"
+}
