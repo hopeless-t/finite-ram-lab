@@ -1,0 +1,26 @@
+{
+  "id": "FR-P9-023",
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "title": "Physical prefix-release streaming pipeline",
+  "evidence_class": "HOSTED_PHYSICAL_USERSPACE_PACING_PROXY",
+  "base": "FR-P9-022",
+  "source_mib": 4,
+  "chunk_mib": 1,
+  "transfer_gate_ms_per_chunk": 25,
+  "cpu_gate_ms_per_chunk": 20,
+  "deadline_ms": 150,
+  "repetitions": 3,
+  "hypothesis": "When semantic prefixes are independently processable, chunk-level release can overlap transfer and downstream CPU work, changing deadline feasibility and logical buffering relative to a full-object barrier while preserving semantic output.",
+  "falsifiers": [
+    "semantic signature differs between full-barrier and streaming lanes",
+    "full-barrier meets the frozen deadline",
+    "prefix streaming misses the frozen deadline",
+    "streaming fails to complete all CPU quanta by the deadline",
+    "streaming does not materially improve completion time",
+    "streaming requires the same full-object logical buffer before downstream work"
+  ],
+  "claim_ceiling": "HOSTED_GITHUB_USERSPACE_PACED_CHUNK_PIPELINE_PROXY_ONLY_NO_STORAGE_BANDWIDTH_CPU_SCHEDULER_OR_UNIVERSAL_STREAMING_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "next_gate": "SEMANTIC_PREFIX_VALIDITY_AND_PARTIAL_RECONSTRUCTION_CONTRACT"
+}
