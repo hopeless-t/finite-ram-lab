@@ -1,0 +1,47 @@
+name: FR-P9-016 CPU Service Fraction
+
+on:
+  push:
+    branches:
+      - research/fr-p9-016-cpu-service-fraction
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted service-budget tests
+        run: python -m unittest tests.test_fr_p9_016_cpu_service_fraction -v
+      - name: Run fixed-window service-fraction falsifier
+        run: |
+          mkdir -p runs/FR-P9-016
+          set +e
+          python -m finite_ram_lab.fr_p9_016_cpu_service_fraction \
+            --payload-mib 16 --workspace-mib 24 --transitions 4 --rounds 2 \
+            --slack-ms 40 --busy-percents 0,25,50,75,100 --repetitions 3 --high-quota-mib 128 \
+            > runs/FR-P9-016/result.json
+          rc=$?
+          set -e
+          python - <<'PY'
+          import json
+          r = json.load(open("runs/FR-P9-016/result.json"))
+          print(json.dumps({"status": r["status"], "corr_reconstruct": r["correlation_busy_vs_reconstruct"], "corr_stall": r["correlation_busy_vs_exposed_stall"], "first_material_stall_busy_percent": r["first_material_stall_busy_percent"], "checks": r["checks"]}, indent=2, sort_keys=True))
+          PY
+          sha256sum specs/FR-P9-016.json
+          sha256sum runs/FR-P9-016/result.json
+          exit "$rc"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fr-p9-016-cpu-service-fraction
+          path: runs/FR-P9-016/result.json
+          if-no-files-found: warn
