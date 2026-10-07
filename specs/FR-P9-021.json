@@ -1,0 +1,25 @@
+{
+  "id": "FR-P9-021",
+  "schema": "finite-ram-lab.experiment-spec/v0.1",
+  "title": "Physical CPU plus transfer ServiceCurve conjunction",
+  "evidence_class": "HOSTED_PHYSICAL_USERSPACE_PACING_PROXY",
+  "base": "FR-P9-020",
+  "source_mib": 4,
+  "chunk_mib": 1,
+  "cpu_quanta": 4,
+  "deadline_ms": 100,
+  "repetitions": 3,
+  "lanes": ["FAST_FAST", "SLOW_TRANSFER", "SLOW_CPU", "SLOW_BOTH"],
+  "hypothesis": "End-to-end capability materialization meets its deadline only when both the typed transfer-byte service obligation and typed CPU-work service obligation are satisfied by the deadline; a fast resource cannot substitute for a deficient resource.",
+  "falsifiers": [
+    "FAST_FAST misses the frozen deadline",
+    "SLOW_TRANSFER remains feasible despite transfer-byte deficit",
+    "SLOW_CPU remains feasible despite CPU-quanta deficit",
+    "typed conjunction disagrees with actual end-to-end deadline outcome on any run",
+    "semantic output changes across pacing lanes"
+  ],
+  "claim_ceiling": "HOSTED_GITHUB_USERSPACE_PACED_FILE_TRANSFER_AND_CPU_HASH_PROXY_ONLY_NO_MEDIA_BANDWIDTH_CPU_SCHEDULER_OR_APPLICATION_CLAIM",
+  "authority_effect": "NONE",
+  "retry_authority": false,
+  "next_gate": "COMPOSED_STAGE_SERVICE_CURVES_AND_PIPELINE_DEPENDENCIES"
+}
