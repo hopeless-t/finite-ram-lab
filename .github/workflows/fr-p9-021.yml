@@ -1,0 +1,41 @@
+name: FR-P9-021 Physical CPU Transfer Conjunction
+
+on:
+  push:
+    branches:
+      - research/fr-p9-021-physical-cpu-transfer-conjunction
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -e .
+      - name: Targeted trace tests
+        run: python -m unittest tests.test_fr_p9_021_physical_cpu_transfer_conjunction -v
+      - name: Run physical two-resource conjunction falsifier
+        run: |
+          mkdir -p runs/FR-P9-021
+          set +e
+          python -m finite_ram_lab.fr_p9_021_physical_cpu_transfer_conjunction \
+            --repetitions 3 > runs/FR-P9-021/result.json
+          rc=$?
+          set -e
+          echo "$rc" > runs/FR-P9-021/exit-code.txt
+          exit "$rc"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fr-p9-021-physical-cpu-transfer-conjunction
+          path: |
+            runs/FR-P9-021/result.json
+            runs/FR-P9-021/exit-code.txt
+          if-no-files-found: error
