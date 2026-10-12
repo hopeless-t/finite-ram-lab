@@ -1,0 +1,9 @@
+{
+  "experiment_id": "FRL-REINSTALL-003-ARTIFACT-EPOCH-v1",
+  "question": "Can a verified immutable artifact pay cryptographic verification once per artifact epoch rather than once per activation?",
+  "arms": ["full_sha256", "epoch_identity"],
+  "identity_tuple": ["st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns"],
+  "rounds_per_arm": 2000,
+  "mutation_probe": "same-size content mutation with mtime restoration",
+  "boundary": "Local immutable-artifact threat model only; cryptographic hash remains canonical trust root."
+}

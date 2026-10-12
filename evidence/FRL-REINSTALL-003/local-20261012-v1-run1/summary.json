@@ -1,0 +1,42 @@
+{
+  "canonical_build_residue_delta_bytes": 0,
+  "experiment_id": "FRL-REINSTALL-003-ARTIFACT-EPOCH-v1",
+  "mutation_probe": {
+    "ctime_changed": true,
+    "epoch_identity_detected": true,
+    "full_sha256_detected": true,
+    "identity_changed": true,
+    "mtime_restored": true,
+    "same_size": true
+  },
+  "rounds_per_arm": 2000,
+  "threat_model": "Epoch identity is a local immutable-artifact optimization, not a replacement for cryptographic verification against a privileged or filesystem-level adversary.",
+  "verification": {
+    "epoch_identity": {
+      "max_ms": 0.050927,
+      "median_ms": 0.003665,
+      "min_ms": 0.001941,
+      "n": 2000,
+      "p95_ms": 0.014271,
+      "speedup_vs_full_sha256": 257.2882673942701
+    },
+    "full_sha256": {
+      "max_ms": 1.696151,
+      "median_ms": 0.9429615,
+      "min_ms": 0.870108,
+      "n": 2000,
+      "p95_ms": 1.084128
+    }
+  },
+  "wheel": {
+    "bytes": 425696,
+    "identity": [
+      66306,
+      9868234,
+      425696,
+      1791809332165527210,
+      1791809332165527210
+    ],
+    "sha256": "7a1a515d32e02ff5b42a6e07d3d842fd1a36ff8362f43784733ded3983d2a18a"
+  }
+}
