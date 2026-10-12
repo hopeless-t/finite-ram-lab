@@ -140,11 +140,35 @@ The router no longer imports or loads PyTorch/model weights for a request that c
 
 A local convenience entrypoint is installed as `~/.local/bin/catfood-shoal`. Practical smoke tests physically completed `git status`, `pwd`, `git rev-parse HEAD`, `README.md` stat, and arithmetic on GAYA-CENTRAL. Adapter binaries and runtime event logs remain local/ignored.
 
+
+## Finite-RAM cross-pollination into Shoal runtime
+
+Selected control principles were ported from the latest observed `finite-ram-lab` mainline (`origin/main@2b8f870`) without merging that branch wholesale. The imported atoms are operational, not just documentation:
+
+- **byte-canonical admission:** local semantic-model activation is governed by estimated bytes and live `MemAvailable`, not by model/object counts;
+- **memory-pressure hysteresis:** PSI + byte-reserve thresholds use a deadband so borderline pressure does not thrash model activation;
+- **durable != resident:** receipts may grow on disk while the controller's resident event state remains byte-bounded;
+- **shared-prefix residency:** the 28-token prompt prefix is cached as KV state and reused across semantic-router calls;
+- **profile-guided closure:** every optimization keeps the same dev task set and verifies correctness before accepting the resource gain.
+
+Physical observations on GAYA-CENTRAL:
+
+- synthetic governor trace: `NORMAL -> PRESSURE -> hold -> recover` passed for both byte-pressure and PSI arms;
+- under forced pressure, the router hands off **without loading the 150M model**;
+- 100 durable synthetic receipts grew to 15,980 bytes while the resident control-state file stayed at **353 bytes / 2 compact entries** under a strict 512-byte budget;
+- the ordinary runtime uses a 4,096-byte resident control-state budget;
+- shared-prefix warm forward median improved from **98.8 ms to 55.2 ms (~1.79x)** over 20 local probes, with max absolute logit difference `4.39e-05`;
+- dev-v2 stayed **64/64 correct** while end-to-end wall for the same evaluator moved from **6.589 s to 5.927 s** after prefix reuse.
+
+The current provisional local governor treats the semantic worker as ~1.5 GiB and preserves a 3 GiB enter reserve / 5 GiB recovery reserve, plus PSI hysteresis. These are local policy knobs, not universal thresholds.
+
+A chat-template contract probe also found that the pinned LLM-jp template does **not** render the supplied `system` role. Existing training and inference used the same contract, so the measured scores remain internally consistent; however this means the learned LoRA projection carries more of the semantic-class boundary than the nominal system prompt. The rendered contract is now frozen as evidence.
+
 ## Next physical experiments
 
-1. Seal holdout-v4 **before** any repair of the v3 boundary misses.
+1. Seal holdout-v4 **before** any repair of the v3 boundary misses; keep finite-RAM control changes orthogonal to semantic-boundary tuning.
 2. Replace the blunt confidence threshold with a learned/structured handoff boundary and measure whether boundary-policy errors fall without increasing unsafe acceptance.
 3. Expand the workcell only through typed specialists: read-only filesystem/git inspection, deterministic transforms, retrieval handoff, then Jev/CUA observation/action lanes. Never add arbitrary NL-to-shell execution.
-4. Add a persistent-but-idle-unload router service so repeated semantic requests avoid ~6 s cold load while 0B-only periods can still release the 150M model.
+4. Add a persistent-but-idle-unload router service governed by the new byte/PSI hysteresis policy so repeated semantic requests avoid ~6 s cold load while 0B-only periods can still release the 150M model.
 5. Quantize the 150M + adapter lane (int8/int4/GGUF or equivalent) and remeasure accuracy, latency, load time, and RSS on GAYA-CENTRAL.
 6. Test whether a smaller-than-150M Japanese substrate can retain the learned projection. Stop descending only when semantic fidelity or calibration actually breaks.

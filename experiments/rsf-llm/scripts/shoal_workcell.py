@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 import argparse,ast,hashlib,json,re,subprocess,time,uuid
 from pathlib import Path
-from shoal_runtime import ShoalRouter
+from shoal_runtime import ShoalRouter, DEFAULT_ADAPTER
+from finite_ram_control import BoundedControlState, resource_snapshot
 
 ROOT=Path(__file__).resolve().parents[3]
 EVENTS=ROOT/'.work'/'rsf-llm'/'runtime-events.jsonl'
+CONTROL=ROOT/'.work'/'rsf-llm'/'control-state.json'
+JOURNAL=BoundedControlState(EVENTS,CONTROL,budget_bytes=4096)
 ALLOWED_BIN={ast.Add:lambda a,b:a+b,ast.Sub:lambda a,b:a-b,ast.Mult:lambda a,b:a*b,ast.Div:lambda a,b:a/b,ast.FloorDiv:lambda a,b:a//b,ast.Mod:lambda a,b:a%b}
 ALLOWED_UNARY={ast.UAdd:lambda a:+a,ast.USub:lambda a:-a}
 
@@ -56,13 +59,12 @@ def harness_readonly(text,cwd):
         st=p.stat(); return {'kind':'file_stat','path':str(p),'bytes':st.st_size,'mtime_ns':st.st_mtime_ns}
     return None
 
-def log_event(text,decision,out,elapsed_ms):
-    EVENTS.parent.mkdir(parents=True,exist_ok=True)
-    rec={'ts_unix':time.time(),'trace_id':out['trace_id'],'text_sha256':hashlib.sha256(text.encode()).hexdigest(),'route':decision.route,'source':decision.source,'handoff':decision.handoff,'authority':decision.authority,'status':out['status'],'elapsed_ms':elapsed_ms}
-    with EVENTS.open('a',encoding='utf-8') as f: f.write(json.dumps(rec,ensure_ascii=False,separators=(',',':'))+'\n')
+def log_event(text,decision,out,elapsed_ms,pre_snapshot,post_work_snapshot):
+    rec={'ts_unix':time.time(),'trace_id':out['trace_id'],'text_sha256':hashlib.sha256(text.encode()).hexdigest(),'route':decision.route,'source':decision.source,'handoff':decision.handoff,'authority':decision.authority,'status':out['status'],'elapsed_ms':elapsed_ms,'resource_pre':pre_snapshot,'resource_post_work_pre_record':post_work_snapshot}
+    return JOURNAL.append(rec)
 
 def execute(text,router,cwd):
-    t0=time.perf_counter(); d=router.route(text); trace=uuid.uuid4().hex[:12]
+    pre_snapshot=resource_snapshot(); t0=time.perf_counter(); d=router.route(text); trace=uuid.uuid4().hex[:12]
     base={'trace_id':trace,'surface':'ordinary_llm','authority':d.authority,'route':d.route,'handoff':d.handoff,'source':d.source}
     if d.authority!='allowed': out={**base,'status':'confirmation_required'}
     elif d.route=='deterministic':
@@ -70,11 +72,11 @@ def execute(text,router,cwd):
     elif d.route=='harness':
         z=harness_readonly(text,cwd); out={**base,'status':'completed','specialist':'readonly_harness','result':z} if z is not None else {**base,'status':'handoff','specialist':d.handoff}
     else: out={**base,'status':'handoff','specialist':d.handoff}
-    log_event(text,d,out,(time.perf_counter()-t0)*1000); return out
+    post_work_snapshot=resource_snapshot(); resident=log_event(text,d,out,(time.perf_counter()-t0)*1000,pre_snapshot,post_work_snapshot); out['control_state']=resident; return out
 
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('text'); ap.add_argument('--cwd',default='.'); ap.add_argument('--debug',action='store_true'); a=ap.parse_args()
-    cwd=str(Path(a.cwd).resolve()); router=ShoalRouter('.work/rsf-llm/llm-jp-150m-semantic7-lora-v1',temperature=.5,min_confidence=.8)
+    cwd=str(Path(a.cwd).resolve()); router=ShoalRouter(str(DEFAULT_ADAPTER),temperature=.5,min_confidence=.8)
     out=execute(a.text,router,cwd)
     if not a.debug:
         out.pop('route',None); out.pop('source',None)

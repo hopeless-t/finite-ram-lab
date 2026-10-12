@@ -2,10 +2,14 @@
 import argparse, json, math, re, time
 from dataclasses import dataclass
 from pathlib import Path
+from finite_ram_control import ByteBudgetGovernor, resource_snapshot
 
 
 MODEL='llm-jp/llm-jp-3-150m-instruct3'
 REV='5be263e1a3613cd5c163f41ad828c8de6a2aa6ec'
+REPO_ROOT=Path(__file__).resolve().parents[3]
+DEFAULT_ADAPTER=REPO_ROOT/'.work'/'rsf-llm'/'llm-jp-150m-semantic7-lora-v1'
+DEFAULT_GOV_STATE=REPO_ROOT/'.work'/'rsf-llm'/'resource-governor-state.json'
 CLASSES=['deterministic','harness','retrieval','tiny_model','larger_model','unknown','ordinary']
 LETTERS='ABCDEFG'
 PROMPT='''AuthorityはMVCA側で別判定します。依頼のsemantic intentだけを7分類し、説明せずA〜Gの1文字だけ返してください。\nA 決定論的な計算・構文検査・変換。\nB ローカルPCやrepositoryをHarnessで扱う。\nC 最新・外部情報を検索取得。\nD 短い意味分類・抽出・Canonical IR化。\nE 長い推論・計画・複雑な統合。\nF 情報不足・曖昧なのでUNKNOWN。\nG 普通の質問への説明・会話。'''
@@ -32,9 +36,12 @@ class Decision:
     signals:tuple=()
 
 class ShoalRouter:
-    def __init__(self, adapter_dir, temperature=1.5, min_confidence=0.80):
+    def __init__(self, adapter_dir, temperature=1.5, min_confidence=0.80, governor=None):
         self.temperature=temperature; self.min_confidence=min_confidence; self.adapter_dir=adapter_dir
-        self.tok=None; self.model=None; self.cand=None
+        state=DEFAULT_GOV_STATE
+        self.governor=governor or ByteBudgetGovernor(state_path=state)
+        self.last_admission=None
+        self.tok=None; self.model=None; self.cand=None; self.prefix_ids=None; self.prefix_cache=None
     def _authority(self,text):
         return any(re.search(p,text,re.I) for p in AUTHORITY)
     def _signals(self,text):
@@ -52,6 +59,23 @@ class ShoalRouter:
         base=AutoModelForCausalLM.from_pretrained(MODEL,revision=REV,dtype=torch.float32)
         model=PeftModel.from_pretrained(base,self.adapter_dir); model.eval()
         self.tok=tok; self.model=model; self.cand=[tok.encode(x,add_special_tokens=False)[0] for x in LETTERS]
+        # Finite-RAM shared-prefix residency: discover only the token prefix that is
+        # provably identical across varied user texts, then cache its KV state.
+        probes=['A','ZZZZZZZZZZZZZZ','前の続きやって','CPUとGPUはどう使い分ける？']
+        seqs=[]
+        for q in probes:
+            msgs=[{'role':'system','content':PROMPT},{'role':'user','content':'依頼: '+q+'\n分類:'}]
+            rendered=tok.apply_chat_template(msgs,tokenize=False,add_generation_prompt=True)
+            seqs.append(tok(rendered,return_tensors='pt',add_special_tokens=False).input_ids[0].tolist())
+        cp=0
+        for i in range(min(map(len,seqs))):
+            if len({row[i] for row in seqs}) != 1: break
+            cp += 1
+        if cp > 0:
+            import torch
+            prefix=torch.tensor([seqs[0][:cp]],dtype=torch.long)
+            with torch.inference_mode(): self.prefix_cache=model(input_ids=prefix,use_cache=True).past_key_values
+            self.prefix_ids=seqs[0][:cp]
     def _model(self,text):
         self._ensure_model()
         import torch
@@ -59,7 +83,14 @@ class ShoalRouter:
         rendered=self.tok.apply_chat_template(msgs,tokenize=False,add_generation_prompt=True)
         enc=self.tok(rendered,return_tensors='pt',add_special_tokens=False,truncation=True,max_length=384)
         t0=time.perf_counter()
-        with torch.inference_mode(): logits=self.model(**enc).logits[0,-1,self.cand].float()
+        with torch.inference_mode():
+            use_prefix=(self.prefix_ids is not None and enc.input_ids.shape[1]>len(self.prefix_ids) and enc.input_ids[0,:len(self.prefix_ids)].tolist()==self.prefix_ids)
+            if use_prefix:
+                import copy
+                cache=copy.copy(self.prefix_cache); cache.layers=[copy.copy(layer) for layer in self.prefix_cache.layers]
+                logits=self.model(input_ids=enc.input_ids[:,len(self.prefix_ids):],past_key_values=cache,use_cache=False).logits[0,-1,self.cand].float()
+            else:
+                logits=self.model(**enc).logits[0,-1,self.cand].float()
         p=torch.softmax(logits/self.temperature,dim=-1)
         j=int(torch.argmax(p)); return CLASSES[j],float(p[j]),(time.perf_counter()-t0)*1000
     @staticmethod
@@ -72,6 +103,10 @@ class ShoalRouter:
         if len(signals)==1:
             r=signals[0]
             return Decision(r,0.99,'0b_single_signal',self._handoff(r),'allowed',signals)
+        admission=self.governor.decide(resource_snapshot())
+        self.last_admission=admission
+        if not admission.admit:
+            return Decision('unknown',1.0,'resource_pressure_handoff','larger_reasoner','allowed',signals)
         pred,conf,_lat=self._model(text)
         if len(signals)>1 and pred not in signals:
             return Decision('unknown',conf,'signal_model_conflict','clarify_or_larger_reasoner','allowed',signals)
@@ -82,7 +117,7 @@ class ShoalRouter:
         return Decision(pred,conf,'semantic7_model',self._handoff(pred),'allowed',signals)
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('text',nargs='?'); ap.add_argument('--adapter',default='.work/rsf-llm/llm-jp-150m-semantic7-lora-v1'); ap.add_argument('--temperature',type=float,default=0.5); ap.add_argument('--debug',action='store_true'); a=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument('text',nargs='?'); ap.add_argument('--adapter',default=str(DEFAULT_ADAPTER)); ap.add_argument('--temperature',type=float,default=0.5); ap.add_argument('--debug',action='store_true'); a=ap.parse_args()
     if not a.text: raise SystemExit('text required')
     r=ShoalRouter(a.adapter,temperature=a.temperature).route(a.text)
     out={'surface':'ordinary_llm','handoff':r.handoff,'authority':r.authority}

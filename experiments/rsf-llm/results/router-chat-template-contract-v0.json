@@ -1,0 +1,9 @@
+{
+  "model": "llm-jp/llm-jp-3-150m-instruct3",
+  "revision": "5be263e1a3613cd5c163f41ad828c8de6a2aa6ec",
+  "transformers_template_contract": "observed",
+  "system_prompt_present_in_rendered_text": false,
+  "rendered_sha256": "8d8eb06f5cb7a74a4b00cb0bde92367982052b149df7fa7d6dd7115d24ad5a12",
+  "rendered_text": "<s>以下は、タスクを説明する指示です。要求を適切に満たす応答を書きなさい。\n\n### 指示:\n依頼: __PROBE__\n分類:\n\n### 応答:\n",
+  "interpretation": "Pinned LLM-jp template does not render the supplied system role; semantic route boundaries are therefore primarily carried by task-specific LoRA/training examples rather than this system instruction."
+}
