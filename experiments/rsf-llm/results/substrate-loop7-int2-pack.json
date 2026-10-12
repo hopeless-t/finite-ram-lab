@@ -1,0 +1,72 @@
+{
+  "rows": 64,
+  "accuracy": 0.984375,
+  "wall_seconds": 6.358504327945411,
+  "by_source": {
+    "0b_single_signal": {
+      "n": 39,
+      "accuracy": 1.0
+    },
+    "low_confidence_handoff": {
+      "n": 1,
+      "accuracy": 0.0
+    },
+    "policy_guard": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "semantic7_model": {
+      "n": 14,
+      "accuracy": 1.0
+    },
+    "signal_model_agreement": {
+      "n": 2,
+      "accuracy": 1.0
+    }
+  },
+  "by_expected": {
+    "authority": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "deterministic": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "harness": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "larger_model": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "ordinary": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "retrieval": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "tiny_model": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "unknown": {
+      "n": 8,
+      "accuracy": 1.0
+    }
+  },
+  "failures": [
+    {
+      "id": "dev2-023",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.5688158273696899,
+      "source": "low_confidence_handoff",
+      "signals": []
+    }
+  ]
+}

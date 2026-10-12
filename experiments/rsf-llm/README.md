@@ -193,7 +193,7 @@ The final observed frontier on GAYA-CENTRAL is:
 - cross-filesystem projection: **39 B symlink**;
 - canonical launcher: **132 B**;
 - workcell source: **13,304 B**;
-- canonical runtime code (`workcell + router + finite-RAM control`): **28,795 B**;
+- canonical runtime code (`workcell + router + finite-RAM control`) at the **installer-loop freeze point**: **28,795 B**; later substrate-loader work deliberately grows this shared code rather than pretending that freeze value is still current;
 - primitive surfaced capabilities: **20**;
 - canonical code bytes per primitive capability: **~1.44 KB**, down from the Loop-0 vendored baseline **~3.54 KB/capability**;
 - LoRA weight: **399,384 B**; checkpoint directory **6,816,979 B**;
@@ -206,12 +206,71 @@ This convergence is **search-policy-relative**, not a universal optimum. Differe
 
 Raw convergence evidence is preserved in `results/reinstall-loop-convergence-v1.json`; the original Loop-0 relocation failure remains preserved separately rather than being rewritten away.
 
+## Substrate reinstall-loop v1 — 318 MB class -> 94 MB quality frontier
+
+After installer projection converged, the loop moved one layer down into the **actual model/runtime substrate**: LoRA payloads, tokenizer duplication, base-model storage, residual precision, and Python environment ownership. This phase distinguishes persistent unique bytes from shared cache/hardlinks and from runtime RSS.
+
+### Frozen quality frontier
+
+The starting tree physically present on GAYA contained **317,880,590 B** across the self-contained BF16 base/tokenizer/config plus the 6.82 MB training-style adapter directory. A fair runtime-only baseline that removes the adapter's duplicate tokenizer before doing any quantization is **311,464,102 B**.
+
+The final reproducible quality bundle is **94,058,065 B**:
+
+- zstd-1 FP8 E4M3 base weights: **92,262,909 B**;
+- zstd-1 compressed tokenizer: **1,406,561 B**;
+- compact model config + the minimal tokenizer config needed for the pinned chat template: **1,313 B**;
+- zstd-1 2-bit/block-50 residual patch: **204,111 B**;
+- zstd-1 rank-4 FP16 adapter payload: **183,171 B**.
+
+That is **70.41% smaller than the observed starting tree**, or **69.80% smaller than the fair runtime-only baseline**. Supporting the compact formats grows the shared canonical Python runtime to **37,347 B**, an increase of **8,552 B** from the installer-loop freeze point; that code growth is counted explicitly rather than hidden inside the storage claim. The builder is `scripts/build_compact_runtime.py`; generated weights remain local/ignored. The compact storage path requires the system `zstd` command and refuses a non-empty output directory so stale artifacts cannot silently enter the manifest.
+
+The base compression is intentionally asymmetric. Full FP8 alone fell to 63/64 on dev. Greedy localization found that only a tiny high-sensitivity correction was needed. The final residual corrects four value projections only: `layer0.v_proj`, `layer1.v_proj`, `layer2.v_proj`, and `layer10.v_proj`. A 2-bit patch with block size **50** passed; block **51** was the first failing point. Before residual pruning, eight q/v corrections were necessary in the BF16-mixed representation.
+
+### Adapter descent and failure boundary
+
+| adapter representation | persistent bytes | dev-v2 | note |
+|---|---:|---:|---|
+| training-style directory | 6,816,979 | 64/64 | mostly duplicate tokenizer/metadata |
+| minimal FP32 runtime adapter | 400,491 | 64/64 | tokenizer removed |
+| FP16 | 203,851 | 64/64 | no observed dev loss |
+| INT8 pack | 109,670 | 64/64 | per-tensor scale |
+| INT4 pack | 62,277 | 64/64 | packed nibbles |
+| rank-4 INT3 minimal config | 43,238 | 64/64 | dev pass |
+| rank-2 INT3 custom binary | 18,691 | 64/64 | storage-min semantic adapter |
+| rank-2 INT2 | 18,622 | **61/64** | first clear bit-width break |
+| rank-1 FP32 | 104,550 | **62/64** | first clear rank break |
+| **quality final: rank-4 FP16 raw+zstd** | **183,171** | **64/64** | promoted after sealed validation |
+
+The most aggressive 18 KB adapter remained perfect on dev, but **combined error matters**. When rank-2/INT3 was stacked with the compressed base, sealed holdout-v4 fell to 43/48 versus the 45/48 reference. The quality frontier therefore restores rank-4 FP16 adapter semantics for only ~167 KB more persistent storage.
+
+### Sealed validation
+
+Holdout-v4 was sealed before rank/base tuning (`e477bd3d…596f3`). The initial storage-min candidate scored **43/48 (89.58%)** versus **45/48 (93.75%)** for the reference, so v4 was marked spent and no hidden retuning against it was allowed without first sealing v5.
+
+Holdout-v5 was then sealed at **64 rows** (`320fd04e…f62857`) before the v4-guided repair. The repaired quality candidate was frozen before v5 was opened. Results:
+
+- v4 reference: **45/48**; quality compact: **45/48**;
+- v5 reference: **57/64 (89.0625%)**; quality compact: **57/64 (89.0625%)**;
+- the **seven v5 failure IDs are identical** between reference and compact candidate.
+
+Both v4 and v5 are now **SPENT**. Future semantic changes require a newly sealed holdout.
+
+### Runtime/RAM and rejected branches
+
+The compact stack also reduced measured cold-process peak RSS from about **1,426,656 KB** for the BF16-storage reference to **1,283,884 KB** for the frozen quality candidate (~10.0% reduction). zstd-1 decoding of the ~92 MB base took roughly 0.11 s in an isolated decode probe; the full dev evaluation remained in the same ~6 s class.
+
+PyTorch dynamic INT8 was rejected: it scored **60/64**, raised peak RSS to about **1,908,544 KB**, and was slower. "INT8" was therefore not accepted merely because the nominal datatype was smaller.
+
+The `.venv-rsf` tree looked like ~989 MB, but inode accounting showed about **913.6 MB already shared** with uv/cache hardlinks and only ~**59.0 MB** exclusive. `__pycache__` accounted for **56.9 MB** of that exclusive content. Removing bytecode preserved correctness but exposed a startup Pareto: dropping only SymPy bytecode saved ~12.6 MB with ~7.0 s wall, keeping only Torch bytecode saved ~31.3 MB with ~9.1 s wall, and dropping all bytecode saved ~56.9 MB but raised wall to ~12.5 s. Removing `*.dist-info/RECORD` saved another **2.12 MB** without changing the measured 64/64 runtime result, though package-management metadata semantics are intentionally kept separate from the default developer environment.
+
+Raw search noise is distilled into `results/substrate-reinstall-loop-v1.json`; representative boundary/holdout results remain alongside it.
+
 ## Next physical experiments
 
-1. Seal holdout-v4 **before** any repair of the v3 boundary misses; keep finite-RAM control changes orthogonal to semantic-boundary tuning.
-2. Replace the blunt confidence threshold with a learned/structured handoff boundary and measure whether boundary-policy errors fall without increasing unsafe acceptance.
-3. Expand the workcell only through typed specialists: read-only filesystem/git inspection, deterministic transforms, retrieval handoff, then Jev/CUA observation/action lanes. Never add arbitrary NL-to-shell execution.
-4. Add a persistent-but-idle-unload router service governed by the new byte/PSI hysteresis policy so repeated semantic requests avoid ~6 s cold load while 0B-only periods can still release the 150M model.
-5. Quantize the 150M + adapter lane (int8/int4/GGUF or equivalent) and remeasure accuracy, latency, load time, and RSS on GAYA-CENTRAL.
-6. Test whether a smaller-than-150M Japanese substrate can retain the learned projection. Stop descending only when semantic fidelity or calibration actually breaks.
-7. Treat reinstall-loop v1 as converged/frozen unless the canonical substrate, filesystem assumptions, or installer objective axes change; a changed search space should start a new loop series rather than tuning this result post hoc.
+1. Any further semantic-boundary repair must begin by sealing a **new holdout-v6**; v4/v5 are spent and frozen.
+2. Replace the blunt confidence threshold with a learned/structured handoff boundary, but treat that as a new semantic experiment rather than continuing this substrate loop.
+3. Add a persistent-but-idle-unload router service governed by byte/PSI hysteresis so repeated semantic requests avoid cold reload while inactive periods release the model.
+4. Explore a **native/compiled compact loader** to reduce the remaining Python/Torch runtime dependency; preserve the measured zstd/base/adapter semantics exactly before changing model behavior.
+5. Test a smaller-than-150M Japanese base only as a new experiment with a newly sealed evaluation set.
+6. Keep both frozen Pareto points: ~94.06 MB quality frontier and ~93.89 MB storage-min frontier. Do not silently promote the latter because its sealed-v4 score was lower.
+7. Treat installer reinstall-loop v1 and substrate reinstall-loop v1 as converged/frozen unless the filesystem, runtime substrate, or objective axes change.

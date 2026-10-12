@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import argparse, json, math, re, time
+import argparse, json, math, os, re, subprocess, tempfile, time
 from dataclasses import dataclass
 from pathlib import Path
 from finite_ram_control import ByteBudgetGovernor, resource_snapshot
@@ -10,6 +10,11 @@ REV='5be263e1a3613cd5c163f41ad828c8de6a2aa6ec'
 REPO_ROOT=Path(__file__).resolve().parents[3]
 DEFAULT_ADAPTER=REPO_ROOT/'.work'/'rsf-llm'/'llm-jp-150m-semantic7-lora-v1'
 DEFAULT_GOV_STATE=REPO_ROOT/'.work'/'rsf-llm'/'resource-governor-state.json'
+
+def _read_payload(path):
+    p=Path(path)
+    if p.suffix=='.zst': return subprocess.run(['zstd','-q','-d','-c',str(p)],capture_output=True,check=True).stdout
+    return p.read_bytes()
 CLASSES=['deterministic','harness','retrieval','tiny_model','larger_model','unknown','ordinary']
 LETTERS='ABCDEFG'
 PROMPT='''AuthorityはMVCA側で別判定します。依頼のsemantic intentだけを7分類し、説明せずA〜Gの1文字だけ返してください。\nA 決定論的な計算・構文検査・変換。\nB ローカルPCやrepositoryをHarnessで扱う。\nC 最新・外部情報を検索取得。\nD 短い意味分類・抽出・Canonical IR化。\nE 長い推論・計画・複雑な統合。\nF 情報不足・曖昧なのでUNKNOWN。\nG 普通の質問への説明・会話。'''
@@ -53,11 +58,104 @@ class ShoalRouter:
     def _ensure_model(self):
         if self.model is not None: return
         import torch
-        from peft import PeftModel
+        from peft import LoraConfig, PeftConfig, PeftModel, get_peft_model
         from transformers import AutoModelForCausalLM, AutoTokenizer
-        tok=AutoTokenizer.from_pretrained(MODEL,revision=REV); tok.padding_side='left'; tok.pad_token=tok.pad_token or tok.eos_token
-        base=AutoModelForCausalLM.from_pretrained(MODEL,revision=REV,dtype=torch.float32)
-        model=PeftModel.from_pretrained(base,self.adapter_dir); model.eval()
+        source=os.environ.get('CATFOOD_BASE_MODEL',MODEL); src_kw={'revision':REV} if source==MODEL else {}; archive=os.environ.get('CATFOOD_BASE_ZST')
+        if archive:
+            parent=Path(archive).parent; tmp_root='/dev/shm' if Path('/dev/shm').is_dir() else None
+            with tempfile.TemporaryDirectory(prefix='catfood-base-',dir=tmp_root) as td:
+                td=Path(td)
+                for name in ('config.json','generation_config.json','tokenizer_config.json','special_tokens_map.json'):
+                    if (parent/name).exists(): (td/name).symlink_to((parent/name).resolve())
+                if (parent/'tokenizer.json.zst').exists():
+                    with (td/'tokenizer.json').open('wb') as out: subprocess.run(['zstd','-q','-d','-c',str(parent/'tokenizer.json.zst')],stdout=out,check=True)
+                elif (parent/'tokenizer.json').exists(): (td/'tokenizer.json').symlink_to((parent/'tokenizer.json').resolve())
+                tok=AutoTokenizer.from_pretrained(td)
+                with (td/'model.safetensors').open('wb') as out: subprocess.run(['zstd','-q','-d','-c',archive],stdout=out,check=True)
+                base=AutoModelForCausalLM.from_pretrained(td,dtype=torch.float32)
+        else:
+            tok=AutoTokenizer.from_pretrained(source,**src_kw); base=AutoModelForCausalLM.from_pretrained(source,dtype=torch.float32,**src_kw)
+        tok.padding_side='left'; tok.pad_token=tok.pad_token or tok.eos_token
+        patch=os.environ.get('CATFOOD_BASE_PATCH')
+        if patch:
+            raw=_read_payload(patch); magic=raw[:4]; assert magic in (b'CFR1',b'CFR2',b'CFR3'); bits=raw[4]; qmax=(1<<(bits-1))-1; off=5; mask=(1<<bits)-1
+            names=['model.layers.0.self_attn.v_proj.weight','model.layers.1.self_attn.v_proj.weight','model.layers.2.self_attn.q_proj.weight','model.layers.2.self_attn.v_proj.weight','model.layers.9.self_attn.q_proj.weight','model.layers.9.self_attn.v_proj.weight','model.layers.10.self_attn.q_proj.weight','model.layers.10.self_attn.v_proj.weight']; params=dict(base.named_parameters())
+            if magic==b'CFR3':
+                bitmap=raw[off]; off+=1; selected=[i for i in range(len(names)) if bitmap&(1<<i)]; block=int.from_bytes(raw[off:off+2],'little'); off+=2
+            else:
+                nk=raw[off]; off+=1; selected=list(range(nk)); block=int.from_bytes(raw[off:off+2],'little') if magic==b'CFR2' else 0; off+=2 if magic==b'CFR2' else 0
+            global_scales=None
+            if magic==b'CFR1': global_scales=torch.frombuffer(bytearray(raw[off:off+2*len(selected)]),dtype=torch.float16).float(); off+=2*len(selected)
+            with torch.no_grad():
+                for j,idx in enumerate(selected):
+                    k=names[idx]; n=params[k].numel()
+                    if magic in (b'CFR2',b'CFR3'): ns=(n+block-1)//block; scales=torch.frombuffer(bytearray(raw[off:off+2*ns]),dtype=torch.float16).float(); off+=2*ns
+                    nb=(n*bits+7)//8; packed=raw[off:off+nb]; off+=nb; vals=[]; buf=have=0
+                    for byte in packed:
+                        buf|=int(byte)<<have; have+=8
+                        while have>=bits: vals.append((buf&mask)-qmax); buf>>=bits; have-=bits
+                    q=torch.tensor(vals[:n],dtype=params[k].dtype)
+                    if magic in (b'CFR2',b'CFR3'): q*=scales.repeat_interleave(block)[:n].to(q.dtype)
+                    else: q*=float(global_scales[j])
+                    params[k].add_(q.reshape(params[k].shape))
+        adapter=Path(self.adapter_dir)
+        if (adapter/'adapter_h.bin').exists() or (adapter/'adapter_h.bin.zst').exists() or (adapter/'adapter_q.bin').exists() or (adapter/'adapter_q.bin.zst').exists() or (adapter/'adapter_q.safetensors').exists() or (adapter/'adapter_int4.safetensors').exists() or (adapter/'adapter_int8.safetensors').exists():
+            from peft.utils.save_and_load import get_peft_model_state_dict, set_peft_model_state_dict
+            from safetensors import safe_open
+            hpath=(adapter/'adapter_h.bin') if (adapter/'adapter_h.bin').exists() else (adapter/'adapter_h.bin.zst'); hraw=_read_payload(hpath) if hpath.exists() else None
+            qpath=(adapter/'adapter_q.bin') if (adapter/'adapter_q.bin').exists() else (adapter/'adapter_q.bin.zst'); qraw=_read_payload(qpath) if qpath.exists() else None; qmagic=qraw[:4] if qraw else b''
+            if hraw is not None:
+                assert hraw[:4]==b'CFH1'; rank=hraw[4]; cfg=LoraConfig(task_type='CAUSAL_LM',r=rank,lora_alpha=2*rank,target_modules=['q_proj','v_proj'],bias='none',inference_mode=True)
+            elif qmagic in (b'CFQ2',b'CFQ3'):
+                rank=qraw[5]; cfg=LoraConfig(task_type='CAUSAL_LM',r=rank,lora_alpha=2*rank,target_modules=['q_proj','v_proj'],bias='none',inference_mode=True)
+            else: cfg=PeftConfig.from_pretrained(adapter)
+            model=get_peft_model(base,cfg); state={}
+            if hraw is not None:
+                targets=get_peft_model_state_dict(model); off=5
+                for k in sorted(targets):
+                    n=targets[k].numel(); nb=2*n; state[k]=torch.frombuffer(bytearray(hraw[off:off+nb]),dtype=torch.float16).float().reshape(targets[k].shape); off+=nb
+            elif qraw is not None:
+                targets=get_peft_model_state_dict(model); keys=sorted(targets); raw=qraw; assert raw[:4] in (b'CFQ1',b'CFQ2',b'CFQ3'); bits=raw[4]; qmax=(1<<(bits-1))-1; off=6 if raw[:4] in (b'CFQ2',b'CFQ3') else 5
+                if raw[:4]==b'CFQ3': scales=torch.frombuffer(bytearray(raw[off:off+len(keys)]),dtype=torch.uint8).view(torch.float8_e5m2).float(); off+=len(keys)
+                else: scales=torch.frombuffer(bytearray(raw[off:off+2*len(keys)]),dtype=torch.float16).float(); off+=2*len(keys)
+                mask=(1<<bits)-1
+                for i,k in enumerate(keys):
+                    n=targets[k].numel(); nb=(n*bits+7)//8; packed=raw[off:off+nb]; off+=nb; vals=[]; buf=have=0
+                    for byte in packed:
+                        buf|=int(byte)<<have; have+=8
+                        while have>=bits: vals.append((buf&mask)-qmax); buf>>=bits; have-=bits
+                    state[k]=(torch.tensor(vals[:n],dtype=torch.float32)*float(scales[i])).reshape(targets[k].shape)
+            elif (adapter/'adapter_q.safetensors').exists():
+                targets=get_peft_model_state_dict(model)
+                with safe_open(adapter/'adapter_q.safetensors',framework='pt') as f:
+                    bits=int(f.metadata()['bits']); qmax=(1<<(bits-1))-1; keys=sorted(k for k in f.keys() if k!='__scales__'); scales=f.get_tensor('__scales__')
+                    for i,k in enumerate(keys):
+                        packed=f.get_tensor(k).to(torch.uint8).tolist(); vals=[]; buf=nb=0; mask=(1<<bits)-1
+                        for byte in packed:
+                            buf |= int(byte)<<nb; nb += 8
+                            while nb>=bits:
+                                vals.append((buf&mask)-qmax); buf >>= bits; nb -= bits
+                        n=targets[k].numel(); q=torch.tensor(vals[:n],dtype=torch.float32).reshape(targets[k].shape)
+                        scheme=(f.metadata() or {}).get('scheme','tensor')
+                        if scheme.startswith('block'):
+                            block=int(scheme[5:]); sc=scales[i].float().repeat_interleave(block)[:n].reshape(targets[k].shape); state[k]=q*sc
+                        elif scales.ndim==2:
+                            sc=scales[i].float(); state[k]=q*(sc[:,None] if '.lora_A.' in k else sc[None,:])
+                        else:
+                            state[k]=q*float(scales[i])
+            elif (adapter/'adapter_int4.safetensors').exists():
+                qmeta=json.loads((adapter/'quant.json').read_text())
+                with safe_open(adapter/'adapter_int4.safetensors',framework='pt') as f:
+                    for k in f.keys():
+                        b=f.get_tensor(k).to(torch.uint8); lo=(b&15).to(torch.int8); hi=((b>>4)&15).to(torch.int8); lo=torch.where(lo>=8,lo-16,lo); hi=torch.where(hi>=8,hi-16,hi); q=torch.stack((lo,hi),dim=1).flatten()[:qmeta[k]['numel']]; state[k]=(q.float()*qmeta[k]['scale']).reshape(qmeta[k]['shape'])
+            else:
+                scales=json.loads((adapter/'scales.json').read_text())
+                with safe_open(adapter/'adapter_int8.safetensors',framework='pt') as f:
+                    for k in f.keys(): state[k]=f.get_tensor(k).float()*scales[k]
+            set_peft_model_state_dict(model,state)
+        else:
+            model=PeftModel.from_pretrained(base,adapter)
+        model.eval()
         self.tok=tok; self.model=model; self.cand=[tok.encode(x,add_special_tokens=False)[0] for x in LETTERS]
         # Finite-RAM shared-prefix residency: discover only the token prefix that is
         # provably identical across varied user texts, then cache its KV state.

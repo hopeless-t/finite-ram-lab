@@ -2,9 +2,12 @@
 import argparse,json,math,statistics,time
 from pathlib import Path
 from shoal_runtime import ShoalRouter
-ap=argparse.ArgumentParser(); ap.add_argument('--data',required=True); ap.add_argument('--adapter',default='.work/rsf-llm/llm-jp-150m-semantic7-lora-v1'); ap.add_argument('--temperature',type=float,default=0.5); ap.add_argument('--out',required=True); a=ap.parse_args()
+ap=argparse.ArgumentParser(); ap.add_argument('--data',required=True); ap.add_argument('--adapter',default='.work/rsf-llm/llm-jp-150m-semantic7-lora-v1'); ap.add_argument('--temperature',type=float,default=0.5); ap.add_argument('--out',required=True); ap.add_argument('--ignore-resource-pressure',action='store_true'); a=ap.parse_args()
 rows=[json.loads(x) for x in Path(a.data).read_text(encoding='utf-8').splitlines() if x.strip()]
-r=ShoalRouter(a.adapter,temperature=a.temperature); rec=[]; t0=time.perf_counter()
+class AlwaysAdmit:
+    def decide(self,*args,**kwargs):
+        return type('Admission',(),{'admit':True,'state':'NORMAL','reason':'benchmark_forced_admit'})()
+r=ShoalRouter(a.adapter,temperature=a.temperature,governor=AlwaysAdmit() if a.ignore_resource_pressure else None); rec=[]; t0=time.perf_counter()
 for x in rows:
     d=r.route(x['input']); exp=x['expected_semantic_outcome']['route']; rec.append({'id':x['id'],'expected':exp,'predicted':d.route,'correct':d.route==exp,'confidence':d.confidence,'source':d.source,'signals':list(d.signals)})
 summary={'rows':len(rec),'accuracy':sum(x['correct'] for x in rec)/len(rec),'wall_seconds':time.perf_counter()-t0,'by_source':{},'by_expected':{},'failures':[x for x in rec if not x['correct']]}
