@@ -1,0 +1,11 @@
+{
+  "loop": 0,
+  "source_commit": "38a6efa",
+  "install_mode": "vendored_copy",
+  "status": "FAIL",
+  "first_smoke": "0B arithmetic PASS",
+  "failure": "semantic path could not locate adapter after relocation",
+  "failure_class": "relocation/path-coupling",
+  "observed_bad_path_suffix": ".work/.work/rsf-llm/llm-jp-150m-semantic7-lora-v1",
+  "lesson": "copying implementation duplicates bytes and also leaks repository-relative assumptions; next loop should project onto a canonical shared substrate instead of vendoring it"
+}

@@ -1,0 +1,85 @@
+{
+  "experiment": "RSF-LLM reinstall-loop v0",
+  "definition": {
+    "install_delta_unique_bytes": "new unique file-content bytes introduced by the reinstall projection; hardlinks to an already-owned canonical launcher count as zero unique content bytes",
+    "logical_path_bytes": "apparent file/symlink payload size at the install path; not equivalent to unique disk content",
+    "canonical_runtime_code_bytes": "CATFOOD-owned shared implementation bytes in shoal_workcell.py + shoal_runtime.py + finite_ram_control.py",
+    "claim_boundary": "zero install delta is NOT zero total software footprint; shared base model, adapter/checkpoint, Python/torch and OS remain external/shared substrate"
+  },
+  "loops": [
+    {
+      "loop": 0,
+      "mode": "vendored_copy",
+      "install_delta_unique_bytes": 21227,
+      "logical_path_bytes": 21227,
+      "capability_count": 6,
+      "status": "FAIL",
+      "new_capabilities": [],
+      "failure": "relocation/path-coupling"
+    },
+    {
+      "loop": 1,
+      "mode": "thin_wrapper",
+      "install_delta_unique_bytes": 60,
+      "logical_path_bytes": 60,
+      "capability_count": 7,
+      "status": "PASS",
+      "new_capabilities": [
+        "version_surface"
+      ]
+    },
+    {
+      "loop": 2,
+      "mode": "symlink_projection",
+      "install_delta_unique_bytes": 39,
+      "logical_path_bytes": 39,
+      "capability_count": 10,
+      "status": "PASS",
+      "new_capabilities": [
+        "bounded_control_state",
+        "shared_prefix_kv",
+        "capability_introspection"
+      ]
+    },
+    {
+      "loop": 3,
+      "mode": "hardlink_projection",
+      "install_delta_unique_bytes": 0,
+      "logical_path_bytes": 151,
+      "capability_count": 12,
+      "status": "PASS",
+      "new_capabilities": [
+        "health_surface",
+        "self_doctor"
+      ]
+    },
+    {
+      "loop": 4,
+      "mode": "self_reinstalled_hardlink",
+      "install_delta_unique_bytes": 0,
+      "logical_path_bytes": 151,
+      "capability_count": 14,
+      "status": "PASS",
+      "new_capabilities": [
+        "self_reinstall",
+        "footprint_introspection"
+      ]
+    }
+  ],
+  "final": {
+    "canonical_runtime_code_bytes": 25130,
+    "canonical_launcher_bytes": 151,
+    "adapter_checkpoint_logical_bytes": 6816979,
+    "adapter_model_safetensors_bytes": 399384,
+    "base_model_snapshot_logical_bytes": 311063611,
+    "dev_v2_accuracy": 1.0,
+    "dev_v2_rows": 64,
+    "dev_v2_wall_seconds": 5.890813909005374,
+    "install_delta_reduction_fraction": 1.0,
+    "capability_growth_fraction": 1.3333333333333335,
+    "runtime_code_growth_fraction": 0.18386960003768782,
+    "runtime_code_bytes_per_capability_baseline": 3537.8333333333335,
+    "runtime_code_bytes_per_capability_final": 1795.0
+  },
+  "interpretation": "Reinstall projections converged to zero additional unique content bytes while the shared canonical substrate gained capabilities. The canonical implementation itself did not shrink to zero; instead implementation sharing and capability density improved."
+}

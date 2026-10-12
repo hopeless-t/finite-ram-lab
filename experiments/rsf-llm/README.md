@@ -164,6 +164,34 @@ The current provisional local governor treats the semantic worker as ~1.5 GiB an
 
 A chat-template contract probe also found that the pinned LLM-jp template does **not** render the supplied `system` role. Existing training and inference used the same contract, so the measured scores remain internally consistent; however this means the learned LoRA projection carries more of the semantic-class boundary than the nominal system prompt. The rendered contract is now frozen as evidence.
 
+
+## Reinstall-loop v0 — thinner installs, denser capability
+
+A bounded "reinstall loop" experiment was run on the Shoal workcell. The measurement boundary is explicit: **install-delta unique bytes** means new unique file-content introduced by that installation projection. It does **not** mean the whole product, model, Python runtime, or OS became zero bytes.
+
+| loop | projection | new unique install bytes | capabilities | outcome / newly exposed function |
+|---:|---|---:|---:|---|
+| 0 | vendored copy | 21,227 B | 6 | **FAIL**: relocated copy broke the adapter path (`.work/.work/...`) |
+| 1 | thin wrapper | 60 B | 7 | PASS; `--version` appeared |
+| 2 | symlink | 39 B | 10 | PASS; capability introspection plus existing finite-RAM/shared-prefix functions surfaced |
+| 3 | hardlink | **0 B unique** | 12 | PASS; `--health` and `--doctor` appeared |
+| 4 | self-reinstalled hardlink | **0 B unique** | 14 | PASS; `--reinstall DEST` and `--footprint` appeared |
+
+Loop 4 can physically create its own next projection. On the current GAYA filesystem it chooses a hardlink to the canonical launcher, so the new install path adds no unique launcher content bytes. It refuses to overwrite an existing destination. Cross-filesystem fallback is a symlink.
+
+The non-cheating closure view is larger:
+
+- canonical Shoal runtime Python code: **25,130 B**;
+- canonical launcher: **151 B**;
+- semantic adapter weight (`adapter_model.safetensors`): **399,384 B**;
+- full adapter/checkpoint directory including tokenizer metadata: **6,816,979 B**;
+- shared base-model snapshot observed locally: **311,063,611 B**;
+- Python/torch/OS shared substrate is additional and not included in those numbers.
+
+So the result is not "the whole LLM became 0 B." The result is: **per-reinstall unique projection bytes converged to zero while exposed capability rose from 6 to 14**. Canonical runtime code actually grew by about 18%, but code bytes per surfaced capability fell from about 3.54 KB to about 1.80 KB. Dev-v2 routing remained **64/64 correct** after the loop.
+
+The first failed reinstall is part of the result: blindly copying implementation both duplicated bytes and preserved hidden path coupling. The successful direction was to make the install surface a projection over one canonical substrate, then add capability at the shared layer.
+
 ## Next physical experiments
 
 1. Seal holdout-v4 **before** any repair of the v3 boundary misses; keep finite-RAM control changes orthogonal to semantic-boundary tuning.
