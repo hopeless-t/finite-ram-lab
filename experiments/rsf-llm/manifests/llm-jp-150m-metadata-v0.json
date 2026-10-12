@@ -1,0 +1,24 @@
+{
+  "model_id": "llm-jp/llm-jp-3-150m-instruct3",
+  "sha": "5be263e1a3613cd5c163f41ad828c8de6a2aa6ec",
+  "last_modified": "2025-02-04T04:55:04.000Z",
+  "gated": false,
+  "tags": [
+    "transformers",
+    "safetensors",
+    "llama",
+    "text-generation",
+    "conversational",
+    "en",
+    "ja",
+    "license:apache-2.0",
+    "text-generation-inference",
+    "region:us"
+  ],
+  "safetensors": {
+    "parameters": {
+      "BF16": 152318464
+    },
+    "total": 152318464
+  }
+}

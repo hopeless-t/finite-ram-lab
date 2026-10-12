@@ -1,83 +1,119 @@
 # Reverse Semantic Forge LLM Lab
 
-Status: ACTIVE / physical evidence exists. No training claim is made for FR-DECIDER or the new LLM lane.
+Status: ACTIVE. Physical pretrained screening **and physical task-specific training are now observed** for the new RSF lane. The recovered historical FR-DECIDER lane still has no observed historical training or published weights.
 
 North Star: preserve the minimum sufficient semantic behavior for owner workloads while deleting or externalizing capabilities that do not need to live in model weights.
 
 ## Guardrails
 
-- Intent != Authority.
+- **Intent != Authority.** Authority is an MVCA/system concern, not a language-model class.
 - Protected authority decisions remain outside model weights.
-- Training starts only after deterministic, conventional-classifier, and pretrained baselines are measured.
-- Failure cases are retained as failure-biopsy evidence.
+- Failure cases and invalid measurements are retained as failure-biopsy evidence.
 - Compare total system cost, not parameter count alone.
+- Holdout-v1 is now an observed benchmark and MUST NOT be used to tune the next iteration.
+- No adapter weights are committed or published. Local checkpoints live under ignored `.work/` only.
 
-## Recovered control
+## Recovered historical control
 
-The closed/unmerged FR-DECIDER-001 branch was recovered under `legacy/fr-decider-001/`. It remains a System-1/calibration control. No prior physical training or published weights are assumed.
+The closed/unmerged FR-DECIDER-001 assets are recovered under `legacy/fr-decider-001/`. They remain a System-1/calibration control. Do not infer prior training from those files.
 
 ## Corpora
 
-- `corpus/owner-workload-v0.jsonl`: 80 construction tasks, 10 per routing class.
-- `corpus/owner-workload-holdout-v1.jsonl`: 40 unseen paraphrases, five per class. The hand-written 0B rules were frozen before this set was evaluated.
-- `corpus/ordinary-v0.jsonl`: 12 ordinary Japanese questions for product-surface usefulness.
+- `corpus/owner-workload-v0.jsonl`: 80 construction tasks, 10 per original routing class.
+- `corpus/owner-workload-holdout-v1.jsonl`: 40 unseen paraphrases, five per original class.
+- `corpus/ordinary-v0.jsonl`: 12 ordinary Japanese product-surface questions.
 
-The first lexical router scored 0.975 on the construction set but only 0.125 on holdout. The construction result is therefore treated as overfit evidence, not generalization quality.
+The first hand-written 0B router scored 0.975 on construction but only 0.125 on frozen holdout. The 0.975 result is overfit evidence, not generalization quality.
 
 ## Evaluator failure biopsy
 
-Evaluator v1 rendered a chat template and then added special tokens again during batch tokenization. Its model-quality results are invalid and are listed in `results/INVALIDATED.md`. Evaluator v2 uses `add_special_tokens=False` for already-rendered chat templates.
+Evaluator v1 rendered chat-template special tokens and then added special tokens again during batch tokenization. Its model-quality results are retained but listed in `results/INVALIDATED.md`. Evaluator v2 fixes this with `add_special_tokens=False` for already-rendered chat templates.
 
-## Hardware/runtime
+A later semantic-7 training launcher initially failed with `KeyError: authority` after authority had been removed from the class set but not from the split function. The launcher was repaired to filter authority rows explicitly before training.
+
+## Host/runtime
 
 See `manifests/environment-v0.json`.
 
-GAYA-CENTRAL is an Intel Core i3-10110U / AVX2 machine without native BF16 instruction support. A representative SmolLM2-135M forward was about 191.5 ms in FP32 versus 774.4 ms in BF16, so lower storage precision is not assumed to mean lower inference cost on this host.
+GAYA-CENTRAL is an Intel Core i3-10110U / AVX2 machine without native BF16 instruction support. A representative SmolLM2-135M forward was ~191.5 ms FP32 versus ~774.4 ms BF16, so lower storage precision is not assumed to mean lower inference cost on this host.
 
-Qwen3.5 also fell back to correct but slow reference PyTorch implementations for causal-conv and gated-delta kernels because optional optimized kernels were absent. That runtime escape is part of total-system cost.
+Qwen3.5 also fell back to correct but slow reference PyTorch implementations for optional causal-conv / gated-delta kernels. Runtime escape is part of total-system cost.
 
-## Valid routing holdout results
+## Pretrained routing holdout
 
-| candidate | state | params / bytes | accuracy | Brier | ECE | median latency | peak RSS |
-|---|---|---:|---:|---:|---:|---:|---:|
-| lexical rules | frozen holdout | 0 model params | 0.125 | 0.13895 | 0.455 | ~0.018 ms | ~65 MB |
-| SmolLM2-135M-Instruct FP32 | pretrained | 134,515,008 | 0.125 | 0.15311 | 0.553 | ~659 ms | ~2.49 GB |
-| SmolLM2-360M-Instruct FP32 | pretrained | 361,821,120 | 0.125 | 0.16665 | 0.630 | ~1863 ms | ~2.79 GB |
-| Qwen2.5-0.5B-Instruct FP32 | pretrained | 494,032,768 | 0.225 | 0.12267 | 0.240 | ~1379 ms | ~3.47 GB |
-| Qwen3.5-0.8B FP32 | pretrained | 852,985,920 physical params | 0.275 | 0.10316 | 0.121 | ~2491 ms | ~6.50 GB |
-| char n-gram NB | trained on 80 construction rows | 82,914 bytes | 0.325 | 0.14511 | 0.581 | ~0.164 ms | ~68 MB |
-| char n-gram NB + temperature | 64 train + 16 calibration | 67,581 bytes | 0.300 | 0.10001 | 0.196 | ~0.221 ms | ~19 MB |
+| candidate | params | accuracy | Brier | ECE | median latency | peak RSS |
+|---|---:|---:|---:|---:|---:|---:|
+| lexical rules | 0 model params | 0.125 | 0.13895 | 0.455 | ~0.018 ms | ~65 MB |
+| SmolLM2-135M-Instruct FP32 | 134,515,008 | 0.125 | 0.15311 | 0.553 | ~659 ms | ~2.49 GB |
+| **LLM-jp-3-150m-Instruct3 FP32** | 152,318,464 | 0.125 | 0.18400 | 0.697 | ~100 ms | ~1.58 GB |
+| SmolLM2-360M-Instruct FP32 | 361,821,120 | 0.125 | 0.16665 | 0.630 | ~1863 ms | ~2.79 GB |
+| Qwen2.5-0.5B-Instruct FP32 | 494,032,768 | 0.225 | 0.12267 | 0.240 | ~1379 ms | ~3.47 GB |
+| Qwen3.5-0.8B FP32 | 852,985,920 physical params | 0.275 | 0.10316 | 0.121 | ~2491 ms | ~6.50 GB |
+| char n-gram NB | 82,914-byte model | 0.325 | 0.14511 | 0.581 | ~0.164 ms | ~68 MB |
+| char n-gram NB + temperature | 67,581-byte model | 0.300 | 0.10001 | 0.196 | ~0.221 ms | ~19 MB |
 
-The tiny conventional classifier currently beats both local Qwen checkpoints in raw routing accuracy by a very large cost margin. Its confidence is not yet trustworthy enough for broad autonomous acceptance: at confidence >= 0.4 it covers 25% of holdout at 50% selective accuracy; confidence >= 0.5 accepts only 1/40 rows (that one is correct). This is a useful FR-DECIDER-style System-1 candidate, not a deployable authority mechanism.
-
-FunctionGemma 270M is Hugging Face manual-gated and no HF credential is configured on this machine. The physical access failure is recorded; the lane remains NOT OBSERVED rather than being scored as a model failure.
-
-## Lesion / externalization experiment
-
-Authority, deterministic mechanics, local-harness mechanics, and retrieval were removed from model responsibility. The residual model task had only four classes: tiny semantic projection, complex reasoning, UNKNOWN, and ordinary conversation.
-
-- Qwen2.5-0.5B: 0.30 accuracy on 20 holdout rows; random floor 0.25.
-- Qwen3.5-0.8B: 0.25; exactly random floor.
-- Qwen2.5-0.5B with four few-shot examples: 0.25.
-
-Therefore merely deleting externalizable responsibilities or adding a few prompt demonstrations does not recover the owner-specific semantic boundary. A task-specific learned projection is now justified; general-capability training is not.
+FunctionGemma 270M remains NOT PHYSICALLY OBSERVED because the Hugging Face repository is manual-gated and no HF credential is configured on GAYA-CENTRAL.
 
 ## Ordinaryness
 
-Qwen2.5-0.5B-Instruct failed the first 12-question ordinary Japanese surface test: concept score 0.25 and fully-satisfied rate 0.0. Observed answers included incorrect expansions such as treating LLM as a legal-office term and RAM as a remote adapter. This checkpoint is not an ordinary-useful local assistant on this host/workload even before owner-DSL routing is considered.
+- Qwen2.5-0.5B-Instruct: concept score **0.25**, fully-satisfied **0.0**.
+- Qwen3.5-0.8B: concept score **0.4167**, fully-satisfied **0.1667**, ~149.7 s generation wall for 12 questions, ~5.75 GB peak RSS.
+- LLM-jp-3-150m-Instruct3: concept score **0.1667**, fully-satisfied **0.0**, but much lower local generation cost (~6.77 s wall for 12 questions, ~1.46 GB peak RSS).
 
-Qwen3.5-0.8B improved to concept score 0.4167 and fully-satisfied rate 0.1667, but required about 149.7 seconds of generation wall time for 12 questions and about 5.75 GB peak RSS. It is better than the 0.5B lane but still fails the ordinary-usefulness gate on this workload.
+None passes the current ordinary-usefulness gate. Ordinary user experience must therefore remain a system-level requirement with escalation, not be falsely claimed from the local tiny model.
 
-## Current interpretation
+## Physical training experiments
 
-The first Pareto move is not `0.5B -> 0.8B`. It is `general LLM routing -> tiny specialized calibrated System-1 + escalation`.
+All LoRA experiments use pinned `llm-jp/llm-jp-3-150m[-instruct3]`, rank 4, alpha 8, q/v projection targets, and only **98,304 trainable parameters**. The PEFT adapter weight itself is about **399 KB**; the ~6.8 MB local checkpoint bundle is mostly the tokenizer. Adapter binaries are not committed or published.
 
-The remaining research question is whether a very small learned semantic projection can improve generalization and UNKNOWN calibration while leaving arithmetic, retrieval, tool syntax, filesystem mechanics, authority, and long-horizon work outside the model.
+| experiment | model responsibility | train / cal / holdout | accuracy | Brier | ECE | median latency | peak RSS |
+|---|---|---:|---:|---:|---:|---:|---:|
+| 8-way LoRA | authority + all semantic routes | 64 / 16 / 40 | **0.45** | 0.09412 | 0.250 | ~111 ms | ~2.06 GB |
+| semantic-7 LoRA | authority externalized; all other routes internal | 56 / 14 / 35 | **0.6857** | 0.06127 | 0.130 | ~110 ms | ~1.99 GB |
+| residual-4 LoRA | authority + deterministic + harness + retrieval externalized | 32 / 8 / 20 | **0.85** | 0.06493 | 0.139 | ~111 ms | ~1.53 GB |
+| residual-4 LoRA from **Base** | same four residual duties; instruction tuning removed | 32 / 8 / 20 | **0.75** | 0.11783 | 0.261 | ~193 ms | ~1.98 GB |
 
-## Next physical experiment
+### What the 8-way failure taught us
 
-1. Keep holdout-v1 sealed from training/tuning.
-2. Create a new development corpus with paraphrase diversity and provenance.
-3. Train only routing/semantic-projection + UNKNOWN calibration, beginning below the 0.5B lane rather than adding general knowledge.
-4. Compare against the 67.6 KB calibrated classifier, not only against larger LLMs.
-5. Preserve ordinary user experience through escalation until a local tiny model actually passes the ordinaryness gate.
+The 8-way adapter raised holdout accuracy from 0.125 pretrained to 0.45, but all five authority holdout rows were confidently misrouted to `harness`. This was partly amplified by the abstract authority training vectors, but more importantly it exposed a design mistake: **Authority should never have been an LLM route class.** The semantic-7 experiment removes it structurally.
+
+### What responsibility deletion did
+
+With the same 150M substrate and the same 98,304 trainable LoRA parameters:
+
+- pretrained 8-way: **12.5%**
+- trained 8-way: **45%**
+- trained semantic-7: **68.6%**
+- trained residual-4: **85%**
+
+This is the first direct physical evidence in this lab that reducing model responsibility can improve owner-workload semantic fidelity more than increasing the pretrained parameter count from 150M to 500M/800M.
+
+The residual-4 result is **conditional**: it assumes authority/deterministic/harness/retrieval have already been externalized correctly. It is not an end-to-end product score. A 67 KB char-n-gram externalization gate was tested and failed at **25%**, so the externalization mechanism is still unsolved.
+
+The semantic-7 result is the more realistic one-pass semantic result: authority is external by architecture, while deterministic/harness/retrieval/tiny/larger/UNKNOWN/ordinary are still selected by the 150M model. It reaches **68.6%** on 35 holdout rows. At confidence >= 0.8 it covers ~54.3% with ~84.2% selective accuracy; at >= 0.9 it covers 40% with ~85.7% selective accuracy.
+
+## Base-model lesion
+
+Removing instruction tuning entirely did **not** destroy residual-4 capability: LLM-jp-3-150m Base + the same LoRA reached 75%. Instruct3 retained a useful +10 percentage-point advantage (85% vs 75%), so instruction tuning is not pure residue, but most of the task-specific route capability can be rematerialized from the Japanese base model.
+
+## Current Pareto interpretation
+
+The current frontier is no longer `0.5B -> 0.8B`.
+
+It is approximately:
+
+1. tiny deterministic / conventional mechanisms where they are genuinely reliable;
+2. **150M Japanese semantic substrate + ~98K trainable projection parameters** for owner-specific intent;
+3. explicit confidence-gated escalation;
+4. larger/cloud models only for residual work that does not fit the tiny substrate.
+
+The 67 KB classifier remains an important cheap control, but its selective confidence is too weak for broad routing. The 150M residual-4 adapter is much more capable but still too large in RSS to call the final minimum sufficient existence.
+
+## Next physical experiments
+
+1. Treat holdout-v1 as spent/observed; do not tune against it further.
+2. Create a new development corpus and a separately sealed holdout-v2 before the next training iteration.
+3. Attack the remaining high-confidence false positives, especially `tiny_model` vs `larger_model/UNKNOWN` and semantic-7 harness/retrieval confusion.
+4. Build a real externalization mechanism without an oracle, then measure end-to-end cascade cost and accuracy.
+5. Quantize the 150M + adapter lane (int8/int4/GGUF or equivalent) and remeasure accuracy, latency, load time, and RSS on GAYA-CENTRAL.
+6. Test whether a smaller-than-150M Japanese substrate can retain the learned projection. Stop descending only when semantic fidelity or calibration actually breaks.

@@ -1,0 +1,663 @@
+{
+  "system": "char-ngram-nb-externalizer-v0",
+  "classes": [
+    "authority",
+    "deterministic",
+    "harness",
+    "retrieval",
+    "residual"
+  ],
+  "train_rows": 64,
+  "calibration_rows": 16,
+  "temperature": 32,
+  "calibration_nll": 1.4787724471897339,
+  "attempted": 40,
+  "accuracy": 0.25,
+  "brier": 0.16493913612473457,
+  "ece": 0.00266242068859307,
+  "median_latency_ms": 0.1448465,
+  "p95_latency_ms": 0.18789,
+  "peak_rss_bytes": 68194304,
+  "records": [
+    {
+      "id": "hold-001",
+      "original_expected": "deterministic",
+      "expected": "deterministic",
+      "predicted": "deterministic",
+      "confidence": 0.2273986912288106,
+      "correct": true,
+      "brier": 0.1496141281109596,
+      "probs": {
+        "authority": 0.19179200250840056,
+        "deterministic": 0.2273986912288106,
+        "harness": 0.2084155729576429,
+        "retrieval": 0.2144642388325815,
+        "residual": 0.15792949447256438
+      }
+    },
+    {
+      "id": "hold-002",
+      "original_expected": "deterministic",
+      "expected": "deterministic",
+      "predicted": "deterministic",
+      "confidence": 0.23444322146021912,
+      "correct": true,
+      "brier": 0.1472780406007605,
+      "probs": {
+        "authority": 0.18753751056473056,
+        "deterministic": 0.23444322146021912,
+        "harness": 0.22001979397127183,
+        "retrieval": 0.2154152730691167,
+        "residual": 0.14258420093466187
+      }
+    },
+    {
+      "id": "hold-003",
+      "original_expected": "deterministic",
+      "expected": "deterministic",
+      "predicted": "deterministic",
+      "confidence": 0.27062692882091816,
+      "correct": true,
+      "brier": 0.1347224254899155,
+      "probs": {
+        "authority": 0.1719343085978449,
+        "deterministic": 0.27062692882091816,
+        "harness": 0.22298874860881232,
+        "retrieval": 0.22385210335425448,
+        "residual": 0.11059791061817009
+      }
+    },
+    {
+      "id": "hold-004",
+      "original_expected": "deterministic",
+      "expected": "deterministic",
+      "predicted": "deterministic",
+      "confidence": 0.23359656176375124,
+      "correct": true,
+      "brier": 0.14742550742679258,
+      "probs": {
+        "authority": 0.19008775695869004,
+        "deterministic": 0.23359656176375124,
+        "harness": 0.20820534914957445,
+        "retrieval": 0.21953668184227895,
+        "residual": 0.14857365028570535
+      }
+    },
+    {
+      "id": "hold-005",
+      "original_expected": "deterministic",
+      "expected": "deterministic",
+      "predicted": "deterministic",
+      "confidence": 0.27787976214525295,
+      "correct": true,
+      "brier": 0.131838627553637,
+      "probs": {
+        "authority": 0.18189640411554373,
+        "deterministic": 0.27787976214525295,
+        "harness": 0.2124823634379745,
+        "retrieval": 0.21769084091430685,
+        "residual": 0.11005062938692199
+      }
+    },
+    {
+      "id": "hold-006",
+      "original_expected": "harness",
+      "expected": "harness",
+      "predicted": "authority",
+      "confidence": 0.2770473567518631,
+      "correct": false,
+      "brier": 0.13875327235458196,
+      "probs": {
+        "authority": 0.2770473567518631,
+        "deterministic": 0.18431249038639846,
+        "harness": 0.2630333417593897,
+        "retrieval": 0.1689531828854048,
+        "residual": 0.10665362821694392
+      }
+    },
+    {
+      "id": "hold-007",
+      "original_expected": "harness",
+      "expected": "harness",
+      "predicted": "deterministic",
+      "confidence": 0.2521539878129708,
+      "correct": false,
+      "brier": 0.15114092633241838,
+      "probs": {
+        "authority": 0.18321978751589285,
+        "deterministic": 0.2521539878129708,
+        "harness": 0.22853014221427884,
+        "retrieval": 0.22681656069844264,
+        "residual": 0.10927952175841482
+      }
+    },
+    {
+      "id": "hold-008",
+      "original_expected": "harness",
+      "expected": "harness",
+      "predicted": "harness",
+      "confidence": 0.28012078589873296,
+      "correct": true,
+      "brier": 0.13251770966412132,
+      "probs": {
+        "authority": 0.13931597022571224,
+        "deterministic": 0.20258374069241294,
+        "harness": 0.28012078589873296,
+        "retrieval": 0.26798057846216045,
+        "residual": 0.10999892472098137
+      }
+    },
+    {
+      "id": "hold-009",
+      "original_expected": "harness",
+      "expected": "harness",
+      "predicted": "authority",
+      "confidence": 0.2301538552980887,
+      "correct": false,
+      "brier": 0.16173590381264671,
+      "probs": {
+        "authority": 0.2301538552980887,
+        "deterministic": 0.22135169591342185,
+        "harness": 0.20013964544215096,
+        "retrieval": 0.23012392690159977,
+        "residual": 0.11823087644473866
+      }
+    },
+    {
+      "id": "hold-010",
+      "original_expected": "harness",
+      "expected": "harness",
+      "predicted": "harness",
+      "confidence": 0.2398858685213396,
+      "correct": true,
+      "brier": 0.14580812437421153,
+      "probs": {
+        "authority": 0.18991367425463287,
+        "deterministic": 0.22710247953359528,
+        "harness": 0.2398858685213396,
+        "retrieval": 0.22036639337815622,
+        "residual": 0.12273158431227607
+      }
+    },
+    {
+      "id": "hold-011",
+      "original_expected": "retrieval",
+      "expected": "retrieval",
+      "predicted": "harness",
+      "confidence": 0.2449171654966106,
+      "correct": false,
+      "brier": 0.14905626743773331,
+      "probs": {
+        "authority": 0.1917606333776667,
+        "deterministic": 0.2311841168009518,
+        "harness": 0.2449171654966106,
+        "retrieval": 0.2347577197659991,
+        "residual": 0.09738036455877178
+      }
+    },
+    {
+      "id": "hold-012",
+      "original_expected": "retrieval",
+      "expected": "retrieval",
+      "predicted": "retrieval",
+      "confidence": 0.28847872052379936,
+      "correct": true,
+      "brier": 0.1300633056380766,
+      "probs": {
+        "authority": 0.1544648088850364,
+        "deterministic": 0.20009481573740037,
+        "harness": 0.2691612361602175,
+        "retrieval": 0.28847872052379936,
+        "residual": 0.08780041869354638
+      }
+    },
+    {
+      "id": "hold-013",
+      "original_expected": "retrieval",
+      "expected": "retrieval",
+      "predicted": "deterministic",
+      "confidence": 0.2368693724691156,
+      "correct": false,
+      "brier": 0.1506297594953023,
+      "probs": {
+        "authority": 0.1865378368908877,
+        "deterministic": 0.2368693724691156,
+        "harness": 0.214835789526972,
+        "retrieval": 0.22677837173310497,
+        "residual": 0.1349786293799196
+      }
+    },
+    {
+      "id": "hold-014",
+      "original_expected": "retrieval",
+      "expected": "retrieval",
+      "predicted": "harness",
+      "confidence": 0.24081380436565164,
+      "correct": false,
+      "brier": 0.156338604065609,
+      "probs": {
+        "authority": 0.22233099573042944,
+        "deterministic": 0.22697730476289676,
+        "harness": 0.24081380436565164,
+        "retrieval": 0.21640861589003282,
+        "residual": 0.09346927925098944
+      }
+    },
+    {
+      "id": "hold-015",
+      "original_expected": "retrieval",
+      "expected": "retrieval",
+      "predicted": "retrieval",
+      "confidence": 0.2576608840798075,
+      "correct": true,
+      "brier": 0.13963630618023068,
+      "probs": {
+        "authority": 0.17801642814554697,
+        "deterministic": 0.24009944437172762,
+        "harness": 0.21318128107625567,
+        "retrieval": 0.2576608840798075,
+        "residual": 0.1110419623266623
+      }
+    },
+    {
+      "id": "hold-016",
+      "original_expected": "tiny_model",
+      "expected": "residual",
+      "predicted": "residual",
+      "confidence": 0.2909942940148642,
+      "correct": true,
+      "brier": 0.12568861171324863,
+      "probs": {
+        "authority": 0.17155848109972144,
+        "deterministic": 0.17722840948177926,
+        "harness": 0.18416824969668205,
+        "retrieval": 0.1760505657069531,
+        "residual": 0.2909942940148642
+      }
+    },
+    {
+      "id": "hold-017",
+      "original_expected": "tiny_model",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.24513102983250454,
+      "correct": false,
+      "brier": 0.18722668880974994,
+      "probs": {
+        "authority": 0.17743684171213456,
+        "deterministic": 0.24513102983250454,
+        "harness": 0.22437994470935355,
+        "retrieval": 0.2173325689974696,
+        "residual": 0.13571961474853775
+      }
+    },
+    {
+      "id": "hold-018",
+      "original_expected": "tiny_model",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.2944797607064437,
+      "correct": false,
+      "brier": 0.1652321447794665,
+      "probs": {
+        "authority": 0.16207350695842881,
+        "deterministic": 0.2944797607064437,
+        "harness": 0.1809562760384214,
+        "retrieval": 0.16972255094835761,
+        "residual": 0.19276790534834848
+      }
+    },
+    {
+      "id": "hold-019",
+      "original_expected": "tiny_model",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.2525240550590221,
+      "correct": false,
+      "brier": 0.2005694005071617,
+      "probs": {
+        "authority": 0.18227251451495988,
+        "deterministic": 0.2525240550590221,
+        "harness": 0.230600967427616,
+        "retrieval": 0.2291293134345477,
+        "residual": 0.10547314956385427
+      }
+    },
+    {
+      "id": "hold-020",
+      "original_expected": "tiny_model",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.24107968859277148,
+      "correct": false,
+      "brier": 0.19184275690567976,
+      "probs": {
+        "authority": 0.18762350054667679,
+        "deterministic": 0.24107968859277148,
+        "harness": 0.2192990685786086,
+        "retrieval": 0.22729110119492732,
+        "residual": 0.12470664108701573
+      }
+    },
+    {
+      "id": "hold-021",
+      "original_expected": "larger_model",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.23803793990098066,
+      "correct": false,
+      "brier": 0.18339496687763232,
+      "probs": {
+        "authority": 0.17873843976846526,
+        "deterministic": 0.23803793990098066,
+        "harness": 0.2151853826259156,
+        "retrieval": 0.2236360016068354,
+        "residual": 0.14440223609780317
+      }
+    },
+    {
+      "id": "hold-022",
+      "original_expected": "larger_model",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.24125653451061668,
+      "correct": false,
+      "brier": 0.18037985607439122,
+      "probs": {
+        "authority": 0.17609846622539252,
+        "deterministic": 0.24125653451061668,
+        "harness": 0.2107751069382635,
+        "retrieval": 0.2202494758795207,
+        "residual": 0.15162041644620652
+      }
+    },
+    {
+      "id": "hold-023",
+      "original_expected": "larger_model",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.2464313714367737,
+      "correct": false,
+      "brier": 0.19175584920876798,
+      "probs": {
+        "authority": 0.18150007870472398,
+        "deterministic": 0.2464313714367737,
+        "harness": 0.21804145877738887,
+        "retrieval": 0.22879519138040968,
+        "residual": 0.1252318997007037
+      }
+    },
+    {
+      "id": "hold-024",
+      "original_expected": "larger_model",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.24126711901954181,
+      "correct": false,
+      "brier": 0.1859325614907494,
+      "probs": {
+        "authority": 0.17769653610089955,
+        "deterministic": 0.24126711901954181,
+        "harness": 0.21347214958601912,
+        "retrieval": 0.22890549817424158,
+        "residual": 0.13865869711929782
+      }
+    },
+    {
+      "id": "hold-025",
+      "original_expected": "larger_model",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.24508479628768162,
+      "correct": false,
+      "brier": 0.19242141155822629,
+      "probs": {
+        "authority": 0.17889279894105528,
+        "deterministic": 0.24508479628768162,
+        "harness": 0.22359957755817975,
+        "retrieval": 0.2286437617113787,
+        "residual": 0.12377906550170457
+      }
+    },
+    {
+      "id": "hold-026",
+      "original_expected": "unknown",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.21410846080439502,
+      "correct": false,
+      "brier": 0.1642859564095925,
+      "probs": {
+        "authority": 0.1918074454709133,
+        "deterministic": 0.21410846080439502,
+        "harness": 0.20226474012186946,
+        "retrieval": 0.20234051042987725,
+        "residual": 0.18947884317294503
+      }
+    },
+    {
+      "id": "hold-027",
+      "original_expected": "unknown",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.20945031509100984,
+      "correct": false,
+      "brier": 0.16716702395038155,
+      "probs": {
+        "authority": 0.19347469596867856,
+        "deterministic": 0.20945031509100984,
+        "harness": 0.20738639413230905,
+        "retrieval": 0.2073304460729654,
+        "residual": 0.1823581487350372
+      }
+    },
+    {
+      "id": "hold-028",
+      "original_expected": "unknown",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.21256091569706245,
+      "correct": false,
+      "brier": 0.16928154205973417,
+      "probs": {
+        "authority": 0.19387585018816086,
+        "deterministic": 0.21256091569706245,
+        "harness": 0.20858271651092722,
+        "retrieval": 0.20776032907576794,
+        "residual": 0.17722018852808158
+      }
+    },
+    {
+      "id": "hold-029",
+      "original_expected": "unknown",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.21266905896626934,
+      "correct": false,
+      "brier": 0.17234440679392588,
+      "probs": {
+        "authority": 0.19644793328463236,
+        "deterministic": 0.21266905896626934,
+        "harness": 0.210573420543014,
+        "retrieval": 0.21051661269755226,
+        "residual": 0.16979297450853195
+      }
+    },
+    {
+      "id": "hold-030",
+      "original_expected": "unknown",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.22198541298914323,
+      "correct": false,
+      "brier": 0.17848063597684533,
+      "probs": {
+        "authority": 0.1968201003109759,
+        "deterministic": 0.22198541298914323,
+        "harness": 0.2105198217356804,
+        "retrieval": 0.21545228247656142,
+        "residual": 0.15522238248763895
+      }
+    },
+    {
+      "id": "hold-031",
+      "original_expected": "authority",
+      "expected": "authority",
+      "predicted": "deterministic",
+      "confidence": 0.2534837409169928,
+      "correct": false,
+      "brier": 0.16977873541603936,
+      "probs": {
+        "authority": 0.18407011593548495,
+        "deterministic": 0.2534837409169928,
+        "harness": 0.22170617636851103,
+        "retrieval": 0.24683109553536886,
+        "residual": 0.09390887124364235
+      }
+    },
+    {
+      "id": "hold-032",
+      "original_expected": "authority",
+      "expected": "authority",
+      "predicted": "deterministic",
+      "confidence": 0.24940679343954195,
+      "correct": false,
+      "brier": 0.16930124104423505,
+      "probs": {
+        "authority": 0.18507537762363502,
+        "deterministic": 0.24940679343954195,
+        "harness": 0.22291697978435512,
+        "retrieval": 0.24817911361274533,
+        "residual": 0.09442173553972252
+      }
+    },
+    {
+      "id": "hold-033",
+      "original_expected": "authority",
+      "expected": "authority",
+      "predicted": "deterministic",
+      "confidence": 0.24940679343954195,
+      "correct": false,
+      "brier": 0.16930124104423505,
+      "probs": {
+        "authority": 0.18507537762363502,
+        "deterministic": 0.24940679343954195,
+        "harness": 0.22291697978435512,
+        "retrieval": 0.24817911361274533,
+        "residual": 0.09442173553972252
+      }
+    },
+    {
+      "id": "hold-034",
+      "original_expected": "authority",
+      "expected": "authority",
+      "predicted": "deterministic",
+      "confidence": 0.24940679343954195,
+      "correct": false,
+      "brier": 0.16930124104423505,
+      "probs": {
+        "authority": 0.18507537762363502,
+        "deterministic": 0.24940679343954195,
+        "harness": 0.22291697978435512,
+        "retrieval": 0.24817911361274533,
+        "residual": 0.09442173553972252
+      }
+    },
+    {
+      "id": "hold-035",
+      "original_expected": "authority",
+      "expected": "authority",
+      "predicted": "deterministic",
+      "confidence": 0.24940679343954195,
+      "correct": false,
+      "brier": 0.16930124104423505,
+      "probs": {
+        "authority": 0.18507537762363502,
+        "deterministic": 0.24940679343954195,
+        "harness": 0.22291697978435512,
+        "retrieval": 0.24817911361274533,
+        "residual": 0.09442173553972252
+      }
+    },
+    {
+      "id": "hold-036",
+      "original_expected": "ordinary",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.23025179715067348,
+      "correct": false,
+      "brier": 0.18282962580293813,
+      "probs": {
+        "authority": 0.18697027997079874,
+        "deterministic": 0.23025179715067348,
+        "harness": 0.2180796422734759,
+        "retrieval": 0.21938335039719067,
+        "residual": 0.14531493020786124
+      }
+    },
+    {
+      "id": "hold-037",
+      "original_expected": "ordinary",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.2381342333877276,
+      "correct": false,
+      "brier": 0.1801402182410754,
+      "probs": {
+        "authority": 0.17934249193564553,
+        "deterministic": 0.2381342333877276,
+        "harness": 0.21217517691997884,
+        "retrieval": 0.21836275092487384,
+        "residual": 0.15198534683177412
+      }
+    },
+    {
+      "id": "hold-038",
+      "original_expected": "ordinary",
+      "expected": "residual",
+      "predicted": "deterministic",
+      "confidence": 0.2680007531448832,
+      "correct": false,
+      "brier": 0.1858775236861744,
+      "probs": {
+        "authority": 0.20138666700718924,
+        "deterministic": 0.2680007531448832,
+        "harness": 0.18699074514185146,
+        "retrieval": 0.20408196596942169,
+        "residual": 0.13953986873665442
+      }
+    },
+    {
+      "id": "hold-039",
+      "original_expected": "ordinary",
+      "expected": "residual",
+      "predicted": "retrieval",
+      "confidence": 0.25498580746950367,
+      "correct": false,
+      "brier": 0.19923978070409182,
+      "probs": {
+        "authority": 0.17812029885806366,
+        "deterministic": 0.2467714908945938,
+        "harness": 0.21116979246860326,
+        "retrieval": 0.25498580746950367,
+        "residual": 0.1089526103092356
+      }
+    },
+    {
+      "id": "hold-040",
+      "original_expected": "ordinary",
+      "expected": "residual",
+      "predicted": "retrieval",
+      "confidence": 0.25191194708231673,
+      "correct": false,
+      "brier": 0.17993187530957278,
+      "probs": {
+        "authority": 0.16844857863770385,
+        "deterministic": 0.21920153445240975,
+        "harness": 0.2071229918702055,
+        "retrieval": 0.25191194708231673,
+        "residual": 0.1533149479573641
+      }
+    }
+  ]
+}
