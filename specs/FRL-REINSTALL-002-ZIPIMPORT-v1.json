@@ -1,0 +1,21 @@
+{
+  "experiment_id": "FRL-REINSTALL-002-ZIPIMPORT-v1",
+  "research_question": "After a verified immutable wheel exists, is extraction itself necessary for a pure-Python runtime projection?",
+  "arms": ["wheel_extract", "wheel_zipimport"],
+  "blocks": 25,
+  "total_trials": 50,
+  "base_schedule_seed": 20261012,
+  "canonical_build": "Build wheel from an isolated temporary source projection so backend residue cannot mutate the canonical repository.",
+  "artifact_integrity": "Recompute and compare SHA-256 before every reconstruction.",
+  "hard_safety_boundary": "No privileged writes, OS-global cache drop, boot/config mutation, filesystem-wide mutation, or system package-manager mutation.",
+  "primary_metrics": [
+    "reconstruct_elapsed_ns",
+    "materialized_runtime_bytes",
+    "shared_artifact_bytes",
+    "workload_semantic_sha256",
+    "workload_ru_maxrss_kib",
+    "post_workload_growth_bytes",
+    "discard_elapsed_ns",
+    "canonical_residue_delta_bytes"
+  ]
+}

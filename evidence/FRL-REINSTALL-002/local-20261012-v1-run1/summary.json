@@ -1,0 +1,53 @@
+{
+  "all_discarded_cleanly": true,
+  "arms": {
+    "wheel_extract": {
+      "max_reconstruct_ms": 24.62961,
+      "median_discard_ms": 1.74455,
+      "median_materialized_runtime_bytes": 1480202.0,
+      "median_post_workload_growth_bytes": 6291.0,
+      "median_reconstruct_ms": 18.165246,
+      "median_workload_ms": 52.540706,
+      "median_workload_ru_maxrss_kib": 24032.0,
+      "min_reconstruct_ms": 17.740167,
+      "n": 25,
+      "residual_bytes_max": 0,
+      "semantic_hashes": [
+        "c8bbd8d0eddfea03aa6674b2201be8a6cf060303a8c2b7dab096252442e2cc97"
+      ]
+    },
+    "wheel_zipimport": {
+      "max_reconstruct_ms": 1.263329,
+      "median_discard_ms": 0.058281,
+      "median_materialized_runtime_bytes": 0.0,
+      "median_post_workload_growth_bytes": 0.0,
+      "median_reconstruct_ms": 1.13998,
+      "median_workload_ms": 52.621353,
+      "median_workload_ru_maxrss_kib": 24032.0,
+      "min_reconstruct_ms": 1.113722,
+      "n": 25,
+      "residual_bytes_max": 0,
+      "semantic_hashes": [
+        "c8bbd8d0eddfea03aa6674b2201be8a6cf060303a8c2b7dab096252442e2cc97"
+      ],
+      "speedup_vs_wheel_extract": 15.934705872032843
+    }
+  },
+  "blocks": 25,
+  "canonical_build_residue_delta_bytes": 0,
+  "experiment_id": "FRL-REINSTALL-002-ZIPIMPORT-v1",
+  "seed": 20261012,
+  "semantic_hashes": [
+    "c8bbd8d0eddfea03aa6674b2201be8a6cf060303a8c2b7dab096252442e2cc97"
+  ],
+  "semantic_parity": true,
+  "trial_count": 50,
+  "wheel": {
+    "bytes": 423726,
+    "canonical_residue_delta_bytes": 0,
+    "isolated_build_elapsed_ms": 1234.353926,
+    "isolated_build_peak_rss_kib": 48932,
+    "name": "finite_ram_lab-0.2.0-py3-none-any.whl",
+    "sha256": "b72e9ba9b3999e7521fcb8b3585896e9c616885c7149fb2a5296c2e942bc0c6a"
+  }
+}
