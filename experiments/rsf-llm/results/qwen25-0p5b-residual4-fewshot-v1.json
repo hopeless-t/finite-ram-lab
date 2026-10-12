@@ -1,0 +1,117 @@
+{
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "experiment": "externalized-residual4-fewshot-v1",
+  "attempted": 20,
+  "accuracy": 0.25,
+  "random_floor": 0.25,
+  "batch_wall_ms": 24318.25015915092,
+  "peak_rss_bytes": 3453341696,
+  "failures": [
+    {
+      "id": "hold-021",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "confidence": 0.5897319316864014,
+      "correct": false
+    },
+    {
+      "id": "hold-022",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "confidence": 0.5368770360946655,
+      "correct": false
+    },
+    {
+      "id": "hold-023",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "confidence": 0.2702571451663971,
+      "correct": false
+    },
+    {
+      "id": "hold-024",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "confidence": 0.6652781367301941,
+      "correct": false
+    },
+    {
+      "id": "hold-025",
+      "expected": "larger_model",
+      "predicted": "tiny_model",
+      "confidence": 0.46113812923431396,
+      "correct": false
+    },
+    {
+      "id": "hold-026",
+      "expected": "unknown",
+      "predicted": "tiny_model",
+      "confidence": 0.8651667237281799,
+      "correct": false
+    },
+    {
+      "id": "hold-027",
+      "expected": "unknown",
+      "predicted": "tiny_model",
+      "confidence": 0.802941083908081,
+      "correct": false
+    },
+    {
+      "id": "hold-028",
+      "expected": "unknown",
+      "predicted": "tiny_model",
+      "confidence": 0.8161106705665588,
+      "correct": false
+    },
+    {
+      "id": "hold-029",
+      "expected": "unknown",
+      "predicted": "tiny_model",
+      "confidence": 0.9410245418548584,
+      "correct": false
+    },
+    {
+      "id": "hold-030",
+      "expected": "unknown",
+      "predicted": "tiny_model",
+      "confidence": 0.7533833384513855,
+      "correct": false
+    },
+    {
+      "id": "hold-036",
+      "expected": "ordinary",
+      "predicted": "tiny_model",
+      "confidence": 0.8003882765769958,
+      "correct": false
+    },
+    {
+      "id": "hold-037",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "confidence": 0.4371020793914795,
+      "correct": false
+    },
+    {
+      "id": "hold-038",
+      "expected": "ordinary",
+      "predicted": "tiny_model",
+      "confidence": 0.41665229201316833,
+      "correct": false
+    },
+    {
+      "id": "hold-039",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "confidence": 0.6470546722412109,
+      "correct": false
+    },
+    {
+      "id": "hold-040",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "confidence": 0.49000313878059387,
+      "correct": false
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "host": "GAYA-CENTRAL",
+  "os": "Linux",
+  "kernel": "7.0.0-38-generic",
+  "cpu": "Intel(R) Core(TM) i3-10110U CPU @ 2.10GHz",
+  "logical_cpus": 4,
+  "physical_cores": 2,
+  "isa_notes": ["AVX2", "no native BF16 instruction support observed"],
+  "memory_total_gib_observed": 19,
+  "python": "3.12.14",
+  "torch": "2.14.1+cpu",
+  "transformers": "5.19.0",
+  "huggingface_hub": "2.2.0",
+  "accelerate": "1.15.0",
+  "screening_dtype": "float32",
+  "dtype_note": "SmolLM2-135M representative forward was about 191.5 ms in FP32 versus 774.4 ms in BF16 on this CPU, so BF16 storage savings are not treated as inference-cost savings here.",
+  "qwen35_runtime_note": "Qwen3.5-0.8B fell back to reference PyTorch implementations for causal_conv1d_fn and chunk_gated_delta_rule because optimized optional kernels were absent; this is preserved as a runtime cost observation."
+}

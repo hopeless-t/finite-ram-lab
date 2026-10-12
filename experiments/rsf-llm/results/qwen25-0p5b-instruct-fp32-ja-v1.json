@@ -1,0 +1,596 @@
+{
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "parameters": 494032768,
+  "dtype": "torch.float32",
+  "attempted": 80,
+  "accuracy": 0.1,
+  "brier": 0.13391027211751158,
+  "ece": 0.355153115093708,
+  "median_latency_ms": 1433.1231319811195,
+  "p95_latency_ms": 1738.3718130877241,
+  "throughput_tasks_per_second": 0.7009242319886505,
+  "batch_size": 4,
+  "prompt": "ja",
+  "peak_rss_bytes": 3476226048,
+  "tokenizer_load_seconds": 1.081357839051634,
+  "model_load_seconds": 0.546125499997288,
+  "failures": [
+    {
+      "id": "rsf-001",
+      "expected": "deterministic",
+      "predicted": "harness",
+      "conf": 0.19773182272911072,
+      "ok": false,
+      "brier": 0.1085540073456385
+    },
+    {
+      "id": "rsf-002",
+      "expected": "deterministic",
+      "predicted": "ordinary",
+      "conf": 0.2622687518596649,
+      "ok": false,
+      "brier": 0.1324941432594425
+    },
+    {
+      "id": "rsf-003",
+      "expected": "deterministic",
+      "predicted": "ordinary",
+      "conf": 0.8095677495002747,
+      "ok": false,
+      "brier": 0.20911917087260448
+    },
+    {
+      "id": "rsf-004",
+      "expected": "deterministic",
+      "predicted": "ordinary",
+      "conf": 0.4149174988269806,
+      "ok": false,
+      "brier": 0.15239200374421089
+    },
+    {
+      "id": "rsf-005",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.24535071849822998,
+      "ok": false,
+      "brier": 0.11031788284531426
+    },
+    {
+      "id": "rsf-006",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.4689977467060089,
+      "ok": false,
+      "brier": 0.15502947843576131
+    },
+    {
+      "id": "rsf-007",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "conf": 0.37208619713783264,
+      "ok": false,
+      "brier": 0.15132583914708703
+    },
+    {
+      "id": "rsf-008",
+      "expected": "deterministic",
+      "predicted": "ordinary",
+      "conf": 0.6465160846710205,
+      "ok": false,
+      "brier": 0.17242721042696327
+    },
+    {
+      "id": "rsf-009",
+      "expected": "deterministic",
+      "predicted": "retrieval",
+      "conf": 0.263479620218277,
+      "ok": false,
+      "brier": 0.143625132896372
+    },
+    {
+      "id": "rsf-010",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.6879161596298218,
+      "ok": false,
+      "brier": 0.16662338655602746
+    },
+    {
+      "id": "rsf-011",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.5483129024505615,
+      "ok": false,
+      "brier": 0.16159923444582527
+    },
+    {
+      "id": "rsf-012",
+      "expected": "harness",
+      "predicted": "unknown",
+      "conf": 0.36277759075164795,
+      "ok": false,
+      "brier": 0.12895956329358413
+    },
+    {
+      "id": "rsf-013",
+      "expected": "harness",
+      "predicted": "ordinary",
+      "conf": 0.5832605957984924,
+      "ok": false,
+      "brier": 0.1628353921386255
+    },
+    {
+      "id": "rsf-014",
+      "expected": "harness",
+      "predicted": "ordinary",
+      "conf": 0.4163707494735718,
+      "ok": false,
+      "brier": 0.11571535038201879
+    },
+    {
+      "id": "rsf-015",
+      "expected": "harness",
+      "predicted": "unknown",
+      "conf": 0.27909258008003235,
+      "ok": false,
+      "brier": 0.12298483814802091
+    },
+    {
+      "id": "rsf-016",
+      "expected": "harness",
+      "predicted": "ordinary",
+      "conf": 0.3039282560348511,
+      "ok": false,
+      "brier": 0.10996444079201047
+    },
+    {
+      "id": "rsf-017",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.24341650307178497,
+      "ok": false,
+      "brier": 0.10860842477796535
+    },
+    {
+      "id": "rsf-018",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.24581162631511688,
+      "ok": false,
+      "brier": 0.12829417271258142
+    },
+    {
+      "id": "rsf-019",
+      "expected": "harness",
+      "predicted": "ordinary",
+      "conf": 0.5579521656036377,
+      "ok": false,
+      "brier": 0.1507160002010929
+    },
+    {
+      "id": "rsf-020",
+      "expected": "harness",
+      "predicted": "ordinary",
+      "conf": 0.41088488698005676,
+      "ok": false,
+      "brier": 0.14794111289499512
+    },
+    {
+      "id": "rsf-021",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "conf": 0.6938014626502991,
+      "ok": false,
+      "brier": 0.16380865718981
+    },
+    {
+      "id": "rsf-022",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "conf": 0.6343299746513367,
+      "ok": false,
+      "brier": 0.16432072476413687
+    },
+    {
+      "id": "rsf-023",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "conf": 0.6372435092926025,
+      "ok": false,
+      "brier": 0.14113994926023196
+    },
+    {
+      "id": "rsf-024",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "conf": 0.6071237921714783,
+      "ok": false,
+      "brier": 0.15818354083784833
+    },
+    {
+      "id": "rsf-025",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "conf": 0.44798439741134644,
+      "ok": false,
+      "brier": 0.14110032829204255
+    },
+    {
+      "id": "rsf-026",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "conf": 0.5994827151298523,
+      "ok": false,
+      "brier": 0.1610984699352106
+    },
+    {
+      "id": "rsf-027",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "conf": 0.2401936650276184,
+      "ok": false,
+      "brier": 0.09733162094369546
+    },
+    {
+      "id": "rsf-028",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "conf": 0.6321515440940857,
+      "ok": false,
+      "brier": 0.15476280842561263
+    },
+    {
+      "id": "rsf-030",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "conf": 0.4302784204483032,
+      "ok": false,
+      "brier": 0.1332277171868853
+    },
+    {
+      "id": "rsf-031",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.2563929259777069,
+      "ok": false,
+      "brier": 0.12000498888716117
+    },
+    {
+      "id": "rsf-032",
+      "expected": "tiny_model",
+      "predicted": "retrieval",
+      "conf": 0.21426178514957428,
+      "ok": false,
+      "brier": 0.13679377116131128
+    },
+    {
+      "id": "rsf-033",
+      "expected": "tiny_model",
+      "predicted": "ordinary",
+      "conf": 0.43568891286849976,
+      "ok": false,
+      "brier": 0.15861494800074386
+    },
+    {
+      "id": "rsf-034",
+      "expected": "tiny_model",
+      "predicted": "retrieval",
+      "conf": 0.3196437358856201,
+      "ok": false,
+      "brier": 0.13700845320821795
+    },
+    {
+      "id": "rsf-035",
+      "expected": "tiny_model",
+      "predicted": "ordinary",
+      "conf": 0.3372998535633087,
+      "ok": false,
+      "brier": 0.13342275903093725
+    },
+    {
+      "id": "rsf-036",
+      "expected": "tiny_model",
+      "predicted": "harness",
+      "conf": 0.24012738466262817,
+      "ok": false,
+      "brier": 0.12865859494963663
+    },
+    {
+      "id": "rsf-037",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.25826746225357056,
+      "ok": false,
+      "brier": 0.13478465464102823
+    },
+    {
+      "id": "rsf-038",
+      "expected": "tiny_model",
+      "predicted": "ordinary",
+      "conf": 0.45465824007987976,
+      "ok": false,
+      "brier": 0.1455558721723595
+    },
+    {
+      "id": "rsf-039",
+      "expected": "tiny_model",
+      "predicted": "ordinary",
+      "conf": 0.512812077999115,
+      "ok": false,
+      "brier": 0.17273258064732858
+    },
+    {
+      "id": "rsf-040",
+      "expected": "tiny_model",
+      "predicted": "ordinary",
+      "conf": 0.3654335141181946,
+      "ok": false,
+      "brier": 0.1384750824144869
+    },
+    {
+      "id": "rsf-041",
+      "expected": "larger_model",
+      "predicted": "retrieval",
+      "conf": 0.320759654045105,
+      "ok": false,
+      "brier": 0.13762163524004373
+    },
+    {
+      "id": "rsf-042",
+      "expected": "larger_model",
+      "predicted": "ordinary",
+      "conf": 0.29554665088653564,
+      "ok": false,
+      "brier": 0.13281816046563957
+    },
+    {
+      "id": "rsf-043",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.2629283666610718,
+      "ok": false,
+      "brier": 0.14106782527990344
+    },
+    {
+      "id": "rsf-044",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.43661314249038696,
+      "ok": false,
+      "brier": 0.16874164447211323
+    },
+    {
+      "id": "rsf-045",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.4782203733921051,
+      "ok": false,
+      "brier": 0.15727306033009344
+    },
+    {
+      "id": "rsf-046",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.5909501910209656,
+      "ok": false,
+      "brier": 0.16341401982341414
+    },
+    {
+      "id": "rsf-047",
+      "expected": "larger_model",
+      "predicted": "ordinary",
+      "conf": 0.5169463753700256,
+      "ok": false,
+      "brier": 0.17097215479751202
+    },
+    {
+      "id": "rsf-048",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.4013798236846924,
+      "ok": false,
+      "brier": 0.1411297927285884
+    },
+    {
+      "id": "rsf-049",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.48703551292419434,
+      "ok": false,
+      "brier": 0.15149953830241342
+    },
+    {
+      "id": "rsf-050",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.4690402150154114,
+      "ok": false,
+      "brier": 0.12892891517898306
+    },
+    {
+      "id": "rsf-051",
+      "expected": "unknown",
+      "predicted": "ordinary",
+      "conf": 0.5754099488258362,
+      "ok": false,
+      "brier": 0.10776451089193312
+    },
+    {
+      "id": "rsf-052",
+      "expected": "unknown",
+      "predicted": "ordinary",
+      "conf": 0.7089788317680359,
+      "ok": false,
+      "brier": 0.15398148345027002
+    },
+    {
+      "id": "rsf-053",
+      "expected": "unknown",
+      "predicted": "ordinary",
+      "conf": 0.5707249045372009,
+      "ok": false,
+      "brier": 0.10321828029877711
+    },
+    {
+      "id": "rsf-054",
+      "expected": "unknown",
+      "predicted": "ordinary",
+      "conf": 0.5461500883102417,
+      "ok": false,
+      "brier": 0.10682309980615394
+    },
+    {
+      "id": "rsf-056",
+      "expected": "unknown",
+      "predicted": "ordinary",
+      "conf": 0.7008925080299377,
+      "ok": false,
+      "brier": 0.15000412675487607
+    },
+    {
+      "id": "rsf-057",
+      "expected": "unknown",
+      "predicted": "ordinary",
+      "conf": 0.36633655428886414,
+      "ok": false,
+      "brier": 0.0803797307398544
+    },
+    {
+      "id": "rsf-058",
+      "expected": "unknown",
+      "predicted": "ordinary",
+      "conf": 0.732745349407196,
+      "ok": false,
+      "brier": 0.15776881882283206
+    },
+    {
+      "id": "rsf-059",
+      "expected": "unknown",
+      "predicted": "ordinary",
+      "conf": 0.7420854568481445,
+      "ok": false,
+      "brier": 0.15400398051935663
+    },
+    {
+      "id": "rsf-060",
+      "expected": "unknown",
+      "predicted": "ordinary",
+      "conf": 0.8147255182266235,
+      "ok": false,
+      "brier": 0.2019609061770378
+    },
+    {
+      "id": "rsf-062",
+      "expected": "authority",
+      "predicted": "ordinary",
+      "conf": 0.3212205469608307,
+      "ok": false,
+      "brier": 0.1000233720540242
+    },
+    {
+      "id": "rsf-063",
+      "expected": "authority",
+      "predicted": "ordinary",
+      "conf": 0.6807494163513184,
+      "ok": false,
+      "brier": 0.17563720007665493
+    },
+    {
+      "id": "rsf-064",
+      "expected": "authority",
+      "predicted": "ordinary",
+      "conf": 0.5806602835655212,
+      "ok": false,
+      "brier": 0.1645651717060141
+    },
+    {
+      "id": "rsf-065",
+      "expected": "authority",
+      "predicted": "ordinary",
+      "conf": 0.5433357357978821,
+      "ok": false,
+      "brier": 0.16389995417011646
+    },
+    {
+      "id": "rsf-066",
+      "expected": "authority",
+      "predicted": "ordinary",
+      "conf": 0.5334157347679138,
+      "ok": false,
+      "brier": 0.16373518583652685
+    },
+    {
+      "id": "rsf-067",
+      "expected": "authority",
+      "predicted": "ordinary",
+      "conf": 0.5657180547714233,
+      "ok": false,
+      "brier": 0.1639549653915308
+    },
+    {
+      "id": "rsf-068",
+      "expected": "authority",
+      "predicted": "ordinary",
+      "conf": 0.5417377352714539,
+      "ok": false,
+      "brier": 0.16238938871735212
+    },
+    {
+      "id": "rsf-069",
+      "expected": "authority",
+      "predicted": "ordinary",
+      "conf": 0.40530139207839966,
+      "ok": false,
+      "brier": 0.128136652816034
+    },
+    {
+      "id": "rsf-070",
+      "expected": "authority",
+      "predicted": "retrieval",
+      "conf": 0.2910412549972534,
+      "ok": false,
+      "brier": 0.09396415929492966
+    },
+    {
+      "id": "rsf-071",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.7052394151687622,
+      "ok": false,
+      "brier": 0.1312533203477411
+    },
+    {
+      "id": "rsf-072",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.3422600030899048,
+      "ok": false,
+      "brier": 0.1276011268154825
+    },
+    {
+      "id": "rsf-075",
+      "expected": "ordinary",
+      "predicted": "retrieval",
+      "conf": 0.30576008558273315,
+      "ok": false,
+      "brier": 0.14498367383676986
+    },
+    {
+      "id": "rsf-077",
+      "expected": "ordinary",
+      "predicted": "harness",
+      "conf": 0.23445647954940796,
+      "ok": false,
+      "brier": 0.12126053778403016
+    },
+    {
+      "id": "rsf-079",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.44145187735557556,
+      "ok": false,
+      "brier": 0.12110306024581376
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "run_id": "0b-1791785882",
+  "system": "regex_fsm_router_v0",
+  "attempted": 80,
+  "accuracy": 0.975,
+  "authority_accuracy": 1.0,
+  "brier": 0.006483928571428571,
+  "ece": 0.10650000000000001,
+  "median_latency_ms": 0.012682,
+  "p95_latency_ms": 0.022654,
+  "peak_rss_bytes": 18632704,
+  "coverage": {
+    "0.6": {
+      "coverage": 0.9875,
+      "selective_accuracy": 0.9873417721518988,
+      "escalation_rate": 0.012499999999999956
+    },
+    "0.7": {
+      "coverage": 0.9875,
+      "selective_accuracy": 0.9873417721518988,
+      "escalation_rate": 0.012499999999999956
+    },
+    "0.8": {
+      "coverage": 0.9875,
+      "selective_accuracy": 0.9873417721518988,
+      "escalation_rate": 0.012499999999999956
+    },
+    "0.9": {
+      "coverage": 0.1375,
+      "selective_accuracy": 1.0,
+      "escalation_rate": 0.8625
+    },
+    "0.95": {
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "escalation_rate": 1.0
+    }
+  },
+  "failures": [
+    {
+      "id": "rsf-002",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "rsf-037",
+      "expected": "tiny_model",
+      "predicted": "deterministic",
+      "confidence": 0.88,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "deterministic:1",
+      "brier": 0.21777142857142856
+    }
+  ]
+}

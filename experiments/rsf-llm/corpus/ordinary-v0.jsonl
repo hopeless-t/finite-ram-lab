@@ -1,0 +1,12 @@
+{"id":"ord-001","input":"LLMって何？短く教えて","must_any":[["言語","language","text"],["予測","token","次の"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-002","input":"RAMとSSDの違いを初学者向けに教えて","must_any":[["一時","temporary","揮発","作業"],["保存","storage","永続","記憶"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-003","input":"JSONLは普通のJSONと何が違う？","must_any":[["行","line"],["JSON","record","オブジェクト"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-004","input":"confidence calibrationって何？","must_any":[["確信","confidence","確率"],["正し","accuracy","頻度","当た"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-005","input":"Pareto frontierを簡単に説明して","must_any":[["両立","trade","複数","指標"],["改善","劣化","支配","domin"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-006","input":"retrievalをモデル外へ出す利点は？","must_any":[["最新","更新","external","外部"],["知識","weight","重み","容量"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-007","input":"UNKNOWNと言えるモデルがなぜ大事？","must_any":[["不確","知ら","uncertain","unknown"],["誤","halluc","安全","確認"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-008","input":"Pythonのlistとtupleの違いは？","must_any":[["変更","mutable"],["tuple","list"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-009","input":"小さいモデルを段階的に使い分ける利点は？","must_any":[["コスト","速","latency","軽"],["難","上位","escalat","大き"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-010","input":"ルールベースだけでは何が苦手？","must_any":[["言い換","未知","柔軟","general"],["文脈","意味","semantic","例外"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-011","input":"モデルのparameter数が少ないと必ず速い？","must_any":[["必ず","not always","とは限","いいえ"],["hardware","ハード","量子","dtype","実装"]],"provenance":"ordinaryness-v0"}
+{"id":"ord-012","input":"外部calculatorを使うとLLM側には何が不要になりやすい？","must_any":[["計算","arithmetic","算術"],["正確","精度","内部","能力"]],"provenance":"ordinaryness-v0"}

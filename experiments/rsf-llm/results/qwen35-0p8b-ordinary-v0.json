@@ -1,0 +1,133 @@
+{
+  "model_id": "Qwen/Qwen3.5-0.8B",
+  "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+  "attempted": 12,
+  "ordinary_concept_score": 0.4166666666666667,
+  "fully_satisfied_rate": 0.16666666666666666,
+  "batch_size": 2,
+  "max_new_tokens": 40,
+  "generation_wall_ms": 149689.50186111033,
+  "peak_rss_bytes": 5750951936,
+  "records": [
+    {
+      "id": "ord-001",
+      "input": "LLMって何？短く教えて",
+      "output": "LLM（大規模言語モデル）は、人間が書いた言葉や文章を、機械として理解・生成する「言語の理解と生成能力」を備えた AI です。\n\n例えば",
+      "group_hits": [
+        true,
+        false
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-002",
+      "input": "RAMとSSDの違いを初学者向けに教えて",
+      "output": "RAM（ランダムアクセスメモリー）と SSD（非揮発性メモリー）の違いは、**「読み込み速度」**と**「記憶容量」**の二つのポイントで大きく異なります",
+      "group_hits": [
+        true,
+        true
+      ],
+      "score": 1.0
+    },
+    {
+      "id": "ord-003",
+      "input": "JSONLは普通のJSONと何が違う？",
+      "output": "JSONL は、単一の JSON 文ではなく、複数の JSON 文を一つのファイルにまとめた形式です。\n\n主な違いは以下の通りです：\n\n*   **構造**: 通常の",
+      "group_hits": [
+        false,
+        true
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-004",
+      "input": "confidence calibrationって何？",
+      "output": "confidence calibration は、モデルの出力（確率）を「確率」ではなく「確率の値」に変換するプロセスです。\n\n例えば、AI が「この画像は猫だ",
+      "group_hits": [
+        true,
+        false
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-005",
+      "input": "Pareto frontierを簡単に説明して",
+      "output": "Pareto frontier（パレート frontier）とは、**「効率的な状態」**を指します。\n\nこの状態は以下の 2 つの条件を満たす状態です：\n\n1.",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-006",
+      "input": "retrievalをモデル外へ出す利点は？",
+      "output": "モデル外へのリテラリ（Retrieval）は、モデルの知識を外部から抽出して利用する手法です。主な利点は以下の通りです。\n\n*   **知識の",
+      "group_hits": [
+        true,
+        true
+      ],
+      "score": 1.0
+    },
+    {
+      "id": "ord-007",
+      "input": "UNKNOWNと言えるモデルがなぜ大事？",
+      "output": "「UNKNOWN」という名前のモデルは、特定の名称で知られていないため、その存在意義や重要性は明確に示されていません。\n\nただし、AI 技術の進化において、**",
+      "group_hits": [
+        true,
+        false
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-008",
+      "input": "Pythonのlistとtupleの違いは？",
+      "output": "Python の `list` と `tuple` は、どちらも「リスト」としてのデータ構造ですが、**順序**と**可読性**の違いがあります。\n\n*   **list**:",
+      "group_hits": [
+        false,
+        true
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-009",
+      "input": "小さいモデルを段階的に使い分ける利点は？",
+      "output": "小さいモデルを段階的に使い分ける主な利点は以下の通りです。\n\n*   **学習効率の向上**: 初期段階で複雑な問題や大量のデータに対して、より多くのサンプル",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-010",
+      "input": "ルールベースだけでは何が苦手？",
+      "output": "ルールベースの強みは、明確なルールに従うことで予測可能で安定している点です。しかし、その弱点は「ルール自体が限定的」です。\n\n例えば、特定のルール",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-011",
+      "input": "モデルのparameter数が少ないと必ず速い？",
+      "output": "モデルのパラメータ数が少ないと、一般的に学習速度は**速い**傾向があります。\n\nなぜなら、学習に必要な計算量やメモリが少なくなるためです。しかし、この",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-012",
+      "input": "外部calculatorを使うとLLM側には何が不要になりやすい？",
+      "output": "外部計算器を使うと、LLM（大規模言語モデル）側には以下の不要な処理やコストが発生しやすいです。\n\n*   **計算コスト**: 計算量が増えるため、",
+      "group_hits": [
+        true,
+        false
+      ],
+      "score": 0.5
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "attempted": 12,
+  "ordinary_concept_score": 0.25,
+  "fully_satisfied_rate": 0.0,
+  "batch_size": 4,
+  "max_new_tokens": 40,
+  "generation_wall_ms": 32120.851340936497,
+  "peak_rss_bytes": 3434258432,
+  "records": [
+    {
+      "id": "ord-001",
+      "input": "LLMって何？短く教えて",
+      "output": "LLMは法律事務所や司法官の通称です。",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-002",
+      "input": "RAMとSSDの違いを初学者向けに教えて",
+      "output": "まず、RAM（リモートアドプター）とSSD（スイッチ・ストレージ）は、それぞれ異なる特徴を持つ。\n\n1. RAM：高速な記",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-003",
+      "input": "JSONLは普通のJSONと何が違う？",
+      "output": "JSONLは一般的なJSON形式を含むファイル形式です。ただし、JSONLは特定の規則や仕様に基づいて作成されるため、一部の標準化されたデータセット",
+      "group_hits": [
+        false,
+        true
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-004",
+      "input": "confidence calibrationって何？",
+      "output": "Confidence calibrationは、データの精度を向上させるための方法です。特定のモデルやアルゴリズムが予測結果と正確さを評価する際に、誤った",
+      "group_hits": [
+        true,
+        false
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-005",
+      "input": "Pareto frontierを簡単に説明して",
+      "output": "Pareto frontierは、資源の分配が最も利益を得られる状態（または最適な状態）を示す線です。これは、資源が集約されると価�",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-006",
+      "input": "retrievalをモデル外へ出す利点は？",
+      "output": "1. リアルタイムの情報提供：リアルタイムで情報を提供するため、最新の情報を得ることが可能になります。\n\n2. 選択肢の幅拡大：",
+      "group_hits": [
+        true,
+        false
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-007",
+      "input": "UNKNOWNと言えるモデルがなぜ大事？",
+      "output": "この質問は、日本語の「UNKNOWN」という表現についての一般的な理解を示しています。この表現は、特定の情報や状況に対して、非常に不明確または未知である",
+      "group_hits": [
+        true,
+        false
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-008",
+      "input": "Pythonのlistとtupleの違いは？",
+      "output": "Pythonの`list`と`tuple`は、リストとタプルともに、データを一元化するための構造です。\n\n1. `list`: 一元的な",
+      "group_hits": [
+        false,
+        true
+      ],
+      "score": 0.5
+    },
+    {
+      "id": "ord-009",
+      "input": "小さいモデルを段階的に使い分ける利点は？",
+      "output": "1. モデルのサイズや形状に合わせて調整できる。\n2. システムの設定や操作が簡単になる。\n3. 作業効率が向上",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-010",
+      "input": "ルールベースだけでは何が苦手？",
+      "output": "ルールベースの問題は、基本的な解釈や理解が難しく、より深い洞察を得るためには、理論や概念を学ぶ必要があります。",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-011",
+      "input": "モデルのparameter数が少ないと必ず速い？",
+      "output": "はい、モデルのパラメータ数が少ないと、学習速度が速くなる傾向があります。ただし、過多なパラメータを設定すると、学習過程",
+      "group_hits": [
+        false,
+        false
+      ],
+      "score": 0.0
+    },
+    {
+      "id": "ord-012",
+      "input": "外部calculatorを使うとLLM側には何が不要になりやすい？",
+      "output": "外部計算器を使用すると、LLM（人工知能モデル）は以下のような効率的な状況を可能にする可能性があります：\n\n1. **データの処理速度**: �",
+      "group_hits": [
+        true,
+        false
+      ],
+      "score": 0.5
+    }
+  ]
+}

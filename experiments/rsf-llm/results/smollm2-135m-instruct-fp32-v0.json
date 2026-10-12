@@ -1,0 +1,571 @@
+{
+  "model_id": "HuggingFaceTB/SmolLM2-135M-Instruct",
+  "revision": "12fd25f77366fa6b3b4b768ec3050bf629380bac",
+  "parameters": 134515008,
+  "dtype": "torch.float32",
+  "attempted": 80,
+  "accuracy": 0.1375,
+  "brier": 0.13189277594345777,
+  "ece": 0.3205309599637985,
+  "median_latency_ms": 207.2985950508155,
+  "p95_latency_ms": 225.2389210043475,
+  "throughput_tasks_per_second": 4.557583901652888,
+  "batch_size": 8,
+  "peak_rss_bytes": 1504436224,
+  "tokenizer_load_seconds": 0.5871892480645329,
+  "model_load_seconds": 0.29818572592921555,
+  "failures": [
+    {
+      "id": "rsf-001",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.40743178129196167,
+      "ok": false,
+      "brier": 0.0909444101340553
+    },
+    {
+      "id": "rsf-002",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.37119507789611816,
+      "ok": false,
+      "brier": 0.1013063309037333
+    },
+    {
+      "id": "rsf-003",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.7171425223350525,
+      "ok": false,
+      "brier": 0.17374115846713697
+    },
+    {
+      "id": "rsf-004",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.32149580121040344,
+      "ok": false,
+      "brier": 0.10014090630135432
+    },
+    {
+      "id": "rsf-005",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.4093872308731079,
+      "ok": false,
+      "brier": 0.12837772147774568
+    },
+    {
+      "id": "rsf-006",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.7648918032646179,
+      "ok": false,
+      "brier": 0.1745947829621424
+    },
+    {
+      "id": "rsf-008",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.30503302812576294,
+      "ok": false,
+      "brier": 0.09256652838092111
+    },
+    {
+      "id": "rsf-009",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.30289018154144287,
+      "ok": false,
+      "brier": 0.11356416763155858
+    },
+    {
+      "id": "rsf-010",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.3885048031806946,
+      "ok": false,
+      "brier": 0.1427532143075208
+    },
+    {
+      "id": "rsf-011",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.43394193053245544,
+      "ok": false,
+      "brier": 0.15155897443009528
+    },
+    {
+      "id": "rsf-012",
+      "expected": "harness",
+      "predicted": "unknown",
+      "conf": 0.3420783579349518,
+      "ok": false,
+      "brier": 0.12272079624670353
+    },
+    {
+      "id": "rsf-013",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.30215388536453247,
+      "ok": false,
+      "brier": 0.12426018475067067
+    },
+    {
+      "id": "rsf-014",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.5409983396530151,
+      "ok": false,
+      "brier": 0.12891865357962357
+    },
+    {
+      "id": "rsf-015",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.669905424118042,
+      "ok": false,
+      "brier": 0.17638606972571236
+    },
+    {
+      "id": "rsf-016",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.546920120716095,
+      "ok": false,
+      "brier": 0.15662278000407223
+    },
+    {
+      "id": "rsf-017",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.36559394001960754,
+      "ok": false,
+      "brier": 0.1347291072190573
+    },
+    {
+      "id": "rsf-018",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.4615103006362915,
+      "ok": false,
+      "brier": 0.13530337946589135
+    },
+    {
+      "id": "rsf-019",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.45443016290664673,
+      "ok": false,
+      "brier": 0.12875017640746927
+    },
+    {
+      "id": "rsf-020",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.559822678565979,
+      "ok": false,
+      "brier": 0.14070677557396327
+    },
+    {
+      "id": "rsf-021",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.44740742444992065,
+      "ok": false,
+      "brier": 0.14267089444032904
+    },
+    {
+      "id": "rsf-022",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.2904655635356903,
+      "ok": false,
+      "brier": 0.12342490270386497
+    },
+    {
+      "id": "rsf-023",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.5156973600387573,
+      "ok": false,
+      "brier": 0.1452137520427905
+    },
+    {
+      "id": "rsf-024",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.3468005061149597,
+      "ok": false,
+      "brier": 0.1315870887130917
+    },
+    {
+      "id": "rsf-025",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.344115674495697,
+      "ok": false,
+      "brier": 0.12812575748702978
+    },
+    {
+      "id": "rsf-026",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "conf": 0.8197207450866699,
+      "ok": false,
+      "brier": 0.20818524725162288
+    },
+    {
+      "id": "rsf-027",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.45461371541023254,
+      "ok": false,
+      "brier": 0.14791270002921503
+    },
+    {
+      "id": "rsf-028",
+      "expected": "retrieval",
+      "predicted": "deterministic",
+      "conf": 0.29151496291160583,
+      "ok": false,
+      "brier": 0.12443093772628215
+    },
+    {
+      "id": "rsf-029",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.5245609879493713,
+      "ok": false,
+      "brier": 0.15351396629834932
+    },
+    {
+      "id": "rsf-030",
+      "expected": "retrieval",
+      "predicted": "deterministic",
+      "conf": 0.5559449195861816,
+      "ok": false,
+      "brier": 0.16729822121395876
+    },
+    {
+      "id": "rsf-031",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.4034874141216278,
+      "ok": false,
+      "brier": 0.1501798522785956
+    },
+    {
+      "id": "rsf-032",
+      "expected": "tiny_model",
+      "predicted": "deterministic",
+      "conf": 0.3155345916748047,
+      "ok": false,
+      "brier": 0.1457712700114309
+    },
+    {
+      "id": "rsf-033",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.38229209184646606,
+      "ok": false,
+      "brier": 0.13976585453780072
+    },
+    {
+      "id": "rsf-034",
+      "expected": "tiny_model",
+      "predicted": "deterministic",
+      "conf": 0.33140525221824646,
+      "ok": false,
+      "brier": 0.1452807244234338
+    },
+    {
+      "id": "rsf-035",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.5389332175254822,
+      "ok": false,
+      "brier": 0.1472596087921015
+    },
+    {
+      "id": "rsf-036",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.3079133629798889,
+      "ok": false,
+      "brier": 0.13604961724445777
+    },
+    {
+      "id": "rsf-037",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.5308383703231812,
+      "ok": false,
+      "brier": 0.16063641493470313
+    },
+    {
+      "id": "rsf-038",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.3060078024864197,
+      "ok": false,
+      "brier": 0.14711193254719773
+    },
+    {
+      "id": "rsf-039",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.37533852458000183,
+      "ok": false,
+      "brier": 0.14369462460727125
+    },
+    {
+      "id": "rsf-040",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.3521825671195984,
+      "ok": false,
+      "brier": 0.13798431784463397
+    },
+    {
+      "id": "rsf-041",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.47238045930862427,
+      "ok": false,
+      "brier": 0.13779338384748488
+    },
+    {
+      "id": "rsf-042",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.39537712931632996,
+      "ok": false,
+      "brier": 0.09467006729379525
+    },
+    {
+      "id": "rsf-043",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.30836889147758484,
+      "ok": false,
+      "brier": 0.11827910072662048
+    },
+    {
+      "id": "rsf-044",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.4339922368526459,
+      "ok": false,
+      "brier": 0.1411568352271773
+    },
+    {
+      "id": "rsf-045",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.4614081084728241,
+      "ok": false,
+      "brier": 0.1378365715329056
+    },
+    {
+      "id": "rsf-046",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.48941245675086975,
+      "ok": false,
+      "brier": 0.13080548020768815
+    },
+    {
+      "id": "rsf-047",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.39228934049606323,
+      "ok": false,
+      "brier": 0.1063481888946073
+    },
+    {
+      "id": "rsf-048",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.4365699291229248,
+      "ok": false,
+      "brier": 0.13009997874530438
+    },
+    {
+      "id": "rsf-049",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.3181506097316742,
+      "ok": false,
+      "brier": 0.10626207868343826
+    },
+    {
+      "id": "rsf-050",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.3525708317756653,
+      "ok": false,
+      "brier": 0.0878573630463407
+    },
+    {
+      "id": "rsf-051",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.5172428488731384,
+      "ok": false,
+      "brier": 0.1583107184393314
+    },
+    {
+      "id": "rsf-052",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.771588921546936,
+      "ok": false,
+      "brier": 0.1886520224680191
+    },
+    {
+      "id": "rsf-053",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.5065298676490784,
+      "ok": false,
+      "brier": 0.1501840050819482
+    },
+    {
+      "id": "rsf-054",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.5509408116340637,
+      "ok": false,
+      "brier": 0.16012875583858052
+    },
+    {
+      "id": "rsf-055",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.5842130184173584,
+      "ok": false,
+      "brier": 0.17138968696782494
+    },
+    {
+      "id": "rsf-056",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.48835474252700806,
+      "ok": false,
+      "brier": 0.15884402515527835
+    },
+    {
+      "id": "rsf-057",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.42655667662620544,
+      "ok": false,
+      "brier": 0.14488033358323127
+    },
+    {
+      "id": "rsf-058",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.5552574396133423,
+      "ok": false,
+      "brier": 0.16153301061685824
+    },
+    {
+      "id": "rsf-059",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.45103713870048523,
+      "ok": false,
+      "brier": 0.1547452904585869
+    },
+    {
+      "id": "rsf-060",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.5760025978088379,
+      "ok": false,
+      "brier": 0.1661288540223805
+    },
+    {
+      "id": "rsf-071",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.552141010761261,
+      "ok": false,
+      "brier": 0.15572349594448706
+    },
+    {
+      "id": "rsf-072",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.6643429398536682,
+      "ok": false,
+      "brier": 0.17723956511042746
+    },
+    {
+      "id": "rsf-073",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.7128584384918213,
+      "ok": false,
+      "brier": 0.18981936761409213
+    },
+    {
+      "id": "rsf-074",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.5989605784416199,
+      "ok": false,
+      "brier": 0.161097450275883
+    },
+    {
+      "id": "rsf-075",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.4641539454460144,
+      "ok": false,
+      "brier": 0.1414567124952247
+    },
+    {
+      "id": "rsf-076",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.4977523386478424,
+      "ok": false,
+      "brier": 0.15248277419300965
+    },
+    {
+      "id": "rsf-077",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.599128782749176,
+      "ok": false,
+      "brier": 0.17237378348762972
+    },
+    {
+      "id": "rsf-078",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.9391873478889465,
+      "ok": false,
+      "brier": 0.23444714275338885
+    },
+    {
+      "id": "rsf-079",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.4109594523906708,
+      "ok": false,
+      "brier": 0.13115202888311717
+    },
+    {
+      "id": "rsf-080",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.4302876889705658,
+      "ok": false,
+      "brier": 0.12064376482615655
+    }
+  ]
+}

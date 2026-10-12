@@ -1,0 +1,391 @@
+{
+  "run_id": "0b-1791786847",
+  "system": "regex_fsm_router_v0",
+  "attempted": 40,
+  "accuracy": 0.125,
+  "authority_accuracy": 0.875,
+  "brier": 0.13895,
+  "ece": 0.45499999999999996,
+  "median_latency_ms": 0.018369,
+  "p95_latency_ms": 0.025707,
+  "peak_rss_bytes": 67932160,
+  "coverage": {
+    "0.6": {
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "escalation_rate": 1.0
+    },
+    "0.7": {
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "escalation_rate": 1.0
+    },
+    "0.8": {
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "escalation_rate": 1.0
+    },
+    "0.9": {
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "escalation_rate": 1.0
+    },
+    "0.95": {
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "escalation_rate": 1.0
+    }
+  },
+  "failures": [
+    {
+      "id": "hold-001",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-002",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-003",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-004",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-005",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-006",
+      "expected": "harness",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-007",
+      "expected": "harness",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-008",
+      "expected": "harness",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-009",
+      "expected": "harness",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-010",
+      "expected": "harness",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-011",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-012",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-013",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-014",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-015",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-016",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-017",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-018",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-019",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-020",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-021",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-022",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-023",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-024",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-025",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-031",
+      "expected": "authority",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": false,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-032",
+      "expected": "authority",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": false,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-033",
+      "expected": "authority",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": false,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-034",
+      "expected": "authority",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": false,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-035",
+      "expected": "authority",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": false,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-036",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-037",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-038",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-039",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    },
+    {
+      "id": "hold-040",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "confidence": 0.58,
+      "correct": false,
+      "authority_correct": true,
+      "reason": "no_rule_hit",
+      "brier": 0.15519999999999998
+    }
+  ]
+}
