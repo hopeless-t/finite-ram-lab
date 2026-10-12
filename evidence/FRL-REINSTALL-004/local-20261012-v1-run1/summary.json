@@ -1,0 +1,38 @@
+{
+  "arms": {
+    "cold_process": {
+      "max_ms": 52.632566,
+      "median_ms": 50.8339965,
+      "median_peak_rss_kib": 18856.0,
+      "min_ms": 49.395969,
+      "n": 100,
+      "p95_ms": 52.331712
+    },
+    "warm_worker": {
+      "max_ms": 13.035943,
+      "max_resident_rss_kib": 18980,
+      "median_ms": 12.2839785,
+      "median_resident_rss_kib": 18956.0,
+      "min_ms": 11.797983,
+      "n": 100,
+      "p95_ms": 12.714617,
+      "speedup_vs_cold": 4.1382355480351904
+    }
+  },
+  "blocks": 100,
+  "canonical_build_residue_delta_bytes": 0,
+  "experiment_id": "FRL-REINSTALL-004-PROCESS-PARETO-v1",
+  "inproc_lower_bound": {
+    "median_ms": 11.3865895,
+    "p95_ms": 12.076448
+  },
+  "semantic_pairs_match": true,
+  "warm_gap_over_inproc_ms": 0.8973890000000004,
+  "warm_overhead_fraction_vs_inproc": 0.07881104346477064,
+  "worker_idle_rss_kib": 18132,
+  "worker_ready": {
+    "ready": true,
+    "ru_maxrss_kib": 24220
+  },
+  "worker_startup_ms": 36.345078
+}

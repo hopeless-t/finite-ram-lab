@@ -1,0 +1,71 @@
+{
+  "arms": {
+    "cold_exec": {
+      "counter_unique": [
+        1
+      ],
+      "max_ms": 54.050165,
+      "median_ms": 50.9520245,
+      "median_peak_rss_kib": 18868.0,
+      "min_ms": 49.488561,
+      "n": 60,
+      "p95_ms": 52.460061
+    },
+    "fork_template": {
+      "counter_unique": [
+        1
+      ],
+      "max_ms": 15.510096,
+      "median_execution_ru_maxrss_kib": 12840.0,
+      "median_ms": 14.2932985,
+      "median_parent_rss_kib": 18296.0,
+      "min_ms": 13.634924,
+      "n": 60,
+      "p95_ms": 14.973852,
+      "speedup_vs_cold": 3.5647492074695
+    },
+    "warm_persistent": {
+      "counter_unique": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "max_ms": 13.088264,
+      "median_execution_ru_maxrss_kib": 24260.0,
+      "median_ms": 12.1586855,
+      "median_parent_rss_kib": 19016.0,
+      "min_ms": 11.800797,
+      "n": 60,
+      "p95_ms": 12.623692,
+      "speedup_vs_cold": 4.190586597539676
+    }
+  },
+  "blocks": 60,
+  "canonical_build_residue_delta_bytes": 0,
+  "experiment_id": "FRL-REINSTALL-005-TEMPLATE-PROJECTION-v1",
+  "fork_ready": {
+    "ready": true,
+    "rss_kib": 24260
+  },
+  "fork_template_idle_rss_kib": 18296,
+  "fork_template_startup_ms": 31.758851,
+  "semantic_triplets_match": true,
+  "state_isolation_probe": {
+    "cold_counter_all_one": true,
+    "fork_counter_all_one": true,
+    "warm_counter_advances": true
+  },
+  "warm_idle_rss_kib": 18188,
+  "warm_ready": {
+    "ready": true,
+    "rss_kib": 24260
+  },
+  "warm_startup_ms": 37.291987
+}

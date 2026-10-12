@@ -1,0 +1,10 @@
+{
+  "experiment_id": "FRL-REINSTALL-004-PROCESS-PARETO-v1",
+  "question": "Once reinstall/projection is negligible, what latency is bought by retaining one imported worker in RAM?",
+  "arms": ["cold_process", "warm_worker"],
+  "blocks": 100,
+  "paired_inputs": true,
+  "artifact_check": "epoch identity on every request",
+  "lower_bound": "same workload in the already-running harness process",
+  "primary_metrics": ["request_latency_ms", "cold_peak_rss_kib", "warm_resident_rss_kib", "semantic_pair_match", "warm_gap_over_inproc_ms"]
+}

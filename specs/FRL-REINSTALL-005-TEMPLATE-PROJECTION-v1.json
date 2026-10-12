@@ -1,0 +1,9 @@
+{
+  "experiment_id":"FRL-REINSTALL-005-TEMPLATE-PROJECTION-v1",
+  "question":"Can a clean imported parent act as a resident template while every request executes in a disposable child?",
+  "arms":["cold_exec","warm_persistent","fork_template"],
+  "blocks":60,
+  "paired_inputs":true,
+  "state_isolation_probe":"A mutable request counter is excluded from semantic output hash; cold/fork should always observe 1 while a persistent worker advances.",
+  "artifact_check":"epoch identity on every activation"
+}
