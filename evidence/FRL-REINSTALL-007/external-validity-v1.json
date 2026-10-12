@@ -1,0 +1,50 @@
+{
+  "experiment_id": "FRL-REINSTALL-007-EXTERNAL-VALIDITY-v1",
+  "candidate_scope": "Confirmatory only: thresholds 20, 22, 26, 28 were already present in the bounded 50-loop search; no new search candidate was introduced.",
+  "families": ["stable_hotset", "sequential_scan", "shifting_hotset", "bursty"],
+  "workers": 4,
+  "repeats_per_family": 10,
+  "scales": {
+    "small": {
+      "length": 3000,
+      "universe": 65,
+      "anchor": 17,
+      "results": {
+        "20": {"mixed_median_ms": 0.4838235, "mixed_p95_ms": 0.689199, "full_median_ms": 1.4560145, "full_p95_ms": 3.625592, "combined_geom": 0.8393175986721296},
+        "22": {"mixed_median_ms": 0.464968, "mixed_p95_ms": 0.79261, "full_median_ms": 1.4538635, "full_p95_ms": 3.208805, "combined_geom": 0.8221921939960267},
+        "26": {"mixed_median_ms": 0.4316475, "mixed_p95_ms": 1.015797, "full_median_ms": 1.6641665, "full_p95_ms": 3.166667, "combined_geom": 0.8475454614997061},
+        "28": {"mixed_median_ms": 0.4263105, "mixed_p95_ms": 0.756342, "full_median_ms": 1.4915775, "full_p95_ms": 3.332366, "combined_geom": 0.7974178012897316}
+      }
+    },
+    "standard": {
+      "length": 12000,
+      "universe": 257,
+      "anchor": 41,
+      "results": {
+        "20": {"mixed_median_ms": 1.854909, "mixed_p95_ms": 3.993139, "full_median_ms": 19.115713, "full_p95_ms": 117.639698, "combined_geom": 5.954654321211014},
+        "22": {"mixed_median_ms": 1.8580935, "mixed_p95_ms": 4.123336, "full_median_ms": 19.40277, "full_p95_ms": 122.219135, "combined_geom": 6.004345161547177},
+        "26": {"mixed_median_ms": 1.8924965, "mixed_p95_ms": 4.662282, "full_median_ms": 18.572647, "full_p95_ms": 114.835076, "combined_geom": 5.92863132967766},
+        "28": {"mixed_median_ms": 1.823785, "mixed_p95_ms": 4.045402, "full_median_ms": 18.874037, "full_p95_ms": 116.703674, "combined_geom": 5.867042318753548}
+      }
+    },
+    "large": {
+      "length": 24000,
+      "universe": 513,
+      "anchor": 83,
+      "results": {
+        "20": {"mixed_median_ms": 6.014339, "mixed_p95_ms": 18.483178, "full_median_ms": 145.0302275, "full_p95_ms": 902.510909, "combined_geom": 29.53406428909036},
+        "22": {"mixed_median_ms": 6.066012, "mixed_p95_ms": 18.843872, "full_median_ms": 146.2028115, "full_p95_ms": 897.06095, "combined_geom": 29.78032922908573},
+        "26": {"mixed_median_ms": 5.8368185, "mixed_p95_ms": 19.714887, "full_median_ms": 138.7620365, "full_p95_ms": 899.930423, "combined_geom": 28.459248439494587},
+        "28": {"mixed_median_ms": 6.0219075, "mixed_p95_ms": 20.169593, "full_median_ms": 136.683788, "full_p95_ms": 956.113844, "combined_geom": 28.68966936173385}
+      }
+    }
+  },
+  "aggregate_normalized_geometric_mean": {
+    "20": 1.0349654260396106,
+    "22": 1.0335860516695758,
+    "26": 1.024088368181747,
+    "28": 1.002691589409529
+  },
+  "selected_default_heap_max": 28,
+  "selection_reason": "Best aggregate robustness: first on small and standard, second on large, and closest overall to each scale's best point."
+}

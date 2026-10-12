@@ -1,0 +1,23 @@
+{
+  "experiment_id": "FRL-REINSTALL-007-CAPABILITY-PERFORMANCE-SEARCH-v1",
+  "north_star": "Increase useful capability and performance together while keeping runtime/native artifacts fully reconstructible.",
+  "loop_cap": 50,
+  "corpus": {
+    "trace_families": ["stable_hotset", "sequential_scan", "shifting_hotset", "bursty"],
+    "primary_length": 6000,
+    "primary_universe": 129,
+    "primary_capacity": 31
+  },
+  "search_axes": [
+    "reference_vs_prepared",
+    "python_vs_native",
+    "OPT victim scan_vs_lazy_heap",
+    "heap_scan crossover",
+    "1_vs_2_vs_4 native workers",
+    "auto backend",
+    "single query_vs_mixed sweep_vs_full curve"
+  ],
+  "correctness_gate": "Reference parity must hold before a performance result is eligible.",
+  "formal_convergence_rule": "After all coarse regions exist, stop after 8 consecutive loops without >=1% Pareto improvement; never exceed 50 loops.",
+  "bounded_stop": "The final run reached the 50-loop hard cap with 7 consecutive non-updates after the last >=1% update. Existing top candidates were then confirmatory-tested without adding new search candidates."
+}

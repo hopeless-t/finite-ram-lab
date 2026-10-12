@@ -1,0 +1,81 @@
+{
+  "adaptive_workload": {
+    "max_ms": 17.893204,
+    "median_ms": 9.1994455,
+    "min_ms": 8.682655,
+    "n": 100.0,
+    "p95_ms": 10.063001
+  },
+  "experiment_id": "FRL-REINSTALL-007-FINAL-VALIDATION-v2",
+  "functional": {
+    "compare": [
+      {
+        "avoidable_faults": 3697,
+        "capacity": 17,
+        "lru_fault_rate": 0.63775,
+        "lru_faults": 7653,
+        "opt_fault_rate": 0.32966666666666666,
+        "opt_faults": 3956
+      },
+      {
+        "avoidable_faults": 1207,
+        "capacity": 41,
+        "lru_fault_rate": 0.16341666666666665,
+        "lru_faults": 1961,
+        "opt_fault_rate": 0.06283333333333334,
+        "opt_faults": 754
+      },
+      {
+        "avoidable_faults": 207,
+        "capacity": 83,
+        "lru_fault_rate": 0.05075,
+        "lru_faults": 609,
+        "opt_fault_rate": 0.0335,
+        "opt_faults": 402
+      },
+      {
+        "avoidable_faults": 167,
+        "capacity": 127,
+        "lru_fault_rate": 0.03991666666666667,
+        "lru_faults": 479,
+        "opt_fault_rate": 0.026,
+        "opt_faults": 312
+      }
+    ],
+    "lru_curve_points": 248,
+    "minimum_capacity": {
+      "lru_10pct": 46,
+      "lru_5pct": 86,
+      "opt_10pct": 36,
+      "opt_5pct": 50
+    },
+    "profile": {
+      "compression_ratio": 0.020666666666666667,
+      "length": 12000,
+      "native": {
+        "available": true,
+        "cache_path": "/home/tonegawa/.cache/finite-ram-lab/native/36efd534a12439e0c941bcbd/libfrl_cache.so",
+        "digest": "36efd534a12439e0c941bcbd"
+      },
+      "unique_pages": 248
+    }
+  },
+  "median_reduction_pct": 19.243551768552113,
+  "median_speedup": 1.2382912100517363,
+  "native_rebuild": {
+    "artifact_bytes": 15672,
+    "cached_reload_ms": 0.197108,
+    "digest": "36efd534a12439e0c941bcbd",
+    "rebuild_ms": 176.964047,
+    "rebuilt_exists": true,
+    "same_path": true
+  },
+  "old_workload": {
+    "max_ms": 14.821492,
+    "median_ms": 11.3915925,
+    "min_ms": 10.759333,
+    "n": 100.0,
+    "p95_ms": 12.699344
+  },
+  "parity_seeds": 10
+}
