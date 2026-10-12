@@ -1,0 +1,18 @@
+{
+  "experiment_id": "FRL-REINSTALL-001-PILOT-v1",
+  "research_question": "How much reconstruction machinery can be discarded while preserving deterministic useful behavior?",
+  "arms": ["pip_source", "pip_wheel", "wheel_extract"],
+  "blocks": 10,
+  "base_schedule_seed": 20261012,
+  "hard_safety_boundary": "No OS-global cache dropping, package-manager mutation, boot/config mutation, filesystem destructive operation, or privileged write.",
+  "cold_definition": "Fresh per-trial runtime directory. Host page cache remains uncontrolled and is measured rather than globally flushed.",
+  "primary_metrics": [
+    "reconstruct_elapsed_ns",
+    "reconstruct_peak_rss_kib",
+    "runtime_bytes",
+    "workload_semantic_sha256",
+    "workload_ru_maxrss_kib",
+    "discard_elapsed_ns",
+    "residual_bytes_after_discard"
+  ]
+}
