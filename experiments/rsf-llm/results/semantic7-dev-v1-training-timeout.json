@@ -1,0 +1,9 @@
+{
+  "failure": "local_exec_timeout",
+  "timeout_seconds": 90,
+  "phase": "semantic7-dev-v1 training",
+  "cause_class": "harness_execution_budget",
+  "model_failure": false,
+  "repair": "remove per-epoch full-train evaluation and cap physical run to 4 epochs",
+  "recorded_unix": 1791794738
+}

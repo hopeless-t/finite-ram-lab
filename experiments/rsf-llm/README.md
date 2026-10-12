@@ -10,7 +10,7 @@ North Star: preserve the minimum sufficient semantic behavior for owner workload
 - Protected authority decisions remain outside model weights.
 - Failure cases and invalid measurements are retained as failure-biopsy evidence.
 - Compare total system cost, not parameter count alone.
-- Holdout-v1 is now an observed benchmark and MUST NOT be used to tune the next iteration.
+- Holdout-v1, holdout-v2, and holdout-v3 are observed/spent benchmarks. Never tune against them; create a new sealed holdout before the next iteration.
 - No adapter weights are committed or published. Local checkpoints live under ignored `.work/` only.
 
 ## Recovered historical control
@@ -109,11 +109,42 @@ It is approximately:
 
 The 67 KB classifier remains an important cheap control, but its selective confidence is too weak for broad routing. The 150M residual-4 adapter is much more capable but still too large in RSS to call the final minimum sufficient existence.
 
+## Shoal runtime: first end-to-end externalization prototype
+
+A first physical `ShoalRouter` now combines an external authority policy, 0B lexical/deterministic signals, a lazy-loaded 150M semantic-7 LoRA router, confidence-gated handoff, and explicit specialist targets. This is a system experiment rather than a claim that the 150M model alone is sufficient.
+
+The new semantic-7 adapter was trained only on `owner-workload-dev-v1` (70 train / 14 calibration rows). The first long launcher exceeded the Local MCP 90 s execution budget and is retained as `semantic7-dev-v1-training-timeout.json`; removing redundant per-epoch full-train evaluation allowed a 4-epoch run to complete in **53.2 s**. Calibration accuracy reached **92.9%** with temperature **0.5**, again with only **98,304 trainable parameters**.
+
+### Sealed cascade results
+
+| sealed benchmark | hybrid Shoal | policy + semantic7 only | 150M model-active fraction | note |
+|---|---:|---:|---:|---|
+| holdout-v2 (48 rows) | **97.9% (47/48)** | 85.4% | **25.0%** | 0B single-signal 30/30; policy guard 6/6 |
+| holdout-v3 (48 harder rows) | **91.7% (44/48)** | 81.25% | **35.4%** | 0B single-signal 25/25; direct semantic7 12/12 |
+
+Both holdouts were hash-sealed before the corresponding tuning step and were immediately marked `spent` after their first evaluation. No post-hoc rescoring is allowed. The v3 misses were all boundary-policy failures (`low_confidence_handoff` or `signal_model_conflict`), not direct errors from the accepted 0B or accepted semantic7 routes.
+
+### Lazy activation
+
+The router no longer imports or loads PyTorch/model weights for a request that can be resolved by 0B policy/signals. On GAYA-CENTRAL a deterministic fast-path smoke test completed in about **0.04 s / 16 MB max RSS**. A request requiring the 150M router paid a cold path of about **5.9 s / 1.43 GB max RSS**. The current engineering objective is therefore to increase correct sleeping time, not merely shrink total parameter pool size.
+
+### Practical GAYA workcell
+
+`shoal_workcell.py` is the first executable specialist workcell. It can currently:
+
+- complete safe arithmetic with a 0B AST calculator;
+- execute a bounded read-only local Harness subset (`pwd`, `git status`, `HEAD`, `git diff --stat`, branch listing, explicit in-tree file stat);
+- never pass natural-language text into a shell; all local commands use fixed argv;
+- hand off all unsupported work instead of inventing execution;
+- log only trace metadata plus a SHA-256 of the request text to ignored `.work/rsf-llm/runtime-events.jsonl`.
+
+A local convenience entrypoint is installed as `~/.local/bin/catfood-shoal`. Practical smoke tests physically completed `git status`, `pwd`, `git rev-parse HEAD`, `README.md` stat, and arithmetic on GAYA-CENTRAL. Adapter binaries and runtime event logs remain local/ignored.
+
 ## Next physical experiments
 
-1. Treat holdout-v1 as spent/observed; do not tune against it further.
-2. Create a new development corpus and a separately sealed holdout-v2 before the next training iteration.
-3. Attack the remaining high-confidence false positives, especially `tiny_model` vs `larger_model/UNKNOWN` and semantic-7 harness/retrieval confusion.
-4. Build a real externalization mechanism without an oracle, then measure end-to-end cascade cost and accuracy.
+1. Seal holdout-v4 **before** any repair of the v3 boundary misses.
+2. Replace the blunt confidence threshold with a learned/structured handoff boundary and measure whether boundary-policy errors fall without increasing unsafe acceptance.
+3. Expand the workcell only through typed specialists: read-only filesystem/git inspection, deterministic transforms, retrieval handoff, then Jev/CUA observation/action lanes. Never add arbitrary NL-to-shell execution.
+4. Add a persistent-but-idle-unload router service so repeated semantic requests avoid ~6 s cold load while 0B-only periods can still release the 150M model.
 5. Quantize the 150M + adapter lane (int8/int4/GGUF or equivalent) and remeasure accuracy, latency, load time, and RSS on GAYA-CENTRAL.
 6. Test whether a smaller-than-150M Japanese substrate can retain the learned projection. Stop descending only when semantic fidelity or calibration actually breaks.
