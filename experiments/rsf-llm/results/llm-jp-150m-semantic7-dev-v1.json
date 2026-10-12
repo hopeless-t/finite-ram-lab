@@ -1,0 +1,47 @@
+{
+  "run_id": "semantic7-dev-v1-1791794796",
+  "model_id": "llm-jp/llm-jp-3-150m-instruct3",
+  "revision": "5be263e1a3613cd5c163f41ad828c8de6a2aa6ec",
+  "source": "experiments/rsf-llm/corpus/owner-workload-dev-v1.jsonl",
+  "train_rows": 70,
+  "calibration_rows": 14,
+  "seed": 45,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 2.174173434575399,
+      "train_accuracy": null,
+      "calibration_accuracy": 0.21428571428571427,
+      "calibration_nll_raw": 1.8045013346068628
+    },
+    {
+      "epoch": 2,
+      "loss": 1.490361703766717,
+      "train_accuracy": null,
+      "calibration_accuracy": 0.7142857142857143,
+      "calibration_nll_raw": 1.2901922554687295
+    },
+    {
+      "epoch": 3,
+      "loss": 0.8866025374995338,
+      "train_accuracy": null,
+      "calibration_accuracy": 0.6428571428571429,
+      "calibration_nll_raw": 1.0591000320170612
+    },
+    {
+      "epoch": 4,
+      "loss": 0.3894137707021501,
+      "train_accuracy": null,
+      "calibration_accuracy": 0.9285714285714286,
+      "calibration_nll_raw": 0.5221262594710085
+    }
+  ],
+  "epochs_completed": 4,
+  "best_calibration_accuracy": 0.9285714285714286,
+  "temperature": 0.5,
+  "calibration_nll": 0.4537448853292054,
+  "trainable_parameters": 98304,
+  "train_wall_seconds": 53.2117433269741,
+  "checkpoint_dir": ".work/rsf-llm/llm-jp-150m-semantic7-lora-v1",
+  "holdout_evaluated": false
+}

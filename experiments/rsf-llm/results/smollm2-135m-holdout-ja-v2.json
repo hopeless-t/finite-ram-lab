@@ -1,0 +1,301 @@
+{
+  "model_id": "HuggingFaceTB/SmolLM2-135M-Instruct",
+  "revision": "12fd25f77366fa6b3b4b768ec3050bf629380bac",
+  "parameters": 134515008,
+  "dtype": "torch.float32",
+  "attempted": 40,
+  "accuracy": 0.125,
+  "brier": 0.15311018279186164,
+  "ece": 0.5532100275158882,
+  "median_latency_ms": 659.1155549976975,
+  "p95_latency_ms": 755.113348015584,
+  "throughput_tasks_per_second": 1.3971734130671278,
+  "batch_size": 8,
+  "prompt": "ja",
+  "evaluator_version": "v2-no-double-special",
+  "peak_rss_bytes": 2486403072,
+  "tokenizer_load_seconds": 0.6219754460034892,
+  "model_load_seconds": 0.2951425650389865,
+  "failures": [
+    {
+      "id": "hold-001",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.7319590449333191,
+      "ok": false,
+      "brier": 0.18073144620219217
+    },
+    {
+      "id": "hold-002",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.5044572353363037,
+      "ok": false,
+      "brier": 0.09552249179119357
+    },
+    {
+      "id": "hold-003",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.7867093682289124,
+      "ok": false,
+      "brier": 0.18535118660834027
+    },
+    {
+      "id": "hold-004",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.5813007354736328,
+      "ok": false,
+      "brier": 0.1285895152753464
+    },
+    {
+      "id": "hold-005",
+      "expected": "deterministic",
+      "predicted": "authority",
+      "conf": 0.770422637462616,
+      "ok": false,
+      "brier": 0.17735191318341906
+    },
+    {
+      "id": "hold-006",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.6493620276451111,
+      "ok": false,
+      "brier": 0.16782948603560055
+    },
+    {
+      "id": "hold-007",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.6874438524246216,
+      "ok": false,
+      "brier": 0.17424768538647833
+    },
+    {
+      "id": "hold-008",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.6242942214012146,
+      "ok": false,
+      "brier": 0.1532769071975264
+    },
+    {
+      "id": "hold-009",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.6962190270423889,
+      "ok": false,
+      "brier": 0.1792264462913638
+    },
+    {
+      "id": "hold-010",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.6635152697563171,
+      "ok": false,
+      "brier": 0.1799799833251874
+    },
+    {
+      "id": "hold-011",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.658202052116394,
+      "ok": false,
+      "brier": 0.1730046049592125
+    },
+    {
+      "id": "hold-012",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.741641640663147,
+      "ok": false,
+      "brier": 0.18678423614970427
+    },
+    {
+      "id": "hold-013",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.6734215617179871,
+      "ok": false,
+      "brier": 0.17339651870640024
+    },
+    {
+      "id": "hold-014",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.6705819368362427,
+      "ok": false,
+      "brier": 0.1729666675043312
+    },
+    {
+      "id": "hold-015",
+      "expected": "retrieval",
+      "predicted": "authority",
+      "conf": 0.7862898707389832,
+      "ok": false,
+      "brier": 0.1948194181539696
+    },
+    {
+      "id": "hold-016",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.7576050758361816,
+      "ok": false,
+      "brier": 0.1917282058507919
+    },
+    {
+      "id": "hold-017",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.7238965034484863,
+      "ok": false,
+      "brier": 0.18269196698369064
+    },
+    {
+      "id": "hold-018",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.7107186317443848,
+      "ok": false,
+      "brier": 0.18593298838563269
+    },
+    {
+      "id": "hold-019",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.7811269164085388,
+      "ok": false,
+      "brier": 0.19429973232047876
+    },
+    {
+      "id": "hold-020",
+      "expected": "tiny_model",
+      "predicted": "authority",
+      "conf": 0.7461603283882141,
+      "ok": false,
+      "brier": 0.1843605165787713
+    },
+    {
+      "id": "hold-021",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.6256541609764099,
+      "ok": false,
+      "brier": 0.16991147412867189
+    },
+    {
+      "id": "hold-022",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.5890668034553528,
+      "ok": false,
+      "brier": 0.1563630353288375
+    },
+    {
+      "id": "hold-023",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.6895531415939331,
+      "ok": false,
+      "brier": 0.17018027648323955
+    },
+    {
+      "id": "hold-024",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.6327869892120361,
+      "ok": false,
+      "brier": 0.1502439017623091
+    },
+    {
+      "id": "hold-025",
+      "expected": "larger_model",
+      "predicted": "authority",
+      "conf": 0.610938310623169,
+      "ok": false,
+      "brier": 0.16463107528133755
+    },
+    {
+      "id": "hold-026",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.7472527027130127,
+      "ok": false,
+      "brier": 0.1915396935634506
+    },
+    {
+      "id": "hold-027",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.842842161655426,
+      "ok": false,
+      "brier": 0.2119248774548516
+    },
+    {
+      "id": "hold-028",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.6814737319946289,
+      "ok": false,
+      "brier": 0.1737285220979238
+    },
+    {
+      "id": "hold-029",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.75666344165802,
+      "ok": false,
+      "brier": 0.19036343516107243
+    },
+    {
+      "id": "hold-030",
+      "expected": "unknown",
+      "predicted": "authority",
+      "conf": 0.6088579297065735,
+      "ok": false,
+      "brier": 0.16985554894860028
+    },
+    {
+      "id": "hold-036",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.5368819832801819,
+      "ok": false,
+      "brier": 0.15426803431709585
+    },
+    {
+      "id": "hold-037",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.691955029964447,
+      "ok": false,
+      "brier": 0.18017936886414207
+    },
+    {
+      "id": "hold-038",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.6982722282409668,
+      "ok": false,
+      "brier": 0.1818325029254336
+    },
+    {
+      "id": "hold-039",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.5532808899879456,
+      "ok": false,
+      "brier": 0.16243478407678227
+    },
+    {
+      "id": "hold-040",
+      "expected": "ordinary",
+      "predicted": "authority",
+      "conf": 0.5851989388465881,
+      "ok": false,
+      "brier": 0.1531340449823462
+    }
+  ]
+}

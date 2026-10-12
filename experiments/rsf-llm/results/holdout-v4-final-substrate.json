@@ -1,0 +1,111 @@
+{
+  "rows": 48,
+  "accuracy": 0.8958333333333334,
+  "wall_seconds": 6.055081379017793,
+  "by_source": {
+    "0b_single_signal": {
+      "n": 26,
+      "accuracy": 1.0
+    },
+    "low_confidence_handoff": {
+      "n": 5,
+      "accuracy": 0.2
+    },
+    "policy_guard": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "semantic7_model": {
+      "n": 10,
+      "accuracy": 0.9
+    },
+    "signal_model_agreement": {
+      "n": 1,
+      "accuracy": 1.0
+    }
+  },
+  "by_expected": {
+    "authority": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "deterministic": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "harness": {
+      "n": 6,
+      "accuracy": 0.8333333333333334
+    },
+    "larger_model": {
+      "n": 6,
+      "accuracy": 0.8333333333333334
+    },
+    "ordinary": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "retrieval": {
+      "n": 6,
+      "accuracy": 0.6666666666666666
+    },
+    "tiny_model": {
+      "n": 6,
+      "accuracy": 0.8333333333333334
+    },
+    "unknown": {
+      "n": 6,
+      "accuracy": 1.0
+    }
+  },
+  "failures": [
+    {
+      "id": "seal4-012",
+      "expected": "harness",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.5350916981697083,
+      "source": "low_confidence_handoff",
+      "signals": []
+    },
+    {
+      "id": "seal4-014",
+      "expected": "retrieval",
+      "predicted": "tiny_model",
+      "correct": false,
+      "confidence": 0.8641257882118225,
+      "source": "semantic7_model",
+      "signals": []
+    },
+    {
+      "id": "seal4-018",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.6662843823432922,
+      "source": "low_confidence_handoff",
+      "signals": []
+    },
+    {
+      "id": "seal4-020",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.5456723570823669,
+      "source": "low_confidence_handoff",
+      "signals": [
+        "harness",
+        "tiny_model"
+      ]
+    },
+    {
+      "id": "seal4-028",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.710397481918335,
+      "source": "low_confidence_handoff",
+      "signals": []
+    }
+  ]
+}

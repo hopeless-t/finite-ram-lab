@@ -1,0 +1,186 @@
+{
+  "protocol": "sealed-holdout-v2-first-and-final",
+  "holdout_sha256": "7c12d82cea66641dbb0af63a16885bac57f190e738fd72dbb60a61f1e318a517",
+  "evaluated_unix": 1791794938,
+  "hybrid_shoal": {
+    "rows": 48,
+    "accuracy": 0.9791666666666666,
+    "by_expected": {
+      "authority": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "deterministic": {
+        "n": 6,
+        "accuracy": 0.8333333333333334
+      },
+      "harness": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "larger_model": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "ordinary": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "retrieval": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "tiny_model": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "unknown": {
+        "n": 6,
+        "accuracy": 1.0
+      }
+    },
+    "by_source": {
+      "0b_single_signal": {
+        "n": 30,
+        "accuracy": 1.0
+      },
+      "policy_guard": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "semantic7_model": {
+        "n": 12,
+        "accuracy": 0.9166666666666666
+      }
+    },
+    "failures": [
+      {
+        "id": "seal-001",
+        "expected": "deterministic",
+        "predicted": "unknown",
+        "correct": false,
+        "confidence": 0.9063741564750671,
+        "source": "semantic7_model",
+        "signals": []
+      }
+    ],
+    "wall_seconds": 6.181535269017331,
+    "model_active_rows": 12,
+    "model_active_fraction": 0.25
+  },
+  "policy_plus_semantic7_only": {
+    "rows": 48,
+    "accuracy": 0.8541666666666666,
+    "by_expected": {
+      "authority": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "deterministic": {
+        "n": 6,
+        "accuracy": 0.5
+      },
+      "harness": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "larger_model": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "ordinary": {
+        "n": 6,
+        "accuracy": 0.8333333333333334
+      },
+      "retrieval": {
+        "n": 6,
+        "accuracy": 0.5
+      },
+      "tiny_model": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "unknown": {
+        "n": 6,
+        "accuracy": 1.0
+      }
+    },
+    "by_source": {
+      "policy_guard": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "semantic7_only": {
+        "n": 42,
+        "accuracy": 0.8333333333333334
+      }
+    },
+    "failures": [
+      {
+        "id": "seal-001",
+        "expected": "deterministic",
+        "predicted": "unknown",
+        "correct": false,
+        "confidence": 0.9063741564750671,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal-003",
+        "expected": "deterministic",
+        "predicted": "ordinary",
+        "correct": false,
+        "confidence": 0.9997884631156921,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal-006",
+        "expected": "deterministic",
+        "predicted": "tiny_model",
+        "correct": false,
+        "confidence": 0.8384491801261902,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal-015",
+        "expected": "retrieval",
+        "predicted": "tiny_model",
+        "correct": false,
+        "confidence": 0.5582820773124695,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal-017",
+        "expected": "retrieval",
+        "predicted": "harness",
+        "correct": false,
+        "confidence": 0.6916901469230652,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal-018",
+        "expected": "retrieval",
+        "predicted": "tiny_model",
+        "correct": false,
+        "confidence": 0.8694684505462646,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal-041",
+        "expected": "ordinary",
+        "predicted": "harness",
+        "correct": false,
+        "confidence": 0.8954347372055054,
+        "source": "semantic7_only"
+      }
+    ],
+    "wall_seconds": 4.19433217193
+  },
+  "frozen_config": {
+    "adapter": ".work/rsf-llm/llm-jp-150m-semantic7-lora-v1",
+    "temperature": 0.5,
+    "min_confidence": 0.8,
+    "authority_externalized": true,
+    "lazy_load": true
+  },
+  "rule_after_eval": "holdout-v2 is spent; no tuning against these examples. Use holdout-v3 for further iteration."
+}

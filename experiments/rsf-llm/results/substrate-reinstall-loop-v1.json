@@ -1,0 +1,221 @@
+{
+  "experiment": "RSF-LLM substrate reinstall loop v1",
+  "status": "FROZEN_AFTER_HOLDOUT_V5",
+  "scope": "persistent model/adapter/tokenizer/runtime substrate below the already-converged installer projection",
+  "baseline": {
+    "observed_start_tree_bytes": 317880590,
+    "fair_runtime_baseline_without_duplicate_adapter_tokenizer_bytes": 311464102,
+    "base_bf16_weight_bytes": 304649360,
+    "base_self_contained_files_bytes": 311063611,
+    "adapter_full_training_artifact_bytes": 6816979,
+    "adapter_minimal_fp32_runtime_bytes": 400491
+  },
+  "adapter_search": [
+    {
+      "name": "minimal-fp32",
+      "bytes": 400491,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "fp16",
+      "bytes": 203851,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "int8-pack",
+      "bytes": 109670,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "int4-pack",
+      "bytes": 62277,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "rank4-int3-mincfg",
+      "bytes": 43238,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "rank2-fp32",
+      "bytes": 202902,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "rank2-int3-binary",
+      "bytes": 18691,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "rank2-int3-configless-fp8scale",
+      "bytes": 18486,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "rank2-int2",
+      "bytes": 18622,
+      "dev_accuracy": 0.953125,
+      "boundary": "semantic break"
+    },
+    {
+      "name": "rank1-fp32",
+      "bytes": 104550,
+      "dev_accuracy": 0.96875,
+      "boundary": "rank break"
+    },
+    {
+      "name": "quality-final-rank4-fp16-lossless-zstd",
+      "bytes": 183171,
+      "dev_accuracy": 1.0,
+      "holdout_v4": 0.9375,
+      "holdout_v5": 0.890625
+    }
+  ],
+  "base_search": [
+    {
+      "name": "bf16-original",
+      "bytes": 304649360,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "all-fp8-e4m3",
+      "bytes": 152331264,
+      "dev_accuracy": 0.984375
+    },
+    {
+      "name": "fp8+all-attention-bf16",
+      "bytes": 164913880,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "fp8+all-qv-bf16",
+      "bytes": 158622544,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "fp8+greedy-eight-qv-projections-bf16",
+      "bytes": 154428352,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "all-fp8+4bit-residual-eight-projections",
+      "bytes": 153379862,
+      "dev_accuracy": 1.0
+    },
+    {
+      "name": "all-fp8+2bit-block50-residual-four-v-projections",
+      "bytes": 152635360,
+      "dev_accuracy": 1.0,
+      "patch_tensors": [
+        "0v",
+        "1v",
+        "2v",
+        "10v"
+      ],
+      "block": 50,
+      "first_failing_block": 51
+    },
+    {
+      "name": "zstd1-fp8-base",
+      "bytes": 92262909,
+      "decode_seconds": 0.11
+    },
+    {
+      "name": "zstd1-final-residual",
+      "bytes": 204111
+    }
+  ],
+  "rejected": [
+    {
+      "name": "torch-dynamic-int8",
+      "dev_accuracy": 0.9375,
+      "maxrss_kb": 1908544,
+      "reason": "lower accuracy, higher RSS and slower"
+    },
+    {
+      "name": "rank2-int2-adapter",
+      "reason": "61/64 dev"
+    },
+    {
+      "name": "all-fp8-without-residual",
+      "reason": "63/64 dev"
+    },
+    {
+      "name": "storage-min-rank2-int3-stack",
+      "holdout_v4": 0.8958333333333334,
+      "reference_v4": 0.9375,
+      "reason": "interaction margin loss; retained only as storage-min Pareto"
+    }
+  ],
+  "venv": {
+    "apparent_du_human": "~989MB",
+    "externally_shared_inode_bytes": 913638194,
+    "venv_exclusive_inode_bytes": 59029344,
+    "pyc_bytes": 56863769,
+    "record_bytes": 2123671,
+    "record_removal_correctness": "64/64",
+    "pyc_pareto": [
+      {
+        "policy": "drop sympy pyc",
+        "bytes_saved": 12615637,
+        "wall_seconds": 7.0234,
+        "accuracy": 1.0
+      },
+      {
+        "policy": "keep core pyc",
+        "bytes_saved": 16210093,
+        "wall_seconds": 7.5054,
+        "accuracy": 1.0
+      },
+      {
+        "policy": "keep torch pyc only",
+        "bytes_saved": 31277694,
+        "wall_seconds": 9.1343,
+        "accuracy": 1.0
+      },
+      {
+        "policy": "drop all pyc",
+        "bytes_saved": 56863769,
+        "wall_seconds": 12.5097,
+        "accuracy": 1.0
+      }
+    ]
+  },
+  "frontiers": {
+    "quality": {
+      "payload_bytes": 94058065,
+      "reduction_vs_observed_start_fraction": 0.7041088133125712,
+      "reduction_vs_fair_runtime_baseline_fraction": 0.6980131437426456,
+      "ratio_vs_observed_start": 3.3796207693619893,
+      "dev_v2_accuracy": 1.0,
+      "holdout_v4_accuracy": 0.9375,
+      "holdout_v4_reference_accuracy": 0.9375,
+      "holdout_v5_accuracy": 0.890625,
+      "holdout_v5_reference_accuracy": 0.890625,
+      "holdout_v5_failure_ids_match_reference": true,
+      "maxrss_kb": 1283884,
+      "reference_maxrss_kb": 1426656,
+      "runtime_rss_reduction_fraction": 0.10007457999685976,
+      "canonical_runtime_code_bytes_after_compact_loader": 37347,
+      "canonical_runtime_code_growth_from_installer_freeze_bytes": 8552,
+      "loader_code_overhead_fraction_of_payload": 9.092255937861363e-05
+    },
+    "storage_min": {
+      "payload_bytes": 93891059,
+      "reduction_vs_observed_start_fraction": 0.7046341866925565,
+      "dev_v2_accuracy": 1.0,
+      "holdout_v4_accuracy": 0.8958333333333334,
+      "holdout_v4_reference_accuracy": 0.9375,
+      "note": "not promoted to quality default after sealed-v4 regression loss"
+    }
+  },
+  "sealed_validation": {
+    "v4_sha256": "e477bd3d7d5a7d34e6aa82aa6d6554b7c9bb4e80fa0d3db83f2de5469b2596f3",
+    "v4_status": "SPENT",
+    "v5_sha256": "320fd04e579002a10122fa7f03fdd3c5bb05d8259c7b0725a0b3e2b365f62857",
+    "v5_status": "SPENT",
+    "rule": "Future semantic changes require a newly sealed holdout; v4/v5 must not be used for further tuning."
+  },
+  "builder": "scripts/build_compact_runtime.py",
+  "interpretation": "The largest gains came from responsibility separation and shared substrate: remove duplicate tokenizer artifacts, reduce LoRA storage, move most base weights to FP8, preserve only a small residual correction, and losslessly compress persistent payloads. Aggressive rank2/INT3 remained a valid storage-min Pareto but lost sealed-v4 generalization when combined with base compression; the frozen quality frontier restores rank4 FP16 adapter semantics for only ~167KB extra persistent storage."
+}

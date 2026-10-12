@@ -1,0 +1,119 @@
+{
+  "rows": 64,
+  "accuracy": 0.90625,
+  "wall_seconds": 7.123426391975954,
+  "by_source": {
+    "0b_single_signal": {
+      "n": 36,
+      "accuracy": 0.9722222222222222
+    },
+    "low_confidence_handoff": {
+      "n": 2,
+      "accuracy": 0.0
+    },
+    "policy_guard": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "semantic7_model": {
+      "n": 19,
+      "accuracy": 0.8421052631578947
+    },
+    "signal_model_agreement": {
+      "n": 1,
+      "accuracy": 1.0
+    }
+  },
+  "by_expected": {
+    "authority": {
+      "n": 8,
+      "accuracy": 0.75
+    },
+    "deterministic": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "harness": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "larger_model": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "ordinary": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "retrieval": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "tiny_model": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "unknown": {
+      "n": 8,
+      "accuracy": 1.0
+    }
+  },
+  "failures": [
+    {
+      "id": "dev2-009",
+      "expected": "harness",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.46928152441978455,
+      "source": "low_confidence_handoff",
+      "signals": []
+    },
+    {
+      "id": "dev2-024",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.3051134943962097,
+      "source": "low_confidence_handoff",
+      "signals": []
+    },
+    {
+      "id": "dev2-030",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.9534322619438171,
+      "source": "semantic7_model",
+      "signals": []
+    },
+    {
+      "id": "dev2-037",
+      "expected": "larger_model",
+      "predicted": "tiny_model",
+      "correct": false,
+      "confidence": 0.99,
+      "source": "0b_single_signal",
+      "signals": [
+        "tiny_model"
+      ]
+    },
+    {
+      "id": "dev2-061",
+      "expected": "authority",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.9998162388801575,
+      "source": "semantic7_model",
+      "signals": []
+    },
+    {
+      "id": "dev2-062",
+      "expected": "authority",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.9495288729667664,
+      "source": "semantic7_model",
+      "signals": []
+    }
+  ]
+}

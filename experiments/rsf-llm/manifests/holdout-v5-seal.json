@@ -1,0 +1,16 @@
+{
+  "name": "owner-workload-holdout-v5",
+  "rows": 64,
+  "sha256": "320fd04e579002a10122fa7f03fdd3c5bb05d8259c7b0725a0b3e2b365f62857",
+  "sealed_after": "holdout-v4 spent",
+  "sealed_before": "v4-guided substrate repair or candidate selection",
+  "status": "SPENT",
+  "rule": "Do not evaluate until repair choices are frozen.",
+  "spent_for": [
+    "reference_bf16_rank4",
+    "quality_compact_zstd_fp8_residual_rank4_fp16"
+  ],
+  "reference_accuracy": 0.890625,
+  "final_quality_accuracy": 0.890625,
+  "spent_note": "Frozen validation complete. Do not tune against v5; create a new sealed holdout for future semantic changes."
+}

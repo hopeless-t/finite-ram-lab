@@ -1,0 +1,105 @@
+{
+  "rows": 64,
+  "accuracy": 0.9375,
+  "wall_seconds": 7.761323972954415,
+  "by_source": {
+    "0b_single_signal": {
+      "n": 39,
+      "accuracy": 1.0
+    },
+    "low_confidence_handoff": {
+      "n": 3,
+      "accuracy": 0.3333333333333333
+    },
+    "policy_guard": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "semantic7_model": {
+      "n": 12,
+      "accuracy": 1.0
+    },
+    "signal_model_conflict": {
+      "n": 2,
+      "accuracy": 0.0
+    }
+  },
+  "by_expected": {
+    "authority": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "deterministic": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "harness": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "larger_model": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "ordinary": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "retrieval": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "tiny_model": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "unknown": {
+      "n": 8,
+      "accuracy": 1.0
+    }
+  },
+  "failures": [
+    {
+      "id": "dev2-008",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.5103249549865723,
+      "source": "low_confidence_handoff",
+      "signals": []
+    },
+    {
+      "id": "dev2-023",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.4780564606189728,
+      "source": "low_confidence_handoff",
+      "signals": []
+    },
+    {
+      "id": "dev2-025",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.4674779772758484,
+      "source": "signal_model_conflict",
+      "signals": [
+        "retrieval",
+        "tiny_model"
+      ]
+    },
+    {
+      "id": "dev2-037",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.3275947868824005,
+      "source": "signal_model_conflict",
+      "signals": [
+        "tiny_model",
+        "larger_model"
+      ]
+    }
+  ]
+}

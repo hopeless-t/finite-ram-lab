@@ -1,0 +1,179 @@
+{
+  "observed_at_unix": 1791785898.8814003,
+  "models": [
+    {
+      "model_id": "HuggingFaceTB/SmolLM2-135M-Instruct",
+      "sha": "12fd25f77366fa6b3b4b768ec3050bf629380bac",
+      "last_modified": "2025-09-22T20:43:15.000Z",
+      "private": false,
+      "gated": false,
+      "downloads": 1579733,
+      "likes": 435,
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "tags": [
+        "transformers",
+        "tensorboard",
+        "onnx",
+        "safetensors",
+        "llama",
+        "text-generation",
+        "transformers.js",
+        "conversational",
+        "en",
+        "arxiv:2502.02737",
+        "base_model:HuggingFaceTB/SmolLM2-135M",
+        "base_model:quantized:HuggingFaceTB/SmolLM2-135M",
+        "license:apache-2.0",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "region:us"
+      ],
+      "sibling_count": 25,
+      "safetensors": {
+        "parameters": {
+          "BF16": 134515008
+        },
+        "total": 134515008
+      }
+    },
+    {
+      "model_id": "HuggingFaceTB/SmolLM2-360M-Instruct",
+      "sha": "a10cc1512eabd3dde888204e902eca88bddb4951",
+      "last_modified": "2025-09-22T20:44:35.000Z",
+      "private": false,
+      "gated": false,
+      "downloads": 238371,
+      "likes": 228,
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "tags": [
+        "transformers",
+        "tensorboard",
+        "onnx",
+        "safetensors",
+        "llama",
+        "text-generation",
+        "transformers.js",
+        "conversational",
+        "en",
+        "arxiv:2502.02737",
+        "base_model:HuggingFaceTB/SmolLM2-360M",
+        "base_model:quantized:HuggingFaceTB/SmolLM2-360M",
+        "license:apache-2.0",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "region:us"
+      ],
+      "sibling_count": 27,
+      "safetensors": {
+        "parameters": {
+          "BF16": 361821120
+        },
+        "total": 361821120
+      }
+    },
+    {
+      "model_id": "google/functiongemma-270m-it",
+      "sha": "39eccb091651513a5dfb56892d3714c1b5b8276c",
+      "last_modified": "2026-01-14T09:33:54.000Z",
+      "private": false,
+      "gated": "manual",
+      "downloads": 18568,
+      "likes": 1099,
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "tags": [
+        "transformers",
+        "safetensors",
+        "gemma3_text",
+        "text-generation",
+        "gemma3",
+        "gemma",
+        "google",
+        "functiongemma",
+        "conversational",
+        "license:gemma",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "region:us"
+      ],
+      "sibling_count": 12,
+      "safetensors": {
+        "parameters": {
+          "BF16": 268098176
+        },
+        "total": 268098176
+      }
+    },
+    {
+      "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+      "sha": "7ae557604adf67be50417f59c2c2f167def9a775",
+      "last_modified": "2024-09-25T12:32:56.000Z",
+      "private": false,
+      "gated": false,
+      "downloads": 6958158,
+      "likes": 668,
+      "pipeline_tag": "text-generation",
+      "library_name": "transformers",
+      "tags": [
+        "transformers",
+        "safetensors",
+        "qwen2",
+        "text-generation",
+        "chat",
+        "conversational",
+        "en",
+        "arxiv:2407.10671",
+        "base_model:Qwen/Qwen2.5-0.5B",
+        "base_model:finetune:Qwen/Qwen2.5-0.5B",
+        "license:apache-2.0",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "deploy:azure",
+        "region:us"
+      ],
+      "sibling_count": 10,
+      "safetensors": {
+        "parameters": {
+          "BF16": 494032768
+        },
+        "total": 494032768
+      }
+    },
+    {
+      "model_id": "Qwen/Qwen3.5-0.8B",
+      "sha": "2fc06364715b967f1860aea9cf38778875588b17",
+      "last_modified": "2026-03-02T11:26:58.000Z",
+      "private": false,
+      "gated": false,
+      "downloads": 2580102,
+      "likes": 756,
+      "pipeline_tag": "image-text-to-text",
+      "library_name": "transformers",
+      "tags": [
+        "transformers",
+        "safetensors",
+        "qwen3_5",
+        "image-text-to-text",
+        "conversational",
+        "base_model:Qwen/Qwen3.5-0.8B-Base",
+        "base_model:finetune:Qwen/Qwen3.5-0.8B-Base",
+        "license:apache-2.0",
+        "eval-results",
+        "endpoints_compatible",
+        "deploy:sagemaker",
+        "deploy:azure",
+        "region:us"
+      ],
+      "sibling_count": 13,
+      "safetensors": {
+        "parameters": {
+          "F32": 2592,
+          "BF16": 873436192
+        },
+        "total": 873438784
+      }
+    }
+  ]
+}

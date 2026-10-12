@@ -1,0 +1,241 @@
+{
+  "system": "char-ngram-nb-tempcal",
+  "train_rows": 64,
+  "calibration_rows": 16,
+  "temperature": 6,
+  "calibration_nll": 1.4851200284845254,
+  "attempted": 40,
+  "model_bytes": 67581,
+  "accuracy": 0.3,
+  "brier": 0.10000631556554895,
+  "ece": 0.19638348149115137,
+  "median_latency_ms": 0.225864,
+  "p95_latency_ms": 0.286471,
+  "peak_rss_bytes": 68194304,
+  "failures": [
+    {
+      "id": "hold-001",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "conf": 0.22817331984503972,
+      "ok": false,
+      "brier": 0.10784082372460536
+    },
+    {
+      "id": "hold-002",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "conf": 0.33184516440224215,
+      "ok": false,
+      "brier": 0.10645997041791247
+    },
+    {
+      "id": "hold-003",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "conf": 0.4133576929984185,
+      "ok": false,
+      "brier": 0.10146918368072386
+    },
+    {
+      "id": "hold-004",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "conf": 0.23811469027762885,
+      "ok": false,
+      "brier": 0.10357728180017263
+    },
+    {
+      "id": "hold-005",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "conf": 0.3041780143979999,
+      "ok": false,
+      "brier": 0.0791850547761991
+    },
+    {
+      "id": "hold-006",
+      "expected": "harness",
+      "predicted": "authority",
+      "conf": 0.3871178850856352,
+      "ok": false,
+      "brier": 0.08422601338390567
+    },
+    {
+      "id": "hold-007",
+      "expected": "harness",
+      "predicted": "unknown",
+      "conf": 0.31512545532796177,
+      "ok": false,
+      "brier": 0.11798603382176209
+    },
+    {
+      "id": "hold-009",
+      "expected": "harness",
+      "predicted": "unknown",
+      "conf": 0.3494827056287905,
+      "ok": false,
+      "brier": 0.13268322630518112
+    },
+    {
+      "id": "hold-010",
+      "expected": "harness",
+      "predicted": "unknown",
+      "conf": 0.3594709412209023,
+      "ok": false,
+      "brier": 0.12471141498685274
+    },
+    {
+      "id": "hold-011",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "conf": 0.352298722945708,
+      "ok": false,
+      "brier": 0.11819633229348883
+    },
+    {
+      "id": "hold-013",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "conf": 0.23956249816687328,
+      "ok": false,
+      "brier": 0.108235455736213
+    },
+    {
+      "id": "hold-014",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "conf": 0.40622492128896986,
+      "ok": false,
+      "brier": 0.13395365939013631
+    },
+    {
+      "id": "hold-015",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "conf": 0.37112835667949645,
+      "ok": false,
+      "brier": 0.1072551136706808
+    },
+    {
+      "id": "hold-017",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.2926259010391012,
+      "ok": false,
+      "brier": 0.1231325044975683
+    },
+    {
+      "id": "hold-019",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.3585433849960041,
+      "ok": false,
+      "brier": 0.13804755260290508
+    },
+    {
+      "id": "hold-020",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.34423291050514326,
+      "ok": false,
+      "brier": 0.13182213428603182
+    },
+    {
+      "id": "hold-021",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.3950959346712526,
+      "ok": false,
+      "brier": 0.10315611967327072
+    },
+    {
+      "id": "hold-022",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.3660966143952502,
+      "ok": false,
+      "brier": 0.07132555458745467
+    },
+    {
+      "id": "hold-023",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.3166699614040826,
+      "ok": false,
+      "brier": 0.07950206361559606
+    },
+    {
+      "id": "hold-025",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.4608222233181067,
+      "ok": false,
+      "brier": 0.12820739529461156
+    },
+    {
+      "id": "hold-031",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.37672215227680533,
+      "ok": false,
+      "brier": 0.14447265426724382
+    },
+    {
+      "id": "hold-032",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.38311207032018113,
+      "ok": false,
+      "brier": 0.14463519021819754
+    },
+    {
+      "id": "hold-033",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.38311207032018113,
+      "ok": false,
+      "brier": 0.14463519021819754
+    },
+    {
+      "id": "hold-034",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.38311207032018113,
+      "ok": false,
+      "brier": 0.14463519021819754
+    },
+    {
+      "id": "hold-035",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.38311207032018113,
+      "ok": false,
+      "brier": 0.14463519021819754
+    },
+    {
+      "id": "hold-036",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.2732717332532157,
+      "ok": false,
+      "brier": 0.10234135927321394
+    },
+    {
+      "id": "hold-039",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.4182522315178204,
+      "ok": false,
+      "brier": 0.11237354409351856
+    },
+    {
+      "id": "hold-040",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.4816624862577537,
+      "ok": false,
+      "brier": 0.11144623363765122
+    }
+  ]
+}

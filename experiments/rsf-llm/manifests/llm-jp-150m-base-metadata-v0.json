@@ -1,0 +1,9 @@
+{
+  "model_id": "llm-jp/llm-jp-3-150m",
+  "sha": "b112feef602fff752e4dac4c30af6a2c2fa41c7a",
+  "gated": false,
+  "license": "apache-2.0",
+  "languages": ["ja", "en"],
+  "safetensors_parameters": 152318464,
+  "role": "base-model lesion control"
+}

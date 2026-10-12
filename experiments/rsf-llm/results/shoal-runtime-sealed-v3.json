@@ -1,0 +1,245 @@
+{
+  "protocol": "sealed-holdout-v3-first-and-final",
+  "holdout_sha256": "7190e6108e7ca5ced1ca409f41eb8516b58c6452e3220ddec8b1c1d4d13a71a2",
+  "evaluated_unix": 1791795110,
+  "hybrid_shoal": {
+    "rows": 48,
+    "accuracy": 0.9166666666666666,
+    "by_expected": {
+      "authority": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "deterministic": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "harness": {
+        "n": 6,
+        "accuracy": 0.8333333333333334
+      },
+      "larger_model": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "ordinary": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "retrieval": {
+        "n": 6,
+        "accuracy": 0.6666666666666666
+      },
+      "tiny_model": {
+        "n": 6,
+        "accuracy": 0.8333333333333334
+      },
+      "unknown": {
+        "n": 6,
+        "accuracy": 1.0
+      }
+    },
+    "by_source": {
+      "0b_single_signal": {
+        "n": 25,
+        "accuracy": 1.0
+      },
+      "low_confidence_handoff": {
+        "n": 3,
+        "accuracy": 0.0
+      },
+      "policy_guard": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "semantic7_model": {
+        "n": 12,
+        "accuracy": 1.0
+      },
+      "signal_model_agreement": {
+        "n": 1,
+        "accuracy": 1.0
+      },
+      "signal_model_conflict": {
+        "n": 1,
+        "accuracy": 0.0
+      }
+    },
+    "failures": [
+      {
+        "id": "seal3-012",
+        "expected": "harness",
+        "predicted": "unknown",
+        "correct": false,
+        "confidence": 0.6550993323326111,
+        "source": "low_confidence_handoff",
+        "signals": []
+      },
+      {
+        "id": "seal3-014",
+        "expected": "retrieval",
+        "predicted": "unknown",
+        "correct": false,
+        "confidence": 0.5362817645072937,
+        "source": "low_confidence_handoff",
+        "signals": []
+      },
+      {
+        "id": "seal3-016",
+        "expected": "retrieval",
+        "predicted": "unknown",
+        "correct": false,
+        "confidence": 0.6503815054893494,
+        "source": "low_confidence_handoff",
+        "signals": []
+      },
+      {
+        "id": "seal3-019",
+        "expected": "tiny_model",
+        "predicted": "unknown",
+        "correct": false,
+        "confidence": 0.580512285232544,
+        "source": "signal_model_conflict",
+        "signals": [
+          "retrieval",
+          "tiny_model"
+        ]
+      }
+    ],
+    "wall_seconds": 6.66008347494062,
+    "model_active_rows": 17,
+    "model_active_fraction": 0.3541666666666667
+  },
+  "policy_plus_semantic7_only": {
+    "rows": 48,
+    "accuracy": 0.8125,
+    "by_expected": {
+      "authority": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "deterministic": {
+        "n": 6,
+        "accuracy": 0.5
+      },
+      "harness": {
+        "n": 6,
+        "accuracy": 0.8333333333333334
+      },
+      "larger_model": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "ordinary": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "retrieval": {
+        "n": 6,
+        "accuracy": 0.6666666666666666
+      },
+      "tiny_model": {
+        "n": 6,
+        "accuracy": 0.5
+      },
+      "unknown": {
+        "n": 6,
+        "accuracy": 1.0
+      }
+    },
+    "by_source": {
+      "policy_guard": {
+        "n": 6,
+        "accuracy": 1.0
+      },
+      "semantic7_only": {
+        "n": 42,
+        "accuracy": 0.7857142857142857
+      }
+    },
+    "failures": [
+      {
+        "id": "seal3-002",
+        "expected": "deterministic",
+        "predicted": "ordinary",
+        "correct": false,
+        "confidence": 0.9995606541633606,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal3-004",
+        "expected": "deterministic",
+        "predicted": "ordinary",
+        "correct": false,
+        "confidence": 0.9478086829185486,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal3-005",
+        "expected": "deterministic",
+        "predicted": "ordinary",
+        "correct": false,
+        "confidence": 0.9997395873069763,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal3-011",
+        "expected": "harness",
+        "predicted": "unknown",
+        "correct": false,
+        "confidence": 0.871806263923645,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal3-015",
+        "expected": "retrieval",
+        "predicted": "harness",
+        "correct": false,
+        "confidence": 0.8968149423599243,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal3-018",
+        "expected": "retrieval",
+        "predicted": "harness",
+        "correct": false,
+        "confidence": 0.8138540983200073,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal3-019",
+        "expected": "tiny_model",
+        "predicted": "harness",
+        "correct": false,
+        "confidence": 0.580512285232544,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal3-021",
+        "expected": "tiny_model",
+        "predicted": "harness",
+        "correct": false,
+        "confidence": 0.49536657333374023,
+        "source": "semantic7_only"
+      },
+      {
+        "id": "seal3-022",
+        "expected": "tiny_model",
+        "predicted": "larger_model",
+        "correct": false,
+        "confidence": 0.771902859210968,
+        "source": "semantic7_only"
+      }
+    ],
+    "wall_seconds": 4.108954826020636
+  },
+  "frozen_config": {
+    "adapter": ".work/rsf-llm/llm-jp-150m-semantic7-lora-v1",
+    "temperature": 0.5,
+    "min_confidence": 0.8,
+    "authority_externalized": true,
+    "lazy_load": true,
+    "calculator_0b": true
+  },
+  "rule_after_eval": "This holdout is spent; tune only against a newly sealed next holdout."
+}

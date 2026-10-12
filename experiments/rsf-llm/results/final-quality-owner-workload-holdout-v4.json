@@ -1,0 +1,90 @@
+{
+  "rows": 48,
+  "accuracy": 0.9375,
+  "wall_seconds": 6.0384558560326695,
+  "by_source": {
+    "0b_single_signal": {
+      "n": 26,
+      "accuracy": 1.0
+    },
+    "low_confidence_handoff": {
+      "n": 2,
+      "accuracy": 0.0
+    },
+    "policy_guard": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "semantic7_model": {
+      "n": 12,
+      "accuracy": 0.9166666666666666
+    },
+    "signal_model_agreement": {
+      "n": 2,
+      "accuracy": 1.0
+    }
+  },
+  "by_expected": {
+    "authority": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "deterministic": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "harness": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "larger_model": {
+      "n": 6,
+      "accuracy": 0.8333333333333334
+    },
+    "ordinary": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "retrieval": {
+      "n": 6,
+      "accuracy": 0.6666666666666666
+    },
+    "tiny_model": {
+      "n": 6,
+      "accuracy": 1.0
+    },
+    "unknown": {
+      "n": 6,
+      "accuracy": 1.0
+    }
+  },
+  "failures": [
+    {
+      "id": "seal4-014",
+      "expected": "retrieval",
+      "predicted": "tiny_model",
+      "correct": false,
+      "confidence": 0.875274121761322,
+      "source": "semantic7_model",
+      "signals": []
+    },
+    {
+      "id": "seal4-018",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.6095341444015503,
+      "source": "low_confidence_handoff",
+      "signals": []
+    },
+    {
+      "id": "seal4-028",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.4566892981529236,
+      "source": "low_confidence_handoff",
+      "signals": []
+    }
+  ]
+}

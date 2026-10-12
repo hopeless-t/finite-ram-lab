@@ -1,0 +1,12 @@
+{
+  "protocol": "sealed-holdout-v3",
+  "development_file": "corpus/owner-workload-dev-v2.jsonl",
+  "development_rows": 64,
+  "holdout_file": "corpus/owner-workload-holdout-v3.jsonl",
+  "holdout_rows": 48,
+  "holdout_sha256": "7190e6108e7ca5ced1ca409f41eb8516b58c6452e3220ddec8b1c1d4d13a71a2",
+  "status": "spent",
+  "rule": "No tuning against holdout-v3 after first evaluation; use v4 next.",
+  "evaluated_unix": 1791795110,
+  "result_file": "results/shoal-runtime-sealed-v3.json"
+}

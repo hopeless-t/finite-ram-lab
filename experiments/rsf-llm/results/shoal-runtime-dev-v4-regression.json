@@ -1,0 +1,58 @@
+{
+  "rows": 96,
+  "accuracy": 1.0,
+  "wall_seconds": 7.057406915933825,
+  "by_source": {
+    "0b_single_signal": {
+      "n": 62,
+      "accuracy": 1.0
+    },
+    "policy_guard": {
+      "n": 12,
+      "accuracy": 1.0
+    },
+    "semantic7_model": {
+      "n": 18,
+      "accuracy": 1.0
+    },
+    "signal_model_agreement": {
+      "n": 4,
+      "accuracy": 1.0
+    }
+  },
+  "by_expected": {
+    "authority": {
+      "n": 12,
+      "accuracy": 1.0
+    },
+    "deterministic": {
+      "n": 12,
+      "accuracy": 1.0
+    },
+    "harness": {
+      "n": 12,
+      "accuracy": 1.0
+    },
+    "larger_model": {
+      "n": 12,
+      "accuracy": 1.0
+    },
+    "ordinary": {
+      "n": 12,
+      "accuracy": 1.0
+    },
+    "retrieval": {
+      "n": 12,
+      "accuracy": 1.0
+    },
+    "tiny_model": {
+      "n": 12,
+      "accuracy": 1.0
+    },
+    "unknown": {
+      "n": 12,
+      "accuracy": 1.0
+    }
+  },
+  "failures": []
+}

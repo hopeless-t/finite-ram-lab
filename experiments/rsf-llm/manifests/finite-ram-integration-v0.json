@@ -1,0 +1,33 @@
+{
+  "integration": "finite-ram-lab -> RSF Shoal v0",
+  "finite_ram_source_ref": "origin/main@2b8f870",
+  "imported_atoms": [
+    "byte-canonical resource budgeting",
+    "memory-pressure hysteresis admission control",
+    "durable memory != resident control working set",
+    "shared-prefix residency/KV reuse",
+    "profile -> bounded change -> correctness check -> reprofile"
+  ],
+  "physical_results": {
+    "dev_v2_accuracy_before": 1.0,
+    "dev_v2_wall_before_seconds": 6.588777999975719,
+    "dev_v2_accuracy_after": 1.0,
+    "dev_v2_wall_after_seconds": 5.927291745087132,
+    "end_to_end_wall_reduction_fraction": 0.10039589357708278,
+    "shared_prefix_tokens": 28,
+    "warm_forward_median_before_ms": 98.7729310290888,
+    "warm_forward_median_after_ms": 55.15660147648305,
+    "warm_forward_speedup": 1.790772607177444,
+    "max_abs_logit_diff": 4.38690185546875e-05,
+    "live_gaya_mem_available_bytes_at_governor_probe": 13428793344,
+    "live_gaya_psi_memory_some_avg10_at_probe": 0.0,
+    "synthetic_hysteresis_test": "PASS",
+    "pressure_fail_closed_without_model_load": "PASS",
+    "bounded_control_state_test": "100 durable receipts -> resident state file 353 bytes / 2 entries under a strict 512-byte budget"
+  },
+  "nonclaims": [
+    "finite-ram upstream/source claims are not re-labeled as local results",
+    "shared-prefix result is a local router warm-forward result, not whole-product throughput",
+    "pressure thresholds are provisional local policy, not universal constants"
+  ]
+}

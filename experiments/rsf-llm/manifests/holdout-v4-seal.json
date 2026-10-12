@@ -1,0 +1,14 @@
+{
+  "name": "owner-workload-holdout-v4",
+  "rows": 48,
+  "sha256": "e477bd3d7d5a7d34e6aa82aa6d6554b7c9bb4e80fa0d3db83f2de5469b2596f3",
+  "sealed_before": "LoRA rank pruning and base-model substrate tuning",
+  "status": "SPENT",
+  "spent_for": [
+    "reference_bf16_rank4",
+    "final_substrate_zstd_fp8_residual_rank2_int3"
+  ],
+  "reference_accuracy": 0.9375,
+  "final_substrate_accuracy": 0.8958333333333334,
+  "spent_note": "Do not tune against v4; create/seal v5 before any repair."
+}

@@ -1,0 +1,587 @@
+{
+  "model_id": "Qwen/Qwen2.5-0.5B-Instruct",
+  "revision": "7ae557604adf67be50417f59c2c2f167def9a775",
+  "parameters": 494032768,
+  "dtype": "torch.float32",
+  "attempted": 80,
+  "accuracy": 0.1125,
+  "brier": 0.1217615151268999,
+  "ece": 0.2680574923753738,
+  "median_latency_ms": 704.623967059888,
+  "p95_latency_ms": 1101.308116922155,
+  "throughput_tasks_per_second": 1.739362719484667,
+  "batch_size": 4,
+  "peak_rss_bytes": 3505553408,
+  "tokenizer_load_seconds": 3.1812481980305165,
+  "model_load_seconds": 15.276799937942997,
+  "failures": [
+    {
+      "id": "rsf-001",
+      "expected": "deterministic",
+      "predicted": "larger_model",
+      "conf": 0.3439967930316925,
+      "ok": false,
+      "brier": 0.14727575214332403
+    },
+    {
+      "id": "rsf-002",
+      "expected": "deterministic",
+      "predicted": "larger_model",
+      "conf": 0.3392927646636963,
+      "ok": false,
+      "brier": 0.14917921907134082
+    },
+    {
+      "id": "rsf-003",
+      "expected": "deterministic",
+      "predicted": "larger_model",
+      "conf": 0.38709738850593567,
+      "ok": false,
+      "brier": 0.15517484851314028
+    },
+    {
+      "id": "rsf-004",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "conf": 0.33766186237335205,
+      "ok": false,
+      "brier": 0.1515860087702161
+    },
+    {
+      "id": "rsf-005",
+      "expected": "deterministic",
+      "predicted": "larger_model",
+      "conf": 0.2503264844417572,
+      "ok": false,
+      "brier": 0.1325359667856251
+    },
+    {
+      "id": "rsf-006",
+      "expected": "deterministic",
+      "predicted": "larger_model",
+      "conf": 0.251769483089447,
+      "ok": false,
+      "brier": 0.14043574895057928
+    },
+    {
+      "id": "rsf-007",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "conf": 0.37641456723213196,
+      "ok": false,
+      "brier": 0.15769779571451084
+    },
+    {
+      "id": "rsf-008",
+      "expected": "deterministic",
+      "predicted": "larger_model",
+      "conf": 0.4357527494430542,
+      "ok": false,
+      "brier": 0.1545492372501886
+    },
+    {
+      "id": "rsf-009",
+      "expected": "deterministic",
+      "predicted": "larger_model",
+      "conf": 0.3831769526004791,
+      "ok": false,
+      "brier": 0.14746527540323362
+    },
+    {
+      "id": "rsf-010",
+      "expected": "deterministic",
+      "predicted": "larger_model",
+      "conf": 0.35746878385543823,
+      "ok": false,
+      "brier": 0.1440618640674002
+    },
+    {
+      "id": "rsf-011",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.42434781789779663,
+      "ok": false,
+      "brier": 0.15039846035940682
+    },
+    {
+      "id": "rsf-012",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.34963902831077576,
+      "ok": false,
+      "brier": 0.14774240358676263
+    },
+    {
+      "id": "rsf-013",
+      "expected": "harness",
+      "predicted": "unknown",
+      "conf": 0.34476566314697266,
+      "ok": false,
+      "brier": 0.1369775418804097
+    },
+    {
+      "id": "rsf-014",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.27522754669189453,
+      "ok": false,
+      "brier": 0.14245674663900776
+    },
+    {
+      "id": "rsf-015",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.3749518096446991,
+      "ok": false,
+      "brier": 0.13989114236028583
+    },
+    {
+      "id": "rsf-016",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.3666982650756836,
+      "ok": false,
+      "brier": 0.13552510149132949
+    },
+    {
+      "id": "rsf-018",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.3770836293697357,
+      "ok": false,
+      "brier": 0.131710729003272
+    },
+    {
+      "id": "rsf-019",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.28574350476264954,
+      "ok": false,
+      "brier": 0.137368435227061
+    },
+    {
+      "id": "rsf-020",
+      "expected": "harness",
+      "predicted": "larger_model",
+      "conf": 0.4025212228298187,
+      "ok": false,
+      "brier": 0.13989042729588463
+    },
+    {
+      "id": "rsf-021",
+      "expected": "retrieval",
+      "predicted": "larger_model",
+      "conf": 0.2930535674095154,
+      "ok": false,
+      "brier": 0.11838582893165256
+    },
+    {
+      "id": "rsf-022",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "conf": 0.33706900477409363,
+      "ok": false,
+      "brier": 0.11340686386136772
+    },
+    {
+      "id": "rsf-023",
+      "expected": "retrieval",
+      "predicted": "larger_model",
+      "conf": 0.2688940465450287,
+      "ok": false,
+      "brier": 0.11635002939380473
+    },
+    {
+      "id": "rsf-024",
+      "expected": "retrieval",
+      "predicted": "larger_model",
+      "conf": 0.41106662154197693,
+      "ok": false,
+      "brier": 0.12706899607108302
+    },
+    {
+      "id": "rsf-025",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "conf": 0.31107136607170105,
+      "ok": false,
+      "brier": 0.10554643816921827
+    },
+    {
+      "id": "rsf-026",
+      "expected": "retrieval",
+      "predicted": "larger_model",
+      "conf": 0.2465827763080597,
+      "ok": false,
+      "brier": 0.10733373596441541
+    },
+    {
+      "id": "rsf-027",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "conf": 0.25298091769218445,
+      "ok": false,
+      "brier": 0.09639915918913643
+    },
+    {
+      "id": "rsf-028",
+      "expected": "retrieval",
+      "predicted": "unknown",
+      "conf": 0.2936748266220093,
+      "ok": false,
+      "brier": 0.11634260350111987
+    },
+    {
+      "id": "rsf-029",
+      "expected": "retrieval",
+      "predicted": "larger_model",
+      "conf": 0.36765068769454956,
+      "ok": false,
+      "brier": 0.11771894452063904
+    },
+    {
+      "id": "rsf-030",
+      "expected": "retrieval",
+      "predicted": "larger_model",
+      "conf": 0.3393782675266266,
+      "ok": false,
+      "brier": 0.11992445673770524
+    },
+    {
+      "id": "rsf-031",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.42160019278526306,
+      "ok": false,
+      "brier": 0.15155885408559389
+    },
+    {
+      "id": "rsf-032",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.39394304156303406,
+      "ok": false,
+      "brier": 0.13417337361111661
+    },
+    {
+      "id": "rsf-033",
+      "expected": "tiny_model",
+      "predicted": "larger_model",
+      "conf": 0.384003609418869,
+      "ok": false,
+      "brier": 0.1433776841948478
+    },
+    {
+      "id": "rsf-034",
+      "expected": "tiny_model",
+      "predicted": "retrieval",
+      "conf": 0.2903386056423187,
+      "ok": false,
+      "brier": 0.12011255104623093
+    },
+    {
+      "id": "rsf-035",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.2682488262653351,
+      "ok": false,
+      "brier": 0.131868430530094
+    },
+    {
+      "id": "rsf-036",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.2579319477081299,
+      "ok": false,
+      "brier": 0.132092382699279
+    },
+    {
+      "id": "rsf-037",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.6292166113853455,
+      "ok": false,
+      "brier": 0.1761462655709557
+    },
+    {
+      "id": "rsf-038",
+      "expected": "tiny_model",
+      "predicted": "ordinary",
+      "conf": 0.3169379234313965,
+      "ok": false,
+      "brier": 0.1417961894667901
+    },
+    {
+      "id": "rsf-039",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "conf": 0.3049212694168091,
+      "ok": false,
+      "brier": 0.13489953464788038
+    },
+    {
+      "id": "rsf-040",
+      "expected": "tiny_model",
+      "predicted": "larger_model",
+      "conf": 0.2744772434234619,
+      "ok": false,
+      "brier": 0.1348559559298643
+    },
+    {
+      "id": "rsf-041",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.42525672912597656,
+      "ok": false,
+      "brier": 0.09268783655636045
+    },
+    {
+      "id": "rsf-042",
+      "expected": "larger_model",
+      "predicted": "ordinary",
+      "conf": 0.5248530507087708,
+      "ok": false,
+      "brier": 0.1604115747164606
+    },
+    {
+      "id": "rsf-043",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.410528302192688,
+      "ok": false,
+      "brier": 0.10138953770668446
+    },
+    {
+      "id": "rsf-044",
+      "expected": "larger_model",
+      "predicted": "retrieval",
+      "conf": 0.2502247095108032,
+      "ok": false,
+      "brier": 0.09762543418756328
+    },
+    {
+      "id": "rsf-045",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.7026991248130798,
+      "ok": false,
+      "brier": 0.1735635373131179
+    },
+    {
+      "id": "rsf-046",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.3735995292663574,
+      "ok": false,
+      "brier": 0.08723512007746179
+    },
+    {
+      "id": "rsf-047",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.39130720496177673,
+      "ok": false,
+      "brier": 0.12945362446612974
+    },
+    {
+      "id": "rsf-048",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.38775452971458435,
+      "ok": false,
+      "brier": 0.09285220569112206
+    },
+    {
+      "id": "rsf-049",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.4558449387550354,
+      "ok": false,
+      "brier": 0.0978171863233353
+    },
+    {
+      "id": "rsf-050",
+      "expected": "larger_model",
+      "predicted": "unknown",
+      "conf": 0.3496374487876892,
+      "ok": false,
+      "brier": 0.08911475506599768
+    },
+    {
+      "id": "rsf-053",
+      "expected": "unknown",
+      "predicted": "larger_model",
+      "conf": 0.3339964747428894,
+      "ok": false,
+      "brier": 0.10254971126289784
+    },
+    {
+      "id": "rsf-054",
+      "expected": "unknown",
+      "predicted": "larger_model",
+      "conf": 0.3023327589035034,
+      "ok": false,
+      "brier": 0.08619534746142933
+    },
+    {
+      "id": "rsf-056",
+      "expected": "unknown",
+      "predicted": "larger_model",
+      "conf": 0.33699798583984375,
+      "ok": false,
+      "brier": 0.08075424604094353
+    },
+    {
+      "id": "rsf-061",
+      "expected": "authority",
+      "predicted": "larger_model",
+      "conf": 0.3408668637275696,
+      "ok": false,
+      "brier": 0.14293824540470562
+    },
+    {
+      "id": "rsf-062",
+      "expected": "authority",
+      "predicted": "larger_model",
+      "conf": 0.34599965810775757,
+      "ok": false,
+      "brier": 0.1442130949598298
+    },
+    {
+      "id": "rsf-063",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.3062795400619507,
+      "ok": false,
+      "brier": 0.13061889674913216
+    },
+    {
+      "id": "rsf-064",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.3841278851032257,
+      "ok": false,
+      "brier": 0.13899176200705454
+    },
+    {
+      "id": "rsf-065",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.36628174781799316,
+      "ok": false,
+      "brier": 0.13119981778993137
+    },
+    {
+      "id": "rsf-066",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.39449039101600647,
+      "ok": false,
+      "brier": 0.13953992748116967
+    },
+    {
+      "id": "rsf-067",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.41177985072135925,
+      "ok": false,
+      "brier": 0.14028884394173524
+    },
+    {
+      "id": "rsf-068",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.3600212037563324,
+      "ok": false,
+      "brier": 0.1338548041324213
+    },
+    {
+      "id": "rsf-069",
+      "expected": "authority",
+      "predicted": "unknown",
+      "conf": 0.5113955736160278,
+      "ok": false,
+      "brier": 0.15286071585811914
+    },
+    {
+      "id": "rsf-070",
+      "expected": "authority",
+      "predicted": "larger_model",
+      "conf": 0.3080759346485138,
+      "ok": false,
+      "brier": 0.14527430978437977
+    },
+    {
+      "id": "rsf-071",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.5039195418357849,
+      "ok": false,
+      "brier": 0.13905934219363625
+    },
+    {
+      "id": "rsf-072",
+      "expected": "ordinary",
+      "predicted": "larger_model",
+      "conf": 0.4194524586200714,
+      "ok": false,
+      "brier": 0.15624524153115946
+    },
+    {
+      "id": "rsf-073",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.3671343922615051,
+      "ok": false,
+      "brier": 0.14723948907208895
+    },
+    {
+      "id": "rsf-074",
+      "expected": "ordinary",
+      "predicted": "larger_model",
+      "conf": 0.29413068294525146,
+      "ok": false,
+      "brier": 0.13264675122469216
+    },
+    {
+      "id": "rsf-075",
+      "expected": "ordinary",
+      "predicted": "larger_model",
+      "conf": 0.3309570848941803,
+      "ok": false,
+      "brier": 0.14282666371900135
+    },
+    {
+      "id": "rsf-076",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.7740853428840637,
+      "ok": false,
+      "brier": 0.1684832973865533
+    },
+    {
+      "id": "rsf-077",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.3750966489315033,
+      "ok": false,
+      "brier": 0.1198149149680574
+    },
+    {
+      "id": "rsf-078",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.37448611855506897,
+      "ok": false,
+      "brier": 0.13132361441709675
+    },
+    {
+      "id": "rsf-079",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "conf": 0.3082275092601776,
+      "ok": false,
+      "brier": 0.12399390503577168
+    }
+  ]
+}

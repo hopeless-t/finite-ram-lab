@@ -1,0 +1,81 @@
+{
+  "rows": 64,
+  "accuracy": 0.96875,
+  "wall_seconds": 5.8278230800060555,
+  "by_source": {
+    "0b_single_signal": {
+      "n": 39,
+      "accuracy": 1.0
+    },
+    "low_confidence_handoff": {
+      "n": 2,
+      "accuracy": 0.0
+    },
+    "policy_guard": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "semantic7_model": {
+      "n": 13,
+      "accuracy": 1.0
+    },
+    "signal_model_agreement": {
+      "n": 2,
+      "accuracy": 1.0
+    }
+  },
+  "by_expected": {
+    "authority": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "deterministic": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "harness": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "larger_model": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "ordinary": {
+      "n": 8,
+      "accuracy": 0.875
+    },
+    "retrieval": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "tiny_model": {
+      "n": 8,
+      "accuracy": 1.0
+    },
+    "unknown": {
+      "n": 8,
+      "accuracy": 1.0
+    }
+  },
+  "failures": [
+    {
+      "id": "dev2-008",
+      "expected": "deterministic",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.7716164588928223,
+      "source": "low_confidence_handoff",
+      "signals": []
+    },
+    {
+      "id": "dev2-055",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "correct": false,
+      "confidence": 0.6105009913444519,
+      "source": "low_confidence_handoff",
+      "signals": []
+    }
+  ]
+}

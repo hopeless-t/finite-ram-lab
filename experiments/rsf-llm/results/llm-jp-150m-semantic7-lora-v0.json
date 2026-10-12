@@ -1,0 +1,242 @@
+{
+  "run_id": "llmjp150-semantic7-lora-1791789182",
+  "model_id": "llm-jp/llm-jp-3-150m-instruct3",
+  "revision": "5be263e1a3613cd5c163f41ad828c8de6a2aa6ec",
+  "method": "LoRA next-token semantic-7 projection with authority externalized",
+  "lora": {
+    "r": 4,
+    "alpha": 8,
+    "dropout": 0.05,
+    "targets": [
+      "q_proj",
+      "v_proj"
+    ]
+  },
+  "seed": 44,
+  "train_rows": 56,
+  "calibration_rows": 14,
+  "holdout_rows": 35,
+  "epochs_completed": 12,
+  "best_calibration_accuracy": 0.7142857142857143,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 2.547085791826248,
+      "train_accuracy": 0.21428571428571427,
+      "calibration_accuracy": 0.2857142857142857
+    },
+    {
+      "epoch": 2,
+      "loss": 1.9486997574567795,
+      "train_accuracy": 0.21428571428571427,
+      "calibration_accuracy": 0.14285714285714285
+    },
+    {
+      "epoch": 3,
+      "loss": 1.7452140897512436,
+      "train_accuracy": 0.48214285714285715,
+      "calibration_accuracy": 0.42857142857142855
+    },
+    {
+      "epoch": 4,
+      "loss": 1.4937070906162262,
+      "train_accuracy": 0.7321428571428571,
+      "calibration_accuracy": 0.5
+    },
+    {
+      "epoch": 5,
+      "loss": 0.9145432226359844,
+      "train_accuracy": 0.9464285714285714,
+      "calibration_accuracy": 0.5
+    },
+    {
+      "epoch": 6,
+      "loss": 0.42533670738339424,
+      "train_accuracy": 0.9642857142857143,
+      "calibration_accuracy": 0.5714285714285714
+    },
+    {
+      "epoch": 7,
+      "loss": 0.2876393310725689,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.5
+    },
+    {
+      "epoch": 8,
+      "loss": 0.025206047081155702,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.5
+    },
+    {
+      "epoch": 9,
+      "loss": 0.05224713176721707,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.7142857142857143
+    },
+    {
+      "epoch": 10,
+      "loss": 0.003179706440278096,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.5714285714285714
+    },
+    {
+      "epoch": 11,
+      "loss": 0.007279827659658622,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.6428571428571429
+    },
+    {
+      "epoch": 12,
+      "loss": 0.004003745434602024,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.6428571428571429
+    }
+  ],
+  "train_wall_seconds": 210.44367987592705,
+  "trainable_parameters": 98304,
+  "total_parameters_with_adapter": 152416768,
+  "adapter_dir": ".work/rsf-llm/llm-jp-150m-semantic7-lora-v0",
+  "adapter_bytes_local": 6816979,
+  "temperature": 1.5,
+  "calibration_nll": 0.7546077734736648,
+  "accuracy": 0.6857142857142857,
+  "brier": 0.061271314442181354,
+  "ece": 0.12969710983182947,
+  "median_latency_ms": 109.82262797188014,
+  "p95_latency_ms": 116.55939905904233,
+  "peak_rss_bytes": 1985036288,
+  "coverage": {
+    "0.3": {
+      "coverage": 1.0,
+      "selective_accuracy": 0.6857142857142857,
+      "escalation_rate": 0.0,
+      "accepted": 35
+    },
+    "0.4": {
+      "coverage": 0.8857142857142857,
+      "selective_accuracy": 0.7419354838709677,
+      "escalation_rate": 0.11428571428571432,
+      "accepted": 31
+    },
+    "0.5": {
+      "coverage": 0.8571428571428571,
+      "selective_accuracy": 0.7666666666666667,
+      "escalation_rate": 0.1428571428571429,
+      "accepted": 30
+    },
+    "0.6": {
+      "coverage": 0.7714285714285715,
+      "selective_accuracy": 0.7777777777777778,
+      "escalation_rate": 0.22857142857142854,
+      "accepted": 27
+    },
+    "0.7": {
+      "coverage": 0.6571428571428571,
+      "selective_accuracy": 0.782608695652174,
+      "escalation_rate": 0.34285714285714286,
+      "accepted": 23
+    },
+    "0.8": {
+      "coverage": 0.5428571428571428,
+      "selective_accuracy": 0.8421052631578947,
+      "escalation_rate": 0.4571428571428572,
+      "accepted": 19
+    },
+    "0.9": {
+      "coverage": 0.4,
+      "selective_accuracy": 0.8571428571428571,
+      "escalation_rate": 0.6,
+      "accepted": 14
+    }
+  },
+  "failures": [
+    {
+      "id": "hold-005",
+      "expected": "deterministic",
+      "predicted": "harness",
+      "confidence": 0.938044355305817,
+      "correct": false,
+      "brier": 0.257264654918528
+    },
+    {
+      "id": "hold-008",
+      "expected": "harness",
+      "predicted": "retrieval",
+      "confidence": 0.7983872748602677,
+      "correct": false,
+      "brier": 0.18261231273367962
+    },
+    {
+      "id": "hold-012",
+      "expected": "retrieval",
+      "predicted": "harness",
+      "confidence": 0.8127696740002623,
+      "correct": false,
+      "brier": 0.20092129856330762
+    },
+    {
+      "id": "hold-014",
+      "expected": "retrieval",
+      "predicted": "harness",
+      "confidence": 0.9523880172989272,
+      "correct": false,
+      "brier": 0.26911635949681445
+    },
+    {
+      "id": "hold-017",
+      "expected": "tiny_model",
+      "predicted": "harness",
+      "confidence": 0.6219512471298602,
+      "correct": false,
+      "brier": 0.2003915353135057
+    },
+    {
+      "id": "hold-018",
+      "expected": "tiny_model",
+      "predicted": "harness",
+      "confidence": 0.5069045328566738,
+      "correct": false,
+      "brier": 0.08844409927844785
+    },
+    {
+      "id": "hold-020",
+      "expected": "tiny_model",
+      "predicted": "larger_model",
+      "confidence": 0.32614506496689344,
+      "correct": false,
+      "brier": 0.1635826049767348
+    },
+    {
+      "id": "hold-037",
+      "expected": "ordinary",
+      "predicted": "retrieval",
+      "confidence": 0.3406054521569053,
+      "correct": false,
+      "brier": 0.0845469870051873
+    },
+    {
+      "id": "hold-038",
+      "expected": "ordinary",
+      "predicted": "harness",
+      "confidence": 0.7511666995212813,
+      "correct": false,
+      "brier": 0.2122477597484699
+    },
+    {
+      "id": "hold-039",
+      "expected": "ordinary",
+      "predicted": "unknown",
+      "confidence": 0.3391513621171256,
+      "correct": false,
+      "brier": 0.10328120705848742
+    },
+    {
+      "id": "hold-040",
+      "expected": "ordinary",
+      "predicted": "retrieval",
+      "confidence": 0.4855777379063324,
+      "correct": false,
+      "brier": 0.0715744087113032
+    }
+  ]
+}

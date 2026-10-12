@@ -1,0 +1,9 @@
+{
+  "experiment": "semantic-7 launcher preflight",
+  "status": "INVALID / HARNESS FAILURE",
+  "failure": "KeyError: authority",
+  "cause": "Authority was removed from the model class set but the split function still indexed every source row by original route.",
+  "repair": "Filter source rows to the semantic-7 class set before appending to per-class buckets.",
+  "model_training_started": false,
+  "benchmark_result_valid": false
+}

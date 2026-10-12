@@ -1,0 +1,15 @@
+{
+  "experiment": "RSF-SHOAL shared-prefix KV residency probe",
+  "source_atom": "finite-ram-lab origin/main 66afcbd shared-prefix residency + Strata runtime allocation intake",
+  "model": "llm-jp/llm-jp-3-150m-instruct3 + semantic7 LoRA v1",
+  "common_prefix_tokens": 28,
+  "runs": 20,
+  "full_median_ms": 98.7729310290888,
+  "cached_median_ms": 55.15660147648305,
+  "full_p95_ms": 103.10390999075025,
+  "cached_p95_ms": 59.99697500374168,
+  "median_speedup": 1.790772607177444,
+  "max_abs_logit_diff": 0.0000438690185546875,
+  "prefix_cache_length_after_probe": 28,
+  "claim": "physical local warm-forward observation on GAYA-CENTRAL; not an end-to-end throughput claim"
+}

@@ -1,0 +1,8 @@
+{
+  "model_id": "google/functiongemma-270m-it",
+  "revision": "39eccb091651513a5dfb56892d3714c1b5b8276c",
+  "observed_at_unix": 1791786728.3150795,
+  "physical_load": "not_observed",
+  "error_type": "OSError",
+  "error": "You are trying to access a gated repo.\nMake sure to have access to it at https://huggingface.co/google/functiongemma-270m-it.\n401 Client Error. (Request ID: Root=1-6acc7ee8-603c42d44a9861a352c2aaf1;33df67a9-1dde-476b-9b24-85dfe79d7743)\n\nCannot access gated repo for url https://huggingface.co/google/functiongemma-270m-it/resolve/39eccb091651513a5dfb56892d3714c1b5b8276c/config.json.\nAccess to model google/functiongemma-270m-it is restricted. You must have access to it and be authenticated to access it. Please log in."
+}

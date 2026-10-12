@@ -1,0 +1,37 @@
+{
+  "largest_passing_block": 50,
+  "first_failing_above": 51,
+  "winner_bytes": 608184,
+  "rows": [
+    {
+      "block": 48,
+      "bytes": 611688,
+      "accuracy": 1.0,
+      "pass": true
+    },
+    {
+      "block": 56,
+      "bytes": 599208,
+      "accuracy": 0.984375,
+      "pass": false
+    },
+    {
+      "block": 52,
+      "bytes": 604968,
+      "accuracy": 0.984375,
+      "pass": false
+    },
+    {
+      "block": 50,
+      "bytes": 608184,
+      "accuracy": 1.0,
+      "pass": true
+    },
+    {
+      "block": 51,
+      "bytes": 606552,
+      "accuracy": 0.984375,
+      "pass": false
+    }
+  ]
+}

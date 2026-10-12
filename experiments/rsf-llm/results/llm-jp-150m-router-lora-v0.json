@@ -1,0 +1,306 @@
+{
+  "run_id": "llmjp150-router-lora-1791788407",
+  "model_id": "llm-jp/llm-jp-3-150m-instruct3",
+  "revision": "5be263e1a3613cd5c163f41ad828c8de6a2aa6ec",
+  "method": "LoRA next-token 8-way semantic projection",
+  "lora": {
+    "r": 4,
+    "alpha": 8,
+    "dropout": 0.05,
+    "targets": [
+      "q_proj",
+      "v_proj"
+    ]
+  },
+  "seed": 42,
+  "train_rows": 64,
+  "calibration_rows": 16,
+  "holdout_rows": 40,
+  "epochs_completed": 8,
+  "best_calibration_accuracy": 0.625,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 2.4565296173095703,
+      "train_accuracy": 0.328125,
+      "calibration_accuracy": 0.3125
+    },
+    {
+      "epoch": 2,
+      "loss": 1.8726413697004318,
+      "train_accuracy": 0.609375,
+      "calibration_accuracy": 0.5
+    },
+    {
+      "epoch": 3,
+      "loss": 1.1962310299277306,
+      "train_accuracy": 0.796875,
+      "calibration_accuracy": 0.4375
+    },
+    {
+      "epoch": 4,
+      "loss": 0.5246976912021637,
+      "train_accuracy": 0.984375,
+      "calibration_accuracy": 0.625
+    },
+    {
+      "epoch": 5,
+      "loss": 0.18753984244540334,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.5
+    },
+    {
+      "epoch": 6,
+      "loss": 0.10056162608088925,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.4375
+    },
+    {
+      "epoch": 7,
+      "loss": 0.014648739801486954,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.625
+    },
+    {
+      "epoch": 8,
+      "loss": 0.01165831590333255,
+      "train_accuracy": 1.0,
+      "calibration_accuracy": 0.625
+    }
+  ],
+  "train_wall_seconds": 159.07450075098313,
+  "trainable_parameters": 98304,
+  "total_parameters_with_adapter": 152416768,
+  "adapter_dir": ".work/rsf-llm/llm-jp-150m-router-lora-v0",
+  "adapter_bytes_local": 6816979,
+  "temperature": 1,
+  "calibration_nll": 1.0306081970537204,
+  "accuracy": 0.45,
+  "brier": 0.09411637631861652,
+  "ece": 0.2502005597179468,
+  "median_latency_ms": 110.89796398300678,
+  "p95_latency_ms": 120.6839110236615,
+  "peak_rss_bytes": 2061430784,
+  "coverage": {
+    "0.3": {
+      "coverage": 0.95,
+      "selective_accuracy": 0.4473684210526316,
+      "escalation_rate": 0.050000000000000044,
+      "accepted": 38
+    },
+    "0.4": {
+      "coverage": 0.8,
+      "selective_accuracy": 0.5,
+      "escalation_rate": 0.19999999999999996,
+      "accepted": 32
+    },
+    "0.5": {
+      "coverage": 0.725,
+      "selective_accuracy": 0.5517241379310345,
+      "escalation_rate": 0.275,
+      "accepted": 29
+    },
+    "0.6": {
+      "coverage": 0.55,
+      "selective_accuracy": 0.5909090909090909,
+      "escalation_rate": 0.44999999999999996,
+      "accepted": 22
+    },
+    "0.7": {
+      "coverage": 0.45,
+      "selective_accuracy": 0.6111111111111112,
+      "escalation_rate": 0.55,
+      "accepted": 18
+    },
+    "0.8": {
+      "coverage": 0.35,
+      "selective_accuracy": 0.5714285714285714,
+      "escalation_rate": 0.65,
+      "accepted": 14
+    },
+    "0.9": {
+      "coverage": 0.325,
+      "selective_accuracy": 0.6153846153846154,
+      "escalation_rate": 0.675,
+      "accepted": 13
+    }
+  },
+  "failures": [
+    {
+      "id": "hold-003",
+      "expected": "deterministic",
+      "predicted": "harness",
+      "confidence": 0.5972408747930251,
+      "correct": false,
+      "brier": 0.14527785590089898
+    },
+    {
+      "id": "hold-007",
+      "expected": "harness",
+      "predicted": "retrieval",
+      "confidence": 0.8929575801998345,
+      "correct": false,
+      "brier": 0.20997850896173828
+    },
+    {
+      "id": "hold-009",
+      "expected": "harness",
+      "predicted": "ordinary",
+      "confidence": 0.7022008584776874,
+      "correct": false,
+      "brier": 0.15016070941313617
+    },
+    {
+      "id": "hold-012",
+      "expected": "retrieval",
+      "predicted": "ordinary",
+      "confidence": 0.5996451510898531,
+      "correct": false,
+      "brier": 0.14766810712764475
+    },
+    {
+      "id": "hold-013",
+      "expected": "retrieval",
+      "predicted": "harness",
+      "confidence": 0.4830480808126608,
+      "correct": false,
+      "brier": 0.1638185050725936
+    },
+    {
+      "id": "hold-014",
+      "expected": "retrieval",
+      "predicted": "harness",
+      "confidence": 0.6968466179207289,
+      "correct": false,
+      "brier": 0.15518640224846914
+    },
+    {
+      "id": "hold-015",
+      "expected": "retrieval",
+      "predicted": "harness",
+      "confidence": 0.5851077642728314,
+      "correct": false,
+      "brier": 0.1366837013486185
+    },
+    {
+      "id": "hold-016",
+      "expected": "tiny_model",
+      "predicted": "harness",
+      "confidence": 0.5698345450211392,
+      "correct": false,
+      "brier": 0.09754931271536037
+    },
+    {
+      "id": "hold-017",
+      "expected": "tiny_model",
+      "predicted": "retrieval",
+      "confidence": 0.384761070226568,
+      "correct": false,
+      "brier": 0.12966640564197734
+    },
+    {
+      "id": "hold-018",
+      "expected": "tiny_model",
+      "predicted": "ordinary",
+      "confidence": 0.3634595582227297,
+      "correct": false,
+      "brier": 0.15790134720337265
+    },
+    {
+      "id": "hold-019",
+      "expected": "tiny_model",
+      "predicted": "harness",
+      "confidence": 0.3924841549525747,
+      "correct": false,
+      "brier": 0.08774978229115005
+    },
+    {
+      "id": "hold-020",
+      "expected": "tiny_model",
+      "predicted": "unknown",
+      "confidence": 0.45212826414851115,
+      "correct": false,
+      "brier": 0.15819750127037782
+    },
+    {
+      "id": "hold-023",
+      "expected": "larger_model",
+      "predicted": "harness",
+      "confidence": 0.3706687496391652,
+      "correct": false,
+      "brier": 0.10621391933913504
+    },
+    {
+      "id": "hold-024",
+      "expected": "larger_model",
+      "predicted": "tiny_model",
+      "confidence": 0.26797371610074966,
+      "correct": false,
+      "brier": 0.09931635606197235
+    },
+    {
+      "id": "hold-025",
+      "expected": "larger_model",
+      "predicted": "harness",
+      "confidence": 0.6206992336618689,
+      "correct": false,
+      "brier": 0.11666567627769846
+    },
+    {
+      "id": "hold-031",
+      "expected": "authority",
+      "predicted": "harness",
+      "confidence": 0.9266577054458559,
+      "correct": false,
+      "brier": 0.23247163910210367
+    },
+    {
+      "id": "hold-032",
+      "expected": "authority",
+      "predicted": "harness",
+      "confidence": 0.9230183125259013,
+      "correct": false,
+      "brier": 0.23152114231066348
+    },
+    {
+      "id": "hold-033",
+      "expected": "authority",
+      "predicted": "harness",
+      "confidence": 0.9275377352937451,
+      "correct": false,
+      "brier": 0.23259972341643245
+    },
+    {
+      "id": "hold-034",
+      "expected": "authority",
+      "predicted": "harness",
+      "confidence": 0.9260949214925355,
+      "correct": false,
+      "brier": 0.2322565419982888
+    },
+    {
+      "id": "hold-035",
+      "expected": "authority",
+      "predicted": "harness",
+      "confidence": 0.9352952041736546,
+      "correct": false,
+      "brier": 0.23429588725021785
+    },
+    {
+      "id": "hold-037",
+      "expected": "ordinary",
+      "predicted": "retrieval",
+      "confidence": 0.4502335667061636,
+      "correct": false,
+      "brier": 0.12293411701151145
+    },
+    {
+      "id": "hold-039",
+      "expected": "ordinary",
+      "predicted": "harness",
+      "confidence": 0.3661539245354232,
+      "correct": false,
+      "brier": 0.08632578664386084
+    }
+  ]
+}
