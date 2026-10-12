@@ -1,0 +1,70 @@
+{
+  "candidates": [
+    {
+      "candidate": "copy",
+      "status": "PASS",
+      "error": null,
+      "install_ns": 203957,
+      "object_type": "file",
+      "logical_path_bytes": 151,
+      "allocated_path_bytes": 4096,
+      "same_inode": false,
+      "smoke": true
+    },
+    {
+      "candidate": "abs_symlink",
+      "status": "PASS",
+      "error": null,
+      "install_ns": 28464,
+      "object_type": "symlink",
+      "logical_path_bytes": 39,
+      "allocated_path_bytes": 0,
+      "same_inode": true,
+      "smoke": true
+    },
+    {
+      "candidate": "relative_symlink",
+      "status": "PASS",
+      "error": null,
+      "install_ns": 51652,
+      "object_type": "symlink",
+      "logical_path_bytes": 42,
+      "allocated_path_bytes": 0,
+      "same_inode": true,
+      "smoke": true
+    },
+    {
+      "candidate": "hardlink",
+      "status": "PASS",
+      "error": null,
+      "install_ns": 27794,
+      "object_type": "file",
+      "logical_path_bytes": 151,
+      "allocated_path_bytes": 4096,
+      "same_inode": true,
+      "smoke": true
+    },
+    {
+      "candidate": "reflink",
+      "status": "FAIL",
+      "error": "RuntimeError(\"cp: failed to clone '/home/tonegawa/work/finite-ram-lab-rsf-llm/.work/rsf-llm/reinstall-search/reflink/catfood' from '/home/tonegawa/.local/bin/catfood-shoal': Operation not supported\")",
+      "install_ns": 1431400,
+      "object_type": "none",
+      "logical_path_bytes": 0,
+      "allocated_path_bytes": 0,
+      "same_inode": false,
+      "smoke": null
+    },
+    {
+      "candidate": "noop_verify_existing",
+      "status": "PASS",
+      "error": null,
+      "install_ns": 56791718,
+      "object_type": "none",
+      "logical_path_bytes": 0,
+      "allocated_path_bytes": 0,
+      "same_inode": false,
+      "smoke": true
+    }
+  ]
+}

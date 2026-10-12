@@ -165,32 +165,46 @@ The current provisional local governor treats the semantic worker as ~1.5 GiB an
 A chat-template contract probe also found that the pinned LLM-jp template does **not** render the supplied `system` role. Existing training and inference used the same contract, so the measured scores remain internally consistent; however this means the learned LoRA projection carries more of the semantic-class boundary than the nominal system prompt. The rendered contract is now frozen as evidence.
 
 
-## Reinstall-loop v0 — thinner installs, denser capability
+## Reinstall-loop v1 — converged at loop 24 / max 50
 
-A bounded "reinstall loop" experiment was run on the Shoal workcell. The measurement boundary is explicit: **install-delta unique bytes** means new unique file-content introduced by that installation projection. It does **not** mean the whole product, model, Python runtime, or OS became zero bytes.
+A bounded reinstall-loop experiment was continued with a hard ceiling of **50 loops** and stopped early at the first measured convergence point. The optimization target is explicitly multi-dimensional: install-delta unique bytes, new filesystem objects, primitive installer capability, correctness, repair atomicity, cross-filesystem portability, update inheritance, canonical runtime bytes, and launcher bytes.
 
-| loop | projection | new unique install bytes | capabilities | outcome / newly exposed function |
-|---:|---|---:|---:|---|
-| 0 | vendored copy | 21,227 B | 6 | **FAIL**: relocated copy broke the adapter path (`.work/.work/...`) |
-| 1 | thin wrapper | 60 B | 7 | PASS; `--version` appeared |
-| 2 | symlink | 39 B | 10 | PASS; capability introspection plus existing finite-RAM/shared-prefix functions surfaced |
-| 3 | hardlink | **0 B unique** | 12 | PASS; `--health` and `--doctor` appeared |
-| 4 | self-reinstalled hardlink | **0 B unique** | 14 | PASS; `--reinstall DEST` and `--footprint` appeared |
+The measurement boundary matters: **0 B install delta is not a 0 B LLM**. It means that a reinstall projection adds no new unique file-content bytes because it reuses a canonical substrate.
 
-Loop 4 can physically create its own next projection. On the current GAYA filesystem it chooses a hardlink to the canonical launcher, so the new install path adds no unique launcher content bytes. It refuses to overwrite an existing destination. Cross-filesystem fallback is a symlink.
+| milestone | result | observation |
+|---:|---|---|
+| 0 | FAIL | Vendored copy duplicated **21,227 B** and relocation broke the adapter path (`.work/.work/...`). |
+| 1–4 | PASS | wrapper → symlink → hardlink → self-reinstall; same-filesystem projection reached **0 unique B** while capabilities rose from 6 to 14. |
+| 5–9 | PASS | verify, idempotent ensure, planning, safe repair, safe uninstall, and SHA-256 attestation appeared; primitive capability count reached **20**. |
+| 10–11 | PASS | dispatcher/common-path refactoring shrank the workcell and exposed/fixed a real symlink-observer bug. |
+| 12 | PASS | `/dev/shm` cross-filesystem trial predicted and used a **39 B symlink**; install/verify/doctor/uninstall all passed. |
+| 13 | PASS | Reinstalling the already-canonical command reached the lower bound: **0 new objects / 0 unique B**, metadata-only noop (~0.07 ms internal observation). |
+| 14 | PASS | duplicate-copy repair became atomic (`temp projection -> os.replace`) with no temporary leak. |
+| 15 | PASS | Old thin installs inherited new capabilities **without being reinstalled**; the vendored Loop-0 copy remained stale. |
+| 16–18 | PASS | canonical launcher shrank **151 B -> 135 B -> 133 B -> 132 B**, with existing hardlinks inheriting the change through the same inode. |
+| 19 | REJECT | A 128 B unquoted launcher was smaller but failed when `$HOME` contained a space; rejected as robustness-dominated. |
+| 20–23 | PASS | semantic-preserving commonization shrank the workcell **14,011 B -> 13,881 -> 13,582 -> 13,349 -> 13,304 B**. |
+| **24** | **CONVERGED** | Two pure canonical reinstalls were both noop; structural delta from Loop 23 was zero and dev-v2 routing remained **64/64**. |
 
-The non-cheating closure view is larger:
+The final observed frontier on GAYA-CENTRAL is:
 
-- canonical Shoal runtime Python code: **25,130 B**;
-- canonical launcher: **151 B**;
-- semantic adapter weight (`adapter_model.safetensors`): **399,384 B**;
-- full adapter/checkpoint directory including tokenizer metadata: **6,816,979 B**;
+- same-filesystem new projection: **0 unique content bytes** (hardlink);
+- already-canonical reinstall: **0 new objects / 0 unique content bytes**;
+- cross-filesystem projection: **39 B symlink**;
+- canonical launcher: **132 B**;
+- workcell source: **13,304 B**;
+- canonical runtime code (`workcell + router + finite-RAM control`): **28,795 B**;
+- primitive surfaced capabilities: **20**;
+- canonical code bytes per primitive capability: **~1.44 KB**, down from the Loop-0 vendored baseline **~3.54 KB/capability**;
+- LoRA weight: **399,384 B**; checkpoint directory **6,816,979 B**;
 - shared base-model snapshot observed locally: **311,063,611 B**;
-- Python/torch/OS shared substrate is additional and not included in those numbers.
+- dev-v2 routing after convergence: **64/64 = 100%**, wall **5.927 s**.
 
-So the result is not "the whole LLM became 0 B." The result is: **per-reinstall unique projection bytes converged to zero while exposed capability rose from 6 to 14**. Canonical runtime code actually grew by about 18%, but code bytes per surfaced capability fell from about 3.54 KB to about 1.80 KB. Dev-v2 routing remained **64/64 correct** after the loop.
+The surprising emergent property was **evolution inheritance**. Thin wrapper/symlink/hardlink projections created in earlier loops automatically exposed the newest 20-capability runtime because they project one canonical substrate. The copied Loop-0 install stayed frozen. In this experiment, making installation thinner improved not only storage efficiency but also update propagation.
 
-The first failed reinstall is part of the result: blindly copying implementation both duplicated bytes and preserved hidden path coupling. The successful direction was to make the install surface a projection over one canonical substrate, then add capability at the shared layer.
+This convergence is **search-policy-relative**, not a universal optimum. Different explorers may admit different installer mechanisms, failure models, portability requirements, or objective axes and therefore converge elsewhere. The loop stopped at 24 because the next pure reinstall produced no structural Pareto delta; the remaining smaller launcher candidate was already shown to sacrifice robustness. The 50-loop ceiling was therefore not consumed artificially.
+
+Raw convergence evidence is preserved in `results/reinstall-loop-convergence-v1.json`; the original Loop-0 relocation failure remains preserved separately rather than being rewritten away.
 
 ## Next physical experiments
 
@@ -200,3 +214,4 @@ The first failed reinstall is part of the result: blindly copying implementation
 4. Add a persistent-but-idle-unload router service governed by the new byte/PSI hysteresis policy so repeated semantic requests avoid ~6 s cold load while 0B-only periods can still release the 150M model.
 5. Quantize the 150M + adapter lane (int8/int4/GGUF or equivalent) and remeasure accuracy, latency, load time, and RSS on GAYA-CENTRAL.
 6. Test whether a smaller-than-150M Japanese substrate can retain the learned projection. Stop descending only when semantic fidelity or calibration actually breaks.
+7. Treat reinstall-loop v1 as converged/frozen unless the canonical substrate, filesystem assumptions, or installer objective axes change; a changed search space should start a new loop series rather than tuning this result post hoc.

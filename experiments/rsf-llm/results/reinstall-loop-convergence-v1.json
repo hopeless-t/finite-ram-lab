@@ -1,0 +1,180 @@
+{
+  "experiment": "RSF-LLM reinstall-loop convergence v1",
+  "max_loops": 50,
+  "executed_loops": 25,
+  "loop_range": "0..24",
+  "converged_at_loop": 24,
+  "stop_rule": "Stop before max_loops when a pure reinstall produces no structural Pareto delta: install unique bytes, object delta, primitive capability set, canonical code bytes, launcher bytes, health, and routing correctness are unchanged.",
+  "objective_axes": [
+    "install_delta_unique_bytes",
+    "new_install_objects",
+    "primitive_capability_coverage",
+    "correctness",
+    "repair_atomicity",
+    "cross_filesystem_portability",
+    "update_inheritance",
+    "canonical_runtime_bytes",
+    "launcher_bytes"
+  ],
+  "milestones": [
+    {
+      "loop": 0,
+      "result": "FAIL",
+      "finding": "vendored copy duplicated 21227 B and broke relocated adapter path"
+    },
+    {
+      "loop": 1,
+      "result": "PASS",
+      "finding": "60 B thin wrapper; version surface appeared"
+    },
+    {
+      "loop": 2,
+      "result": "PASS",
+      "finding": "39 B symlink projection; capability introspection surfaced"
+    },
+    {
+      "loop": 3,
+      "result": "PASS",
+      "finding": "hardlink reached 0 unique content bytes for a new same-filesystem projection"
+    },
+    {
+      "loop": 4,
+      "result": "PASS",
+      "finding": "self-reinstall and footprint introspection; self-created hardlink retained 0 unique bytes"
+    },
+    {
+      "loop": 5,
+      "result": "PASS",
+      "finding": "verify + idempotent ensure; repeated reinstall became metadata-only noop"
+    },
+    {
+      "loop": 6,
+      "result": "PASS",
+      "finding": "planner predicted hardlink before creation and noop after creation"
+    },
+    {
+      "loop": 7,
+      "result": "PASS",
+      "finding": "exact duplicate copy detected and repaired to shared hardlink"
+    },
+    {
+      "loop": 8,
+      "result": "PASS",
+      "finding": "safe uninstall removes owned projection and refuses unrelated file"
+    },
+    {
+      "loop": 9,
+      "result": "PASS",
+      "finding": "launcher/adapter/runtime SHA-256 attestation stable across repeated reads"
+    },
+    {
+      "loop": 10,
+      "result": "PASS",
+      "finding": "CLI dispatch compaction: workcell 14703 -> 14000 B with same 20 primitive capabilities"
+    },
+    {
+      "loop": 11,
+      "result": "PASS",
+      "finding": "fixed symlink observer bug; workcell 14000 -> 13827 B"
+    },
+    {
+      "loop": 12,
+      "result": "PASS",
+      "finding": "cross-filesystem /dev/shm test correctly selected 39 B symlink and full lifecycle passed"
+    },
+    {
+      "loop": 13,
+      "result": "PASS",
+      "finding": "canonical reinstall lower bound: 0 new objects, 0 new unique bytes, noop ~0.07 ms internal"
+    },
+    {
+      "loop": 14,
+      "result": "PASS",
+      "finding": "duplicate repair made atomic via temp projection + os.replace; no temp leak"
+    },
+    {
+      "loop": 15,
+      "result": "PASS",
+      "finding": "thin historical installs auto-inherited latest capabilities without reinstall; vendored loop0 stayed stale"
+    },
+    {
+      "loop": 16,
+      "result": "PASS",
+      "finding": "canonical launcher 151 -> 135 B while preserving inode and updating old hardlinks"
+    },
+    {
+      "loop": 17,
+      "result": "PASS",
+      "finding": "launcher 135 -> 133 B"
+    },
+    {
+      "loop": 18,
+      "result": "PASS",
+      "finding": "launcher 133 -> 132 B by removing terminal newline"
+    },
+    {
+      "loop": 19,
+      "result": "REJECT",
+      "finding": "128 B unquoted launcher failed when HOME contained a space; smaller but dominated on robustness"
+    },
+    {
+      "loop": 20,
+      "result": "PASS",
+      "finding": "hoisted shared runtime constants; workcell 14011 -> 13881 B after atomic-repair growth"
+    },
+    {
+      "loop": 21,
+      "result": "PASS",
+      "finding": "shared response constructor; workcell 13881 -> 13582 B"
+    },
+    {
+      "loop": 22,
+      "result": "PASS",
+      "finding": "shared timed response helper; workcell 13582 -> 13349 B"
+    },
+    {
+      "loop": 23,
+      "result": "PASS",
+      "finding": "shared inspected-state helper; workcell 13349 -> 13304 B"
+    },
+    {
+      "loop": 24,
+      "result": "CONVERGED",
+      "finding": "two pure canonical ensures were noop; structural delta from loop23 = 0; routing 64/64"
+    }
+  ],
+  "frontier": {
+    "same_filesystem_new_projection_unique_bytes": 0,
+    "canonical_reinstall_new_objects": 0,
+    "canonical_reinstall_unique_bytes": 0,
+    "cross_filesystem_projection_bytes": 39,
+    "launcher_bytes": 132,
+    "workcell_bytes": 13304,
+    "canonical_runtime_code_bytes": 28795,
+    "primitive_capability_count": 20,
+    "dev_v2_routing_accuracy": 1.0,
+    "dev_v2_rows": 64,
+    "dev_v2_wall_seconds": 5.926523523987271,
+    "adapter_model_safetensors_bytes": 399384,
+    "adapter_checkpoint_logical_bytes": 6816979,
+    "base_model_snapshot_logical_bytes": 311063611,
+    "canonical_code_bytes_per_capability": 1439.75,
+    "initial_vendored_bytes_per_capability": 3537.8333333333335,
+    "capability_density_improvement_fraction": 0.5930418806237339
+  },
+  "rejected_or_bounded": [
+    {
+      "candidate": "reflink",
+      "result": "unsupported on observed filesystem"
+    },
+    {
+      "candidate": "unquoted 128-byte launcher",
+      "result": "rejected; broke HOME-with-space robustness"
+    },
+    {
+      "candidate": "further alias/composite surfaces",
+      "result": "not counted as new primitive capability; would increase canonical code without expanding lifecycle semantics"
+    }
+  ],
+  "interpretation": "The converged object is not a zero-byte LLM. The per-reinstall projection converged to zero new unique content and, for an already-canonical install, zero new filesystem objects. Capability growth moved into a shared canonical substrate; thinner installs inherited that growth automatically. Outcomes depend on which installer strategies, failure modes, and objective axes the explorer considers."
+}
