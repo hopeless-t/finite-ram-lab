@@ -206,6 +206,22 @@ The same interface can run on GitHub-hosted Actions through `.github/workflows/r
 
 See [AI Worker Calculation Toolbox](docs/AI_WORKER_TOOLBOX.md).
 
+## Operational adaptive cache runtime
+
+The lightweight cache-analysis lane can run directly on the workstation without the optional pandas/SciPy analysis stack. The installed `frl` launcher uses content-addressed wheel artifacts, one-step app rollback, and a separate latest-known-good control plane for runtime operations.
+
+```bash
+frl cache-doctor
+frl cache-analyze --capacities 17,41,83,127
+frl cache-benchmark --repeats 40
+frl runtime-status
+frl runtime-benchmark --loops 30 --process-repeats 20
+frl runtime-prune          # dry run
+frl runtime-prune --apply  # keep current/previous/control reachability roots
+```
+
+A new candidate wheel is smoke-tested before atomic activation. Re-activating an already verified immutable artifact reuses identity- and smoke-epoch evidence; current local measurements are sub-millisecond for that steady-state path. See [FRL-REINSTALL-008 operational result](docs/FRL-REINSTALL-008-OPERATIONAL-RUNTIME-RESULT.md) and [reinstall convergence v3](docs/FRL-FAST-REINSTALL-CONVERGENCE-v3.md).
+
 ## Evidence rules
 
 - observation is not explanation;

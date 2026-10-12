@@ -1,0 +1,94 @@
+{
+  "anchor_capacity": 41,
+  "backend_requested": "auto",
+  "benchmark": "adaptive-cache-operational-v1",
+  "capacities": [
+    17,
+    41,
+    83,
+    127
+  ],
+  "parity": {
+    "lru": {
+      "17": 7653,
+      "41": 1961,
+      "83": 609,
+      "127": 479
+    },
+    "opt": {
+      "17": 3956,
+      "41": 754,
+      "83": 402,
+      "127": 312
+    },
+    "status": "PASS"
+  },
+  "profile": {
+    "compression_ratio": 0.020666666666666667,
+    "length": 12000,
+    "native": {
+      "available": true,
+      "cache_path": "/home/tonegawa/.cache/finite-ram-lab/native/36efd534a12439e0c941bcbd/libfrl_cache.so",
+      "digest": "36efd534a12439e0c941bcbd"
+    },
+    "unique_pages": 248
+  },
+  "speedups": {
+    "anchor_pair": 37.08910172826628,
+    "mixed_sweep": 36.5733500972505
+  },
+  "timings": {
+    "adaptive_anchor_pair": {
+      "max_ms": 0.31624,
+      "median_ms": 0.210905,
+      "min_ms": 0.207996,
+      "n": 30.0,
+      "p95_ms": 0.221495
+    },
+    "adaptive_lru_curve_cached": {
+      "max_ms": 0.0017,
+      "median_ms": 0.00015900000000000002,
+      "min_ms": 0.000143,
+      "n": 30.0,
+      "p95_ms": 0.000331
+    },
+    "adaptive_mixed_sweep": {
+      "max_ms": 1.236499,
+      "median_ms": 0.9945965,
+      "min_ms": 0.966016,
+      "n": 30.0,
+      "p95_ms": 1.088347
+    },
+    "adaptive_opt_full_curve": {
+      "max_ms": 29.009157,
+      "median_ms": 22.745869499999998,
+      "min_ms": 15.144288,
+      "n": 30.0,
+      "p95_ms": 24.804927
+    },
+    "prepare_trace": {
+      "max_ms": 2.936289,
+      "median_ms": 2.0278415,
+      "min_ms": 1.282855,
+      "n": 30.0,
+      "p95_ms": 2.741699
+    },
+    "scalar_anchor_pair": {
+      "max_ms": 8.965904,
+      "median_ms": 7.822277,
+      "min_ms": 7.69051,
+      "n": 30.0,
+      "p95_ms": 8.008271
+    },
+    "scalar_mixed_sweep": {
+      "max_ms": 56.389758,
+      "median_ms": 36.375726,
+      "min_ms": 33.329011,
+      "n": 30.0,
+      "p95_ms": 42.458964
+    }
+  },
+  "trace_sha256": "4f7dfb080d82d35a1fa6b09232d94ff9b1091bbba9f4066bdb0f5a955601f363",
+  "trace_source": "synthetic",
+  "workers_requested": "auto"
+}

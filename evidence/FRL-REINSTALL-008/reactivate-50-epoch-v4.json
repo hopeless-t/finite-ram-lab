@@ -1,0 +1,518 @@
+{
+  "summary": {
+    "all_artifact_epoch_reused": true,
+    "all_smoke_reused": true,
+    "all_source_epoch_reused": true,
+    "any_launcher_written": false,
+    "any_projected": false,
+    "any_switched": false,
+    "loops": 50,
+    "max_total_ms": 1.166759,
+    "median_switch_ms": 0.09255949999999999,
+    "median_total_ms": 0.9531755,
+    "min_total_ms": 0.605057,
+    "p95_total_ms": 1.072674
+  },
+  "trials": [
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.0844,
+      "switched": false,
+      "total_ms": 1.100097
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.070051,
+      "switched": false,
+      "total_ms": 0.68556
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.091484,
+      "switched": false,
+      "total_ms": 0.710547
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.091472,
+      "switched": false,
+      "total_ms": 0.967929
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.087266,
+      "switched": false,
+      "total_ms": 0.934884
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.101608,
+      "switched": false,
+      "total_ms": 0.929279
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.09183,
+      "switched": false,
+      "total_ms": 0.948952
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.094801,
+      "switched": false,
+      "total_ms": 0.980883
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.091433,
+      "switched": false,
+      "total_ms": 0.949048
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.090611,
+      "switched": false,
+      "total_ms": 0.930764
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.089984,
+      "switched": false,
+      "total_ms": 0.94403
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.1004,
+      "switched": false,
+      "total_ms": 0.999281
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.101908,
+      "switched": false,
+      "total_ms": 1.072674
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.093413,
+      "switched": false,
+      "total_ms": 0.949482
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.095233,
+      "switched": false,
+      "total_ms": 0.955439
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.110728,
+      "switched": false,
+      "total_ms": 0.971639
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.069558,
+      "switched": false,
+      "total_ms": 0.835627
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.091171,
+      "switched": false,
+      "total_ms": 0.953916
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.085989,
+      "switched": false,
+      "total_ms": 0.90169
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.103502,
+      "switched": false,
+      "total_ms": 0.996919
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.093087,
+      "switched": false,
+      "total_ms": 1.023919
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.111898,
+      "switched": false,
+      "total_ms": 1.030588
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.068642,
+      "switched": false,
+      "total_ms": 1.003044
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.060712,
+      "switched": false,
+      "total_ms": 0.627118
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.065213,
+      "switched": false,
+      "total_ms": 0.686841
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.098782,
+      "switched": false,
+      "total_ms": 0.907369
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.15768,
+      "switched": false,
+      "total_ms": 1.166759
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.113335,
+      "switched": false,
+      "total_ms": 1.159449
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.094574,
+      "switched": false,
+      "total_ms": 1.015874
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.093152,
+      "switched": false,
+      "total_ms": 0.982169
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.104316,
+      "switched": false,
+      "total_ms": 0.997403
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.092761,
+      "switched": false,
+      "total_ms": 0.973752
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.074116,
+      "switched": false,
+      "total_ms": 0.917901
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.096284,
+      "switched": false,
+      "total_ms": 0.968097
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.094364,
+      "switched": false,
+      "total_ms": 0.993213
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.092358,
+      "switched": false,
+      "total_ms": 0.981174
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.088998,
+      "switched": false,
+      "total_ms": 0.968837
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.094183,
+      "switched": false,
+      "total_ms": 0.961847
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.102838,
+      "switched": false,
+      "total_ms": 0.990513
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.105786,
+      "switched": false,
+      "total_ms": 0.99206
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.062723,
+      "switched": false,
+      "total_ms": 0.64797
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.058549,
+      "switched": false,
+      "total_ms": 0.605057
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.092858,
+      "switched": false,
+      "total_ms": 0.738494
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.064808,
+      "switched": false,
+      "total_ms": 0.782449
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.064341,
+      "switched": false,
+      "total_ms": 0.678775
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.071485,
+      "switched": false,
+      "total_ms": 0.736384
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.087051,
+      "switched": false,
+      "total_ms": 0.691517
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.09869,
+      "switched": false,
+      "total_ms": 0.937193
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.096538,
+      "switched": false,
+      "total_ms": 0.952435
+    },
+    {
+      "artifact_epoch_reused": true,
+      "launcher_written": false,
+      "projected": false,
+      "smoke_reused": true,
+      "source_epoch_reused": true,
+      "switch_ms": 0.066151,
+      "switched": false,
+      "total_ms": 0.834119
+    }
+  ]
+}

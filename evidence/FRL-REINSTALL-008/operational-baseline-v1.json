@@ -1,0 +1,35 @@
+{
+  "frl_analyze_standard": {
+    "max_ms": 207.254739,
+    "median_ms": 157.8452765,
+    "min_ms": 134.507282,
+    "n": 30,
+    "p95_ms": 196.685401
+  },
+  "frl_doctor": {
+    "max_ms": 200.20261,
+    "median_ms": 148.14023550000002,
+    "min_ms": 119.52576,
+    "n": 50,
+    "p95_ms": 190.851498
+  },
+  "frl_help": {
+    "max_ms": 131.670816,
+    "median_ms": 100.1542775,
+    "min_ms": 84.88719,
+    "n": 50,
+    "p95_ms": 117.227371
+  },
+  "reactivate_no_smoke": {
+    "median_switch_ms": 0.2067405,
+    "median_total_ms": 0.302925,
+    "n": 30,
+    "p95_total_ms": 0.437594
+  },
+  "reactivate_with_smoke": {
+    "median_switch_ms": 0.24733449999999998,
+    "median_total_ms": 257.0823355,
+    "n": 10,
+    "p95_total_ms": 302.773224
+  }
+}

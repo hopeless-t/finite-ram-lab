@@ -1,0 +1,40 @@
+{
+  "experiment_id": "FRL-REINSTALL-008-OPERATIONAL-RUNTIME-v1",
+  "goal": "Promote the adaptive cache engine from repo-only research code into the ordinary GAYA-CENTRAL command surface while preserving reconstructibility, rollback, and benchmarkability.",
+  "north_star": "Increase capability and performance together; keep generated runtime state disposable.",
+  "surface": [
+    "frl cache-doctor",
+    "frl cache-analyze",
+    "frl cache-benchmark",
+    "frl runtime-status",
+    "frl runtime-activate",
+    "frl runtime-rollback",
+    "frl runtime-prune",
+    "frl runtime-benchmark"
+  ],
+  "runtime_model": {
+    "canonical": "content-addressed source wheel",
+    "projection": "selective hot-pyc wheel for the active CPython cache tag",
+    "app_plane": ["current.whl", "previous.whl"],
+    "control_plane": "control.whl remains latest known-good across app rollback",
+    "launcher": "~/.local/bin/frl",
+    "activation": "candidate smoke -> manifest -> atomic symlink switch",
+    "verification": "full SHA on identity change; local artifact-epoch identity reuse when unchanged",
+    "cleanup": "reachability prune rooted at current/previous/control"
+  },
+  "safety_invariants": [
+    "candidate is smoke-tested before first activation",
+    "normal commands use current app plane",
+    "runtime-* commands use latest known-good control plane",
+    "rollback preserves the control plane",
+    "source Python remains in projected wheel as fallback",
+    "native accelerator and hot-pyc wheel are rebuildable caches",
+    "prune must preserve current, previous, control and their canonical source wheels"
+  ],
+  "benchmark_contract": {
+    "cache_benchmark": "scalar reference vs adaptive engine with parity gate",
+    "runtime_benchmark": "same-artifact reactivation plus installed process startup/command latency",
+    "fresh_activation_is_separate": true
+  },
+  "stop_reason": "Same immutable artifact reactivation is sub-millisecond, pointer switching is about one tenth of a millisecond, selective hot-pyc dominates broader bytecode projection, compression changes were negligible, and fast-dispatch improvements had fallen to low-single-digit milliseconds."
+}

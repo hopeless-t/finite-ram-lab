@@ -1,0 +1,88 @@
+{
+  "benchmark": "operational-runtime-v1",
+  "process": {
+    "cache_analyze_standard": {
+      "max_ms": 106.123752,
+      "median_ms": 104.935103,
+      "min_ms": 103.669921,
+      "n": 20.0,
+      "p95_ms": 106.104882
+    },
+    "cache_doctor": {
+      "max_ms": 90.039707,
+      "median_ms": 88.917539,
+      "min_ms": 88.014949,
+      "n": 20.0,
+      "p95_ms": 89.963299
+    },
+    "help": {
+      "max_ms": 94.860521,
+      "median_ms": 65.65893299999999,
+      "min_ms": 64.688887,
+      "n": 20.0,
+      "p95_ms": 69.143845
+    },
+    "runtime_status": {
+      "max_ms": 83.858011,
+      "median_ms": 83.1860635,
+      "min_ms": 81.798763,
+      "n": 20.0,
+      "p95_ms": 83.629981
+    }
+  },
+  "reactivate": {
+    "all_artifact_epoch_reused": true,
+    "all_smoke_reused": true,
+    "all_source_epoch_reused": true,
+    "any_control_switched": false,
+    "any_launcher_written": false,
+    "any_projected": false,
+    "any_switched": false,
+    "loops": 30,
+    "max_ms": 0.796898,
+    "median_ms": 0.6437305,
+    "median_switch_ms": 0.09503,
+    "min_ms": 0.618934,
+    "p95_ms": 0.771462
+  },
+  "runtime": {
+    "artifact_bytes": 1521651,
+    "artifact_count": 3,
+    "control": {
+      "bytes": 510673,
+      "exists": true,
+      "link": "/home/tonegawa/.local/share/finite-ram-lab/control.whl",
+      "sha256": "2b81768b8c3d773f71235e86f69eb583573870be6ea15f2633ad91b4051537c0",
+      "target": "/home/tonegawa/.local/share/finite-ram-lab/artifacts/2b81768b8c3d773f71235e86f69eb583573870be6ea15f2633ad91b4051537c0.whl"
+    },
+    "current": {
+      "bytes": 510673,
+      "exists": true,
+      "link": "/home/tonegawa/.local/share/finite-ram-lab/current.whl",
+      "sha256": "2b81768b8c3d773f71235e86f69eb583573870be6ea15f2633ad91b4051537c0",
+      "target": "/home/tonegawa/.local/share/finite-ram-lab/artifacts/2b81768b8c3d773f71235e86f69eb583573870be6ea15f2633ad91b4051537c0.whl"
+    },
+    "launcher": "/home/tonegawa/.local/bin/frl",
+    "launcher_exists": true,
+    "previous": {
+      "bytes": 505823,
+      "exists": true,
+      "link": "/home/tonegawa/.local/share/finite-ram-lab/previous.whl",
+      "sha256": "b20ccafe0a5b34cee8959cfb337fc60a3e600f76269efb15bb581539d383b61c",
+      "target": "/home/tonegawa/.local/share/finite-ram-lab/artifacts/b20ccafe0a5b34cee8959cfb337fc60a3e600f76269efb15bb581539d383b61c.whl"
+    },
+    "root": "/home/tonegawa/.local/share/finite-ram-lab",
+    "source_bytes": 1370565,
+    "source_count": 3
+  },
+  "source_wheel": "/home/tonegawa/.local/share/finite-ram-lab/sources/eeb2960a8eb118d739e5a4e35403c56e4ca141261b89ede118f39ff9139b521a.whl",
+  "warmup": {
+    "artifact_epoch_reused": true,
+    "control_switched": false,
+    "projected": false,
+    "smoke_reused": true,
+    "source_epoch_reused": true,
+    "switched": false,
+    "total_ms": 1.022934
+  }
+}

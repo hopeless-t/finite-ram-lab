@@ -1,0 +1,53 @@
+{
+  "artifact_epoch_reused": true,
+  "current": "/home/tonegawa/.local/share/finite-ram-lab/artifacts/b20ccafe0a5b34cee8959cfb337fc60a3e600f76269efb15bb581539d383b61c.whl",
+  "launcher_written": false,
+  "sha256": "b20ccafe0a5b34cee8959cfb337fc60a3e600f76269efb15bb581539d383b61c",
+  "smoke": {
+    "commands": [
+      {
+        "argv": [
+          "finite_ram_lab",
+          "cache-doctor"
+        ],
+        "elapsed_ms": 83.658964,
+        "returncode": 0,
+        "stderr_tail": "",
+        "stdout_sha256": "b4dc1e539686ad3b5840fe997589484eb4cee4ff3776879c8dabdc1cf4089d36"
+      },
+      {
+        "argv": [
+          "finite_ram_lab",
+          "cache-analyze",
+          "--length",
+          "300",
+          "--universe",
+          "29",
+          "--capacity-anchor",
+          "7",
+          "--capacities",
+          "3,7,17"
+        ],
+        "elapsed_ms": 87.357543,
+        "returncode": 0,
+        "stderr_tail": "",
+        "stdout_sha256": "19c0db4b4e8f89c51587d3f1493bbb0abf703b701c8619cecdef8823a21ea88e"
+      },
+      {
+        "argv": [
+          "finite_ram_lab",
+          "runtime-status"
+        ],
+        "elapsed_ms": 80.066967,
+        "returncode": 0,
+        "stderr_tail": "",
+        "stdout_sha256": "499abe699bd3ead44adeeb33e448ba7d3ed7baea6fe080f5ac29eed38f9d8b2c"
+      }
+    ],
+    "reused": true,
+    "status": "PASS"
+  },
+  "smoke_reused": true,
+  "status": "PASS",
+  "switch_ms": 0.520864
+}

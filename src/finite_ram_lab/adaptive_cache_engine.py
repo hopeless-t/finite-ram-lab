@@ -465,8 +465,14 @@ class PreparedTrace:
                 raise ValueError(f"unknown policy: {policy}")
         return result
 
-    def compare(self, capacities: Sequence[int], *, backend: str = "auto") -> list[dict[str, Any]]:
-        data = self.sweep(capacities, backend=backend)
+    def compare(
+        self,
+        capacities: Sequence[int],
+        *,
+        backend: str = "auto",
+        workers: int | str = "auto",
+    ) -> list[dict[str, Any]]:
+        data = self.sweep(capacities, backend=backend, workers=workers)
         rows: list[dict[str, Any]] = []
         for c in capacities:
             cap = int(c)

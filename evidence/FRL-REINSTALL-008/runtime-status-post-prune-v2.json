@@ -1,0 +1,30 @@
+{
+  "artifact_bytes": 1010978,
+  "artifact_count": 2,
+  "control": {
+    "bytes": 505823,
+    "exists": true,
+    "link": "/home/tonegawa/.local/share/finite-ram-lab/control.whl",
+    "sha256": "b20ccafe0a5b34cee8959cfb337fc60a3e600f76269efb15bb581539d383b61c",
+    "target": "/home/tonegawa/.local/share/finite-ram-lab/artifacts/b20ccafe0a5b34cee8959cfb337fc60a3e600f76269efb15bb581539d383b61c.whl"
+  },
+  "current": {
+    "bytes": 505823,
+    "exists": true,
+    "link": "/home/tonegawa/.local/share/finite-ram-lab/current.whl",
+    "sha256": "b20ccafe0a5b34cee8959cfb337fc60a3e600f76269efb15bb581539d383b61c",
+    "target": "/home/tonegawa/.local/share/finite-ram-lab/artifacts/b20ccafe0a5b34cee8959cfb337fc60a3e600f76269efb15bb581539d383b61c.whl"
+  },
+  "launcher": "/home/tonegawa/.local/bin/frl",
+  "launcher_exists": true,
+  "previous": {
+    "bytes": 505155,
+    "exists": true,
+    "link": "/home/tonegawa/.local/share/finite-ram-lab/previous.whl",
+    "sha256": "5474ac8d7f600b93bd54cbba93afd1016546cc4f7c146e14106bf43a0f5cec87",
+    "target": "/home/tonegawa/.local/share/finite-ram-lab/artifacts/5474ac8d7f600b93bd54cbba93afd1016546cc4f7c146e14106bf43a0f5cec87.whl"
+  },
+  "root": "/home/tonegawa/.local/share/finite-ram-lab",
+  "source_bytes": 912856,
+  "source_count": 2
+}

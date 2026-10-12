@@ -18,7 +18,7 @@ analysis = [
 ]
 
 [project.scripts]
-frl = "finite_ram_lab.cli:main"
+frl = "finite_ram_lab.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,0 +1,22 @@
+{
+  "apply": true,
+  "candidate_count": 6,
+  "keep_artifacts": [
+    "/home/tonegawa/.local/share/finite-ram-lab/artifacts/2b81768b8c3d773f71235e86f69eb583573870be6ea15f2633ad91b4051537c0.whl",
+    "/home/tonegawa/.local/share/finite-ram-lab/artifacts/b20ccafe0a5b34cee8959cfb337fc60a3e600f76269efb15bb581539d383b61c.whl"
+  ],
+  "keep_source_digests": [
+    "c20f74680cff670d35ad96d1bf82a7458cb9fcfefab1fd2a3699e3048f83ebe3",
+    "eeb2960a8eb118d739e5a4e35403c56e4ca141261b89ede118f39ff9139b521a"
+  ],
+  "reclaimable_bytes": 965601,
+  "removed": [
+    "/home/tonegawa/.local/share/finite-ram-lab/artifacts/5474ac8d7f600b93bd54cbba93afd1016546cc4f7c146e14106bf43a0f5cec87.whl",
+    "/home/tonegawa/.local/share/finite-ram-lab/sources/5b0e6b3dc6dc17a63fa1b61122362bf630cf6a8addcf951982d934a029aabc52.whl",
+    "/home/tonegawa/.local/share/finite-ram-lab/manifests/5474ac8d7f600b93bd54cbba93afd1016546cc4f7c146e14106bf43a0f5cec87.json",
+    "/home/tonegawa/.local/share/finite-ram-lab/projections/5b0e6b3dc6dc17a63fa1b61122362bf630cf6a8addcf951982d934a029aabc52-cpython-314-hot-pyc-v1.json",
+    "/home/tonegawa/.local/share/finite-ram-lab/epochs/188e9769163bcdcd8ea73776d36e0eec27fcb1ae46f766e58453f0706e8019b8.json",
+    "/home/tonegawa/.local/share/finite-ram-lab/epochs/822e42d5752e35ead6f79b5bc797ba6652128155ff2dba9c32962c881eb87da1.json"
+  ],
+  "status": "PASS"
+}
