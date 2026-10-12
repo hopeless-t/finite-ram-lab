@@ -1,0 +1,8 @@
+{
+  "experiment_id":"FRL-REINSTALL-006-REPRIME-EVICTION-v1",
+  "question":"Can resident execution state be evicted under RAM pressure and reconstructed on the next request without a materially worse cold path?",
+  "arms":["cold_exec","warm_reprime","fork_reprime"],
+  "blocks":30,
+  "paired_inputs":true,
+  "convergence_gate":"At least one reprime path is within 10% of cold_exec ready-to-result latency while preserving semantics and zero mandatory resident worker state between requests."
+}

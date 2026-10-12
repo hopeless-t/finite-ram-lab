@@ -1,0 +1,48 @@
+{
+  "arms": {
+    "cold_exec": {
+      "max_ms": 51.201187,
+      "median_ready_to_result_ms": 49.5161605,
+      "min_ms": 48.556418,
+      "n": 60,
+      "p95_ms": 50.361824
+    },
+    "fork_reprime": {
+      "counter_unique": [
+        1
+      ],
+      "delta_vs_cold_ms": -3.905372,
+      "max_ms": 49.067913,
+      "median_first_call_ms": 14.5466105,
+      "median_parent_rss_kib": 18284.0,
+      "median_ready_to_result_ms": 45.6107885,
+      "median_startup_ms": 30.9094865,
+      "min_ms": 44.675152,
+      "n": 60,
+      "p95_ms": 46.385415,
+      "ratio_vs_cold": 0.921129345236693
+    },
+    "warm_reprime": {
+      "counter_unique": [
+        1
+      ],
+      "delta_vs_cold_ms": -6.0151889999999995,
+      "max_ms": 59.562416,
+      "median_first_call_ms": 12.538076,
+      "median_parent_rss_kib": 18832.0,
+      "median_ready_to_result_ms": 43.5009715,
+      "median_startup_ms": 30.791483999999997,
+      "min_ms": 42.659904,
+      "n": 60,
+      "p95_ms": 44.721718,
+      "ratio_vs_cold": 0.8785206902300109
+    }
+  },
+  "blocks": 60,
+  "canonical_build_residue_delta_bytes": 0,
+  "experiment_id": "FRL-REINSTALL-006-REPRIME-EVICTION-v1",
+  "interpretation_gate": {
+    "reprime_within_10pct_of_cold": true
+  },
+  "semantic_triplets_match": true
+}
